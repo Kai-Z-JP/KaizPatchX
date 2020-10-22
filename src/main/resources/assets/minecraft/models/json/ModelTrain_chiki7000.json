@@ -1,0 +1,61 @@
+{
+  "trainName": "chiki7000",
+  "trainType": "CC",
+  "trainModel2": {
+    "modelFile": "ModelTrain_chiki7000.obj",
+    "textures": [
+      [
+        "default",
+        "textures/train/chiki7000/chiki7000.png"
+      ]
+    ]
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie_ft1.obj",
+    "textures": [
+      [
+        "default",
+        "textures/train/ft1.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/chiki7000/button_chiki7000.png",
+  "soundScriptPath": "scripts/sound_trailer.js",
+  "sound_Stop": "",
+  "sound_S_M": "",
+  "sound_Medium": "",
+  "sound_M_H": "",
+  "sound_High": "",
+  "sound_H_M": "",
+  "sound_M_S": "",
+  "sound_Horn": "",
+  "seatPos": [],
+  "playerPos": [
+    [
+      0.8,
+      0.0,
+      9.187
+    ],
+    [
+      -0.8,
+      0.0,
+      -9.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      7.125
+    ],
+    [
+      0.0,
+      0.0,
+      -7.125
+    ]
+  ],
+  "doCulling": true,
+  "smoothing": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479 7000 JNR"
+}

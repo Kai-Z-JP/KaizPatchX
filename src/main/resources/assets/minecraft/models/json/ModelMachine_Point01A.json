@@ -1,0 +1,21 @@
+{
+  "name": "Point01A",
+  "model": {
+    "modelFile": "ModelMachine_Point01.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/machine/point.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderPoint01.js"
+  },
+  "buttonTexture": "textures/machine/button_Point01A.png",
+  "machineType": "Point",
+  "sound_OnActivate": "minecraft:random.click",
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

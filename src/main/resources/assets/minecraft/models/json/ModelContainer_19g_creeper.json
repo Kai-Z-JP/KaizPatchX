@@ -1,0 +1,10 @@
+{
+  "containerName": "19g_creeper",
+  "containerModel": "ModelContainer_19g.obj",
+  "containerTexture": "textures/container/19g_creeper.png",
+  "buttonTexture": "textures/container/button_19g_creeper.png",
+  "containerWidth": 3.0,
+  "containerHeight": 2.5,
+  "containerLength": 3.71,
+  "tags": "ngt5479 19G"
+}

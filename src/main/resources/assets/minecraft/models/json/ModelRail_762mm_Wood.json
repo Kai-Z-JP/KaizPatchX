@@ -1,0 +1,24 @@
+{
+  "railName": "762mm_Wood",
+  "model": {
+    "modelFile": "ModelRail_762mm.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRail.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderRailStandard.js"
+  },
+  "buttonTexture": "textures/rail/button_762mm_Wood.png",
+  "defaultBallast": [
+    {
+      "blockName": "gravel",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 762mm Wood"
+}

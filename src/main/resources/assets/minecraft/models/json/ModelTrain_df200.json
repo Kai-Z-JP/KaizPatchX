@@ -1,0 +1,155 @@
+{
+  "trainName": "df200",
+  "trainType": "DC",
+  "trainModel2": {
+    "modelFile": "ModelTrain_df200.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/train/df200/df200.png",
+        "AlphaBlend"
+      ]
+    ]
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie_fdt100.obj",
+    "textures": [
+      [
+        "default",
+        "textures/train/fdt100.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/df200/button_df200.png",
+  "sound_Stop": "train.rtm_dc40r_stn",
+  "sound_S_A": "train.rtm_dc40r_go-a",
+  "sound_Acceleration": "train.rtm_dc40r_a",
+  "sound_Deceleration": "train.rtm_dc40r_i",
+  "sound_D_S": "train.rtm_dc40r_i-stop",
+  "sound_Horn": "train.rtm_wh_00l",
+  "headLights": [
+    {
+      "type": 0,
+      "color": 16775376,
+      "pos": [
+        0.125,
+        2.5,
+        9.25
+      ],
+      "r": 0.5
+    },
+    {
+      "type": 0,
+      "color": 16775376,
+      "pos": [
+        -0.125,
+        2.5,
+        9.25
+      ],
+      "r": 0.5
+    },
+    {
+      "type": 1,
+      "color": 16775376,
+      "pos": [
+        0.125,
+        2.5,
+        9.25
+      ],
+      "r": 1.25
+    },
+    {
+      "type": 1,
+      "color": 16775376,
+      "pos": [
+        -0.125,
+        2.5,
+        9.25
+      ],
+      "r": 1.25
+    }
+  ],
+  "tailLights": [
+    {
+      "type": 0,
+      "color": 16711760,
+      "pos": [
+        0.8125,
+        1.0625,
+        10.0
+      ],
+      "r": 0.25
+    },
+    {
+      "type": 0,
+      "color": 16711760,
+      "pos": [
+        -0.8125,
+        1.0625,
+        10.0
+      ],
+      "r": 0.25
+    }
+  ],
+  "seatPos": [],
+  "playerPos": [
+    [
+      0.8,
+      0.1875,
+      9.187
+    ],
+    [
+      -0.8,
+      0.1875,
+      -9.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      7.125
+    ],
+    [
+      0.0,
+      0.0,
+      -7.125
+    ]
+  ],
+  "jointDelay": [
+    [
+      0.0,
+      1.9,
+      7.125
+    ],
+    [
+      0.0,
+      1.9,
+      7.125
+    ]
+  ],
+  "accelerateion": 0.00111,
+  "isSingleTrain": true,
+  "doCulling": true,
+  "smoke": [
+    [
+      0.0,
+      3.0,
+      7.5,
+      "explode",
+      1,
+      3
+    ],
+    [
+      0.0,
+      3.0,
+      -7.5,
+      "explode",
+      1,
+      2
+    ]
+  ],
+  "smoothing": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479 DF200 JRF"
+}

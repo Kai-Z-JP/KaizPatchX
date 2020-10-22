@@ -1,0 +1,24 @@
+{
+  "railName": "1067mm_Abt",
+  "model": {
+    "modelFile": "ModelRail_1067mm_abt.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRail.png",
+        ""
+      ]
+    ],
+    "rendererPath": ""
+  },
+  "buttonTexture": "textures/rail/button_AbtRail.png",
+  "defaultBallast": [
+    {
+      "blockName": "stone",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 1067mm Abt"
+}

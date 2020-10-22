@@ -1,0 +1,19 @@
+{
+  "name": "IronChain",
+  "model": {
+    "modelFile": "ModelChain.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/wire/iron.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/wire/button_IronChain.png",
+  "deflectionCoefficient": 0.125,
+  "lengthCoefficient": 0.0625,
+  "sectionLength": 0.25,
+  "doCulling": true,
+  "smoothing": true
+}

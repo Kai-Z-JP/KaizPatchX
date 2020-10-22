@@ -1,0 +1,75 @@
+{
+  "trainName": "torpedo-car",
+  "trainType": "TC",
+  "trainModel2": {
+    "modelFile": "ModelTrain_torpedo-car.obj",
+    "textures": [
+      [
+        "default",
+        "textures/train/torpedo-car/torpedo-car.png"
+      ]
+    ],
+    "rendererPath": "scripts/RenderTorpedoCar.js"
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie_siki1000.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/train/siki1000_bogie.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/torpedo-car/button_torpedo-car.png",
+  "soundScriptPath": "scripts/sound_trailer.js",
+  "sound_Stop": "",
+  "sound_S_M": "",
+  "sound_Medium": "",
+  "sound_M_H": "",
+  "sound_High": "",
+  "sound_H_M": "",
+  "sound_M_S": "",
+  "sound_Horn": "",
+  "seatPos": [],
+  "playerPos": [
+    [
+      0.8,
+      0.0,
+      9.187
+    ],
+    [
+      -0.8,
+      0.0,
+      -9.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      7.125
+    ],
+    [
+      0.0,
+      0.0,
+      -7.125
+    ]
+  ],
+  "jointDelay": [
+    [
+      0.0,
+      1.9,
+      3.0,
+      4.9
+    ],
+    [
+      0.0,
+      1.9,
+      3.0,
+      4.9
+    ]
+  ],
+  "doCulling": true,
+  "smoothing": true,
+  "tags": "ngt5479 TorpedoCar"
+}

@@ -1,0 +1,24 @@
+{
+  "railName": "1524mm_Wood",
+  "model": {
+    "modelFile": "ModelRail_1524mm.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRail.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderRailStandard.js"
+  },
+  "buttonTexture": "textures/rail/button_1524mm_Wood.png",
+  "defaultBallast": [
+    {
+      "blockName": "gravel",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 1524mm Wood"
+}

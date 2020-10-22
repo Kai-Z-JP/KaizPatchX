@@ -1,0 +1,18 @@
+{
+  "name": "SimpleCatenary",
+  "model": {
+    "modelFile": "Model_none.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/wire/simpleCatenary.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderSimpleCatenary.js"
+  },
+  "buttonTexture": "textures/wire/button_SimpleCatenary.png",
+  "deflectionCoefficient": 0.0,
+  "doCulling": false,
+  "sectionLength": 1.0
+}

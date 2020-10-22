@@ -1,0 +1,17 @@
+{
+  "railName": "762mm_PC",
+  "model": {
+    "modelFile": "ModelRail_762mm.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRailPC.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderRailStandard.js"
+  },
+  "buttonTexture": "textures/rail/button_762mm_PC.png",
+  "accuracy": "LOW",
+  "tags": "ngt5479 762mm PC"
+}

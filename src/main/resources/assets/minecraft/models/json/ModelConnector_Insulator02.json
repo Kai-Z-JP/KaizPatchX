@@ -1,0 +1,24 @@
+{
+  "name": "Insulator02",
+  "model": {
+    "modelFile": "Insulator02.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/connector/insulator02.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/connector/button_Insulator02.png",
+  "connectorType": "Relay",
+  "wirePos": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

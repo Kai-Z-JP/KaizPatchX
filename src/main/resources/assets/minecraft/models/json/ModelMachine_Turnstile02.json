@@ -1,0 +1,22 @@
+{
+  "name": "Turnstile02",
+  "model": {
+    "modelFile": "ModelMachine_Turnstile01.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/machine/turnstile_red.png",
+        "Light",
+        "textures/machine/turnstile_light0.png"
+      ]
+    ],
+    "rendererPath": "scripts/RenderTurnstile01.js"
+  },
+  "buttonTexture": "textures/machine/button_Turnstile01.png",
+  "machineType": "Turnstile",
+  "sound_OnActivate": "minecraft:random.door_open",
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

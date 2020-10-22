@@ -1,0 +1,18 @@
+
+item.protection_key.name=保護鍵
+
+message.version=%sの新しいバージョンがあります
+message.regKey.0=不正なURLです
+message.regKey.1=認証サイトに接続できません
+message.regKey.2=認証は許可されていません
+message.regKey.3=認証は許可されています
+message.regKey.4=認証されました
+message.regKey.5=キーが間違っています
+
+commands.ngt.usage=/ngt <認証キー>
+commands.ngt.invalid_command=不正なコマンドです。
+commands.permit.usage=/permit : 使い方表示
+commands.protect.usage=/protect <任意の暗号化コード> : 保護鍵取得
+commands.usage.usage=/usage : 手に持ったアイテムや乗車中の乗り物の使用方法を表示
+
+gui.warning=認証キーを入力してください！

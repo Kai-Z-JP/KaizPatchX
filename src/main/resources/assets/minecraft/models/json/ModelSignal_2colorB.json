@@ -1,0 +1,38 @@
+{
+  "signalName": "2colorB",
+  "signalModel": "ModelSignal_2color.mqo",
+  "signalTexture": "textures/signal/colorSignal.png",
+  "lightTexture": "textures/signal/colorSignal_2cB.png",
+  "buttonTexture": "textures/signal/button_2cB.png",
+  "modelPartsFixture": {
+    "objects": [
+      "pole",
+      "body2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsBody": {
+    "objects": [
+      "body",
+      "light1",
+      "light2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.425
+    ]
+  },
+  "lights": [
+    "S(1) I(0) P(light1)",
+    "S(5) I(0) P(light2)"
+  ],
+  "rotateBody": true,
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479 2color"
+}

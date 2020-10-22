@@ -1,0 +1,20 @@
+{
+  "name": "SoundSignal01",
+  "model": {
+    "modelFile": "ModelMachine_SoundSignal.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/machine/soundSignal.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/machine/button_SoundSignal01.png",
+  "machineType": "Gate",
+  "sound_Running": "rtm:block.toryanse",
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

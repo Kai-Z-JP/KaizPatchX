@@ -1,0 +1,18 @@
+{
+  "signalName": "Clock01MC",
+  "model": {
+    "modelFile": "ModelMachine_Clock.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/signal/clockMC.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderClock.js"
+  },
+  "buttonTexture": "textures/signal/button_clockMC.png",
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479 Clock"
+}

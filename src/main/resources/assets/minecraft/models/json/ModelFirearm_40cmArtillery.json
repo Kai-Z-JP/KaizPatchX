@@ -1,0 +1,71 @@
+{
+  "firearmName": "40cmArtillery",
+  "firearmModel": "ModelFirearm_40cmArtillery.obj",
+  "firearmTexture": "textures/firearm/40cmArtillery.png",
+  "buttonTexture": "textures/firearm/button_40cmArtillery.png",
+  "modelPartsN": {
+    "objects": [
+      "body"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsY": {
+    "objects": [],
+    "pos": [
+      0.0,
+      2.0,
+      -1.0
+    ]
+  },
+  "modelPartsX": {
+    "objects": [
+      "shaft",
+      "obj1",
+      "obj2",
+      "obj3"
+    ],
+    "pos": [
+      0.0,
+      2.0,
+      -1.0
+    ]
+  },
+  "modelPartsBarrel": {
+    "objects": [
+      "barrel"
+    ],
+    "pos": [
+      0.0,
+      2.0,
+      -1.0
+    ]
+  },
+  "muzzlePos": [
+    0.0,
+    2.0,
+    10.0
+  ],
+  "playerPos": [
+    0.0,
+    1.5,
+    -3.5
+  ],
+  "yaw": [
+    0.0,
+    0.0
+  ],
+  "pitch": [
+    60.0,
+    -5.0
+  ],
+  "rotationSpeedY": 0.25,
+  "rotationSpeedX": 0.25,
+  "recoil": 1.0,
+  "ammoType": 0,
+  "fpvMode": true,
+  "tags": "ngt5479 40cm"
+}

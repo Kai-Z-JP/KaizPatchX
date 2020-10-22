@@ -1,0 +1,59 @@
+
+tile.mcte:port_in.name=Редстоун порт (Вход)
+tile.mcte:port_out.name=Редстоун порт (Выход)
+
+item.mcte:editor.name=Редактор
+item.mcte:generator.name=Генератор
+item.mcte:painter.name=Художник
+item.mcte:itemMiniature.name=Миниатюрные блоки
+
+usage.editor.0=Удалить 
+usage.editor.1=Резать
+usage.editor.2=Копировать
+usage.editor.3=Вставить
+usage.editor.4=Заполнить
+usage.editor.5=Отменить
+usage.editor.6=Режим
+usage.editor.7=Меню
+usage.painter=Меню
+
+editor.fill.0=Куб
+editor.fill.1=Эллипсоид
+editor.fill.2=Цилиндр(X)
+editor.fill.3=Цилиндр(Y)
+editor.fill.4=Цилиндр(Z)
+
+gui.mcte.select=Выделить
+gui.mcte.terrainImage=Данные изображения рельефа
+gui.mcte.biomesImage=Данные изображения биомов
+gui.mcte.blocksImage=Данные изображения блоков
+gui.mcte.baseBlock=Базовый блок
+gui.mcte.minY=Минимальное значение Y
+gui.mcte.yScale=Масштаб Y 
+gui.mcte.seaLevel=Уровень моря
+gui.mcte.generate=Генерация
+gui.mcte.miniature.select=Выделить файл
+gui.mcte.miniature.export=Экспорт файла
+gui.mcte.miniature.miniature=Миниатюрный
+gui.mcte.miniature.sculpture=Скульптура
+gui.mcte.miniature.original=Оригинал
+
+generator.pictorial=Изобразительный
+
+mcte.key=MCTE (Мод на редактирование рельефа)
+mcte.editor.menu=Меню
+mcte.editor.mode=Режим
+mcte.editor.delete=Удалить
+mcte.editor.cut=Резать
+mcte.editor.copy=Копировать
+mcte.editor.paste=Вставить
+mcte.editor.fill=Заполнить
+mcte.editor.clear=Отчистить
+mcte.editor.undo=Отменить
+
+tips.editor.fill=Заполнить правый блок
+tips.editor.replace=Заменить на правый блок
+tips.editor.filter=Выбрать фильтр
+tips.editor.do=Выполнить фильтр
+
+commands.mcte.usage=/mcte : Показать использование

@@ -1,0 +1,54 @@
+{
+  "trainName": "Test4",
+  "trainType": "Test",
+  "trainModel2": {
+    "modelFile": "Test4.mqo",
+    "textures": [
+      [
+        "mat1",
+        "textures/train/objTest/test4.png"
+      ]
+    ],
+    "rendererPath": "scripts/RenderTest4.js"
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie.class",
+    "textures": [
+      [
+        "default",
+        "textures/train/tp.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/objTest/button_objTest.png",
+  "playerPos": [
+    [
+      0.0,
+      0.25,
+      0.0
+    ],
+    [
+      0.0,
+      0.25,
+      0.0
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      4.0
+    ],
+    [
+      0.0,
+      0.0,
+      -4.0
+    ]
+  ],
+  "trainDistance": 6.8,
+  "isSingleTrain": true,
+  "doCulling": true,
+  "smoothing": true,
+  "wheelRotationSpeed": 0.8,
+  "tags": "ngt5479"
+}

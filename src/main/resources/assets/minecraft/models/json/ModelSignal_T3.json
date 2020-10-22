@@ -1,0 +1,40 @@
+{
+  "signalName": "traffic3",
+  "signalModel": "ModelSignal_T3.mqo",
+  "signalTexture": "textures/signal/trafficSignal.png",
+  "lightTexture": "textures/signal/colorSignal_3c.png",
+  "buttonTexture": "textures/signal/button_T3.png",
+  "modelPartsFixture": {
+    "objects": [
+      "pole",
+      "body2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsBody": {
+    "objects": [
+      "body",
+      "light1",
+      "light2",
+      "light3"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "lights": [
+    "S(1) I(0) P(light1)",
+    "S(3) I(0) P(light2)",
+    "S(5) I(0) P(light3)"
+  ],
+  "rotateBody": false,
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479 3color"
+}

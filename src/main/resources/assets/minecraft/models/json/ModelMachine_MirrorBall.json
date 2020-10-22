@@ -1,0 +1,25 @@
+{
+  "name": "MirrorBall",
+  "model": {
+    "modelFile": "Ball.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/machine/mirrorBall.png",
+        "Light"
+      ]
+    ],
+    "rendererPath": "scripts/RenderMirrorBall.js"
+  },
+  "buttonTexture": "textures/machine/button_MirrorBall.png",
+  "machineType": "Light",
+  "rotateByMetadata": false,
+  "brightness": [
+    0,
+    15
+  ],
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

@@ -1,0 +1,17 @@
+{
+  "railName": "1067mm_Tram",
+  "railModel": "ModelRail_1067mm_tram.mqo",
+  "railTexture": "textures/rail/largeRailTram.png",
+  "buttonTexture": "textures/rail/button_1067mm_Tram.png",
+  "polygonType": 4,
+  "defaultBallast": [
+    {
+      "blockName": "carpet",
+      "blockMetadata": 7,
+      "height": 0.0625
+    }
+  ],
+  "allowCrossing": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479 1067mm Tram"
+}

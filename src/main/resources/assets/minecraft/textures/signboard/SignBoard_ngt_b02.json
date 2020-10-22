@@ -1,0 +1,10 @@
+{
+  "texture": "ngt_b02",
+  "height": 4.0,
+  "width": 1.0,
+  "depth": 0.5,
+  "frame": 1,
+  "animationCycle": 1,
+  "color": 0,
+  "lightValue": 15
+}

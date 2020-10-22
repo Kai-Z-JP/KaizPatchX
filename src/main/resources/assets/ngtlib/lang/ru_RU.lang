@@ -1,0 +1,21 @@
+
+item.protection_key.name=Ключ защиты
+
+usage.item.protection_key=Щелкните правой кнопкой мыши на блок или сущность, чтобы защитить его.
+
+message.version=Доступна новая версия %s
+message.regKey.0=Неверный адрес URL
+message.regKey.1=Не удалось подключиться к сайту проверки подлинности
+message.regKey.2=Проверка подлинности не разрешена
+message.regKey.3=Проверка подлинности разрешена
+message.regKey.4=Подлинность проверена
+message.regKey.5=Неверный ключ
+message.usage=Вы можете проверить использование элементов с помощью команды /usage. (ngt5479)
+
+commands.ngt.usage=/ngt 'ключ проверки подлинности'
+commands.ngt.invalid_command=Неверный ключ
+commands.permit.usage=/permit : Показать использование
+commands.protect.usage=/protect <code> : Получить ключ защиты
+commands.usage.usage=/usage : Показать использование деталей и транспорта
+
+gui.warning=Пожалуйста, введите ключ проверки подлинности!

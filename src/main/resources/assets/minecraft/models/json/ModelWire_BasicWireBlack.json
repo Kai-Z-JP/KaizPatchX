@@ -1,0 +1,19 @@
+{
+  "name": "BasicWireBlack",
+  "model": {
+    "modelFile": "Model_none.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/wire/simpleCatenary.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderBasicWire.js"
+  },
+  "buttonTexture": "textures/wire/button_BasicWireBlack.png",
+  "deflectionCoefficient": 0.125,
+  "lengthCoefficient": 0.0625,
+  "doCulling": false,
+  "sectionLength": 1.0
+}

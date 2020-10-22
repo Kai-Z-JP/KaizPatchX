@@ -1,0 +1,24 @@
+{
+  "name": "Input01",
+  "model": {
+    "modelFile": "Connector.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/connector/input.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/connector/button_Input01.png",
+  "connectorType": "Input",
+  "wirePos": [
+    0.0,
+    -0.25,
+    0.0
+  ],
+  "smoothing": false,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

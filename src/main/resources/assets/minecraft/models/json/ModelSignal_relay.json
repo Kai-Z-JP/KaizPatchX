@@ -1,0 +1,44 @@
+{
+  "signalName": "relay",
+  "signalModel": "ModelSignal_relay.mqo",
+  "signalTexture": "textures/signal/colorSignal.png",
+  "lightTexture": "textures/signal/relaySignal.png",
+  "buttonTexture": "textures/signal/button_relaySignal.png",
+  "modelPartsFixture": {
+    "objects": [
+      "pole",
+      "body2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsBody": {
+    "objects": [
+      "body",
+      "light1",
+      "light2",
+      "light3",
+      "light4",
+      "light5",
+      "light6",
+      "light7"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "lights": [
+    "S(1) I(0) P(light3 light6 light7)",
+    "S(4) I(0) P(light2 light5 light7)",
+    "S(5) I(0) P(light1 light4 light7)"
+  ],
+  "rotateBody": false,
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479"
+}

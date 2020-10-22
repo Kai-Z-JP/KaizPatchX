@@ -1,0 +1,24 @@
+{
+  "name": "NoModel_Center",
+  "model": {
+    "modelFile": "CoN_Center.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/connector/insulator.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/connector/button_NoModel_Center.png",
+  "connectorType": "Relay",
+  "wirePos": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "smoothing": false,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

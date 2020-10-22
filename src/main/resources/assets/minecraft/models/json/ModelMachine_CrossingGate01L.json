@@ -1,0 +1,29 @@
+{
+  "name": "CrossingGate01L",
+  "model": {
+    "modelFile": "ModelMachine_CrossingGate01.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/machine/crossingGate.png",
+        "Light"
+      ]
+    ],
+    "rendererPath": "scripts/RenderCrossingGate01.js"
+  },
+  "buttonTexture": "textures/machine/button_CrossingGate01L.png",
+  "machineType": "Gate",
+  "sound_Running": "rtm:block.rtm_crossingGate0",
+  "renderAABB": [
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    4.0,
+    1.0
+  ],
+  "smoothing": true,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

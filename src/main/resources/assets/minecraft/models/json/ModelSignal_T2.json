@@ -1,0 +1,39 @@
+{
+  "signalName": "traffic2",
+  "signalModel": "ModelSignal_T2.mqo",
+  "signalTexture": "textures/signal/trafficSignal.png",
+  "lightTexture": "textures/signal/t2.png",
+  "buttonTexture": "textures/signal/button_T2.png",
+  "modelPartsFixture": {
+    "objects": [
+      "pole",
+      "body2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsBody": {
+    "objects": [
+      "body",
+      "light1",
+      "light2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.6889
+    ]
+  },
+  "lights": [
+    "S(1) I(0) P(light2)",
+    "S(3) I(10) P(light1)",
+    "S(5) I(0) P(light1)"
+  ],
+  "rotateBody": true,
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479 2color"
+}

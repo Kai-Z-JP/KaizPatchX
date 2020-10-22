@@ -1,0 +1,11 @@
+{
+  "texture": "ngt_a01",
+  "backTexture": 1,
+  "height": 0.75,
+  "width": 2.25,
+  "depth": 0.375,
+  "frame": 1,
+  "animationCycle": 1,
+  "color": 0,
+  "lightValue": 15
+}

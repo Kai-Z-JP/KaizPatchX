@@ -1,0 +1,368 @@
+{
+  "train.tsurikake_n": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/tsurikake_n",
+        "stream": false
+      }
+    ]
+  },
+  "train.tsurikake_x2": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/tsurikake_x2",
+        "stream": false
+      }
+    ]
+  },
+  "train.tsurikake": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/tsurikake",
+        "stream": false
+      }
+    ]
+  },
+  "train.joint": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/joint",
+        "stream": false
+      }
+    ]
+  },
+  "train.joint_reverb": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/joint_reverb",
+        "stream": false
+      }
+    ]
+  },
+  "train.cp_A": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/cp_A",
+        "stream": false
+      }
+    ]
+  },
+  "train.313_cp": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/313_cp",
+        "stream": false
+      }
+    ]
+  },
+  "train.run_trailer": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/run_trailer",
+        "stream": false
+      }
+    ]
+  },
+  "train.lever": {
+    "category": "master",
+    "sounds": [
+      "train/lever"
+    ]
+  },
+  "train.cp_fin": {
+    "category": "master",
+    "sounds": [
+      "train/cp_fin"
+    ]
+  },
+  "train.rtm_tetsudoushouka": {
+    "category": "master",
+    "sounds": [
+      "train/rtm_tetsudoushouka"
+    ]
+  },
+  "train.rtm_223_kankuRapid": {
+    "category": "master",
+    "sounds": [
+      "train/rtm_223_kankuRapid"
+    ]
+  },
+  "train.rtm_223_release": {
+    "category": "master",
+    "sounds": [
+      "train/rtm_223_release"
+    ]
+  },
+  "train.rtm_dc40r_stn": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_dc40r_stn",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_dc40r_go-a": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_dc40r_go-a",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_dc40r_a": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_dc40r_a",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_dc40r_i": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_dc40r_i",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_dc40r_i-stop": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_dc40r_i-stop",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_E231sbb_go-mid": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_E231sbb_go-mid",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_E231sbb_mid": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_E231sbb_mid",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_E231sbb_mid-top": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_E231sbb_mid-top",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_E231sbb_top": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_E231sbb_top",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_E231sbb_top-mid": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_E231sbb_top-mid",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_E231sbb_mid-stop": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_E231sbb_mid-stop",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_223mh": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_223mh",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_223_go-mid": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_223_go-mid",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_223_mid": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_223_mid",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_223_mid-stop": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_223_mid-stop",
+        "stream": false
+      }
+    ]
+  },
+  "train.223_s0": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/223_s0",
+        "stream": false
+      }
+    ]
+  },
+  "train.223_s1": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/223_s1",
+        "stream": false
+      }
+    ]
+  },
+  "train.223_s2": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/223_s2",
+        "stream": false
+      }
+    ]
+  },
+  "train.223_run": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/223_run",
+        "stream": false
+      }
+    ]
+  },
+  "train.223_run_tunnel": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/223_run_tunnel",
+        "stream": false
+      }
+    ]
+  },
+  "train.223_air": {
+    "category": "master",
+    "sounds": [
+      "train/223_air"
+    ]
+  },
+  "train.brakeR_w": {
+    "category": "master",
+    "sounds": [
+      "train/brakeR_w"
+    ]
+  },
+  "train.o220_release": {
+    "category": "master",
+    "sounds": [
+      "train/o220_release"
+    ]
+  },
+  "train.door": {
+    "category": "master",
+    "sounds": [
+      "train/door"
+    ]
+  },
+  "train.ats": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/ats",
+        "stream": false
+      }
+    ]
+  },
+  "train.ats_bell": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/ats_bell",
+        "stream": false
+      }
+    ]
+  },
+  "train.rtm_wh_00l": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "train/rtm_wh_00l",
+        "stream": false
+      }
+    ]
+  },
+  "block.rtm_crossingGate0": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "block/humikiri",
+        "stream": false
+      }
+    ]
+  },
+  "item.gun": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "item/gun",
+        "stream": false
+      }
+    ]
+  },
+  "block.metal": {
+    "category": "master",
+    "sounds": [
+      "block/metal"
+    ]
+  },
+  "block.toryanse": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "block/toryanse",
+        "stream": false
+      }
+    ]
+  }
+}

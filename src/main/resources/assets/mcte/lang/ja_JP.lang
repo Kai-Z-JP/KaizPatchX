@@ -1,0 +1,50 @@
+
+tile.mcte:port_in.name=入力ポート
+tile.mcte:port_out.name=出力ポート
+
+item.mcte:editor.name=エディタ
+item.mcte:generator.name=ジェネレーター
+item.mcte:painter.name=ペインター
+item.mcte:itemMiniature.name=ミニチュアブロック
+
+usage.editor.0=消去 : Z key
+usage.editor.1=カット : X key
+usage.editor.2=コピー : C key
+usage.editor.3=ペースト : V key
+usage.editor.4=埋め立て : B key
+usage.editor.5=キャンセル : N key
+usage.editor.6=モード : M key
+usage.editor.7=メニュー : K key
+usage.painter=メニュー : K key
+
+editor.fill.0=立方体
+editor.fill.1=楕円体
+editor.fill.2=円柱(X)
+editor.fill.3=円柱(Y)
+editor.fill.4=円柱(Z)
+
+gui.mcte.select=選択
+gui.mcte.terrainImage=地形用画像
+gui.mcte.biomesImage=バイオーム用画像
+gui.mcte.blocksImage=ブロック用画像
+gui.mcte.baseBlock=構成ブロック
+gui.mcte.minY=Yの最小値
+gui.mcte.yScale=Yの倍率
+gui.mcte.seaLevel=海面の高さ
+gui.mcte.generate=生成
+gui.mcte.miniature.select=ファイルを選択
+gui.mcte.miniature.export=ファイルに保存
+gui.mcte.miniature.miniature=ミニチュア
+gui.mcte.miniature.sculpture=彫刻
+
+generator.pictorial=ピクトリアル
+
+mcte.key=MCTE
+mcte.editor.menu=メニュー(MCTE)
+mcte.editor.mode=モード(MCTE)
+mcte.editor.delete=消去(MCTE)
+mcte.editor.cut=切り取り(MCTE)
+mcte.editor.copy=コピー(MCTE)
+mcte.editor.paste=貼り付け(MCTE)
+mcte.editor.fill=埋め立て(MCTE)
+mcte.editor.clear=クリア(MCTE)

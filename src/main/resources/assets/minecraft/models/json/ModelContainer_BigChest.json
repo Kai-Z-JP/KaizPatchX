@@ -1,0 +1,10 @@
+{
+  "containerName": "BigChest",
+  "containerModel": "ModelContainer_BigChest.class",
+  "containerTexture": "textures/entity/chest/normal.png",
+  "buttonTexture": "textures/container/button_BigChest.png",
+  "containerWidth": 3.0,
+  "containerHeight": 3.0,
+  "containerLength": 3.0,
+  "tags": "ngt5479"
+}

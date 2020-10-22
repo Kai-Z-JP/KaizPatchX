@@ -1,0 +1,10 @@
+{
+  "containerName": "C30FT",
+  "containerModel": "Model_C30FT.mqo",
+  "containerTexture": "textures/container/c_red.png",
+  "buttonTexture": "textures/container/button_C30FT.png",
+  "containerWidth": 2.49,
+  "containerHeight": 2.5,
+  "containerLength": 9.125,
+  "tags": "ngt5479"
+}

@@ -1,0 +1,15 @@
+﻿//一哥
+item.protection_key.name=保護鑰匙
+
+message.version=發現%s的新版本
+message.regKey.0=網址錯誤
+message.regKey.1=無法連接到伺服器
+message.regKey.2=拒絕驗證
+message.regKey.3=允許驗證
+message.regKey.4=產驗證成功
+message.regKey.5=驗證碼錯誤
+
+commands.ngt.usage=/ngt '驗證碼'
+commands.ngt.invalid_command=命令字符不正確
+
+gui.warning=請輸入驗證碼!!

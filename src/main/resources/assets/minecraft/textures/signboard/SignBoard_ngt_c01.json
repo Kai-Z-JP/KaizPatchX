@@ -1,0 +1,10 @@
+{
+  "texture": "ngt_c01",
+  "height": 0.75,
+  "width": 2.25,
+  "depth": 0.5,
+  "frame": 48,
+  "animationCycle": 4,
+  "color": 6118732,
+  "lightValue": 15
+}

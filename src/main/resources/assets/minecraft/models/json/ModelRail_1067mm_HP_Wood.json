@@ -1,0 +1,24 @@
+{
+  "railName": "1067mm_HP_Wood",
+  "model": {
+    "modelFile": "ModelRail_1067mm_HP.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRail_old.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderRailStandardHP.js"
+  },
+  "buttonTexture": "textures/rail/button_OldRail.png",
+  "defaultBallast": [
+    {
+      "blockName": "air",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 1067mm Wood"
+}

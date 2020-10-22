@@ -1,0 +1,44 @@
+{
+  "signalName": "5colorA",
+  "signalModel": "ModelSignal_5color.mqo",
+  "signalTexture": "textures/signal/colorSignal.png",
+  "lightTexture": "textures/signal/colorSignal_5cA.png",
+  "buttonTexture": "textures/signal/button_5cA.png",
+  "modelPartsFixture": {
+    "objects": [
+      "pole",
+      "body2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsBody": {
+    "objects": [
+      "body",
+      "light1",
+      "light2",
+      "light3",
+      "light4",
+      "light5"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.425
+    ]
+  },
+  "lights": [
+    "S(1) I(0) P(light3)",
+    "S(2) I(0) P(light2 light5)",
+    "S(3) I(0) P(light2)",
+    "S(4) I(0) P(light1 light4)",
+    "S(5) I(0) P(light1)"
+  ],
+  "rotateBody": true,
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479 5color"
+}

@@ -1,0 +1,25 @@
+{
+  "railName": "Monorail_StraddleBeam",
+  "model": {
+    "modelFile": "ModelRail_monorail.obj",
+    "textures": [
+      [
+        "default",
+        "textures/rail/monorail.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderMonorail.js"
+  },
+  "railTexture": "",
+  "buttonTexture": "textures/rail/button_Monorail_StraddleBeam.png",
+  "defaultBallast": [
+    {
+      "blockName": "air",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 Monorail"
+}

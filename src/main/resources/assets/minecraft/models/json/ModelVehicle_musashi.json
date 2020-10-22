@@ -1,0 +1,50 @@
+{
+  "name": "musashi",
+  "model": {
+    "modelFile": "musashi.ngto",
+    "textures": [
+      [
+        "default",
+        "textures/vehicle/cv33.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/vehicle/button_musashi.png",
+  "vehicleType": "Ship",
+  "size": [
+    5.0,
+    2.0
+  ],
+  "playerPos": [
+    [
+      0.0,
+      4.75,
+      -0.75
+    ]
+  ],
+  "scale": 0.125,
+  "offset": [
+    0.0,
+    -1.3125,
+    0.0
+  ],
+  "friction": [
+    0.99,
+    0.99
+  ],
+  "acceleration": [
+    0.01,
+    0.01
+  ],
+  "maxSpeed": [
+    0.8,
+    0.8
+  ],
+  "maxYaw": [
+    20.0,
+    20.0
+  ],
+  "changeYawOnStopping": true,
+  "tags": "ngt5479 Musashi Warship"
+}

@@ -1,0 +1,17 @@
+{
+  "railName": "1524mm_PC",
+  "model": {
+    "modelFile": "ModelRail_1524mm.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRailPC.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderRailStandard.js"
+  },
+  "buttonTexture": "textures/rail/button_1524mm_PC.png",
+  "accuracy": "LOW",
+  "tags": "ngt5479 1524mm PC"
+}

@@ -1,0 +1,75 @@
+{
+  "trainName": "soyuz",
+  "trainType": "CC",
+  "trainModel2": {
+    "modelFile": "ModelTrain_soyuz.mqo",
+    "textures": [
+      [
+        "mat1",
+        "textures/train/torpedo-car/torpedo-car.png"
+      ],
+      [
+        "mat2",
+        "textures/train/soyuz/rocket.png"
+      ]
+    ]
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie_siki1000.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/train/siki1000_bogie.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/soyuz/button_soyuz.png",
+  "soundScriptPath": "scripts/sound_trailer.js",
+  "sound_Stop": "",
+  "sound_S_A": "",
+  "sound_Acceleration": "",
+  "sound_Deceleration": "",
+  "sound_D_S": "",
+  "seatPos": [],
+  "playerPos": [
+    [
+      0.8,
+      0.0,
+      14.187
+    ],
+    [
+      -0.8,
+      0.0,
+      -14.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      12.125
+    ],
+    [
+      0.0,
+      0.0,
+      -12.125
+    ]
+  ],
+  "jointDelay": [
+    [
+      0.0,
+      1.9,
+      3.0,
+      4.9
+    ],
+    [
+      0.0,
+      1.9,
+      3.0,
+      4.9
+    ]
+  ],
+  "doCulling": true,
+  "smoothing": true,
+  "tags": "ngt5479 Rocket Soyuz"
+}

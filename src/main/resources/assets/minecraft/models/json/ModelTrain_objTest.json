@@ -1,0 +1,171 @@
+{
+  "trainName": "objTest",
+  "trainType": "Test",
+  "trainModel2": {
+    "modelFile": "ModelTrain_objTest.mqo",
+    "textures": [
+      [
+        "mat1",
+        "textures/train/objTest/objTest.png"
+      ]
+    ]
+  },
+  "bogieModel3": [
+    {
+      "modelFile": "ModelBogie.class",
+      "textures": [
+        [
+          "default",
+          "textures/train/bogie.png"
+        ]
+      ]
+    },
+    {
+      "modelFile": "ModelBogie_ft1.obj",
+      "textures": [
+        [
+          "default",
+          "textures/train/ft1.png"
+        ]
+      ]
+    }
+  ],
+  "buttonTexture": "textures/train/objTest/button_objTest.png",
+  "seatPos": [
+    [
+      12,
+      0,
+      90,
+      1
+    ],
+    [
+      12,
+      0,
+      70,
+      1
+    ],
+    [
+      12,
+      0,
+      50,
+      1
+    ],
+    [
+      12,
+      0,
+      30,
+      1
+    ],
+    [
+      12,
+      0,
+      -140,
+      1
+    ],
+    [
+      12,
+      0,
+      -90,
+      1
+    ],
+    [
+      12,
+      0,
+      -70,
+      1
+    ],
+    [
+      12,
+      0,
+      -50,
+      1
+    ],
+    [
+      12,
+      0,
+      -30,
+      1
+    ],
+    [
+      -12,
+      0,
+      90,
+      1
+    ],
+    [
+      -12,
+      0,
+      70,
+      1
+    ],
+    [
+      -12,
+      0,
+      50,
+      1
+    ],
+    [
+      -12,
+      0,
+      30,
+      1
+    ],
+    [
+      -12,
+      0,
+      -140,
+      1
+    ],
+    [
+      -12,
+      0,
+      -90,
+      1
+    ],
+    [
+      -12,
+      0,
+      -70,
+      1
+    ],
+    [
+      -12,
+      0,
+      -50,
+      1
+    ],
+    [
+      -12,
+      0,
+      -30,
+      1
+    ]
+  ],
+  "playerPos": [
+    [
+      0.8,
+      0.25,
+      9.187
+    ],
+    [
+      -0.8,
+      0.25,
+      -9.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      7.125
+    ],
+    [
+      0.0,
+      0.0,
+      -7.125
+    ]
+  ],
+  "doCulling": true,
+  "smoothing": true,
+  "tags": "ngt5479"
+}

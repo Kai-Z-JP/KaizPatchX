@@ -1,0 +1,6 @@
+{
+  "name": "SalespersonNGT01",
+  "texture": "textures/npc/salesperson01.png",
+  "buttonTexture": "textures/npc/button_salesperson_NGT01.png",
+  "role": "salesperson"
+}

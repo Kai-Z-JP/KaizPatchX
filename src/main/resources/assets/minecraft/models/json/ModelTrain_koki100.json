@@ -1,0 +1,59 @@
+{
+  "trainName": "koki100",
+  "trainType": "CC",
+  "trainModel2": {
+    "modelFile": "ModelTrain_koki100.obj",
+    "textures": [
+      [
+        "default",
+        "textures/train/koki100/koki100.png"
+      ]
+    ]
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie_ft1.obj",
+    "textures": [
+      [
+        "default",
+        "textures/train/ft1.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/koki100/button_koki100.png",
+  "soundScriptPath": "scripts/sound_trailer.js",
+  "sound_Stop": "",
+  "sound_S_A": "",
+  "sound_Acceleration": "",
+  "sound_Deceleration": "",
+  "sound_D_S": "",
+  "sound_Horn": "",
+  "seatPos": [],
+  "playerPos": [
+    [
+      0.8,
+      0.0,
+      9.187
+    ],
+    [
+      -0.8,
+      0.0,
+      -9.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      7.125
+    ],
+    [
+      0.0,
+      0.0,
+      -7.125
+    ]
+  ],
+  "doCulling": true,
+  "smoothing": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479 100 JRF"
+}

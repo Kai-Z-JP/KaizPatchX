@@ -1,0 +1,16 @@
+{
+  "railName": "GuidingRail",
+  "railModel": "ModelRail_guidingRail.obj",
+  "railTexture": "textures/rail/guidingRail.png",
+  "buttonTexture": "textures/rail/button_GuidingRail.png",
+  "polygonType": 3,
+  "defaultBallast": [
+    {
+      "blockName": "air",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 Guiding"
+}

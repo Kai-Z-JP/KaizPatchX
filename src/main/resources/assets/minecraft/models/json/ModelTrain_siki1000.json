@@ -1,0 +1,74 @@
+{
+  "trainName": "siki1000",
+  "trainType": "CC",
+  "trainModel2": {
+    "modelFile": "ModelTrain_siki1000.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/train/siki1000/siki1000.png"
+      ]
+    ]
+  },
+  "bogieModel2": {
+    "modelFile": "ModelBogie_siki1000.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/train/siki1000_bogie.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/siki1000/button_siki1000.png",
+  "soundScriptPath": "scripts/sound_trailer.js",
+  "sound_Stop": "",
+  "sound_S_A": "",
+  "sound_Acceleration": "",
+  "sound_Deceleration": "",
+  "sound_D_S": "",
+  "sound_Horn": "",
+  "seatPos": [],
+  "playerPos": [
+    [
+      0.8,
+      0.0,
+      9.187
+    ],
+    [
+      -0.8,
+      0.0,
+      -9.187
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      7.125
+    ],
+    [
+      0.0,
+      0.0,
+      -7.125
+    ]
+  ],
+  "jointDelay": [
+    [
+      0.0,
+      1.9,
+      3.0,
+      4.9
+    ],
+    [
+      0.0,
+      1.9,
+      3.0,
+      4.9
+    ]
+  ],
+  "doCulling": true,
+  "smoothing": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479",
+  "tags": "ngt5479 1000 JNR"
+}

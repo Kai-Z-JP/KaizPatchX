@@ -1,0 +1,24 @@
+{
+  "railName": "1067mm_Cable",
+  "model": {
+    "modelFile": "ModelRail_1067mm_cable.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/rail/largeRail.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderRailCable.js"
+  },
+  "buttonTexture": "textures/rail/button_AbtRail.png",
+  "defaultBallast": [
+    {
+      "blockName": "stone",
+      "blockMetadata": 0,
+      "height": 0.0625
+    }
+  ],
+  "accuracy": "LOW",
+  "tags": "ngt5479 1067mm Cable"
+}

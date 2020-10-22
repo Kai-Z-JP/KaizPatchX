@@ -1,0 +1,42 @@
+{
+  "signalName": "4colorA",
+  "signalModel": "ModelSignal_4color.mqo",
+  "signalTexture": "textures/signal/colorSignal.png",
+  "lightTexture": "textures/signal/colorSignal_4cA.png",
+  "buttonTexture": "textures/signal/button_4cA.png",
+  "modelPartsFixture": {
+    "objects": [
+      "pole",
+      "body2"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "modelPartsBody": {
+    "objects": [
+      "body",
+      "light1",
+      "light2",
+      "light3",
+      "light4"
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.425
+    ]
+  },
+  "lights": [
+    "S(1) I(0) P(light3)",
+    "S(2) I(0) P(light1 light4)",
+    "S(3) I(0) P(light1)",
+    "S(5) I(0) P(light2)"
+  ],
+  "rotateBody": true,
+  "smoothing": true,
+  "doCulling": true,
+  "tags": "ngt5479 4color"
+}

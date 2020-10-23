@@ -18,9 +18,9 @@ import java.util.List;
 public class ContainerRecipe extends Container {
 	private static final int itemListHeight = 9;
 
-	private World worldObj;
-	private TileEntityTrainWorkBench workBench;
-	private GuiRTMWorkBench gui;
+	private final World worldObj;
+	private final TileEntityTrainWorkBench workBench;
+	private final GuiRTMWorkBench gui;
 	public InventoryUneditable invItems;
 	public InventoryUneditable invCraftSample;
 	private ItemStack selectedItem;
@@ -112,12 +112,12 @@ public class ContainerRecipe extends Container {
 
 	@Override
 	protected void retrySlotClick(int par1, int par2, boolean par3, EntityPlayer player) {
-		;//NEIで無限ループ防止
+		//NEIで無限ループ防止
 	}
 
 	@SideOnly(Side.CLIENT)
 	public class SlotSample extends Slot {
-		private ContainerRecipe myContainer;
+		private final ContainerRecipe myContainer;
 
 		public SlotSample(IInventory iinv, ContainerRecipe container, int index, int xPos, int yPos) {
 			super(iinv, index, xPos, yPos);

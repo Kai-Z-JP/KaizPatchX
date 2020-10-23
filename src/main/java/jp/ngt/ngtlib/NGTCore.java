@@ -26,7 +26,7 @@ import java.io.IOException;
 @Mod(modid = NGTCore.MODID, name = "NGTLib", version = NGTCore.VERSION)
 public class NGTCore {
 	public static final String MODID = "NGTLib";
-	public static final String VERSION = "1.7.10.33";
+	public static final String VERSION = "1.7.10.32";
 
 	@Instance(MODID)
 	public static NGTCore instance;

@@ -6,7 +6,6 @@ import net.minecraft.util.AxisAlignedBB;
 @Deprecated
 public class MirrorFrustrum implements ICamera {
 	public MirrorFrustrum() {
-		;
 	}
 
 	@Override
@@ -16,6 +15,5 @@ public class MirrorFrustrum implements ICamera {
 
 	@Override
 	public void setPosition(double x, double y, double z) {
-		;
 	}
 }

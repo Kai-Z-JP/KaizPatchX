@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class ProtectionData extends WorldSavedData {
-	private Map<String, NBTTagCompound> protectedObjs = new HashMap<String, NBTTagCompound>();
+	private final Map<String, NBTTagCompound> protectedObjs = new HashMap<String, NBTTagCompound>();
 
 	public ProtectionData(String par1) {
 		super(par1);

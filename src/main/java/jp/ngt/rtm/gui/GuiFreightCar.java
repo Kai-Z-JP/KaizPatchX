@@ -12,8 +12,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiFreightCar extends GuiContainer {
 	private static final ResourceLocation texture = new ResourceLocation("textures/gui/container/hopper.png");
-	private IInventory inventoryPlayer;
-	private IInventory inventory;
+	private final IInventory inventoryPlayer;
+	private final IInventory inventory;
 
 	public GuiFreightCar(InventoryPlayer par1InventoryPlayer, IInventory par2IInventory) {
 		super(new ContainerFreightCar(par1InventoryPlayer, par2IInventory));
@@ -25,8 +25,8 @@ public class GuiFreightCar extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
-		this.fontRendererObj.drawString(this.inventory.hasCustomInventoryName() ? this.inventory.getInventoryName() : I18n.format(this.inventory.getInventoryName(), new Object[0]), 8, 6, 4210752);
-		this.fontRendererObj.drawString(this.inventoryPlayer.hasCustomInventoryName() ? this.inventoryPlayer.getInventoryName() : I18n.format(this.inventoryPlayer.getInventoryName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+		this.fontRendererObj.drawString(this.inventory.hasCustomInventoryName() ? this.inventory.getInventoryName() : I18n.format(this.inventory.getInventoryName()), 8, 6, 4210752);
+		this.fontRendererObj.drawString(this.inventoryPlayer.hasCustomInventoryName() ? this.inventoryPlayer.getInventoryName() : I18n.format(this.inventoryPlayer.getInventoryName()), 8, this.ySize - 96 + 2, 4210752);
 	}
 
 	@Override

@@ -13,9 +13,11 @@ import jp.ngt.rtm.entity.npc.Role;
 import jp.ngt.rtm.entity.train.EntityFreightCar;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityContainer;
+import jp.ngt.rtm.gui.rail.GuiRailMarker;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.texture.ITextureHolder;
+import jp.ngt.rtm.rail.TileEntityMarker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -126,6 +128,8 @@ public class RTMGuiHandler implements IGuiHandler {
 			}
 		} else if (ID == RTMCore.guiIdMotorman) {
 			return GuiMotorman.getGui((EntityMotorman) world.getEntityByID(x));
+		} else if (ID == RTMCore.guiIdRailMarker) {
+			return new GuiRailMarker((TileEntityMarker) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}

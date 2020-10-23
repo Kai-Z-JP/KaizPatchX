@@ -12,7 +12,7 @@ public enum MirrorFace {
 
 	public final MirrorVertex[] vertices;
 
-	private MirrorFace(MirrorVertex... par1) {
+	MirrorFace(MirrorVertex... par1) {
 		this.vertices = par1;
 	}
 
@@ -34,7 +34,7 @@ public enum MirrorFace {
 		public final float y;
 		public final float z;
 
-		private MirrorVertex(float par1, float par2, float par3) {
+		MirrorVertex(float par1, float par2, float par3) {
 			this.x = par1;
 			this.y = par2;
 			this.z = par3;

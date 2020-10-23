@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiButtonColored extends GuiButton {
-	private int color;
-	private int textColor;
+	private final int color;
+	private final int textColor;
 
 	public GuiButtonColored(int id, int xPos, int yPos, int w, int h, String text, int c1, int c2) {
 		super(id, xPos, yPos, w, h, text);

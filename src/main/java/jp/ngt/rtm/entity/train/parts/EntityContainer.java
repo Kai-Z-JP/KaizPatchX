@@ -20,7 +20,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> implements IInventory {
-	private ItemStack[] containerSlots = new ItemStack[54];
+	private final ItemStack[] containerSlots = new ItemStack[54];
 
 	public EntityContainer(World world) {
 		super(world);

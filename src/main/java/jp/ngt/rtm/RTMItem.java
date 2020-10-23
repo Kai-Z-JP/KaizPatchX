@@ -202,7 +202,7 @@ public final class RTMItem {
 		private final byte id;
 		public final short price;
 
-		private MoneyType(int par1, int par2) {
+		MoneyType(int par1, int par2) {
 			this.id = (byte) par1;
 			this.price = (short) par2;
 		}

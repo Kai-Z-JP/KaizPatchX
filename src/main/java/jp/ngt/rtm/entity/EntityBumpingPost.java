@@ -31,4 +31,9 @@ public class EntityBumpingPost extends EntityInstalledObject {
 	protected String getDefaultName() {
 		return "BumpingPost_Type2";
 	}
+
+	@Override
+	protected ItemStack getItem() {
+		return new ItemStack(RTMItem.installedObject, 1, IstlObjType.BUMPING_POST.id);
+	}
 }

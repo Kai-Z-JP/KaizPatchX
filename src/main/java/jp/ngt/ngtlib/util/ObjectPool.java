@@ -2,7 +2,7 @@ package jp.ngt.ngtlib.util;
 
 public final class ObjectPool<T> {
 	private final T[][] pool;
-	private int[] index = {0, 0};
+	private final int[] index = {0, 0};
 
 	public ObjectPool(T[][] array) {
 		this.pool = array;

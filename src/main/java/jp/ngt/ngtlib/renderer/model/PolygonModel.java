@@ -242,7 +242,7 @@ public abstract class PolygonModel implements IModelNGT {
 			int nextHit = target.indexOf(regex, index);
 			if (nextHit < 0)//次のマッチ箇所なし
 			{
-				this.tempList.add(target.substring(index, target.length()));
+				this.tempList.add(target.substring(index));
 				break;
 			} else if (index < nextHit) {
 				this.tempList.add(target.substring(index, nextHit));
@@ -262,7 +262,7 @@ public abstract class PolygonModel implements IModelNGT {
 			int nextHit = target.indexOf(regex, index);
 			if (nextHit < 0)//次のマッチ箇所なし
 			{
-				this.tempList.add(target.substring(index, target.length()));
+				this.tempList.add(target.substring(index));
 				break;
 			} else if (index < nextHit) {
 				this.tempList.add(target.substring(index, nextHit));

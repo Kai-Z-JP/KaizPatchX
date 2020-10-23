@@ -20,8 +20,8 @@ import java.util.List;
  */
 @SideOnly(Side.CLIENT)
 public final class SubRenderGlobal {
-	private MirrorObject mirror;
-	private List<WorldRenderer> watchableRenderers = new LinkedList<WorldRenderer>();
+	private final MirrorObject mirror;
+	private final List<WorldRenderer> watchableRenderers = new LinkedList<WorldRenderer>();
 	/*private int posX;
 	private int posY;
 	private int posZ;*/

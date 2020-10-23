@@ -16,7 +16,7 @@ import java.util.List;
 public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 	private SwitchType switchObj;
 
-	private List<RailMapSwitch> openedRails = new ArrayList<RailMapSwitch>();
+	private final List<RailMapSwitch> openedRails = new ArrayList<>();
 
 	public TileEntityLargeRailSwitchCore() {
 		super();
@@ -63,7 +63,10 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 	}
 
 	private RailPosition getRP(int x, int y, int z, byte dir, boolean b) {
-		return new RailPosition(x, y, z, dir, (byte) 0, MathHelper.wrapAngleTo180_float((byte) dir * 45.0F), -1.0F, (byte) (b ? 1 : 0));
+
+		RailPosition rp = new RailPosition(x, y, z, dir, (byte) (b ? 1 : 0));
+		rp.anchorYaw = MathHelper.wrapAngleTo180_float(dir * 45.0F);
+		return rp;
 	}
 
 	@Override
@@ -167,10 +170,10 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 		int minZ = this.startPoint[2];
 		int maxZ = this.startPoint[2];
 		for (RailPosition rp : this.railPositions) {
-			minX = minX <= rp.blockX ? minX : rp.blockX;
-			maxX = maxX >= rp.blockX ? maxX : rp.blockX;
-			minZ = minZ <= rp.blockZ ? minZ : rp.blockZ;
-			maxZ = maxZ >= rp.blockZ ? maxZ : rp.blockZ;
+			minX = Math.min(minX, rp.blockX);
+			maxX = Math.max(maxX, rp.blockX);
+			minZ = Math.min(minZ, rp.blockZ);
+			maxZ = Math.max(maxZ, rp.blockZ);
 		}
 		return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
 	}

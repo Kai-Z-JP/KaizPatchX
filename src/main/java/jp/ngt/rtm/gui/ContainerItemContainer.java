@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class ContainerItemContainer extends Container {
 	private final IInventory inventory;
-	private int numRows;
+	private final int numRows;
 	private int field_94535_f = -1;
 	private int field_94536_g;
 	private final Set field_94537_h = new HashSet();
@@ -69,12 +69,11 @@ public class ContainerItemContainer extends Container {
 				}
 
 				if (itemstack1.stackSize == 0) {
-					slot.putStack((ItemStack) null);
+					slot.putStack(null);
 				} else {
 					slot.onSlotChanged();
 				}
 			} else {
-				;
 			}
 		}
 		return itemstack;
@@ -167,14 +166,14 @@ public class ContainerItemContainer extends Container {
 					if (inventoryplayer.getItemStack() != null && par1 == -999) {
 						if (par2 == 0) {
 							par4EntityPlayer.dropPlayerItemWithRandomChoice(inventoryplayer.getItemStack(), true);
-							inventoryplayer.setItemStack((ItemStack) null);
+							inventoryplayer.setItemStack(null);
 						}
 
 						if (par2 == 1) {
 							par4EntityPlayer.dropPlayerItemWithRandomChoice(inventoryplayer.getItemStack().splitStack(1), true);
 
 							if (inventoryplayer.getItemStack().stackSize == 0) {
-								inventoryplayer.setItemStack((ItemStack) null);
+								inventoryplayer.setItemStack(null);
 							}
 						}
 					}
@@ -225,7 +224,7 @@ public class ContainerItemContainer extends Container {
 								}
 
 								if (itemstack4.stackSize == 0) {
-									inventoryplayer.setItemStack((ItemStack) null);
+									inventoryplayer.setItemStack(null);
 								}
 							}
 						} else if (slot2.canTakeStack(par4EntityPlayer)) {
@@ -235,7 +234,7 @@ public class ContainerItemContainer extends Container {
 								inventoryplayer.setItemStack(itemstack5);
 
 								if (itemstack3.stackSize == 0) {
-									slot2.putStack((ItemStack) null);
+									slot2.putStack(null);
 								}
 
 								slot2.onPickupFromSlot(par4EntityPlayer, inventoryplayer.getItemStack());
@@ -257,7 +256,7 @@ public class ContainerItemContainer extends Container {
 									itemstack4.splitStack(l1);
 
 									if (itemstack4.stackSize == 0) {
-										inventoryplayer.setItemStack((ItemStack) null);
+										inventoryplayer.setItemStack(null);
 									}
 
 									itemstack3.stackSize += l1;
@@ -273,7 +272,7 @@ public class ContainerItemContainer extends Container {
 									itemstack3 = slot2.decrStackSize(l1);
 
 									if (itemstack3.stackSize == 0) {
-										slot2.putStack((ItemStack) null);
+										slot2.putStack(null);
 									}
 
 									slot2.onPickupFromSlot(par4EntityPlayer, inventoryplayer.getItemStack());
@@ -305,7 +304,7 @@ public class ContainerItemContainer extends Container {
 							if (l1 > -1) {
 								inventoryplayer.addItemStackToInventory(itemstack3);
 								slot2.decrStackSize(itemstack5.stackSize);
-								slot2.putStack((ItemStack) null);
+								slot2.putStack(null);
 								slot2.onPickupFromSlot(par4EntityPlayer, itemstack5);
 							}
 						} else {
@@ -314,7 +313,7 @@ public class ContainerItemContainer extends Container {
 							slot2.onPickupFromSlot(par4EntityPlayer, itemstack5);
 						}
 					} else if (!slot2.getHasStack() && itemstack3 != null && slot2.isItemValid(itemstack3)) {
-						inventoryplayer.setInventorySlotContents(par2, (ItemStack) null);
+						inventoryplayer.setInventorySlotContents(par2, null);
 						slot2.putStack(itemstack3);
 					}
 				}
@@ -352,7 +351,7 @@ public class ContainerItemContainer extends Container {
 								itemstack3.stackSize += k1;
 
 								if (itemstack2.stackSize <= 0) {
-									slot3.putStack((ItemStack) null);
+									slot3.putStack(null);
 								}
 
 								slot3.onPickupFromSlot(par4EntityPlayer, itemstack2);

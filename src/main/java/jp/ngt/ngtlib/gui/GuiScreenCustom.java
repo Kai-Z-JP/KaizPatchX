@@ -79,7 +79,7 @@ public abstract class GuiScreenCustom extends GuiScreen {
 	protected void keyTyped(char par1, int par2) {
 		if (par2 == Keyboard.KEY_ESCAPE)//ESC, テキスト入力中でも有効に
 		{
-			this.mc.displayGuiScreen((GuiScreen) null);
+			this.mc.displayGuiScreen(null);
 			this.mc.setIngameFocus();
 			return;
 		}

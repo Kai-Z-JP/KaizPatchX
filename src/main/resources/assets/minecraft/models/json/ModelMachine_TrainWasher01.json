@@ -13,14 +13,6 @@
   },
   "buttonTexture": "textures/machine/button_TrainWasher01.png",
   "machineType": "Gate",
-  "renderAABB": [
-    0.0,
-    0.0,
-    0.0,
-    1.0,
-    4.0,
-    1.0
-  ],
   "smoothing": true,
   "doCulling": true,
   "accuracy": "LOW",

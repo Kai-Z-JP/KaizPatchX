@@ -8,6 +8,7 @@ import jp.ngt.ngtlib.renderer.NGTRenderHelper;
 import jp.ngt.ngtlib.renderer.model.GroupObject;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.util.NGTUtil;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class Parts {
@@ -42,22 +43,34 @@ public class Parts {
 		return NGTUtil.contains(this.objNames, name);
 	}
 
-	public void render(PartsRenderer par1) {
-		boolean smoothing = par1.modelSet.getConfig().smoothing;
-		IModelNGT model = par1.modelObj.model;
-		if (model.getGroupObjects().isEmpty())//NGTZ
-		{
+	public void render(PartsRenderer renderer) {
+		boolean smoothing = (renderer.modelSet.getConfig()).smoothing;
+		IModelNGT model = renderer.modelObj.model;
+		if (model.getGroupObjects().isEmpty()) {
 			model.renderOnly(smoothing, this.objNames);
 		} else {
-			int i = par1.currentMatId;
+			int i = renderer.currentMatId;
 			if (!GLHelper.isValid(this.gLists[i])) {
 				this.gLists[i] = GLHelper.generateGLList();
 				GLHelper.startCompile(this.gLists[i]);
 				NGTRenderHelper.renderCustomModel(model, (byte) i, smoothing, this.objNames);
 				GLHelper.endCompile();
 			} else {
-				GLHelper.callList(this.gLists[i]);
+				if (smoothing)
+					GL11.glShadeModel(7425);
+				if (ignoreMatId(renderer)) {
+					for (DisplayList glo : this.gLists)
+						GLHelper.callList(glo);
+				} else {
+					GLHelper.callList(this.gLists[i]);
+				}
+				if (smoothing)
+					GL11.glShadeModel(7424);
 			}
 		}
+	}
+
+	public boolean ignoreMatId(PartsRenderer renderer) {
+		return false;
 	}
 }

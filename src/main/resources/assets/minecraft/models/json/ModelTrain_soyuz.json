@@ -1,6 +1,7 @@
 {
   "trainName": "soyuz",
   "trainType": "CC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_soyuz.mqo",
     "textures": [

@@ -35,9 +35,6 @@ public abstract class ModelConfig {
 
 	public String serverScriptPath;
 
-	/**
-	 * [xyzxyz], default:1x1x1
-	 */
 	public float[] renderAABB;
 
 	/**

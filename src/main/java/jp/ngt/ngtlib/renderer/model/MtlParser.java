@@ -13,7 +13,7 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class MtlParser {
-	private Map<String, Material> materials = new HashMap<String, Material>();
+	private final Map<String, Material> materials = new HashMap<String, Material>();
 	private Material currentMaterial;
 
 	public MtlParser(InputStream is) {

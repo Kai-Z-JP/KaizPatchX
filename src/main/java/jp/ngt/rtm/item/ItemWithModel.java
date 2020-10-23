@@ -61,6 +61,8 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
 			return itemStack.getTagCompound().getString("ModelName");
 		} else {
 			ItemWithModel item = (ItemWithModel) itemStack.getItem();
+			itemStack.setTagCompound(new NBTTagCompound());
+			itemStack.getTagCompound().setString("ModelName", item.getDefaultModelName(itemStack));
 			return item.getDefaultModelName(itemStack);
 		}
 	}
@@ -94,8 +96,9 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
-		this.setModelName(par1);
+	public boolean closeGui(String par1, ResourceState par2) {
+		this.setModelName(this.selectedItem, par1);
+		this.setModelState(this.selectedItem, par2);
 		return true;
 	}
 
@@ -111,6 +114,28 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
 
 	@Override
 	public ResourceState getResourceState() {
-		return null;
+		return this.getModelState(this.selectedItem);
+	}
+
+	public ResourceState getModelState(ItemStack itemStack) {
+		ResourceState state = new ResourceState(this);
+		if (itemStack.hasTagCompound()) {
+			state.readFromNBT(itemStack.getTagCompound().getCompoundTag("State"));
+		} else {
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setTag("State", state.writeToNBT());
+			itemStack.setTagCompound(nbt);
+		}
+		return state;
+	}
+
+	public void setModelState(ItemStack itemStack, ResourceState state) {
+		if (!itemStack.hasTagCompound()) {
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		itemStack.getTagCompound().setTag("State", state.writeToNBT());
+		if (this.selectedPlayer != null) {
+			NGTUtil.sendPacketToServer(this.selectedPlayer, this.selectedItem);
+		}
 	}
 }

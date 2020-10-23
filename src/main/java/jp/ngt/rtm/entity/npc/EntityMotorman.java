@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import java.io.File;
 
 public class EntityMotorman extends EntityNPC {
-	private EntityAIDriveWithMacro aiMacro;
+	private final EntityAIDriveWithMacro aiMacro;
 
 	public EntityMotorman(World world) {
 		super(world);
@@ -71,7 +71,7 @@ public class EntityMotorman extends EntityNPC {
 		super.readEntityFromNBT(nbt);
 		if (nbt.hasKey("DiagramRTM")) {
 			NBTTagList nbttaglist = nbt.getTagList("DiagramRTM", 10);
-			NBTTagCompound diagramNBT = (NBTTagCompound) nbttaglist.getCompoundTagAt(0);
+			NBTTagCompound diagramNBT = nbttaglist.getCompoundTagAt(0);
 			ItemStack itemstack = ItemStack.loadItemStackFromNBT(diagramNBT);
 			this.setDiagram(itemstack);
 		}

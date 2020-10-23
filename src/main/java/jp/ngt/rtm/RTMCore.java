@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Level;
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
 	public static final String MODID = "RTM";
-	public static final String VERSION = "1.7.10.41";
+	public static final String VERSION = "1.7.10.41_KaizPatch12";
 
 	@Instance(MODID)
 	public static RTMCore instance;
@@ -51,6 +51,7 @@ public final class RTMCore {
 	public static short guiIdTurnplate = getNextGuiID();
 	public static short guiIdNPC = getNextGuiID();
 	public static short guiIdMotorman = getNextGuiID();
+	public static short guiIdRailMarker = getNextGuiID();
 
 	public static final byte KEY_Forward = 0;
 	public static final byte KEY_Back = 1;
@@ -86,13 +87,16 @@ public final class RTMCore {
 	public static int mirrorTextureSize;
 	public static boolean smoothing;
 	public static byte mirrorRenderingFrequency;
+	public static Property marker;
+	public static boolean use1122Marker;
+	public static Configuration cfg;
 
 	public static final int PacketSize = 512;
 	public static final int ATOMIC_BOM_META = 2;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		Configuration cfg = new Configuration(event.getSuggestedConfigurationFile());
+		cfg = new Configuration(event.getSuggestedConfigurationFile());
 		try {
 			cfg.load();
 			Property soundPro1 = cfg.get("Sound", "sound train", 100);
@@ -124,6 +128,9 @@ public final class RTMCore {
 			Property blockPro2 = cfg.get("Block", "mirror render frequency", 1);
 			blockPro2.comment = "Frequency of rendering mirror. (1 : Full tick)";
 
+
+			marker = cfg.get("Marker", "Use like 1.12", false);
+
 			trainSoundVol = (float) soundPro1.getInt() / 100.0F;
 			crossingGateSoundType = (byte) soundPro2.getInt();
 			gunSoundVol = (float) soundPro3.getInt() / 100.0F;
@@ -137,6 +144,7 @@ public final class RTMCore {
 			versionCheck = modPro1.getBoolean();
 			mirrorTextureSize = blockPro1.getInt();
 			mirrorRenderingFrequency = (byte) blockPro2.getInt();
+			use1122Marker = marker.getBoolean();
 		} catch (Exception e) {
 			FMLLog.log(Level.ERROR, e, "Error Message");
 		} finally {

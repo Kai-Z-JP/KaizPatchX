@@ -109,6 +109,6 @@ public abstract class CfgParameter<T> {
 		FLOAT,
 		BOOLEAN,
 		STRING,
-		STRING_LIST;
+		STRING_LIST
 	}
 }

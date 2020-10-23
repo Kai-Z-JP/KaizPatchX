@@ -17,10 +17,7 @@ public class EntityAIDrivingWithSignal extends EntityAIBase {
 
 	@Override
 	public boolean shouldExecute() {
-		if (this.motorman.isRiding() && this.motorman.ridingEntity instanceof EntityTrainBase) {
-			return true;
-		}
-		return false;
+		return this.motorman.isRiding() && this.motorman.ridingEntity instanceof EntityTrainBase;
 	}
 
 	@Override

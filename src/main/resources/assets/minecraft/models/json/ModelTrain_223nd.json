@@ -1,6 +1,7 @@
 {
   "trainName": "223nd",
   "trainType": "EC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_223nd.class",
     "textures": [

@@ -24,11 +24,10 @@ public class BlockTicketVendor extends BlockMachineBase {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
-			;
 		}
 
 		if (!world.isRemote) {
-			player.openGui(RTMCore.instance, RTMCore.instance.guiIdTicketVendor, world, x, y, z);
+			player.openGui(RTMCore.instance, RTMCore.guiIdTicketVendor, world, x, y, z);
 		}
 		return true;
 	}

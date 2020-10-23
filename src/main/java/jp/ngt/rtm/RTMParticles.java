@@ -10,7 +10,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 public class RTMParticles {
 	private static RTMParticles instance;
 	private static final String[] iconNames = {"rtm:meltedMetal"};
-	private IIcon icons[];
+	private IIcon[] icons;
 
 	public static RTMParticles getInstance() {
 		if (instance == null) {
@@ -23,7 +23,7 @@ public class RTMParticles {
 	@SideOnly(Side.CLIENT)
 	public void handleTextureRemap(TextureStitchEvent.Pre event) {
 		if (event.map.getTextureType() == 1) {
-			this.getInstance().registerIIcons(event.map);
+			getInstance().registerIIcons(event.map);
 		}
 	}
 

@@ -3,7 +3,6 @@ package jp.ngt.ngtlib.util;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import jp.ngt.ngtlib.io.NGTLog;
 import net.minecraft.event.ClickEvent;
-import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
@@ -23,11 +22,11 @@ import java.util.Map;
 public class VersionChecker {
 	private static final VersionChecker checker = new VersionChecker();
 
-	private List<PackInfo> checkList = new ArrayList<PackInfo>();
+	private final List<PackInfo> checkList = new ArrayList<PackInfo>();
 	/**
 	 * {name, version, homepage}
 	 */
-	private List<String[]> updateList = new ArrayList<String[]>();
+	private final List<String[]> updateList = new ArrayList<String[]>();
 
 	private boolean finished;
 
@@ -46,15 +45,15 @@ public class VersionChecker {
 	public static void sendUpdateMessage(ClientConnectedToServerEvent event) {
 		if (checker.finished) {
 			for (String[] sa : checker.updateList) {
-				IChatComponent component = new ChatComponentTranslation("message.version", new Object[]{EnumChatFormatting.AQUA + sa[0]});
+				IChatComponent component = new ChatComponentTranslation("message.version", EnumChatFormatting.AQUA + sa[0]);
 				component.appendText(" : " + EnumChatFormatting.GREEN + sa[1]);
 				if (sa[2] != null && sa[2].length() > 0) {
-					IChatComponent component2 = new ChatComponentTranslation("  §6§nDownload here", new Object[0]);
+					IChatComponent component2 = new ChatComponentTranslation("  §6§nDownload here");
 					component2.setChatStyle(new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2])));
 					component.appendSibling(component2);
 					//component.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2]));
 				}
-				((INetHandlerPlayClient) event.handler).handleChat(new S02PacketChat(component));
+				event.handler.handleChat(new S02PacketChat(component));
 			}
 		}
 	}

@@ -19,7 +19,7 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 			{0.0F, 0.0F, -4.0F},
 			{0.0F, 0.0F, -8.0F}};
 
-	private ItemStack[] cargoSlots = new ItemStack[5];
+	private final ItemStack[] cargoSlots = new ItemStack[5];
 	public EntityCargo[] cargoEntities = new EntityCargo[5];
 
 	public EntityFreightCar(World world) {
@@ -94,7 +94,7 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 				} else {
 					if (this.cargoEntities[i] != null) {
 						this.cargoEntities[i].setDead();
-						this.cargoEntities[i] = (EntityContainer) null;
+						this.cargoEntities[i] = null;
 					}
 				}
 			}
@@ -119,7 +119,7 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 			return true;
 		} else {
 			if (!this.worldObj.isRemote) {
-				player.openGui(RTMCore.instance, RTMCore.instance.guiIdFreightCar, player.worldObj, this.getEntityId(), 0, 0);
+				player.openGui(RTMCore.instance, RTMCore.guiIdFreightCar, player.worldObj, this.getEntityId(), 0, 0);
 			}
 			return true;
 		}
@@ -235,12 +235,10 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 
 	@Override
 	public void openInventory() {
-		;
 	}
 
 	@Override
 	public void closeInventory() {
-		;
 	}
 
 	@Override

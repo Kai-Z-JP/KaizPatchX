@@ -1,6 +1,7 @@
 {
   "trainName": "chiki7000",
   "trainType": "CC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_chiki7000.obj",
     "textures": [

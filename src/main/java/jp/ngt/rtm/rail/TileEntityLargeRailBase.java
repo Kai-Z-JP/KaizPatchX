@@ -1,6 +1,7 @@
 package jp.ngt.rtm.rail;
 
 import jp.ngt.ngtlib.block.TileEntityCustom;
+import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.protection.Lockable;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketLargeRailBase;
@@ -16,6 +17,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeRail, Lockable {
+	private static final int SPLIT = 128;
 	protected int[] startPoint = new int[3];
 
 	/**
@@ -94,7 +96,7 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
 
 	public TileEntityLargeRailCore getRailCore() {
 		TileEntity tile = this.worldObj.getTileEntity(this.startPoint[0], this.startPoint[1], this.startPoint[2]);
-		if (tile != null && tile instanceof TileEntityLargeRailCore) {
+		if (tile instanceof TileEntityLargeRailCore) {
 			return (TileEntityLargeRailCore) tile;
 		}
 		return null;
@@ -113,7 +115,7 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
 		}
 
 		TileEntity tile = world.getTileEntity(x, y, z);
-		if (tile != null && tile instanceof TileEntityLargeRailBase) {
+		if (tile instanceof TileEntityLargeRailBase) {
 			return (TileEntityLargeRailBase) tile;
 		}
 		return null;
@@ -169,16 +171,29 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
 	}
 
 	private float[] getBlockHeights(int x, int y, int z, float defaultHeight) {
-		RailMap rm = (RailMap) this.getRailMap(null);
+		RailMap rm = this.getRailMap(null);
 		if (rm != null) {
 			float[] fa = new float[]{defaultHeight, defaultHeight, defaultHeight, defaultHeight};
 			for (int i = 0; i < fa.length; ++i) {
 				int x0 = x + ((i == 1 || i == 2) ? 1 : 0);
 				int z0 = z + ((i == 0 || i == 1) ? 1 : 0);
-				int split = rm.getNearlestPoint(128, x0, z0);
-				double height = rm.getRailHeight(128, split);
-				//this.blockHeights[i] = (float)(height - (double)y);
-				fa[i] += (float) (height - (double) y - 0.0625D);
+				int index = rm.getNearlestPoint(SPLIT, x0, z0);
+				if (index < 0) {
+					index = 0;
+				}
+
+				double[] rpos = rm.getRailPos(SPLIT, index);
+				double height = rm.getRailHeight(SPLIT, index);
+				float yaw = rm.getRailRotation(SPLIT, index);
+				float cant = rm.getCant(SPLIT, index);
+
+				float yaw2 = (float) NGTMath.toDegrees(Math.atan2(rpos[1] - x0, rpos[0] - z0));
+				//最も近いレール上の点からの距離
+				double len = Math.sqrt((rpos[1] - x0) * (rpos[1] - x0) + (rpos[0] - z0) * (rpos[0] - z0));
+				//レールYawに対するベクトル角により左右位置を判断
+				boolean dirFlag = MathHelper.wrapAngleTo180_float(yaw2 - yaw) > 0.0F;
+				double h2 = NGTMath.sin(cant) * len * (dirFlag ? -1.0F : 1.0F);
+				fa[i] = (float) (height - (double) y + h2);
 			}
 			return fa;
 		}
@@ -194,9 +209,7 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
 			RailProperty property = core.getProperty();
 			if (!property.block.isOpaqueCube()) {
 				Block block = this.worldObj.getBlock(this.xCoord, this.yCoord - 1, this.zCoord);
-				if (!block.isOpaqueCube()) {
-					return true;
-				}
+				return !block.isOpaqueCube();
 			}
 		}
 		return false;

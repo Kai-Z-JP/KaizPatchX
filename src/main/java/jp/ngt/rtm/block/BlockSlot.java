@@ -103,7 +103,7 @@ public class BlockSlot extends BlockContainer implements IPipeConnectable {
 	}
 
 	private boolean isIndirectlyPowered(World world, int x, int y, int z, int dir) {
-		return dir != 0 && world.getIndirectPowerOutput(x, y - 1, z, 0) ? true : (dir != 1 && world.getIndirectPowerOutput(x, y + 1, z, 1) ? true : (dir != 2 && world.getIndirectPowerOutput(x, y, z - 1, 2) ? true : (dir != 3 && world.getIndirectPowerOutput(x, y, z + 1, 3) ? true : (dir != 5 && world.getIndirectPowerOutput(x + 1, y, z, 5) ? true : (dir != 4 && world.getIndirectPowerOutput(x - 1, y, z, 4) ? true : (world.getIndirectPowerOutput(x, y, z, 0) ? true : (world.getIndirectPowerOutput(x, y + 2, z, 1) ? true : (world.getIndirectPowerOutput(x, y + 1, z - 1, 2) ? true : (world.getIndirectPowerOutput(x, y + 1, z + 1, 3) ? true : (world.getIndirectPowerOutput(x - 1, y + 1, z, 4) ? true : world.getIndirectPowerOutput(x + 1, y + 1, z, 5)))))))))));
+		return dir != 0 && world.getIndirectPowerOutput(x, y - 1, z, 0) || (dir != 1 && world.getIndirectPowerOutput(x, y + 1, z, 1) || (dir != 2 && world.getIndirectPowerOutput(x, y, z - 1, 2) || (dir != 3 && world.getIndirectPowerOutput(x, y, z + 1, 3) || (dir != 5 && world.getIndirectPowerOutput(x + 1, y, z, 5) || (dir != 4 && world.getIndirectPowerOutput(x - 1, y, z, 4) || (world.getIndirectPowerOutput(x, y, z, 0) || (world.getIndirectPowerOutput(x, y + 2, z, 1) || (world.getIndirectPowerOutput(x, y + 1, z - 1, 2) || (world.getIndirectPowerOutput(x, y + 1, z + 1, 3) || (world.getIndirectPowerOutput(x - 1, y + 1, z, 4) || world.getIndirectPowerOutput(x + 1, y + 1, z, 5)))))))))));
 	}
 
 	@Override

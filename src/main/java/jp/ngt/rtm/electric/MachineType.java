@@ -8,5 +8,5 @@ public enum MachineType {
 	Light,
 	BumpingPost,
 	Antenna_Send,
-	Antenna_Receive;
+	Antenna_Receive
 }

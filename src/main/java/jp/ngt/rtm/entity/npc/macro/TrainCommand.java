@@ -48,13 +48,13 @@ public class TrainCommand {
 
 	@Override
 	public String toString() {
-		return String.format(FORMAT, String.valueOf(this.time), this.type.toString(), this.parameter.toString());
+		return String.format(FORMAT, this.time, this.type.toString(), this.parameter.toString());
 	}
 
 	public enum CommandType {
 		Notch,
 		Horn,
 		Chime,
-		Door;
+		Door
 	}
 }

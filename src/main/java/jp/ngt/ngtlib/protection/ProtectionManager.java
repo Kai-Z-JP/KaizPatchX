@@ -77,7 +77,7 @@ public class ProtectionManager {
 			NBTTagCompound nbt = this.getLockObj().getObject(name);
 			String id1 = nbt.getString(KEY_ID);
 			if (id1.equals(id2)) {
-				boolean flag = (target instanceof Lockable) ? ((Lockable) target).unlock(player, id2) : true;
+				boolean flag = !(target instanceof Lockable) || ((Lockable) target).unlock(player, id2);
 				if (flag) {
 					this.unlockObject(player, name);
 					return true;
@@ -86,7 +86,7 @@ public class ProtectionManager {
 				NGTLog.sendChatMessage(player, "Invalid key.");
 			}
 		} else {
-			boolean flag = (target instanceof Lockable) ? ((Lockable) target).lock(player, id2) : true;
+			boolean flag = !(target instanceof Lockable) || ((Lockable) target).lock(player, id2);
 			if (flag) {
 				this.lockObject(player, name, id2);
 				return true;

@@ -144,10 +144,10 @@ public class Formation {
 	}
 
 	private void addAll(FormationEntry[] par1) {
-		List<FormationEntry> list = new ArrayList<FormationEntry>();
+		List<FormationEntry> list = new ArrayList<>();
 		NGTUtil.addArray(list, this.entries);
 		NGTUtil.addArray(list, par1);
-		this.entries = list.toArray(new FormationEntry[list.size()]);
+		this.entries = list.toArray(new FormationEntry[0]);
 	}
 
 	private void trim(int start, int end) {
@@ -173,7 +173,6 @@ public class Formation {
 			return;
 		}
 
-		int i0 = 0;
 		boolean flag0 = (par3 == entry.dir);
 		if (flag0) {
 			this.reverse();
@@ -194,8 +193,8 @@ public class Formation {
 
 		for (FormationEntry entry2 : this.entries) {
 			//entry2.updateFormationData(this, (byte)i);
-			entry2.train.setNotch(-8);
-			entry2.train.setSpeed_NoSync(0.0F);
+			entry2.train.setNotch(-(entry2.train.getModelSet().getConfig().deccelerations.length - 1));
+			entry2.train.setSpeed(0.0F);
 			entry2.train.setTrainStateData(TrainStateType.State_Direction.id, TrainState.Direction_Center.data);
 		}
 
@@ -284,8 +283,12 @@ public class Formation {
 			return;
 		}
 
-		for (FormationEntry entry : this.entries) {
-			entry.train.setSpeed_NoSync(par1);
+		if (this.entries != null) {
+			for (FormationEntry entry : this.entries) {
+				if (entry.train != null) {
+					entry.train.setSpeed_NoSync(par1);
+				}
+			}
 		}
 		this.speed = par1;
 	}
@@ -298,7 +301,7 @@ public class Formation {
 
 		this.direction = (byte) (par1 ^ entry.dir);//編成としての向き,XOR
 
-		byte b0 = 0;
+		byte b0;
 		for (FormationEntry entry2 : this.entries) {
 			if (entry2 != null) {
 				b0 = (byte) (this.direction ^ entry2.dir);
@@ -351,4 +354,24 @@ public class Formation {
 	private void sendPacket() {
 		RTMCore.NETWORK_WRAPPER.sendToAll(new PacketFormation(this));
 	}
+
+	public boolean isFrontCar(EntityTrainBase train) {
+		EntityTrainBase front = (this.direction == 0) ? (this.entries[0]).train : (this.entries[this.entries.length - 1]).train;
+		return train.equals(front);
+	}
+
+	public void updateTrainMovement() {
+		EntityTrainBase prevTrain = null;
+		for (int i = 0; i < this.entries.length; i++) {
+			int index = (this.direction == 0) ? i : (this.entries.length - i - 1);
+			if (this.entries[index] != null) {
+				EntityTrainBase train = (this.entries[index]).train;
+				if (train.existBogies()) {
+					train.bogieController.moveTrainWithBogie(train, prevTrain, this.speed, false);
+				}
+				prevTrain = train;
+			}
+		}
+	}
+
 }

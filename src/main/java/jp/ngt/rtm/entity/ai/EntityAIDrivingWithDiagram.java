@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityAIDrivingWithDiagram extends EntityAIDrivingWithSignal {
-	private List<TrainDiagram> diagram = new ArrayList<TrainDiagram>();
+	private final List<TrainDiagram> diagram = new ArrayList<TrainDiagram>();
 
 	public class TrainDiagram {
 		public final int time;
@@ -66,7 +66,6 @@ public class EntityAIDrivingWithDiagram extends EntityAIDrivingWithSignal {
 				NGTLog.sendChatMessageToAll("Illegal format");
 				return;
 			} catch (ArrayIndexOutOfBoundsException e) {
-				;
 			}
 			this.diagram.add(new TrainDiagram(t, com, pX, pY, pZ));
 			NGTLog.debug("add diagram : " + s);

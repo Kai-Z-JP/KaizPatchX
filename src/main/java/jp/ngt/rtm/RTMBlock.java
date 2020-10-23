@@ -79,8 +79,8 @@ public final class RTMBlock {
 	public static short renderIdBlockRail;
 
 	public static final Block.SoundType soundTypeMetal2 = new Block.SoundType("metal", 1.0F, 1.0F) {
-		private Random random = new Random();
-		private float[] pitches = {0.875F, 0.9375F, 1.0F, 1.0625F, 1.125F};
+		private final Random random = new Random();
+		private final float[] pitches = {0.875F, 0.9375F, 1.0F, 1.0625F, 1.125F};
 
 		public float getPitch() {
 			return this.pitches[this.random.nextInt(this.pitches.length)];
@@ -160,7 +160,7 @@ public final class RTMBlock {
 
 		GameRegistry.registerBlock(marker, "rtm:marker");
 		GameRegistry.registerBlock(markerSwitch, "rtm:markerSwitch");
-		GameRegistry.registerBlock(markerSlope, "rtm:markerSlope");
+//        GameRegistry.registerBlock(markerSlope, "rtm:markerSlope");
 
 		GameRegistry.registerBlock(fluorescent, "rtm:fluorescent");
 		GameRegistry.registerBlock(ironPillar, "rtm:ironPillar");

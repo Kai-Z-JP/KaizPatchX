@@ -2,6 +2,9 @@ package jp.ngt.rtm.entity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.network.PacketNBT;
+import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.item.ItemWithModel;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.ScriptExecuter;
@@ -11,14 +14,16 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public abstract class EntityInstalledObject extends Entity implements IModelSelectorWithType {
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	private ModelSetMachine myModelSet;
-	private ScriptExecuter executer = new ScriptExecuter();
+	private final ScriptExecuter executer = new ScriptExecuter();
 
 	public EntityInstalledObject(World world) {
 		super(world);
@@ -119,6 +124,9 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 	public ModelSetMachine getModelSet() {
 		if (this.myModelSet == null || this.myModelSet.isDummy()) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelMachine", this.getModelName());
+			if (this.worldObj == null || !this.worldObj.isRemote) {
+				PacketNBT.sendToClient(this);
+			}
 		}
 		return this.myModelSet;
 	}
@@ -145,7 +153,7 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		this.setModelName(par1);
 		return true;
 	}
@@ -156,4 +164,14 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 	}
 
 	protected abstract String getDefaultName();
+
+	@Override
+	public ItemStack getPickedResult(MovingObjectPosition target) {
+		ItemStack itemStack = this.getItem();
+		((ItemWithModel) RTMItem.installedObject).setModelName(itemStack, this.getModelName());
+		((ItemWithModel) RTMItem.installedObject).setModelState(itemStack, this.getResourceState());
+		return itemStack;
+	}
+
+	protected abstract ItemStack getItem();
 }

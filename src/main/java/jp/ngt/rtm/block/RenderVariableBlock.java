@@ -14,7 +14,6 @@ import net.minecraft.world.IBlockAccess;
 public class RenderVariableBlock implements ISimpleBlockRenderingHandler {
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
-		;
 	}
 
 	@Override
@@ -24,10 +23,10 @@ public class RenderVariableBlock implements ISimpleBlockRenderingHandler {
 			IIcon icon = renderer.getBlockIconFromSideAndMetadata(block, 0, 0);
 			if (renderer.hasOverrideBlockTexture()) icon = renderer.overrideBlockTexture;
 
-			double d3 = (double) icon.getMinU();
-			double d4 = (double) icon.getMinV();
-			double d5 = (double) icon.getMaxU();
-			double d6 = (double) icon.getMaxV();
+			double d3 = icon.getMinU();
+			double d4 = icon.getMinV();
+			double d5 = icon.getMaxU();
+			double d6 = icon.getMaxV();
 			double[] p0 = new double[]{0.0D, 0.0D, 0.0D};
 			double[] p1 = new double[]{0.0D, 0.0D, 1.0D};
 			double[] p2 = new double[]{1.0D, 0.0D, 1.0D};

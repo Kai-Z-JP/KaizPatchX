@@ -29,7 +29,7 @@ public final class RTMKeyHandlerServer {
 		} else if (keyCode == RTMCore.KEY_Chime) {
 			this.playSound(player, sound, 1.0F);
 		} else if (keyCode == RTMCore.KEY_ControlPanel) {
-			player.openGui(RTMCore.instance, RTMCore.instance.guiIdTrainControlPanel, player.worldObj, player.ridingEntity.getEntityId(), 0, 0);
+			player.openGui(RTMCore.instance, RTMCore.guiIdTrainControlPanel, player.worldObj, player.ridingEntity.getEntityId(), 0, 0);
 		} else if (keyCode == RTMCore.KEY_Fire) {
 			if (player.isRiding() && player.ridingEntity instanceof EntityArtillery) {
 				((EntityArtillery) player.ridingEntity).onFireKeyDown(player);

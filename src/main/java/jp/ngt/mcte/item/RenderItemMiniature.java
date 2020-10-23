@@ -32,7 +32,7 @@ import java.util.Map;
 public class RenderItemMiniature implements IItemRenderer {
 	public static final RenderItemMiniature INSTANCE = new RenderItemMiniature();
 
-	private Map<ItemStack, RenderProp> propMap = new HashMap<ItemStack, RenderProp>();
+	private final Map<ItemStack, RenderProp> propMap = new HashMap<ItemStack, RenderProp>();
 
 	private RenderItemMiniature() {
 	}
@@ -76,7 +76,6 @@ public class RenderItemMiniature implements IItemRenderer {
 				break;
 			case EQUIPPED:
 				if ("isArmor".equals(data[0])) {
-					;
 				} else {
 					GL11.glTranslatef(0.375F, -0.0625F, -0.0625F);
 				}
@@ -139,7 +138,7 @@ public class RenderItemMiniature implements IItemRenderer {
 		}
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);//明るさ戻す
 		GLHelper.enableLighting();
-		NGTUtilClient.getMinecraft().entityRenderer.enableLightmap((double) par3);
+		NGTUtilClient.getMinecraft().entityRenderer.enableLightmap(par3);
 	}
 
 	@SubscribeEvent

@@ -2,6 +2,7 @@ package jp.ngt.rtm.entity.vehicle;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityBogie;
@@ -29,14 +30,14 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 	public static final int MAX_PANTOGRAPH_MOVE = 40;
 	public static final float TO_ANGULAR_VELOCITY = (float) (360.0D / Math.PI);
 
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	/**
 	 * 直接参照は非推奨
 	 */
 	private ModelSetVehicleBase<T> myModelSet;
 	protected List<EntityFloor> vehicleFloors = new ArrayList<EntityFloor>();
 	protected final IUpdateVehicle soundUpdater;
-	private ScriptExecuter executer = new ScriptExecuter();
+	private final ScriptExecuter executer = new ScriptExecuter();
 
 	private boolean floorLoaded;
 	private EntityLivingBase rider;
@@ -63,6 +64,13 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 	public float wheelRotationR;
 	@SideOnly(Side.CLIENT)
 	public float wheelRotationL;
+
+	@SideOnly(Side.CLIENT)
+	protected int vehiclePosRotationInc;
+	@SideOnly(Side.CLIENT)
+	protected double vehicleX, vehicleY, vehicleZ;
+	@SideOnly(Side.CLIENT)
+	protected float vehicleYaw, vehiclePitch, vehicleRoll;
 
 	public EntityVehicleBase(World world) {
 		super(world);
@@ -133,7 +141,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
 	public void setFloor(EntityFloor par1)//EntityFloorから
 	{
-		this.floorLoaded = true;
+//		this.floorLoaded = true;
 		this.vehicleFloors.add(par1);
 	}
 
@@ -163,6 +171,10 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
 			this.updateAnimation();
 		} else {
+			if (!this.floorLoaded) {
+				this.setupFloors(this.myModelSet);
+			}
+
 			if (this.riddenByEntity != null) {
 				if (this.rider == null && this.riddenByEntity instanceof EntityLivingBase) {
 					this.rider = (EntityLivingBase) this.riddenByEntity;
@@ -196,7 +208,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 							List list = world.getEntitiesWithinAABBExcludingEntity(entity, entity.boundingBox.getOffsetBoundingBox(i, k, j));
 							if (list.isEmpty() && World.doesBlockHaveSolidTopSurface(world, i, k, j)) {
 								if (world.isAirBlock(i, k + 1, j) && world.isAirBlock(i, k + 2, j)) {
-									entity.setPositionAndUpdate((double) i, (double) k + 1.0D, (double) j);
+									entity.setPositionAndUpdate(i, (double) k + 1.0D, j);
 									//NGTLog.debug("fixPos");
 									return;
 								}
@@ -217,6 +229,23 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 		this.wheelRotationL = (this.wheelRotationL + f0) % 360.0F;
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int par6) {
+		this.vehiclePosRotationInc = par6;
+		this.vehicleX = x;
+		this.vehicleY = y;
+		this.vehicleZ = z;
+		this.vehicleYaw = yaw;
+		this.vehiclePitch = pitch;
+
+		//NGTLog.debug("x:%4.6f, z:%4.6f", this.posX - this.vehicleX, this.posZ - this.vehicleZ);
+	}
+
+	public float getRoll() {
+		return this.rotationRoll;
+	}
+
 	/**
 	 * +1.0 or -1.0
 	 */
@@ -226,22 +255,25 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
 	public abstract float getSpeed();
 
+	public abstract void setSpeed(float par1);
+
 	@Override
 	public ModelSetVehicleBase<T> getModelSet() {
 		if (this.myModelSet == null || this.myModelSet.isDummy() || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
-			this.onModelChanged(this.myModelSet);
+			this.onModelChanged();
 		}
 		return this.myModelSet;
 	}
 
-	protected void onModelChanged(ModelSetVehicleBase<T> par1) {
+	protected void onModelChanged() {
+		if (this.worldObj == null || !this.worldObj.isRemote) {
+			PacketNBT.sendToClient(this);
+			this.floorLoaded = false;
+		}
+
 		if (this.worldObj.isRemote) {
 			this.soundUpdater.onModelChanged();
-		} else {
-			if (!this.floorLoaded) {
-				this.setupFloors(par1);
-			}
 		}
 	}
 
@@ -256,11 +288,15 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 			}
 		}
 
-		for (int i = 0; i < par1.getConfig().getSlotPos().length; ++i) {
-			float[] fa = par1.getConfig().getSlotPos()[i];
+		for (int i = 0; i < this.getModelSet().getConfig().getSlotPos().length; ++i) {
+			float[] fa = this.getModelSet().getConfig().getSlotPos()[i];
 			EntityFloor floor = new EntityFloor(this.worldObj, this, new float[]{fa[0], fa[1], fa[2]}, (byte) fa[3]);
-			this.worldObj.spawnEntityInWorld(floor);
-			this.vehicleFloors.add(floor);
+			if (this.worldObj.spawnEntityInWorld(floor)) {
+				this.vehicleFloors.add(floor);
+			} else {
+				this.floorLoaded = false;//1つでもスポーン失敗したら、やり直し
+				break;
+			}
 		}
 		this.floorLoaded = true;
 	}
@@ -284,7 +320,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		return true;
 	}
 
@@ -297,7 +333,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
 	@SideOnly(Side.CLIENT)
 	public boolean shouldUseInteriorLight() {
-		if (((VehicleBaseConfig) this.getModelSet().getConfig()).interiorLights != null) {
+		if (this.getModelSet().getConfig().interiorLights != null) {
 			int x = MathHelper.floor_double(this.posX);
 			int y = MathHelper.floor_double(this.posY + 0.5D);
 			int z = MathHelper.floor_double(this.posZ);

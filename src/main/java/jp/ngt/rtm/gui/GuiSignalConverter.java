@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.util.KeyboardUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.SignalConverterType;
 import jp.ngt.rtm.electric.TileEntitySignalConverter;
@@ -31,8 +32,8 @@ public class GuiSignalConverter extends GuiScreenCustom {
 		super.initGui();
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.done", new Object[0])));
-		this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(0, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 
 		int i0 = 0;
 		if (this.scType == SignalConverterType.RSOut) {
@@ -105,7 +106,7 @@ public class GuiSignalConverter extends GuiScreenCustom {
 		}
 
 		if (this.currentTextField != null) {
-			if ((par2 >= 2 && par2 <= 11) || (par2 >= 200 && par2 <= 205) || par2 == 12 || par2 == 14 || par2 == 211)//14:Back, 211:Del
+			if (KeyboardUtil.isIntegerKey(par2))//14:Back, 211:Del
 			{
 				this.currentTextField.textboxKeyTyped(par1, par2);
 			}

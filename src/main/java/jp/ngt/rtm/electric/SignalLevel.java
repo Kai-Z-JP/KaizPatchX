@@ -32,7 +32,7 @@ public enum SignalLevel {
 	 */
 	public final float speedLowerLimit, speedUpperLimit;
 
-	private SignalLevel(int par1, float par2, float par3) {
+	SignalLevel(int par1, float par2, float par3) {
 		this.level = par1;
 		this.speedLowerLimit = par2;
 		this.speedUpperLimit = par3;

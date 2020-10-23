@@ -29,10 +29,10 @@ public class MirrorObject {
 	private static Timer TIMER;
 	private static int tick;
 
-	private List<MirrorComponent> components = new ArrayList<MirrorComponent>();
-	private DummyViewer dummyViewer;
-	private Framebuffer buffer;
-	private SubRenderGlobal renderGlobal;
+	private final List<MirrorComponent> components = new ArrayList<MirrorComponent>();
+	private final DummyViewer dummyViewer;
+	private final Framebuffer buffer;
+	private final SubRenderGlobal renderGlobal;
 
 	public MirrorType type;
 	public EnumFace face;

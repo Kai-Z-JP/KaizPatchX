@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.vehicle.EntityVehicle;
 import net.minecraft.entity.Entity;
@@ -12,7 +13,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVehicleMovement, IMessage> {
-	private static final double DIV_32 = 1.0D / 32.0D;
+	private static final double SAMPLING = 32.0D;
+	private static final double DIV_32 = 1.0D / SAMPLING;
 
 	public int entityId;
 	/**
@@ -20,8 +22,7 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
 	 */
 	public byte type;
 	public int trainX, trainY, trainZ;
-	public float trainYaw, trainPitch;
-	public float trainSpeed;
+	public float trainYaw, trainPitch, trainRoll, trainSpeed;
 
 	public PacketVehicleMovement() {
 	}
@@ -29,20 +30,20 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
 	public PacketVehicleMovement(Entity par1) {
 		this.entityId = par1.getEntityId();
 		this.type = 0;
-		this.trainX = par1.myEntitySize.multiplyBy32AndRound(par1.posX);
-		this.trainY = MathHelper.floor_double(par1.posY * 32.0D);
-		this.trainZ = par1.myEntitySize.multiplyBy32AndRound(par1.posZ);
+		this.trainX = MathHelper.floor_double(par1.posX * SAMPLING);
+		this.trainY = MathHelper.floor_double(par1.posY * SAMPLING);
+		this.trainZ = MathHelper.floor_double(par1.posZ * SAMPLING);
 		this.trainYaw = par1.rotationYaw;
 		this.trainPitch = par1.rotationPitch;
 		if (par1 instanceof EntityTrainBase) {
 			this.type = 1;
+			this.trainRoll = ((EntityTrainBase) par1).getRoll();
 			this.trainSpeed = ((EntityTrainBase) par1).getSpeed();
 		} else if (par1 instanceof EntityVehicle) {
 			this.type = 2;
-			this.trainSpeed = ((EntityVehicle) par1).rotationRoll;
-		} else//bogie
-		{
-			;
+			this.trainSpeed = ((EntityVehicle) par1).getSpeed();
+		} else {
+			this.trainRoll = ((EntityBogie) par1).rotationRoll;
 		}
 	}
 
@@ -55,9 +56,8 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
 		buffer.writeInt(this.trainZ);
 		buffer.writeFloat(this.trainYaw);
 		buffer.writeFloat(this.trainPitch);
-		if (this.type > 0) {
-			buffer.writeFloat(this.trainSpeed);
-		}
+		buffer.writeFloat(this.trainSpeed);
+		buffer.writeFloat(this.trainRoll);
 	}
 
 	@Override
@@ -69,9 +69,8 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
 		this.trainZ = buffer.readInt();
 		this.trainYaw = buffer.readFloat();
 		this.trainPitch = buffer.readFloat();
-		if (this.type > 0) {
-			this.trainSpeed = buffer.readFloat();
-		}
+		this.trainSpeed = buffer.readFloat();
+		this.trainRoll = buffer.readFloat();
 	}
 
 	@Override
@@ -90,11 +89,13 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
 			double y = (double) entity.serverPosY * DIV_32;
 			double z = (double) entity.serverPosZ * DIV_32;
 
-			entity.setPositionAndRotation2(x, y, z, message.trainYaw, message.trainPitch, 4);
-			if (message.type == 1) {
-				entity.setVelocity(message.trainSpeed, 0.0D, 0.0D);
-			} else if (message.type == 2) {
+			entity.setPositionAndRotation2(x, y, z, message.trainYaw, message.trainPitch, 3);
+			if (entity instanceof EntityTrainBase) {
+				((EntityTrainBase) entity).setRollAndSpeed(message.trainSpeed, message.trainRoll);
+			} else if (entity instanceof EntityVehicle) {
 				((EntityVehicle) entity).setRoll(message.trainSpeed);
+			} else {
+				((EntityBogie) entity).setRoll(message.trainRoll);
 			}
 		}
 		return null;

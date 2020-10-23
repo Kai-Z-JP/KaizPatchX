@@ -17,7 +17,7 @@ public class TileEntityCrossingGate extends TileEntityMachineBase {
 	public int lightCount = -1;
 	private int tickCountOnActive;
 
-	private SoundPlayer soundPlayer = SoundPlayer.create();//NoClassナントカ対策
+	private final SoundPlayer soundPlayer = SoundPlayer.create();//NoClassナントカ対策
 
 	@Override
 	public void updateEntity() {
@@ -83,10 +83,8 @@ public class TileEntityCrossingGate extends TileEntityMachineBase {
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
 		float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
-		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
-				this.xCoord + box[0], this.yCoord + box[1], this.zCoord + box[2],
-				this.xCoord + box[3], this.yCoord + box[4], this.zCoord + box[5]);
-		return aabb;
+		return AxisAlignedBB.getBoundingBox(
+				this.xCoord + box[0], this.yCoord + box[1], this.zCoord + box[2], this.xCoord + box[3], this.yCoord + box[4], this.zCoord + box[5]);
 	}
 
 	@Override

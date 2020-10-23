@@ -11,7 +11,7 @@ public class FormationEntry implements Comparable<FormationEntry> {
 	public byte dir;
 
 	private float mileage;
-	private byte jointCount = -1;
+	private final byte jointCount = -1;
 
 	/**
 	 * @param par1 車両

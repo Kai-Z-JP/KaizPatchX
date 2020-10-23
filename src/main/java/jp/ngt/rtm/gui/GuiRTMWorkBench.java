@@ -29,16 +29,17 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 	private static final ResourceLocation tex_2 = new ResourceLocation("rtm", "textures/gui/workBench_2.png");
 	private static final ResourceLocation tex_3 = new ResourceLocation("rtm", "textures/gui/workBench_3.png");
 
-	private TileEntityTrainWorkBench workBench;
+	private final TileEntityTrainWorkBench workBench;
 	private GuiButton button;
 	private GuiButton buttonSelect;
 	private GuiTextField heightField;
+	private final ResourceState state = new ResourceState(this);
 	/**
 	 * 0:クラフト, 1:アイテム一覧, 2:レシピ
 	 */
 	public int pageIndex;
-	private ContainerRTMWorkBench containerWorkBench;
-	private ContainerRecipe containerRecipe;
+	private final ContainerRTMWorkBench containerWorkBench;
+	private final ContainerRecipe containerRecipe;
 
 	private ModelSetRailClient modelSet;
 
@@ -151,7 +152,7 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 
 		if (this.pageIndex == 0) {
 			if (this.workBench.getCraftingTime() > 0) {
-				int i1 = (int) (22.0F * ((float) this.workBench.getCraftingTime() / (float) this.workBench.Max_CraftingTime));
+				int i1 = (int) (22.0F * ((float) this.workBench.getCraftingTime() / (float) TileEntityTrainWorkBench.Max_CraftingTime));
 				this.drawTexturedModalRect(k + 104, l + 38, 176, 0, i1, 15);
 			}
 		}
@@ -222,7 +223,7 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 
 		if (scroll != 0 && this.inventorySlots == this.containerRecipe) {
 			this.prevScroll = this.currentScroll;
-			scroll = scroll > 0 ? 1 : (scroll < 0 ? -1 : 0);
+			scroll = Integer.compare(scroll, 0);
 			this.currentScroll -= scroll;
 
 			if (this.currentScroll < 0) {
@@ -248,7 +249,7 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 	private void sendRailProp() {
 		float f0;
 		try {
-			f0 = Float.valueOf(this.heightField.getText());
+			f0 = Float.parseFloat(this.heightField.getText());
 		} catch (NumberFormatException e) {
 			f0 = 0.0625F;//NGTLog.debug("NFE:" + this.heightField.getText());
 		}
@@ -279,14 +280,14 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		this.mc.displayGuiScreen(this);
 		this.setSelectButtonAndModelset(par1);
 		return false;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public class GuiButtonBack extends GuiButton {
+	public static class GuiButtonBack extends GuiButton {
 		public GuiButtonBack(int par1, int par2, int par3) {
 			super(par1, par2, par3, 18, 12, "");
 		}
@@ -338,7 +339,6 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 
 	@Override
 	public ResourceState getResourceState() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return this.state;
 	}
 }

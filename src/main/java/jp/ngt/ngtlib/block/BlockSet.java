@@ -63,7 +63,7 @@ public class BlockSet implements Comparable<BlockSet> {
 		if (par1 instanceof BlockSet) {
 			BlockSet bs = (BlockSet) par1;
 			boolean flag = this.block == bs.block && bs.metadata == this.metadata;
-			boolean falg2 = (this.nbt != null && bs.nbt != null) ? (this.nbt.equals(bs.nbt)) : true;
+			boolean falg2 = this.nbt == null || bs.nbt == null || (this.nbt.equals(bs.nbt));
 			if (this.y < 0 && bs.y < 0) {
 				return flag && falg2;
 			}
@@ -133,7 +133,7 @@ public class BlockSet implements Comparable<BlockSet> {
 		}
 
 		nbt.setString("Block", name);
-		nbt.setByte("Meta", (byte) this.metadata);
+		nbt.setByte("Meta", this.metadata);
 		if (this.nbt != null) {
 			nbt.setTag("TagData", this.nbt);
 		}

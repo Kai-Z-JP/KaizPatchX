@@ -10,12 +10,14 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelectModel, IMessage> {
 	private int[] pos;
 	private String modelName;
+	private NBTTagCompound data;
 
 	public PacketSelectModel() {
 	}
@@ -23,6 +25,7 @@ public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelect
 	public PacketSelectModel(IModelSelector selsector, String name) {
 		this.pos = selsector.getPos();
 		this.modelName = name;
+		this.data = selsector.getResourceState().writeToNBT();
 	}
 
 	@Override
@@ -31,6 +34,7 @@ public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelect
 		buffer.writeInt(this.pos[1]);
 		buffer.writeInt(this.pos[2]);
 		ByteBufUtils.writeUTF8String(buffer, this.modelName);
+		ByteBufUtils.writeTag(buffer, this.data);
 	}
 
 	@Override
@@ -40,6 +44,7 @@ public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelect
 		this.pos[1] = buffer.readInt();
 		this.pos[2] = buffer.readInt();
 		this.modelName = ByteBufUtils.readUTF8String(buffer);
+		this.data = ByteBufUtils.readTag(buffer);
 	}
 
 	@Override
@@ -64,8 +69,7 @@ public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelect
 			if (PermissionManager.INSTANCE.hasPermission(player, RTMCore.CHANGE_MODEL))//GUI操作はClientOnlyなのでここで対応
 			{
 				selector.setModelName(message.modelName);
-			} else {
-				;
+				selector.getResourceState().readFromNBT(message.data);
 			}
 		}
 

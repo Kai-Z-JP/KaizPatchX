@@ -1,6 +1,7 @@
 {
   "trainName": "mo1600",
   "trainType": "EC",
+
   "trainModel2": {
     "modelFile": "mo1600.ngto",
     "textures": [
@@ -19,6 +20,7 @@
       ]
     ]
   },
+
   "buttonTexture": "textures/train/mo1600/button_mo1600.png",
   "sound_BrakeRelease": "train.o220_release",
   "sound_BrakeRelease2": "train.brakeR_w",
@@ -26,6 +28,7 @@
   "sound_DoorClose": "train.door",
   "sound_Horn": "train.rtm_wh_00l",
   "soundScriptPath": "scripts/sound_o220.js",
+
   "headLights": [
     {
       "type": 0,

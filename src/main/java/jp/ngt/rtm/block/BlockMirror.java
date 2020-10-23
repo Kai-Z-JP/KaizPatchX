@@ -76,7 +76,6 @@ public class BlockMirror extends BlockContainer {
 
 	@Override
 	public void dropBlockAsItemWithChance(World world, int x, int y, int z, int par5, float par6, int par7) {
-		;
 	}
 
 	@Override
@@ -98,6 +97,6 @@ public class BlockMirror extends BlockContainer {
 
 	public enum MirrorType {
 		Mono_Panel,
-		Hexa_Cube;
+		Hexa_Cube
 	}
 }

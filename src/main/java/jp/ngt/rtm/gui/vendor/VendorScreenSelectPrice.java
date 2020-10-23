@@ -39,7 +39,6 @@ public class VendorScreenSelectPrice extends VendorScreen {
 	@Override
 	public void onClickButton(GuiButton button) {
 		if (button.id >= 0 && button.id < 20) {
-			;
 		}
 	}
 }

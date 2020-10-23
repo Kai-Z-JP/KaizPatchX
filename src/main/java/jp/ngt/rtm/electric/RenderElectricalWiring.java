@@ -130,8 +130,8 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
 
 				if (RenderManager.instance.options.thirdPersonView > 0 || entity != Minecraft.getMinecraft().thePlayer) {
 					float f11 = (entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * par8) * (float) Math.PI / 180.0F;
-					double d7 = (double) MathHelper.sin(f11);
-					double d9 = (double) MathHelper.cos(f11);
+					double d7 = MathHelper.sin(f11);
+					double d9 = MathHelper.cos(f11);
 					x0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) par8 - d9 * 0.35D - d7 * 0.85D;
 					y0 = entity.prevPosY + d6 + (entity.posY - entity.prevPosY) * (double) par8 - 0.45D;
 					z0 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) par8 - d7 * 0.35D + d9 * 0.85D;

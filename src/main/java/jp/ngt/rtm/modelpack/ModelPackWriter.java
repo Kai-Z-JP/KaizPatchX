@@ -86,7 +86,6 @@ public class ModelPackWriter {
 				NGTLog.debug("wait (start writing)");
 				this.wait();
 			} catch (InterruptedException e) {
-				;
 			}
 		}
 
@@ -101,7 +100,6 @@ public class ModelPackWriter {
 				NGTLog.debug("wait (write bytes)");
 				this.wait();
 			} catch (InterruptedException e) {
-				;
 			}
 		}
 
@@ -121,7 +119,6 @@ public class ModelPackWriter {
 				NGTLog.debug("wait (end writing)");
 				this.wait();
 			} catch (InterruptedException e) {
-				;
 			}
 		}
 
@@ -134,7 +131,6 @@ public class ModelPackWriter {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
-				;
 			}
 		}
 

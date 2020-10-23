@@ -26,6 +26,5 @@ public final class ConnectionManager {
 	 * Clientと接続(ServerSide)
 	 */
 	public void onConnectedFromClient(boolean isLocal) {
-		;
 	}
 }

@@ -34,7 +34,7 @@ public class EntityATC extends EntityElectricalWiring {
 		int z = MathHelper.floor_double(this.posZ);
 		for (int i = 0; i < 8; ++i) {
 			TileEntity tile0 = this.worldObj.getTileEntity(x, y - i, z);
-			if (tile0 != null && tile0 instanceof TileEntityLargeRailBase) {
+			if (tile0 instanceof TileEntityLargeRailBase) {
 				TileEntityLargeRailCore tile = ((TileEntityLargeRailBase) tile0).getRailCore();
 				tile.setSignal(signalLevel);
 				break;
@@ -66,5 +66,10 @@ public class EntityATC extends EntityElectricalWiring {
 	@Override
 	protected String getDefaultName() {
 		return "ATC_01";
+	}
+
+	@Override
+	protected ItemStack getItem() {
+		return new ItemStack(RTMItem.installedObject, 1, IstlObjType.ATC.id);
 	}
 }

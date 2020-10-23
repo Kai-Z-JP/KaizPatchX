@@ -20,7 +20,6 @@ public class EntityDummyPlayer extends EntityPlayer {
 
 	@Override
 	public void addChatMessage(IChatComponent chat) {
-		;
 	}
 
 	@Override

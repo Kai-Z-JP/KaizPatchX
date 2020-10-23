@@ -205,4 +205,22 @@ public final class NGTMath {
 	public static Random getRandom() {
 		return RANDOM;
 	}
+
+	public static double getDistanceSq(double sX, double sY, double eX, double eY) {
+		double dx = eX - sX;
+		double dy = eY - sY;
+		return dx * dx + dy * dy;
+	}
+
+	public static double firstSqrt(double value) {
+		return sqrtX(value, value, 4);
+	}
+
+	private static double sqrtX(double value, double x0, int n) {
+		if (n > 0) {
+			value = (value + x0 / value) * 0.5D;
+			return sqrtX(value, x0, --n);
+		}
+		return value;
+	}
 }

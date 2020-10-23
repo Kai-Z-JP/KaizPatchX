@@ -1,8 +1,8 @@
 {
-  "trainName": "omi220",
+  "trainName": "ohmi220",
   "trainType": "EC",
   "trainModel2": {
-    "modelFile": "ModelTrain_o220.mqo",
+    "modelFile": "ohmi220.mqo",
     "textures": [
       [
         "mat1",
@@ -19,7 +19,8 @@
         "textures/train/o220/o220_m3.png",
         ""
       ]
-    ]
+    ],
+    "rendererPath": "scripts/RenderOhmi220.js"
   },
   "bogieModel2": {
     "modelFile": "ModelBogie.class",
@@ -30,7 +31,7 @@
       ]
     ]
   },
-  "buttonTexture": "textures/train/o220/button_o220.png",
+  "buttonTexture": "textures/train/o220/button_ohmi220.png",
   "rollsignTexture": "textures/train/o220/o220_m3.png",
   "rollsignNames": [
     "kibukawa",
@@ -108,187 +109,11 @@
       "disableLighting": false
     }
   ],
-  "door_left": [
-    {
-      "objects": [
-        "door_LF"
-      ],
-      "pos": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "transform": [
-        [
-          0.0,
-          0.0,
-          0.72
-        ]
-      ],
-      "childParts": []
-    },
-    {
-      "objects": [
-        "door_LB"
-      ],
-      "pos": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "transform": [
-        [
-          0.0,
-          0.0,
-          -0.72
-        ]
-      ],
-      "childParts": []
-    }
-  ],
-  "door_right": [
-    {
-      "objects": [
-        "door_RF"
-      ],
-      "pos": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "transform": [
-        [
-          0.0,
-          0.0,
-          0.72
-        ]
-      ],
-      "childParts": []
-    },
-    {
-      "objects": [
-        "door_RB"
-      ],
-      "pos": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "transform": [
-        [
-          0.0,
-          0.0,
-          -0.72
-        ]
-      ],
-      "childParts": []
-    }
-  ],
-  "pantograph_front": [
-    {
-      "objects": [
-        "panto_unf"
-      ],
-      "pos": [
-        0.0,
-        3.14,
-        7.13
-      ],
-      "transform": [
-        [
-          36.0,
-          1.0,
-          0.0,
-          0.0
-        ]
-      ],
-      "childParts": [
-        {
-          "objects": [
-            "panto_upf"
-          ],
-          "pos": [
-            0.0,
-            3.966,
-            8.13
-          ],
-          "transform": [
-            [
-              -60.0,
-              1.0,
-              0.0,
-              0.0
-            ]
-          ],
-          "childParts": [
-            {
-              "objects": [
-                "panto_up"
-              ],
-              "pos": [
-                0.0,
-                5.01,
-                6.435
-              ],
-              "transform": [
-                [
-                  24.0,
-                  1.0,
-                  0.0,
-                  0.0
-                ]
-              ],
-              "childParts": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "objects": [
-        "panto_unb"
-      ],
-      "pos": [
-        0.0,
-        3.14,
-        5.67
-      ],
-      "transform": [
-        [
-          -36.0,
-          1.0,
-          0.0,
-          0.0
-        ]
-      ],
-      "childParts": [
-        {
-          "objects": [
-            "panto_upb"
-          ],
-          "pos": [
-            0.0,
-            3.966,
-            4.67
-          ],
-          "transform": [
-            [
-              60.0,
-              1.0,
-              0.0,
-              0.0
-            ]
-          ],
-          "childParts": []
-        }
-      ]
-    }
-  ],
-  "sound_BrakeRelease": "train.o220_release",
-  "sound_BrakeRelease2": "train.brakeR_w",
-  "sound_DoorOpen": "train.door",
-  "sound_DoorClose": "train.door",
-  "sound_Horn": "train.rtm_wh_00l",
+  "sound_BrakeRelease": "rtm:train.o220_release",
+  "sound_BrakeRelease2": "rtm:train.brakeR_w",
+  "sound_DoorOpen": "rtm:train.door",
+  "sound_DoorClose": "rtm:train.door",
+  "sound_Horn": "rtm:train.rtm_wh_00l",
   "soundScriptPath": "scripts/sound_o220.js",
   "headLights": [
     {
@@ -516,6 +341,20 @@
       -6.93
     ]
   ],
+  "pantoPos": [
+    [
+      0.0,
+      6.4,
+      3.528,
+      5.1
+    ],
+    [
+      0.0,
+      -6.4,
+      0.0,
+      0.0
+    ]
+  ],
   "maxSpeed": [
     0.2,
     0.4,
@@ -527,6 +366,9 @@
   "isSingleTrain": true,
   "doCulling": true,
   "smoothing": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479 220 Ohmi"
+  "accuracy": "MEDIUM",
+  "rollSpeedCoefficient": 0.25,
+  "rollVariationCoefficient": 0.7,
+  "rollWidthCoefficient": 1.25,
+  "tags": "ngt5479 220 ohmi"
 }

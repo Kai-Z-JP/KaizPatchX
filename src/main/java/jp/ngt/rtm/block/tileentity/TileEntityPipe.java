@@ -70,7 +70,7 @@ public class TileEntityPipe extends TileEntity {
 		}
 
 		if (this.getBlockMetadata() % 2 == 0) {
-			;//まっすぐパイプ
+			//まっすぐパイプ
 		}
 
 		this.sendPacket();

@@ -153,7 +153,7 @@ public class GuiIngameCustom extends GuiScreen {
 		int halfW = this.width / 2;
 
 		//速度計
-		float max = train.getModelSet().getConfig().maxSpeed[4];
+		float max = train.getModelSet().getConfig().maxSpeed[train.getModelSet().getConfig().maxSpeed.length - 1];
 		float r0 = 270.0F * train.getSpeed() / max;
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) (halfW - 136), (float) (this.height - 29), 0.0F);
@@ -255,10 +255,10 @@ public class GuiIngameCustom extends GuiScreen {
 		float f1 = 0.001953125F;
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV((double) (p_73729_1_ + 0), (double) (p_73729_2_ + p_73729_6_), (double) this.zLevel, (double) ((float) (p_73729_3_ + 0) * f), (double) ((float) (p_73729_4_ + p_73729_6_) * f1));
-		tessellator.addVertexWithUV((double) (p_73729_1_ + p_73729_5_), (double) (p_73729_2_ + p_73729_6_), (double) this.zLevel, (double) ((float) (p_73729_3_ + p_73729_5_) * f), (double) ((float) (p_73729_4_ + p_73729_6_) * f1));
-		tessellator.addVertexWithUV((double) (p_73729_1_ + p_73729_5_), (double) (p_73729_2_ + 0), (double) this.zLevel, (double) ((float) (p_73729_3_ + p_73729_5_) * f), (double) ((float) (p_73729_4_ + 0) * f1));
-		tessellator.addVertexWithUV((double) (p_73729_1_ + 0), (double) (p_73729_2_ + 0), (double) this.zLevel, (double) ((float) (p_73729_3_ + 0) * f), (double) ((float) (p_73729_4_ + 0) * f1));
+		tessellator.addVertexWithUV(p_73729_1_ + 0, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + 0) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
+		tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
+		tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + 0, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + 0) * f1);
+		tessellator.addVertexWithUV(p_73729_1_ + 0, p_73729_2_ + 0, this.zLevel, (float) (p_73729_3_ + 0) * f, (float) (p_73729_4_ + 0) * f1);
 		tessellator.draw();
 	}
 
@@ -273,8 +273,8 @@ public class GuiIngameCustom extends GuiScreen {
 		this.mc.getTextureManager().bindTexture(tex_scope);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(d0, (double) h, d1, 0.0D, 1.0D);
-		tessellator.addVertexWithUV(d0 + (double) h, (double) h, d1, 1.0D, 1.0D);
+		tessellator.addVertexWithUV(d0, h, d1, 0.0D, 1.0D);
+		tessellator.addVertexWithUV(d0 + (double) h, h, d1, 1.0D, 1.0D);
 		tessellator.addVertexWithUV(d0 + (double) h, 0.0D, d1, 1.0D, 0.0D);
 		tessellator.addVertexWithUV(d0, 0.0D, d1, 0.0D, 0.0D);
 		tessellator.draw();
@@ -282,14 +282,14 @@ public class GuiIngameCustom extends GuiScreen {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		tessellator.startDrawingQuads();
 		tessellator.setColorOpaque_I(0);
-		tessellator.addVertexWithUV(0.0D, (double) h, d1, 0.0D, 1.0D);
-		tessellator.addVertexWithUV(d0, (double) h, d1, 1.0D, 1.0D);
+		tessellator.addVertexWithUV(0.0D, h, d1, 0.0D, 1.0D);
+		tessellator.addVertexWithUV(d0, h, d1, 1.0D, 1.0D);
 		tessellator.addVertexWithUV(d0, 0.0D, d1, 1.0D, 0.0D);
 		tessellator.addVertexWithUV(0.0D, 0.0D, d1, 0.0D, 0.0D);
 
-		tessellator.addVertexWithUV(d0 + (double) h, (double) h, d1, 0.0D, 1.0D);
-		tessellator.addVertexWithUV((double) w, (double) h, d1, 1.0D, 1.0D);
-		tessellator.addVertexWithUV((double) w, 0.0D, d1, 1.0D, 0.0D);
+		tessellator.addVertexWithUV(d0 + (double) h, h, d1, 0.0D, 1.0D);
+		tessellator.addVertexWithUV(w, h, d1, 1.0D, 1.0D);
+		tessellator.addVertexWithUV(w, 0.0D, d1, 1.0D, 0.0D);
 		tessellator.addVertexWithUV(d0 + (double) h, 0.0D, d1, 0.0D, 0.0D);
 		tessellator.draw();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -314,9 +314,9 @@ public class GuiIngameCustom extends GuiScreen {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		tessellator.startDrawingQuads();
 		tessellator.setColorOpaque_I(0x309030);
-		tessellator.addVertexWithUV(0.0D, (double) h, d1, 0.0D, 1.0D);
-		tessellator.addVertexWithUV((double) w, (double) h, d1, 1.0D, 1.0D);
-		tessellator.addVertexWithUV((double) w, 0.0D, d1, 1.0D, 0.0D);
+		tessellator.addVertexWithUV(0.0D, h, d1, 0.0D, 1.0D);
+		tessellator.addVertexWithUV(w, h, d1, 1.0D, 1.0D);
+		tessellator.addVertexWithUV(w, 0.0D, d1, 1.0D, 0.0D);
 		tessellator.addVertexWithUV(0.0D, 0.0D, d1, 0.0D, 0.0D);
 		tessellator.draw();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -327,9 +327,9 @@ public class GuiIngameCustom extends GuiScreen {
 		this.mc.getTextureManager().bindTexture(tex_nvd);
 		tessellator.startDrawingQuads();
 		float f0 = ((float) h / (float) w) * 0.5F;
-		tessellator.addVertexWithUV(0.0D, (double) h, d1, 0.0D, 0.5F + f0);
-		tessellator.addVertexWithUV((double) w, (double) h, d1, 1.0D, 0.5F + f0);
-		tessellator.addVertexWithUV((double) w, 0.0D, d1, 1.0D, 0.5F - f0);
+		tessellator.addVertexWithUV(0.0D, h, d1, 0.0D, 0.5F + f0);
+		tessellator.addVertexWithUV(w, h, d1, 1.0D, 0.5F + f0);
+		tessellator.addVertexWithUV(w, 0.0D, d1, 1.0D, 0.5F - f0);
 		tessellator.addVertexWithUV(0.0D, 0.0D, d1, 0.0D, 0.5F - f0);
 		tessellator.draw();
 

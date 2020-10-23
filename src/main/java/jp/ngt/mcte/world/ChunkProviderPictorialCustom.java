@@ -37,7 +37,7 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
 	/**
 	 * RNG.
 	 */
-	private Random rand;
+	private final Random rand;
 	private NoiseGeneratorOctaves noiseOct0;
 	private NoiseGeneratorOctaves noiseOct1;
 	private NoiseGeneratorOctaves noiseOct2;
@@ -45,12 +45,12 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
 	public NoiseGeneratorOctaves noiseGen5;
 	public NoiseGeneratorOctaves noiseGen6;
 	public NoiseGeneratorOctaves mobSpawnerNoise;
-	private World worldObj;
+	private final World worldObj;
 	/**
 	 * are map structures going to be generated (e.g. strongholds)
 	 */
 	private final boolean mapFeaturesEnabled;
-	private WorldType field_147435_p;
+	private final WorldType field_147435_p;
 	private final double[] field_147434_q;
 	private final float[] parabolicField;
 	private double[] stoneNoise = new double[256];
@@ -67,7 +67,7 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
     double[] field_147426_g;
     int[][] field_73219_j = new int[32][32];*/
 
-	private WorldData worldData;
+	private final WorldData worldData;
 
 	{
 		caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
@@ -150,7 +150,7 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
 		if (event.getResult() == Result.DENY) return;
 
 		double d0 = 0.03125D;
-		this.stoneNoise = this.noisePer0.func_151599_a(this.stoneNoise, (double) (par1 * 16), (double) (par2 * 16), 16, 16, d0 * 2.0D, d0 * 2.0D, 1.0D);
+		this.stoneNoise = this.noisePer0.func_151599_a(this.stoneNoise, par1 * 16, par2 * 16, 16, 16, d0 * 2.0D, d0 * 2.0D, 1.0D);
 
 		for (int k = 0; k < 16; ++k) {
 			for (int l = 0; l < 16; ++l) {
@@ -423,10 +423,10 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
 	@Override
 	public void recreateStructures(int p_82695_1_, int p_82695_2_) {
 		if (this.mapFeaturesEnabled) {
-			this.mineshaftGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, (Block[]) null);
-			this.villageGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, (Block[]) null);
-			this.strongholdGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, (Block[]) null);
-			this.scatteredFeatureGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, (Block[]) null);
+			this.mineshaftGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, null);
+			this.villageGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, null);
+			this.strongholdGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, null);
+			this.scatteredFeatureGenerator.func_151539_a(this, this.worldObj, p_82695_1_, p_82695_2_, null);
 		}
 	}
 }

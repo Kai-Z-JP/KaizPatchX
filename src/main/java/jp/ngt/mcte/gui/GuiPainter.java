@@ -25,7 +25,7 @@ import java.util.List;
 public class GuiPainter extends GuiScreenCustom {
 	private final EntityPlayer player;
 	private final ItemStack painterItem;
-	private PainterSetting setting;
+	private final PainterSetting setting;
 
 	private GuiButtonItem buttonFillBlock;
 	private GuiButtonItem buttonRewriteBlock;
@@ -45,8 +45,8 @@ public class GuiPainter extends GuiScreenCustom {
 		super.initGui();
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.done", new Object[0])));
-		this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(0, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 
 		if (this.buttonFillBlock == null)//ブロック選択画面での内容の保持のため
 		{

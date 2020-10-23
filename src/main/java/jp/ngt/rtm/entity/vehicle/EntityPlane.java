@@ -34,7 +34,7 @@ public class EntityPlane extends EntityVehicle {
 
 		this.speed += moveForward * cfg.getAcceleration(this.onGround);
 		float maxSpeed = cfg.getMaxSpeed(this.onGround);
-		float f0 = (float) ((moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround));
+		float f0 = (moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround);
 		if (!cfg.changeYawOnStopping) {
 			f0 *= (this.speed / maxSpeed);
 		}

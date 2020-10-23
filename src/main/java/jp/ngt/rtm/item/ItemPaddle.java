@@ -116,13 +116,13 @@ public class ItemPaddle extends Item {
 				int difficulty = 8;
 				if (world.rand.nextInt(difficulty * (meta + 1)) == 0) {
 					world.setBlock(x, y, z, RTMBlock.liquefiedSteel, meta, 2);
-					NGTLog.sendChatMessage(player, "message.paddle.get_steel", new Object[]{});
+					NGTLog.sendChatMessage(player, "message.paddle.get_steel");
 					return true;
 				}
 				return false;
 			}
 		}
-		NGTLog.sendChatMessage(player, "message.paddle.incorrect_design", new Object[]{});
+		NGTLog.sendChatMessage(player, "message.paddle.incorrect_design");
 		return false;
 	}
 }

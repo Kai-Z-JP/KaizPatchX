@@ -67,7 +67,7 @@ public class ClientProxy extends CommonProxy {
 
 	private final FormationManager fmClient = new FormationManager(true);
 
-	private List<TileEntityLargeRailCore> unloadedRails = new ArrayList<TileEntityLargeRailCore>();
+	private final List<TileEntityLargeRailCore> unloadedRails = new ArrayList<TileEntityLargeRailCore>();
 
 	@Override
 	public void preInit() {
@@ -224,7 +224,7 @@ public class ClientProxy extends CommonProxy {
 
 		@Override
 		public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-			super.render((Entity) null, f, f1, f2, f3, f4, f5);
+			super.render(null, f, f1, f2, f3, f4, f5);
 			this.setRotationAngles(f, f1, f2, f3, f4, f5);
 			this.shape1.render(f5);
 		}
@@ -300,7 +300,6 @@ public class ClientProxy extends CommonProxy {
 	public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch) {
 		if (sound != null) {
 			if (NGTUtil.isServer()) {
-				;
 			} else {
 				MovingSoundTileEntity ms = new MovingSoundTileEntity(entity, sound, false);
 				ms.setVolume(vol);

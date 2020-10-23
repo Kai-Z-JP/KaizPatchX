@@ -6,7 +6,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import jp.ngt.rtm.RTMBlock;
-import jp.ngt.rtm.rail.BlockMarker;
 import jp.ngt.rtm.rail.TileEntityMarker;
 import jp.ngt.rtm.rail.util.RailPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +17,13 @@ public class PacketMarkerRPClient implements IMessage, IMessageHandler<PacketMar
 	private RailPosition[] railPositions;
 
 	public PacketMarkerRPClient() {
+	}
+
+	public PacketMarkerRPClient(TileEntityMarker par4) {
+//		this.x = par4.xCoord;
+//		this.y = par4.yCoord;
+//		this.z = par4.zCoord;
+		this.railPositions = par4.getAllRP();
 	}
 
 	public PacketMarkerRPClient(int par1, int par2, int par3, TileEntityMarker par4) {
@@ -59,14 +65,16 @@ public class PacketMarkerRPClient implements IMessage, IMessageHandler<PacketMar
 	public IMessage onMessage(PacketMarkerRPClient message, MessageContext ctx) {
 		World world = ctx.getServerHandler().playerEntity.worldObj;
 
-		for (RailPosition rp : message.railPositions) {
-			TileEntity tile = world.getTileEntity(rp.blockX, rp.blockY, rp.blockZ);
-			if (tile instanceof TileEntityMarker) {
-				((TileEntityMarker) tile).setMarkerRP(rp);
+		if (message.railPositions != null) {
+			for (RailPosition rp : message.railPositions) {
+				TileEntity tile = world.getTileEntity(rp.blockX, rp.blockY, rp.blockZ);
+				if (tile instanceof TileEntityMarker) {
+					((TileEntityMarker) tile).setMarkerRP(rp);
+				}
 			}
 		}
 
-		((BlockMarker) RTMBlock.marker).onMarkerActivated(world, message.x, message.y, message.z, ctx.getServerHandler().playerEntity, false);
+		RTMBlock.marker.onMarkerActivated(world, message.x, message.y, message.z, ctx.getServerHandler().playerEntity, false);
 		return null;
 	}
 }

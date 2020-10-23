@@ -49,7 +49,7 @@ public class TileEntityMovingMachine extends TileEntity {
 	 * 移動速度
 	 */
 	private double motionX, motionY, motionZ;
-	private List<EntityMMBoundingBox> bbList = new ArrayList<EntityMMBoundingBox>();
+	private final List<EntityMMBoundingBox> bbList = new ArrayList<EntityMMBoundingBox>();
 	private int[] bbIds;
 
 	public NGTObject blocksObject;
@@ -58,7 +58,7 @@ public class TileEntityMovingMachine extends TileEntity {
 	@SideOnly(Side.CLIENT)
 	public DisplayList[] glLists;
 
-	private AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+	private final AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -295,7 +295,7 @@ public class TileEntityMovingMachine extends TileEntity {
 										aabb.offset(-x, -y, -z);
 										boolean b = this.worldObj.isAirBlock(x, y + 1, z);
 										EntityMMBoundingBox entity = new EntityMMBoundingBox(this.worldObj, this, b);
-										entity.setPositionAndRotation((double) x + 0.5D, (double) y, (double) z + 0.5D, 0.0F, 0.0F);
+										entity.setPositionAndRotation((double) x + 0.5D, y, (double) z + 0.5D, 0.0F, 0.0F);
 										entity.setAABB(aabb);
 										this.worldObj.spawnEntityInWorld(entity);
 										this.bbList.add(entity);

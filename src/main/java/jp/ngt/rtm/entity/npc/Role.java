@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Role {
-	private static Map<String, Role> nameMap = new HashMap<String, Role>();
+	private static final Map<String, Role> nameMap = new HashMap<String, Role>();
 
 	public static final Role PASSENGER = new RolePassenger("passenger");
 	public static final Role ATTENDANT = new RoleAttendant("attendant");

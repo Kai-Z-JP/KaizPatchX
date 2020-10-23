@@ -1,5 +1,6 @@
 package jp.ngt.rtm.rail.util;
 
+import jp.ngt.rtm.rail.BlockLargeRailBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
@@ -21,59 +22,111 @@ public class RailPosition {
 			{0.0F, 0.499999F}, {0.499999F, 0.499999F},
 			{0.499999F, 0.0F}, {0.499999F, -0.5F}};
 
-	public int blockX;
-	public int blockY;
-	public int blockZ;
+	public int blockX, blockY, blockZ;
 	/**
-	 * 0~7
+	 * 0:通常, 1:分岐
+	 */
+	public final byte switchType;
+	/**
+	 * ブロックとしての向き 0~7
 	 */
 	public final byte direction;
 	/**
 	 * 0~15
 	 */
 	public byte height;
-	public float anchorDirection;
-	public float anchorLength;
 	/**
-	 * 0:通常, 1:分岐
+	 * 水平ベジェ曲線用アンカー角度
 	 */
-	public final byte switchType;
+	public float anchorYaw;
+	/**
+	 * 垂直ベジェ曲線用アンカー角度
+	 */
+	public float anchorPitch;
+	/**
+	 * 水平ベジェ曲線用アンカー長, 長さ0で直線扱い
+	 */
+	public float anchorLengthHorizontal;
+	/**
+	 * 垂直ベジェ曲線用アンカー長, 長さ0で直線扱い
+	 */
+	public float anchorLengthVertical;
+	/**
+	 * 中央のカント、線路で共通
+	 */
+	public float cantCenter;
+	/**
+	 * 端のカント、RPごと
+	 */
+	public float cantEdge;
+	/**
+	 * カントのランダム性、大きいほど周期短い
+	 */
+	public float cantRandom;
 
-	public double posX;
-	public double posY;
-	public double posZ;
+	public float constLimitHP;
+
+	public float constLimitHN;
+
+	public float constLimitWP;
+
+	public float constLimitWN;
+
+	public double posX, posY, posZ;
 
 	public RailPosition(int x, int y, int z, byte dir) {
-		this(x, y, z, dir, (byte) 0, MathHelper.wrapAngleTo180_float((float) dir * 45.0F), -1.0F, (byte) 0);
+		this(x, y, z, dir, (byte) 0);
 	}
 
 	public RailPosition(int x, int y, int z, byte dir, byte type) {
-		this(x, y, z, dir, (byte) 0, MathHelper.wrapAngleTo180_float((float) dir * 45.0F), -1.0F, type);
-	}
-
-	public RailPosition(int x, int y, int z, byte dir, byte h, float dir2, float anchor, byte type) {
 		this.blockX = x;
 		this.blockY = y;
 		this.blockZ = z;
 		this.direction = dir;
-		this.height = h;
-		this.anchorDirection = dir2;
-		this.anchorLength = anchor;
 		this.switchType = type;
 
-		this.posX = (double) x + 0.5D + (double) REVISION[dir][0];
-		this.posY = (double) y + (double) (h + 1) * 0.0625D;
-		this.posZ = (double) z + 0.5D + (double) REVISION[dir][1];
+		this.height = (byte) 0;
+		this.anchorYaw = MathHelper.wrapAngleTo180_float((float) dir * 45.0F);
+		this.anchorLengthHorizontal = -1.0F;
+
+		this.constLimitHP = 3.99F;
+		this.constLimitHN = 0.0F;
+		this.constLimitWP = 1.49F;
+		this.constLimitWN = -1.49F;
+
+		this.init();
+	}
+
+	public void init() {
+		this.posX = (double) this.blockX + 0.5D + (double) REVISION[this.direction][0];
+		this.posY = (double) this.blockY + (double) (this.height + 1) * BlockLargeRailBase.THICKNESS;
+		this.posZ = (double) this.blockZ + 0.5D + (double) REVISION[this.direction][1];
+	}
+
+	public void addHeight(double par1) {
+		int h2 = (int) (par1 / 0.0625D);
+		this.height = (byte) (this.height + h2);
 	}
 
 	public static RailPosition readFromNBT(NBTTagCompound nbt) {
 		int[] pos = nbt.getIntArray("BlockPos");
 		byte b0 = nbt.getByte("Direction");
-		byte b1 = nbt.getByte("Height");
-		float f0 = nbt.getFloat("A_Direction");
-		float f1 = nbt.getFloat("A_Length");
 		byte b2 = nbt.getByte("SwitchType");
-		return new RailPosition(pos[0], pos[1], pos[2], b0, b1, f0, f1, b2);
+		RailPosition rp = new RailPosition(pos[0], pos[1], pos[2], b0, b2);
+		rp.setHeight(nbt.getByte("Height"));
+
+		rp.anchorYaw = nbt.getFloat("A_Direction");
+		rp.anchorPitch = nbt.getFloat("A_Pitch");
+		rp.anchorLengthHorizontal = nbt.getFloat("A_Length");
+		rp.anchorLengthVertical = nbt.getFloat("A_LenV");
+		rp.cantCenter = nbt.getFloat("C_Center");
+		rp.cantEdge = nbt.getFloat("C_Edge");
+		rp.cantRandom = nbt.getFloat("C_Random");
+		rp.constLimitHP = nbt.getFloat("Const_Limit_HP");
+		rp.constLimitHN = nbt.getFloat("Const_Limit_HN");
+		rp.constLimitWP = nbt.getFloat("Const_Limit_WP");
+		rp.constLimitWN = nbt.getFloat("Const_Limit_WN");
+		return rp;
 	}
 
 	public NBTTagCompound writeToNBT() {
@@ -81,8 +134,19 @@ public class RailPosition {
 		nbt.setIntArray("BlockPos", new int[]{this.blockX, this.blockY, this.blockZ});
 		nbt.setByte("Direction", this.direction);
 		nbt.setByte("Height", this.height);
-		nbt.setFloat("A_Direction", this.anchorDirection);
-		nbt.setFloat("A_Length", this.anchorLength);
+
+		nbt.setFloat("A_Direction", this.anchorYaw);
+		nbt.setFloat("A_Pitch", this.anchorPitch);
+		nbt.setFloat("A_Length", this.anchorLengthHorizontal);
+		nbt.setFloat("A_LenV", this.anchorLengthVertical);
+		nbt.setFloat("C_Center", this.cantCenter);
+		nbt.setFloat("C_Edge", this.cantEdge);
+		nbt.setFloat("C_Random", this.cantRandom);
+		nbt.setFloat("Const_Limit_HP", this.constLimitHP);
+		nbt.setFloat("Const_Limit_HN", this.constLimitHN);
+		nbt.setFloat("Const_Limit_WP", this.constLimitWP);
+		nbt.setFloat("Const_Limit_WN", this.constLimitWN);
+
 		nbt.setByte("SwitchType", this.switchType);
 		return nbt;
 	}
@@ -99,9 +163,9 @@ public class RailPosition {
 		this.blockX += x;
 		this.blockY += y;
 		this.blockZ += z;
-		this.posX += (double) x;
-		this.posY += (double) y;
-		this.posZ += (double) z;
+		this.posX += x;
+		this.posY += y;
+		this.posZ += z;
 	}
 
 	/**
@@ -116,5 +180,20 @@ public class RailPosition {
 
 	public boolean checkRSInput(World world) {
 		return world.isBlockIndirectlyGettingPowered(this.blockX, this.blockY, this.blockZ);
+	}
+
+	public int[] getNeighborPos() {
+		int x2 = MathHelper.floor_double(this.posX + REVISION[this.direction][0]);
+		int y2 = this.blockY;
+		int z2 = MathHelper.floor_double(this.posZ + REVISION[this.direction][1]);
+		return new int[]{x2, y2, z2};
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof RailPosition) {
+			RailPosition rp = (RailPosition) obj;
+			return (rp.blockX == this.blockX && rp.blockY == this.blockY && rp.blockZ == this.blockZ);
+		}
+		return false;
 	}
 }

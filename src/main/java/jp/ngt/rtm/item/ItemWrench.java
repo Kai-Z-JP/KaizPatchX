@@ -25,7 +25,7 @@ public class ItemWrench extends Item {
 	/**
 	 * {S/C+PlayerID, Marker}
 	 */
-	private Map<String, TileEntityMarker> markerMap = new HashMap<String, TileEntityMarker>();
+	private final Map<String, TileEntityMarker> markerMap = new HashMap<String, TileEntityMarker>();
 
 	public ItemWrench() {
 		super();
@@ -57,18 +57,18 @@ public class ItemWrench extends Item {
 			case 1:
 				this.placeMarker(player, world, x, y, z, RTMBlock.markerSwitch, 0);
 				break;
-			case 2:
-				this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 0);
-				break;
-			case 3:
-				this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 4);
-				break;
-			case 4:
-				this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 8);
-				break;
-			case 5:
-				this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 12);
-				break;
+//            case 2:
+//                this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 0);
+//                break;
+//            case 3:
+//                this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 4);
+//                break;
+//            case 4:
+//                this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 8);
+//                break;
+//            case 5:
+//                this.placeMarker(player, world, x, y, z, RTMBlock.markerSlope, 12);
+//                break;
 		}
 		return true;
 	}
@@ -93,6 +93,9 @@ public class ItemWrench extends Item {
 
 	private void changeMode(World world, ItemStack itemStack, EntityPlayer player) {
 		int i = (itemStack.getItemDamage() + 1) % 10;
+		if (i >= 2 && i <= 5) {
+			i = 6;
+		}
 		itemStack.setItemDamage(i);
 		if (!world.isRemote) {
 			String mode = StatCollector.translateToLocal("description.wrench.mode_" + i);
@@ -114,7 +117,7 @@ public class ItemWrench extends Item {
 					color = EnumChatFormatting.WHITE;
 					break;
 			}
-			NGTLog.sendChatMessage(player, "message.wrench.mode", new Object[]{color + mode});
+			NGTLog.sendChatMessage(player, "message.wrench.mode", color + mode);
 		} else {
 			RTMCore.proxy.playSound(player, new ResourceLocation("gui.button.press"), 1.0F, 1.0F);
 		}
@@ -138,9 +141,9 @@ public class ItemWrench extends Item {
 
 	private void changeMarkerHeight(World world, EntityPlayer player, TileEntityMarker marker) {
 		marker.setDisplayMode((byte) 2);
+		byte b = marker.increaseHeight();
 
 		if (!world.isRemote) {
-			byte b = marker.increaseHeight();
 			if (marker.startY < 0) {
 				((BlockMarker) marker.getBlockType()).onMarkerActivated(world, marker.xCoord, marker.yCoord, marker.zCoord, player, false);
 			} else {
@@ -163,10 +166,11 @@ public class ItemWrench extends Item {
 		if (marker.followMouseMoving) {
 			marker.followingPlayer = null;
 			marker.followMouseMoving = false;
+			marker.editMode = 0;
 			this.markerMap.remove(this.getKey(player));
 			TileEntityMarker core = marker.getCoreMarker();
 			if (world.isRemote && core != null) {
-				RTMCore.NETWORK_WRAPPER.sendToServer(new PacketMarkerRPClient(core.xCoord, core.yCoord, core.zCoord, core));
+				RTMCore.NETWORK_WRAPPER.sendToServer(new PacketMarkerRPClient(core));
 			}
 		} else {
 			marker.setDisplayMode((byte) 2);

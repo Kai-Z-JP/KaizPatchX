@@ -9,7 +9,6 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
 	public IMessage onMessage(PacketNotice message, MessageContext ctx) {
 		if (message.type == PacketNotice.Side_SERVER) {
 			if (message.notice.equals("isConnected")) {
-				;
 			}
 		}
 		return null;

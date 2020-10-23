@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.item.ItemSignal;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -69,12 +70,17 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
 
 	@Override
 	public void dropBlockAsItemWithChance(World world, int x, int y, int z, int par5, float par6, int par7) {
-		;
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-		return new ItemStack(RTMItem.itemSignal, 1, 0);
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+		ItemStack itemStack = new ItemStack(RTMItem.itemSignal, 1, 0);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if (tileEntity instanceof TileEntitySignal) {
+			((ItemSignal) RTMItem.itemSignal).setModelName(itemStack, ((TileEntitySignal) tileEntity).getModelName());
+			((ItemSignal) RTMItem.itemSignal).setModelState(itemStack, ((TileEntitySignal) tileEntity).getResourceState());
+		}
+		return itemStack;
 	}
 
 	@Override

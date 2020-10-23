@@ -17,7 +17,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class BasicSignalPartsRenderer extends SignalPartsRenderer {
 	public final LightParts[] lightParts;
-	private List<String> lightList = new LinkedList<String>();
+	private final List<String> lightList = new LinkedList<String>();
 
 	public BasicSignalPartsRenderer(SignalConfig cfg, String... args) {
 		super(args);

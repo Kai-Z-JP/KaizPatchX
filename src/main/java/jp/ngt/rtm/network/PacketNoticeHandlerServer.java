@@ -7,10 +7,12 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.TileEntityTrainWorkBench;
 import jp.ngt.rtm.entity.npc.EntityMotorman;
 import jp.ngt.rtm.entity.npc.macro.TrainCommand;
+import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.gui.ContainerRTMWorkBench;
 import jp.ngt.rtm.gui.ContainerTrainControlPanel;
 import jp.ngt.rtm.modelpack.ModelPackUploadThread;
 import jp.ngt.rtm.modelpack.state.DataMap;
+import jp.ngt.rtm.rail.TileEntityMarker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -37,7 +39,7 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
 				}
 			} else if (message.notice.startsWith("setTrainTab")) {
 				String[] sa = message.notice.split(",");
-				int tabIndex = Integer.valueOf(sa[1]);
+				int tabIndex = Integer.parseInt(sa[1]);
 				Entity entity = message.getEntity(world);
 				if (entity instanceof EntityPlayer) {
 					Container container = ((EntityPlayer) entity).openContainer;
@@ -48,7 +50,7 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
 			} else if (message.notice.startsWith("workbench")) {
 				String[] sa = message.notice.split(",");
 				String name = sa[1];
-				float h = Float.valueOf(sa[2]);
+				float h = Float.parseFloat(sa[2]);
 
 				if (player.openContainer instanceof ContainerRTMWorkBench) {
 					((ContainerRTMWorkBench) player.openContainer).setRailProp(name, h);
@@ -62,6 +64,17 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
 				}
 			} else if (msg.startsWith("DM")) {
 				DataMap.receivePacket(msg, message, world, false);
+			} else if (msg.startsWith("notch")) {
+				Entity entity = message.getEntity(world);
+				if (entity instanceof EntityTrainBase) {
+					int notchInc = Integer.parseInt(msg.split(":")[1]);
+					((EntityTrainBase) entity).addNotch(player, notchInc);
+				}
+			} else if (msg.equals("marker_update")) {
+				TileEntity tile = message.getTileEntity(world);
+				if (tile instanceof TileEntityMarker) {
+					((TileEntityMarker) tile).updateMarkerRM(player);
+				}
 			}
 		}
 		return null;

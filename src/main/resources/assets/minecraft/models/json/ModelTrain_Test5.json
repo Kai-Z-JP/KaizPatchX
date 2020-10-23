@@ -1,6 +1,7 @@
 {
   "trainName": "Test5",
   "trainType": "Test",
+
   "trainModel2": {
     "modelFile": "Test5.ngtz",
     "textures": [

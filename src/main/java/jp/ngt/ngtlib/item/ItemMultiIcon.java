@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class ItemMultiIcon extends Item {
-	private Map<Integer, String> iconNameMap;
+	private final Map<Integer, String> iconNameMap;
 	@SideOnly(Side.CLIENT)
 	private Map<Integer, IIcon> iconMap;
 	@SideOnly(Side.CLIENT)

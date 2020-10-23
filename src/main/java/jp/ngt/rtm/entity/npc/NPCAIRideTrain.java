@@ -21,7 +21,7 @@ public class NPCAIRideTrain extends EntityAIBase {
 	};
 
 	private final EntityNPC npc;
-	private float moveSpeed;
+	private final float moveSpeed;
 	private EntityFloor target;
 	private PathEntity entityPathNavigate;
 

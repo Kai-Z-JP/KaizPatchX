@@ -5,7 +5,6 @@ import jp.ngt.rtm.item.ItemInstalledObject.IstlObjType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -82,12 +81,7 @@ public class BlockConnector extends BlockElectricalWiring {
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-		int meta = world.getBlockMetadata(x, y, z);
-		return this.getItem(meta);
-	}
-
-	private ItemStack getItem(int damage) {
+	protected ItemStack getItem(int damage) {
 		damage = damage < 6 ? IstlObjType.CONNECTOR_IN.id : IstlObjType.CONNECTOR_OUT.id;
 		return new ItemStack(RTMItem.installedObject, 1, damage);
 	}

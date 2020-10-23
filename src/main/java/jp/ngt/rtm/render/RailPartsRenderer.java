@@ -25,8 +25,13 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClient> {
+	private final FloatBuffer convBuf;
+
 	public RailPartsRenderer(String... par1) {
 		super(par1);
+		this.convBuf = FloatBuffer.wrap(new float[]{
+				1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F,
+				1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F});
 	}
 
 	@Override
@@ -80,7 +85,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 		boolean hasGLList = GLHelper.isValid(tileEntity.glList);
 		if (!hasGLList) {
 			tileEntity.glList = GLHelper.generateGLList();
-		} else if (tileEntity.shouldRerender)//再描画
+		} else if (tileEntity.shouldRerenderRail)//再描画
 		{
 			hasGLList = false;
 		}
@@ -95,7 +100,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 				GLHelper.startCompile(tileEntity.glList);//GL_COMPILE_AND_EXECUTEは画面がチラつく
 				this.tessellateParts(tileEntity, fb, brightness, this.modelSet.model.model.getGroupObjects());
 				GLHelper.endCompile();
-				tileEntity.shouldRerender = false;
+				tileEntity.shouldRerenderRail = false;
 				hasGLList = true;
 			}
 		}
@@ -114,28 +119,38 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 		}
 	}
 
+	/**
+	 * 各レールパーツの位置と向き
+	 *
+	 * @return {x, y, z, yaw, pitch, roll}
+	 */
 	protected float[][] createRailPos(TileEntityLargeRailCore par1) {
-		float[] f0 = RailPosition.REVISION[par1.getRailPositions()[0].direction];
+		float[] rev = RailPosition.REVISION[par1.getRailPositions()[0].direction];
 		RailMap[] rms = par1.getAllRailMaps();
 		if (rms != null) {
-			List<float[]> list = new ArrayList<float[]>();
+			List<float[]> list = new ArrayList<>();
 			for (RailMap rm : rms) {
 				int max = (int) ((float) rm.getLength() * 2.0F);
-				double[] p2 = rm.getRailPos(max, 0);
-				double startH = rm.getRailHeight(max, 0);
-				float moveX = (float) (p2[1] - ((double) par1.getStartPoint()[0] + 0.5D + (double) f0[0]));
-				float moveZ = (float) (p2[0] - ((double) par1.getStartPoint()[2] + 0.5D + (double) f0[1]));
+				double[] stPoint = rm.getRailPos(max, 0);
+				//double startH = rm.getRailHeight(max, 0);//カント付けた時端が沈む
+				double startH = rm.getStartRP().posY;
+				float moveX = (float) (stPoint[1] - ((double) par1.getStartPoint()[0] + 0.5D + (double) rev[0]));
+				float moveZ = (float) (stPoint[0] - ((double) par1.getStartPoint()[2] + 0.5D + (double) rev[1]));
+				//RM未初期化状態でのリスト生成を防止
+				//if(moveX == 0.0F && moveZ == 0.0F){return null;}
 
 				for (int i = 0; i < max + 1; ++i) {
-					double[] p1 = rm.getRailPos(max, i);
-					float[] fa = {
-							moveX + (float) (p1[1] - p2[1]),
+					double[] curPoint = rm.getRailPos(max, i);
+					float[] array = {
+							moveX + (float) (curPoint[1] - stPoint[1]),
 							(float) (rm.getRailHeight(max, i) - startH),//0.0F,
-							moveZ + (float) (p1[0] - p2[0]),
+							moveZ + (float) (curPoint[0] - stPoint[0]),
 							rm.getRailRotation(max, i),
-							-rm.getRailPitch()//0.0F
+							-rm.getRailPitch(max, i),
+							rm.getCant(max, i)
 					};
-					list.add(fa);
+
+					list.add(array);
 				}
 			}
 			return list.toArray(new float[list.size()][5]);
@@ -146,17 +161,14 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 	/**
 	 * レンダリング用同時変換行列を作製
 	 */
-	private final FloatBuffer createMatrix(float[][] rp) {
+	private FloatBuffer createMatrix(float[][] rp) {
 		FloatBuffer buffer = FloatBuffer.allocate(rp.length << 4);
 		for (int i = 0; i < rp.length; ++i) {
-			FloatBuffer fb = FloatBuffer.wrap(new float[]{
-					1.0F, 0.0F, 0.0F, 0.0F,
-					0.0F, 1.0F, 0.0F, 0.0F,
-					0.0F, 0.0F, 1.0F, 0.0F,
-					0.0F, 0.0F, 0.0F, 1.0F});
+			FloatBuffer fb = this.convBuf;
 			fb = NGTRenderHelper.translate(fb, rp[i][0], rp[i][1], rp[i][2]);
 			fb = NGTRenderHelper.rotate(fb, NGTMath.toRadians(rp[i][3]), 'Y');
 			fb = NGTRenderHelper.rotate(fb, NGTMath.toRadians(rp[i][4]), 'X');
+			fb = NGTRenderHelper.rotate(fb, NGTMath.toRadians(rp[i][5]), 'Z');
 			buffer.put(fb);
 		}
 		return buffer;
@@ -192,7 +204,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 	/**
 	 * 指定座標の明るさ取得
 	 */
-	private final int getWorldBrightness(World world, int x, int y, int z) {
+	private int getWorldBrightness(World world, int x, int y, int z) {
 		return world.blockExists(x, y, z) ? world.getLightBrightnessForSkyBlocks(x, y, z, 0) : 0;
 	}
 
@@ -202,9 +214,9 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 	 *
 	 * @param matrix     セグメントごとの座標&角度
 	 * @param brightness セグメントごとの明るさ
-	 * @param lists      セグメントの構成ObjectのList x セグメント数
+	 * @param gObjList   セグメントの構成ObjectのList x セグメント数
 	 */
-	private final void tessellateParts(TileEntityLargeRailCore tileEntity, FloatBuffer matrix, int[] brightness, List<GroupObject> gObjList) {
+	private void tessellateParts(TileEntityLargeRailCore tileEntity, FloatBuffer matrix, int[] brightness, List<GroupObject> gObjList) {
 		IRenderer tessellator = PolygonRenderer.INSTANCE;
 		tessellator.startDrawing(GL11.GL_TRIANGLES);
 		int capacity = matrix.capacity() >> 4;
@@ -244,6 +256,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 
 	public void renderRailMapStatic(TileEntityLargeRailSwitchCore tileEntity, RailMap rm, int max, int startIndex, int endIndex, Parts... pArray) {
 		double[] origPos = rm.getRailPos(max, 0);
+		double origHeight = rm.getRailHeight(max, 0);
 		int[] startPos = tileEntity.getStartPoint();
 		float[] revXZ = RailPosition.REVISION[tileEntity.getRailPositions()[0].direction];
 		//レール全体の始点からの移動差分
@@ -253,15 +266,18 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 		//頂点-中間点
 		for (int i = startIndex; i <= endIndex; ++i) {
 			double[] p1 = rm.getRailPos(max, i);
+			double h = rm.getRailHeight(max, i);
 			float x0 = moveX + (float) (p1[1] - origPos[1]);
+			float y0 = (float) (h - origHeight);
 			float z0 = moveZ + (float) (p1[0] - origPos[0]);
 			float yaw = rm.getRailRotation(max, i);
-
+			float pitch = rm.getRailPitch(max, i);
 			this.setBrightness(this.getBrightness(tileEntity.getWorldObj(),
 					MathHelper.floor_double(origPos[1] + x0), tileEntity.yCoord, MathHelper.floor_double(origPos[0] + z0)));
 			GL11.glPushMatrix();
-			GL11.glTranslatef(x0, 0.0F, z0);
+			GL11.glTranslatef(x0, y0, z0);
 			GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
+			GL11.glRotatef(-pitch, 1.0F, 0.0F, 0.0F);
 			for (int j = 0; j < pArray.length; ++j) {
 				pArray[j].render(this);
 			}

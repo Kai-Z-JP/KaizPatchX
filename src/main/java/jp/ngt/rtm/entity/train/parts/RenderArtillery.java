@@ -25,7 +25,6 @@ public class RenderArtillery extends Render {
 		if (set == null || set.isDummy()) {
 			RTMCore.proxy.renderMissingModel();
 		} else if (set.getConfig().fpvMode && !this.shouldRender(par1)) {
-			;
 		} else {
 			GL11.glRotatef(par1.rotationYaw, 0.0F, 1.0F, 0.0F);
 			//GL11.glRotatef(-par1.rotationPitch, 1.0F, 0.0F, 0.0F);
@@ -88,9 +87,7 @@ public class RenderArtillery extends Render {
 
 	private boolean shouldRender(EntityArtillery par1) {
 		if (par1.riddenByEntity != null && par1.riddenByEntity.equals(NGTUtilClient.getMinecraft().thePlayer)) {
-			if (ClientProxy.getViewMode(NGTUtilClient.getMinecraft().thePlayer) == ClientProxy.ViewMode_Artillery) {
-				return false;
-			}
+			return ClientProxy.getViewMode(NGTUtilClient.getMinecraft().thePlayer) != ClientProxy.ViewMode_Artillery;
 		}
 		return true;
 	}

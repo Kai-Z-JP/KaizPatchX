@@ -3,7 +3,6 @@ package jp.ngt.rtm.modelpack;
 import cpw.mods.fml.relauncher.Side;
 import jp.ngt.ngtlib.io.IProgressWatcher;
 import jp.ngt.ngtlib.io.NGTFileLoader;
-import jp.ngt.ngtlib.io.NGTJson;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.RTMCore;
@@ -15,7 +14,12 @@ import net.minecraft.crash.CrashReport;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * モデルパックのロードを行う, Client/Server共通
@@ -30,6 +34,8 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
 	private int[] maxValue;
 
 	public boolean finished;
+
+	private int count;
 
 	public ModelPackLoadThread(Side par1) {
 		super("RTM ModelPack Load");
@@ -136,23 +142,27 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
 		this.setValue(0, 1, "Loading Train Models");
 		List<File> fileList = NGTFileLoader.findFile((file) -> {
 			String name = file.getName();
-			return name.startsWith("Model") && name.endsWith(".json");
+			return name.endsWith(".json") && name.startsWith("Model");
 		});
 		this.setValue(0, 2, "Registering Train Models");
 		this.setMaxValue(1, fileList.size(), "");
-		int count = 0;
-		for (File file : fileList) {
-			String json = NGTJson.readFromJson(file);
-			String type = file.getName().split("_")[0];
-			try {
-				String s = ModelPackManager.INSTANCE.registerModelset(type, json);
-				this.setValue(1, count + 1, s);
-			} catch (ModelPackException e) {
-				throw e;//そのまま投げる
-			} catch (Throwable e) {
-				throw new ModelPackException("Can't load model", file.getAbsolutePath(), e);
+
+		ExecutorService executor = Executors.newWorkStealingPool();
+		List<Future<?>> list = new ArrayList<>();
+		try {
+			for (File file : fileList) {
+				list.add(executor.submit(new ModelPackLoadFromConfig(this, file)));
 			}
-			++count;
+		} finally {
+			executor.shutdown();
+		}
+
+		for (Future<?> future : list) {
+			try {
+				future.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
 		}
 
 		TextureManager.INSTANCE.load(this);
@@ -185,6 +195,20 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
 
 		if (id < 2) {
 			int i = (int) ((float) value / (float) this.maxValue[id] * 100.0F);
+			this.bars[id].setValue(i);
+			if (label != null && label.length() > 0) {
+				this.labels[id].setText(label);
+			}
+		}
+	}
+
+	public void addValue(int id, String label) {
+		if (!this.displayWindow) {
+			return;
+		}
+
+		if (id < 2) {
+			int i = (int) ((float) ++this.count / (float) this.maxValue[id] * 100.0F);
 			this.bars[id].setValue(i);
 			if (label != null && label.length() > 0) {
 				this.labels[id].setText(label);

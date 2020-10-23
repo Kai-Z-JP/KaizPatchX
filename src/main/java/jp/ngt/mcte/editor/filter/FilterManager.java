@@ -19,7 +19,7 @@ public final class FilterManager {
 	public static final FilterManager INSTANCE = new FilterManager();
 	public static final String FILTER_PATH = "mcte/filter/";
 
-	private Map<String, Class<? extends EditFilterBase>> filterClasses;
+	private final Map<String, Class<? extends EditFilterBase>> filterClasses;
 	@SideOnly(Side.CLIENT)
 	private Map<String, EditFilterBase> filters;
 

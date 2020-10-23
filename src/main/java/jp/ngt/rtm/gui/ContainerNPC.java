@@ -11,8 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 public class ContainerNPC extends Container {
-	private EntityPlayer player;
-	private EntityNPC npc;
+	private final EntityPlayer player;
+	private final EntityNPC npc;
 
 	public ContainerNPC(EntityPlayer par1, EntityNPC par2) {
 		this.player = par1;

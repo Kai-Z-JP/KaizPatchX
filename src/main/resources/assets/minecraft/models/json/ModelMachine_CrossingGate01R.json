@@ -14,14 +14,6 @@
   "buttonTexture": "textures/machine/button_CrossingGate01R.png",
   "machineType": "Gate",
   "sound_Running": "rtm:block.rtm_crossingGate0",
-  "renderAABB": [
-    0.0,
-    0.0,
-    0.0,
-    1.0,
-    4.0,
-    1.0
-  ],
   "smoothing": true,
   "doCulling": true,
   "accuracy": "LOW",

@@ -13,6 +13,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.entity.EntityBumpingPost;
 import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
+import jp.ngt.rtm.entity.train.util.BogieController;
 import jp.ngt.rtm.entity.vehicle.VehicleTrackerEntry;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
@@ -22,6 +23,7 @@ import jp.ngt.rtm.rail.util.RailMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -30,8 +32,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class EntityBogie extends Entity implements Lockable {
-	private static ResourceLocation JOINT_SOUND = new ResourceLocation("rtm", "train.joint");
-	private static ResourceLocation JOINT_SOUND_REVERB = new ResourceLocation("rtm", "train.joint_reverb");
+	private static final ResourceLocation JOINT_SOUND = new ResourceLocation("rtm", "train.joint");
+	private static final ResourceLocation JOINT_SOUND_REVERB = new ResourceLocation("rtm", "train.joint_reverb");
 	/**
 	 * ベジェ曲線の分割精度(1m当たり)
 	 */
@@ -65,7 +67,7 @@ public class EntityBogie extends Entity implements Lockable {
 	/**
 	 * {yaw, pitch, yaw2}
 	 */
-	private final float[] rotationBuf = new float[3];
+	private final float[] rotationBuf = new float[4];
 	private int split = -1;
 	private int prevPosIndex;
 	//private int point = -1;
@@ -73,9 +75,13 @@ public class EntityBogie extends Entity implements Lockable {
 	private boolean reverbSound;
 	private int jointIndex;
 
+	public float rotationRoll;
+	public float prevRotationRoll;
+
+	@SideOnly(Side.CLIENT)
 	private int carPosRotationInc;
-	private double carX, carY, carZ;
-	private float carYaw, carPitch;
+	@SideOnly(Side.CLIENT)
+	private float carYaw, carPitch, carRoll;
 
 	public EntityBogie(World world) {
 		super(world);
@@ -99,9 +105,9 @@ public class EntityBogie extends Entity implements Lockable {
 
 	@Override
 	protected void entityInit() {
-		this.dataWatcher.addObject(DW_TrainId, Integer.valueOf(0));//getTrain
-		this.dataWatcher.addObject(DW_IsFront, Byte.valueOf((byte) 0));//isFront
-		this.dataWatcher.addObject(DW_BogieId, Byte.valueOf((byte) 0));//bogieId
+		this.dataWatcher.addObject(DW_TrainId, 0);//getTrain
+		this.dataWatcher.addObject(DW_IsFront, (byte) 0);//isFront
+		this.dataWatcher.addObject(DW_BogieId, (byte) 0);//bogieId
 	}
 
 	@Override
@@ -109,12 +115,10 @@ public class EntityBogie extends Entity implements Lockable {
 		nbt.setBoolean("isFront", this.isFront());
 		nbt.setByte("bogieId", this.getBogieId());
 		if (this.getTrain() != null) {
-			long l0 = 0L;
-			long l1 = 0L;
 			UUID uuid = this.getTrain().getUniqueID();
 			if (uuid != null) {
-				l0 = uuid.getMostSignificantBits();
-				l1 = uuid.getLeastSignificantBits();
+				long l0 = uuid.getMostSignificantBits();
+				long l1 = uuid.getLeastSignificantBits();
 				nbt.setLong("trainUUID_Most", l0);
 				nbt.setLong("trainUUID_Least", l1);
 			}
@@ -194,15 +198,15 @@ public class EntityBogie extends Entity implements Lockable {
 
 		RailMap rm = this.currentRailMap;
 		int pIndex = 0;
-		if (this.isFront() || this.prevPosIndex == -1) {
+		if (frontBogie == null || this.prevPosIndex == -1) {
 			pIndex = rm.getNearlestPoint(this.split, px, pz);
 		} else {
 			//移動範囲を制限して、「台車からの距離は同じでも位置は真逆」な点の検出を防ぐ
 			int indexInc = (int) ((speed + 0.25F) * (float) SPLIT_VALUE);//前回位置からどの程度進むか
 			int indexNeg = this.prevPosIndex - indexInc;
 			int indexPos = this.prevPosIndex + indexInc;
-			int indexMin = (indexNeg < 0) ? 0 : indexNeg;
-			int indexMax = (indexPos > this.split) ? this.split : indexPos;
+			int indexMin = Math.max(indexNeg, 0);
+			int indexMax = Math.min(indexPos, this.split);
 			double[] fp = frontBogie.getPosBuf();
 			double dif = Double.MAX_VALUE;
 			double tlSq = trainLength * trainLength;
@@ -222,9 +226,14 @@ public class EntityBogie extends Entity implements Lockable {
 		double[] posZX = rm.getRailPos(this.split, pIndex);
 		py = rm.getRailHeight(this.split, pIndex) + this.yOffset;
 		float railYaw = MathHelper.wrapAngleTo180_float(rm.getRailRotation(this.split, pIndex));
-		float movYaw = this.fixBogieYaw(this.movingYaw, railYaw);
-		float yaw = this.fixBogieYaw(this.rotationYaw, movYaw);
-		float pitch = this.fixBogiePitch(rm.getRailPitch(), railYaw, yaw);
+		float movYaw = EntityBogie.fixBogieYaw(this.movingYaw, railYaw);
+		float yaw = EntityBogie.fixBogieYaw(this.rotationYaw, movYaw);
+		float pitch = EntityBogie.fixBogiePitch(rm.getRailPitch(this.split, pIndex), railYaw, yaw);
+		float cant = rm.getCant(this.split, pIndex);
+
+		if (Math.abs(MathHelper.wrapAngleTo180_float(railYaw - yaw)) > 90.0F) {
+			cant *= -1.0F;
+		}
 
 		if ((this.posX == posZX[1]) && (this.posZ == posZX[0])) {
 			return true;
@@ -236,6 +245,8 @@ public class EntityBogie extends Entity implements Lockable {
 		this.rotationBuf[0] = yaw;
 		this.rotationBuf[1] = pitch;
 		this.rotationBuf[2] = movYaw;
+		this.rotationBuf[3] = cant;
+
 
 		if (this.jointDelay > 0.0F) {
 			this.jointDelay -= speed;
@@ -265,7 +276,6 @@ public class EntityBogie extends Entity implements Lockable {
 		} else {
 			if (this.currentRailObj == coreObj)//前回と同じレール上にいる
 			{
-				;
 			} else//新しいレール上に移動
 			{
 				this.currentRailObj = coreObj;
@@ -307,7 +317,7 @@ public class EntityBogie extends Entity implements Lockable {
 		EntityTrainBase train = this.getTrain();
 		TrainConfig cfg = train.getModelSet().getConfig();
 		if (!cfg.muteJointSound) {
-			float pitch = (train.getSpeed() / train.getModelSet().getConfig().maxSpeed[4]) * 0.5F + 1.0F;
+			float pitch = (train.getSpeed() / cfg.maxSpeed[cfg.maxSpeed.length - 1]) * 0.5F + 1.0F;
 			ResourceLocation sound = this.reverbSound ? JOINT_SOUND_REVERB : JOINT_SOUND;
 			RTMCore.proxy.playSound(this, sound, 1.0F, pitch);
 
@@ -352,16 +362,29 @@ public class EntityBogie extends Entity implements Lockable {
 		return this.posBuf;
 	}
 
-	public void moveBogie(double x, double y, double z, boolean updateRotation) {
+	public void moveBogie(EntityTrainBase train, double x, double y, double z, BogieController.UpdateFlag flag) {
 		this.setPosition(x, y, z);
-		if (updateRotation) {
-			this.setRotation((float) this.rotationBuf[0], (float) this.rotationBuf[1]);
-			this.movingYaw = (float) this.rotationBuf[2];
+		switch (flag) {
+			case ALL:
+				this.setRotation(this.rotationBuf[0], this.rotationBuf[1]);
+				this.movingYaw = this.rotationBuf[2];
+				this.rotationRoll = this.rotationBuf[3];
+				break;
+			case YAW:
+				float movYaw = EntityBogie.fixBogieYaw(this.movingYaw, train.rotationYaw);
+				float yaw = EntityBogie.fixBogieYaw(this.rotationYaw, movYaw);
+				this.rotationYaw = yaw % 360.0F;
+				this.movingYaw = movYaw;
+				break;
+			case NONE:
+				break;
 		}
 	}
 
 	public void updateBogie() {
 		super.onUpdate();
+
+		this.prevRotationRoll = this.rotationRoll;
 
 		if (this.worldObj.isRemote) {
 			this.updatePosAndRotationClient();
@@ -370,23 +393,51 @@ public class EntityBogie extends Entity implements Lockable {
 		}
 	}
 
+//	@SideOnly(Side.CLIENT)
+//	protected void updatePosAndRotationClient() {
+//		this.prevPosX = this.posX;
+//		this.prevPosY = this.posY;
+//		this.prevPosZ = this.posZ;
+//
+//		double x = this.posX, y = this.posY, z = this.posZ;
+//
+//		if (this.carPosRotationInc > 0) {
+//			float d0 = 1.0F / (float) this.carPosRotationInc;
+//			x = this.posX + (this.carX - this.posX) * d0;
+//			y = this.posY + (this.carY - this.posY) * d0;
+//			z = this.posZ + (this.carZ - this.posZ) * d0;
+//			this.rotationYaw += MathHelper.wrapAngleTo180_float((float) (this.carYaw - (double) this.rotationYaw)) * d0;
+//			this.rotationPitch += (this.carPitch - this.rotationPitch) * d0;
+//			this.rotationRoll += (this.carRoll - this.rotationRoll) * d0;
+//			--this.carPosRotationInc;
+//		}
+//
+//		EntityTrainBase train = this.getTrain();
+//		if (train != null) {
+//			float[][] pos = train.getModelSet().getConfig().getBogiePos();
+//			int bogieIndex = this.getBogieId();
+//			Vec3 v31 = Vec3.createVectorHelper(pos[bogieIndex][0], pos[bogieIndex][1], pos[bogieIndex][2]);
+//			v31.rotateAroundX(NGTMath.toRadians(train.rotationPitch));
+//			v31.rotateAroundY(NGTMath.toRadians(train.rotationYaw));
+//			x = train.posX + v31.xCoord;
+//			y = train.posY + v31.yCoord;
+//			z = train.posZ + v31.zCoord;
+//		}
+//		this.setPosition(x, y, z);
+//	}
+
 	@SideOnly(Side.CLIENT)
 	protected void updatePosAndRotationClient() {
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-
 		if (this.carPosRotationInc > 0) {
 			float d0 = 1.0F / (float) this.carPosRotationInc;
-            /*this.posX += (this.carX - this.posX) * d0;
-            this.posY += (this.carY - this.posY) * d0;
-            this.posZ += (this.carZ - this.posZ) * d0;*/
 			this.rotationYaw += MathHelper.wrapAngleTo180_float((float) (this.carYaw - (double) this.rotationYaw)) * d0;
 			this.rotationPitch += (this.carPitch - (double) this.rotationPitch) * d0;
-			//this.rotationRoll += (this.carRoll - (double)this.rotationRoll) * d0;
+			this.rotationRoll += (this.carRoll - (double) this.rotationRoll) * d0;
 			--this.carPosRotationInc;
 		}
-
 		EntityTrainBase train = this.getTrain();
 		if (train != null) {
 			//Clientでの台車位置決定は車両位置から
@@ -401,7 +452,6 @@ public class EntityBogie extends Entity implements Lockable {
 			//位置補正はRendererでやる
 			this.setPosition(newX, newY, newZ);
 		}
-
 		this.setRotation(this.rotationYaw, this.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 	}
@@ -505,7 +555,6 @@ public class EntityBogie extends Entity implements Lockable {
 			if (!train.inConnectableRange(train2)) {
 				return false;
 			}
-			;
 
 			//equalsはぬるぽ出る
 			//if((train.getConnectedTrain(this.bogieId) == train2)){continue;}
@@ -590,17 +639,14 @@ public class EntityBogie extends Entity implements Lockable {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-		if (this.getTrain() != null && this.getTrain().getSpeed() == 0.0F) {
-			this.setPosition(par1, par3, par5);
-			this.setRotation(par7, par8);
-		} else {
-			this.carPosRotationInc = par9;
-			this.carX = par1;
-			this.carY = par3;
-			this.carZ = par5;
-			this.carYaw = par7;
-			this.carPitch = par8;
-		}
+		this.carPosRotationInc = par9;
+		this.carYaw = par7;
+		this.carPitch = par8;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void setRoll(float par1) {
+		this.carRoll = par1;
 	}
 
 	@Override
@@ -635,7 +681,7 @@ public class EntityBogie extends Entity implements Lockable {
 	}
 
 	public void setTrain(EntityTrainBase train) {
-		this.dataWatcher.updateObject(DW_TrainId, Integer.valueOf(train.getEntityId()));
+		this.dataWatcher.updateObject(DW_TrainId, train.getEntityId());
 	}
 
 	public EntityTrainBase getTrain() {
@@ -650,7 +696,7 @@ public class EntityBogie extends Entity implements Lockable {
 
 	public void setFront(boolean par1) {
 		byte b = par1 ? (byte) 1 : (byte) 0;
-		this.dataWatcher.updateObject(DW_IsFront, Byte.valueOf(b));
+		this.dataWatcher.updateObject(DW_IsFront, b);
 	}
 
 	public boolean isFront() {
@@ -673,12 +719,11 @@ public class EntityBogie extends Entity implements Lockable {
 	public static float fixBogieYaw(float yaw1, float yaw2) {
 		float f0 = Math.abs(yaw1 - yaw2);
 		f0 = f0 > 180.0F ? 360.0F - f0 : f0;
-		return f0 > 90.0F ? MathHelper.wrapAngleTo180_float(yaw2 + 180.0F) : MathHelper.wrapAngleTo180_float(yaw2);
+		return MathHelper.wrapAngleTo180_float(f0 > 90.0F ? yaw2 + 180.0F : yaw2);
 	}
 
 	public static float fixBogiePitch(float railPitch, float railYaw, float bogieYaw) {
-		float f0 = Math.abs(bogieYaw - railYaw);
-		return f0 > 45.0F ? MathHelper.wrapAngleTo180_float(-railPitch) : MathHelper.wrapAngleTo180_float(railPitch);
+		return MathHelper.wrapAngleTo180_float(Math.abs(bogieYaw - railYaw) > 45.0F ? -railPitch : railPitch);
 	}
 
 	@Override
@@ -699,5 +744,10 @@ public class EntityBogie extends Entity implements Lockable {
 	@Override
 	public int getProhibitedAction() {
 		return 1;
+	}
+
+	@Override
+	public ItemStack getPickedResult(MovingObjectPosition target) {
+		return this.parentTrain.getPickedResult(target);
 	}
 }

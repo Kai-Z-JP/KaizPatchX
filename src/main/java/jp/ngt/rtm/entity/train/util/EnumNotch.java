@@ -20,7 +20,7 @@ public enum EnumNotch {
 	public final float max_speed;
 	public final float acceleration;
 
-	private EnumNotch(int par1, float par2, float par3) {
+	EnumNotch(int par1, float par2, float par3) {
 		this.id = par1;
 		this.max_speed = par2;
 		this.acceleration = par3;

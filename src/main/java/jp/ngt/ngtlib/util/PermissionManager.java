@@ -22,7 +22,7 @@ public final class PermissionManager {
 	private final File saveFile;
 	private final Map<String, List<String>> permissionMap = new HashMap<>();
 
-	private static boolean DEBUG_MODE = false;//シングルでOP無視
+	private static final boolean DEBUG_MODE = false;//シングルでOP無視
 
 	private PermissionManager() {
 		String path = NGTCore.proxy.getMinecraftDirectory("ngt").getAbsolutePath();
@@ -139,9 +139,7 @@ public final class PermissionManager {
 					return true;
 				}
 			}
-		} else if (player instanceof MinecraftServer) {
-			return true;
-		}
+		} else return player instanceof MinecraftServer;
 		return false;
 	}
 }

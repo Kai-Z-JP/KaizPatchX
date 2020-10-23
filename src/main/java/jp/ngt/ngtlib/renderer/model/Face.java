@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @SideOnly(Side.CLIENT)
 public class Face {
-	private static float[][] MIRROR_PATTERN = {
+	private static final float[][] MIRROR_PATTERN = {
 			{-1.0F, 1.0F, 1.0F},
 			{1.0F, -1.0F, 1.0F},
 			{1.0F, 1.0F, -1.0F}};

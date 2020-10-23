@@ -16,7 +16,7 @@ public enum RailDir {
 
 	public final byte id;
 
-	private RailDir(int par1) {
+	RailDir(int par1) {
 		this.id = (byte) par1;
 	}
 

@@ -64,8 +64,8 @@ public class WorldSnapshot {
 
 		List list = editor.getWorld().getEntitiesWithinAABBExcludingEntity(
 				editor.getEntity(), AxisAlignedBB.getBoundingBox(
-						(double) box.minX, (double) box.minY, (double) box.minZ,
-						(double) box.maxX, (double) box.maxY, (double) box.maxZ));
+						box.minX, box.minY, box.minZ,
+						box.maxX, box.maxY, box.maxZ));
 		this.entityList.addAll(list);
 	}
 

@@ -10,15 +10,18 @@ import jp.ngt.rtm.RTMAchievement;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.entity.npc.EntityMotorman;
+import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
 import jp.ngt.rtm.entity.train.util.*;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.entity.vehicle.VehicleTrackerEntry;
+import jp.ngt.rtm.item.ItemTrain;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetTrain;
 import jp.ngt.rtm.modelpack.modelset.ModelSetTrainClient;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
+import jp.ngt.rtm.network.PacketNotice;
 import jp.ngt.rtm.network.PacketSetTrainState;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
@@ -51,7 +54,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	public static final float TRAIN_WIDTH = 2.75F;
 	public static final float TRAIN_HEIGHT = 1.25F - 0.0625F;//レールに合わせ高さ修正
 
-	private BogieController bogieController = new BogieController();
+	public BogieController bogieController = new BogieController();
 	private Formation formation;
 
 	private float trainSpeed;
@@ -64,6 +67,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	public int brakeAirCount;
 	@SideOnly(Side.CLIENT)
 	public boolean complessorActive;
+
+	private float wave;
 	/**
 	 * TrainTrackerEntryを生成したかどうか
 	 */
@@ -108,9 +113,9 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(DW_Bogie0, Integer.valueOf(0));
-		this.dataWatcher.addObject(DW_Bogie1, Integer.valueOf(0));
-		this.dataWatcher.addObject(DW_FormationData, new String(""));
+		this.dataWatcher.addObject(DW_Bogie0, 0);
+		this.dataWatcher.addObject(DW_Bogie1, 0);
+		this.dataWatcher.addObject(DW_FormationData, "");
 		byte[] ba = Base64.decodeBase64(new byte[16]);
 		this.dataWatcher.addObject(DW_ByteArray, Base64.encodeBase64String(ba));
 	}
@@ -139,6 +144,10 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	}
 
 	private void writeFormationData(NBTTagCompound nbt) {
+		if (this.formation == null) {
+			return;
+		}//ワールド読み込み時にformationがnull
+
 		FormationEntry entry = this.formation.getEntry(this);
 		nbt.setLong("FormationId", this.formation.id);
 		nbt.setByte("EntryPos", entry.entryId);
@@ -197,28 +206,31 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
 		if (this.existBogies()) {
 			if (!this.worldObj.isRemote) {
+				this.bogieController.updateBogies();
 				this.moveTrain();
+				this.bogieController.updateBogiePos(this, 0, BogieController.UpdateFlag.NONE);
+				this.bogieController.updateBogiePos(this, 1, BogieController.UpdateFlag.NONE);
+			} else {
+				this.bogieController.updateBogies();
 			}
-			this.bogieController.updateBogies();
 		}
 
 		if (this.worldObj.isRemote) {
 			if (this.carPosRotationIncrements > 0) {
 				float f0 = 1.0F / (float) this.carPosRotationIncrements;
-				double x = this.posX + (this.carX - this.posX) * (double) f0;
-				double y = this.posY + (this.carY - this.posY) * (double) f0;
-				double z = this.posZ + (this.carZ - this.posZ) * (double) f0;
-				float yaw = this.rotationYaw + MathHelper.wrapAngleTo180_float(this.carYaw - this.rotationYaw) * f0;
-				float pitch = this.rotationPitch + (this.carPitch - this.rotationPitch) * f0;
-				this.setPosition(x, y, z);
-				this.setRotation(yaw, pitch);
+				this.posX += (this.carX - this.posX) * (double) f0;
+				this.posY += (this.carY - this.posY) * (double) f0;
+				this.posZ += (this.carZ - this.posZ) * (double) f0;
+				this.rotationYaw += MathHelper.wrapAngleTo180_float(this.carYaw - this.rotationYaw) * f0;
+				this.rotationPitch += (this.carPitch - this.rotationPitch) * f0;
+				this.rotationRoll = this.getRoll() + (this.vehicleRoll - this.getRoll()) * f0;
 				float f2 = this.trainSpeed + (this.carSpeed - this.trainSpeed) * f0;
 				this.setSpeed(f2);
 				--this.carPosRotationIncrements;
-			} else {
-				this.setPosition(this.posX, this.posY, this.posZ);
-				this.setRotation(this.rotationYaw, this.rotationPitch);
 			}
+			this.setPosition(this.posX, this.posY, this.posZ);
+			this.setRotation(this.rotationYaw, this.rotationPitch);
+
 
 			ModelSetVehicleBase<TrainConfig> set = this.getModelSet();
 			if (set.getConfig().smoke != null) {
@@ -273,12 +285,12 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 			this.func_145775_I();//call Block.onEntityCollidedWithBlock()
 		}
 
-		float f0 = -this.getModelSet().getConfig().rolling;
-		float roll = MathHelper.wrapAngleTo180_float((this.rotationYaw - this.prevRotationYaw) * f0);
-		if (this.getTrainDirection() == 1) {
-			roll *= -1.0F;
-		}
-		this.rotationRoll = roll;
+//		float f0 = -this.getModelSet().getConfig().rolling;
+//		float roll = MathHelper.wrapAngleTo180_float((this.rotationYaw - this.prevRotationYaw) * f0);
+//		if (this.getTrainDirection() == 1) {
+//			roll *= -1.0F;
+//		}
+//		this.rotationRoll = roll;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -370,6 +382,22 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 		}
 	}
 
+	//BCから呼び出し
+	public void updateRoll(float par1) {
+		TrainConfig cfg = this.getModelSet().getConfig();
+		float f0 = -cfg.rolling;
+		float pendulum = MathHelper.wrapAngleTo180_float((this.rotationYaw - this.prevRotationYaw) * f0);
+		if (this.getTrainDirection() == 1) {
+			pendulum *= -1.0F;
+		}
+		float roll = par1 + pendulum;
+		//float dif = roll - this.rotationRoll;
+		this.wave = (float) ((this.wave + this.getSpeed() * cfg.rollSpeedCoefficient) % (2.0D * Math.PI));//総走行距離(2PI区切り)
+		float sw = (NGTMath.getSin(this.wave) + NGTMath.getSin(this.wave * cfg.rollVariationCoefficient)) * 0.5F;
+		this.rotationRoll = roll + sw * cfg.rollWidthCoefficient;
+		//できればPID制御したい
+	}
+
 	protected void playBrakeReleaseSound(boolean isStrong) {
 		String sound;
 		if (this.getModelSet() instanceof ModelSetTrain) {
@@ -390,18 +418,18 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	protected void updateSpeed() {
 		int notch = this.getNotch();
 
-		if (this.riddenByEntity == null || !(this.riddenByEntity instanceof EntityPlayer || this.riddenByEntity instanceof EntityMotorman)) {
-			if (notch > 0) {
-				//this.setNotch(0);//無人でもノッチ0にしない
-			}
-		}
+//		if (this.riddenByEntity == null || !(this.riddenByEntity instanceof EntityPlayer || this.riddenByEntity instanceof EntityMotorman)) {
+//			if (notch > 0) {
+		//this.setNotch(0);//無人でもノッチ0にしない
+//			}
+//		}
 
 		boolean isBrakeDisabled = true;
 		float speed = this.getSpeed();
 
 		//ブレーキ処理, 全ての車両で
 		if (notch < 0) {
-			int max = notch < 0 ? notch * -18 : 0;
+			int max = notch * -18;
 			if (this.brakeCount < max) {
 				++this.brakeCount;
 				if (this.worldObj.isRemote) {
@@ -410,8 +438,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 			} else if (this.brakeCount > max) {
 				this.brakeCount -= (this.brakeCount - max > 1) ? 2 : 1;
 			}
-		} else if (notch >= 0)//ブレーキ解
-		{
+		} else {
 			if (this.brakeCount > 0) {
 				if (speed <= 0.0F) {
 					isBrakeDisabled = false;
@@ -432,7 +459,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 				{
 					float deceleration;
 					if (this.rotationPitch == 0.0F) {
-						float f1 = 0.0002F;
+//						float f1 = 0.0002F;
+						float f1 = -set.getConfig().deccelerations[0];
 						deceleration = speed > 0.0F ? f1 : (speed < 0.0F ? -f1 : 0.0F);
 					} else//坂
 					{
@@ -451,31 +479,64 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 		}
 	}
 
-	/**
-	 * ※ServerOnly<br>
-	 * ※Bogieのnullチェック必須
-	 */
+//	/**
+//	 * ※ServerOnly<br>
+//	 * ※Bogieのnullチェック必須
+//	 */
+//	protected void moveTrain() {
+//		float speed = this.getSpeed();
+//
+//		/*車間距離調整**********************************************/
+//		EntityTrainBase connectedTrain = this.getConnectedTrain(this.getTrainDirection());
+//		if (connectedTrain != null && !this.getModelSet().isDummy())//ModelSetロードまだの時は飛ばす
+//		{
+//			double dis = this.getDistanceSqToEntity(connectedTrain);
+//			double def = this.getDefaultDistanceToConnectedTrain(connectedTrain);
+//			double d0 = 0.125D;
+//
+//			if (dis > (def + d0) * (def + d0)) {
+//				speed += 0.0125F;
+//			}
+//
+//			if (dis < (def - d0) * (def - d0)) {
+//				speed -= 0.0125F;
+//			}
+//		}
+//
+//		this.bogieController.moveTrainWithBogie(this, speed);
+//	}
+
 	protected void moveTrain() {
-		float speed = this.getSpeed();
-
-		/*車間距離調整**********************************************/
-		EntityTrainBase connectedTrain = this.getConnectedTrain(this.getTrainDirection());
-		if (connectedTrain != null && !this.getModelSet().isDummy())//ModelSetロードまだの時は飛ばす
-		{
-			double dis = this.getDistanceSqToEntity(connectedTrain);
-			double def = this.getDefaultDistanceToConnectedTrain(connectedTrain);
-			double d0 = 0.125D;
-
-			if (dis > (def + d0) * (def + d0)) {
-				speed += 0.0125F;
-			}
-
-			if (dis < (def - d0) * (def - d0)) {
-				speed -= 0.0125F;
-			}
+		if (this.formation.isFrontCar(this)) {
+			this.formation.updateTrainMovement();
 		}
+	}
 
-		this.bogieController.moveTrainWithBogie(this, speed);
+	@Override
+	public ItemStack getPickedResult(MovingObjectPosition target) {
+		String type = this.getModelSet().getConfig().getSubType();
+		int damage;
+		switch (type) {
+			case "EC":
+				damage = 1;
+				break;
+			case "CC":
+				damage = 2;
+				break;
+			case "TC":
+				damage = 3;
+				break;
+			case "Test":
+				damage = 127;
+				break;
+			default:
+				damage = 0;
+				break;
+		}
+		ItemStack itemStack = new ItemStack(RTMItem.itemtrain, 1, damage);
+		((ItemTrain) RTMItem.itemtrain).setModelName(itemStack, this.getModelSet().getConfig().getName());
+		((ItemTrain) RTMItem.itemtrain).setModelState(itemStack, this.getResourceState());
+		return itemStack;
 	}
 
 	@Override
@@ -505,6 +566,13 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	@SideOnly(Side.CLIENT)
 	public void setVelocity(double par1, double par3, double par5) {
 		this.carSpeed = (float) par1;
+	}
+
+
+	@SideOnly(Side.CLIENT)
+	public void setRollAndSpeed(float speed, float roll) {
+		this.carSpeed = speed;
+		this.vehicleRoll = roll;
 	}
 
 	@Override
@@ -543,6 +611,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 			float[][] pos = this.getModelSet().getConfig().getPlayerPos();
 			int dir = this.getTrainDirection();
 			Vec3 v31 = Vec3.createVectorHelper(pos[dir][0], pos[dir][1], pos[dir][2]);
+			v31.rotateAroundZ(NGTMath.toRadians(-this.rotationRoll));
 			v31.rotateAroundX(NGTMath.toRadians(this.rotationPitch));
 			v31.rotateAroundY(NGTMath.toRadians(this.rotationYaw));
 			Vec3 v32 = v31.addVector(this.posX, this.posY, this.posZ);
@@ -550,12 +619,13 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
 			//運転手のYaw調整, PlayerのYawは他のEntityとは逆向き
 			this.riddenByEntity.rotationYaw -= MathHelper.wrapAngleTo180_float(this.rotationYaw - this.prevRotationYaw);
+			this.riddenByEntity.rotationPitch -= MathHelper.wrapAngleTo180_float(this.rotationPitch - this.prevRotationPitch);
 		}
 	}
 
 	@Override
 	public double getMountedYOffset() {
-		return (double) (this.height - 0.93F);
+		return this.height - 0.93F;
 	}
 
 	@Override
@@ -642,7 +712,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	public boolean interactFirst(EntityPlayer player) {
 		if (player.isSneaking()) {
 			if (this.worldObj.isRemote) {
-				player.openGui(RTMCore.instance, RTMCore.instance.guiIdSelectEntityModel, player.worldObj, this.getEntityId(), 0, 0);
+				player.openGui(RTMCore.instance, RTMCore.guiIdSelectEntityModel, player.worldObj, this.getEntityId(), 0, 0);
 			}
 			return true;
 		}
@@ -658,18 +728,17 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	}
 
 	@Override
-	protected void onModelChanged(ModelSetVehicleBase<TrainConfig> par1) {
-		super.onModelChanged(par1);
+	public void onModelChanged() {
+		super.onModelChanged();
 
 		if (!this.worldObj.isRemote) {
-			TrainConfig cfg = par1.getConfig();
+			TrainConfig cfg = this.getModelSet().getConfig();
 			float[][] fa = cfg.getBogiePos();
-			float f0 = 0.0F;
 			float f1 = Math.abs(fa[0][2] - fa[1][2]) * 0.5F;
 			float f2 = (float) (cfg.trainDistance / 3.0D * 2.0D);
 
 			if (f1 < TRAIN_WIDTH || f2 < TRAIN_WIDTH) {
-				f0 = f1 < f2 ? f1 : f2;
+				float f0 = Math.min(f1, f2);
 				this.setSize(f0, TRAIN_HEIGHT);
 
 				if (this.existBogies()) {
@@ -726,7 +795,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 		return this.trainSpeed;
 	}
 
-	protected void setSpeed(float par1) {
+	public void setSpeed(float par1) {
 		if (this.worldObj.isRemote) {
 			this.trainSpeed = par1;
 		} else {
@@ -742,7 +811,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
 	public void stopTrain(boolean changeSpeed) {
 		if (this.formation != null) {
-			this.setNotch(-8);
+			this.setNotch(this.getModelSet().getConfig().deccelerations.length - 1);
 			if (changeSpeed) {
 				this.setSpeed(0.0F);
 			}
@@ -775,7 +844,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 	public void setBogie(int id, EntityBogie bogie) {
 		this.bogieController.setBogie(id, bogie);
 		int dwid = id == 0 ? DW_Bogie0 : DW_Bogie1;
-		this.dataWatcher.updateObject(dwid, Integer.valueOf(bogie.getEntityId()));
+		this.dataWatcher.updateObject(dwid, bogie.getEntityId());
 	}
 
 	/**
@@ -808,11 +877,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 		return this.formation;
 	}
 
-	/**
-	 * @param par1
-	 * @param i    位置
-	 * @param par3 向き
-	 */
 	public void setFormation(Formation par1) {
 		this.formation = par1;
 	}
@@ -869,6 +933,13 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
+	public void syncNotch(int notchInc) {
+		this.addNotch(NGTUtil.getClientPlayer(), notchInc);
+		RTMCore.NETWORK_WRAPPER.sendToServer(new PacketNotice(PacketNotice.Side_SERVER, "notch:" + notchInc, this));
+		MacroRecorder.INSTANCE.recNotch(worldObj, notchInc);
+	}
+
 	public int getNotch() {
 		return this.getByteFromDataWatcher(TrainStateType.State_Notch.id);
 	}
@@ -892,7 +963,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
 	public boolean setNotch(int par1) {
 		if (this.isControlCar()) {
-			if (par1 <= 5 && par1 >= -8) {
+			TrainConfig cfg = this.getModelSet().getConfig();
+			if (par1 <= cfg.maxSpeed.length && par1 >= -(cfg.deccelerations.length - 1)) {
 				int prevNotch = this.getNotch();
 				if (prevNotch != par1) {
 					this.setByteToDataWatcher(TrainStateType.State_Notch.id, (byte) par1);

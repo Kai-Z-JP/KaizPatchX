@@ -65,7 +65,7 @@ public class RTMSoundHandler {
 				while (iterator1.hasNext()) {
 					IResource iresource = (IResource) iterator1.next();
 					try {
-						Map map = (Map) gson.fromJson(new InputStreamReader(iresource.getInputStream()), parmType);
+						Map map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), parmType);
 						Iterator iterator2 = map.entrySet().iterator();
 
 						while (iterator2.hasNext()) {

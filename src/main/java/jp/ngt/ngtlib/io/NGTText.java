@@ -3,6 +3,7 @@ package jp.ngt.ngtlib.io;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -130,7 +131,7 @@ public final class NGTText {
 
 	public static boolean writeToText(File file, String... texts) {
 		try {
-			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)));
 			for (String s : texts) {
 				pw.println(s);
 			}

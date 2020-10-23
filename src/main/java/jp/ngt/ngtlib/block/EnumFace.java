@@ -13,7 +13,7 @@ public enum EnumFace {
 	public final float[] normal;
 	public final float[] flip;
 
-	private EnumFace(int par1, float[] par2, float[] par3) {
+	EnumFace(int par1, float[] par2, float[] par3) {
 		this.dir = par1;
 		this.normal = par2;
 		this.flip = par3;

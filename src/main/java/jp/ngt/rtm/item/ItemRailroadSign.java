@@ -38,7 +38,7 @@ public class ItemRailroadSign extends Item {
 			Block block = RTMBlock.railroadSign;
 			world.setBlock(x, y, z, block, 0, 3);
 			TileEntityRailroadSign tile = (TileEntityRailroadSign) world.getTileEntity(x, y, z);
-			tile.setRotation(player, 15.0F, true);
+			tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
 			tile.setTexture("textures/rrs/rrs_01.png");
 
 			world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D,

@@ -56,9 +56,7 @@ public class NPCAISerachTurnstile extends EntityAIBase {
 			//vec3 = RandomPositionGenerator.findRandomTargetBlockTowards(this.npc, 3, 1, vec3);
 			if (vec3 != null) {
 				this.entityPathNavigate = this.npc.getNavigator().getPathToXYZ(vec3.xCoord, vec3.yCoord, vec3.zCoord);
-				if (this.entityPathNavigate != null) {
-					return true;
-				}
+				return this.entityPathNavigate != null;
 			}
 		}
 

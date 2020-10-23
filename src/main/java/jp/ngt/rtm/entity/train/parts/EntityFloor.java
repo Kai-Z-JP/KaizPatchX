@@ -4,13 +4,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
@@ -33,7 +33,7 @@ public class EntityFloor extends EntityVehiclePart {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(24, Byte.valueOf((byte) 0));//type
+		this.dataWatcher.addObject(24, (byte) 0);//type
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class EntityFloor extends EntityVehiclePart {
 			if (this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != player) {
 				return true;
 			} else if (this.riddenByEntity instanceof EntityLiving) {
-				this.riddenByEntity.mountEntity((Entity) null);
+				this.riddenByEntity.mountEntity(null);
 				return true;
 			}
 			return true;
@@ -134,5 +134,14 @@ public class EntityFloor extends EntityVehiclePart {
 			return vehicle.getBrightnessForRender(par1);
 		}
 		return super.getBrightnessForRender(par1);
+	}
+
+	@Override
+	public void updateRiderPosition() {
+		if (this.riddenByEntity != null) {
+			//運転手のYaw調整, PlayerのYawは他のEntityとは逆向き
+			this.riddenByEntity.setPosition(this.posX, this.posY + this.getMountedYOffset() + this.riddenByEntity.getYOffset(), this.posZ);
+			this.riddenByEntity.rotationYaw -= MathHelper.wrapAngleTo180_float(this.rotationYaw - this.prevRotationYaw);
+		}
 	}
 }

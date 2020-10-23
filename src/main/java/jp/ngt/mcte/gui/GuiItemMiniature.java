@@ -34,7 +34,7 @@ public class GuiItemMiniature extends GuiScreenCustom {
 	private boolean enabledFieldAABB;
 	private float scale;
 	private float offsetX, offsetY, offsetZ;
-	private MiniatureBlockState state;
+	private final MiniatureBlockState state;
 	private NGTObject ngto;
 	private MiniatureMode mode;
 
@@ -130,7 +130,6 @@ public class GuiItemMiniature extends GuiScreenCustom {
 			this.offsetZ = this.getFloat(this.fieldOffsetZ.getText());
 			this.state.lightValue = this.getByte(this.fieldLightValue.getText());
 		} catch (NumberFormatException e) {
-			;
 		}
 	}
 

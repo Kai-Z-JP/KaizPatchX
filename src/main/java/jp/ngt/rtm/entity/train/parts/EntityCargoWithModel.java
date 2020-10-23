@@ -1,5 +1,6 @@
 package jp.ngt.rtm.entity.train.parts;
 
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.modelpack.IModelSelector;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public abstract class EntityCargoWithModel<T extends ModelSetBase> extends EntityCargo implements IModelSelector {
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	/**
 	 * 直接参照は非推奨
 	 */
@@ -80,7 +81,7 @@ public abstract class EntityCargoWithModel<T extends ModelSetBase> extends Entit
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		return true;
 	}
 
@@ -88,6 +89,9 @@ public abstract class EntityCargoWithModel<T extends ModelSetBase> extends Entit
 		if (this.myModelSet == null || this.myModelSet.isDummy() || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
 			this.onSetNewModel(this.myModelSet);
+			if (this.worldObj == null || !this.worldObj.isRemote) {
+				PacketNBT.sendToClient(this);
+			}
 		}
 		return this.myModelSet;
 	}

@@ -3,6 +3,7 @@ package jp.ngt.rtm.electric;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.modelpack.IModelSelector;
@@ -17,11 +18,11 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntitySignal extends TileEntityPlaceable implements IProvideElectricity, IModelSelector {
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	public int blockDirection;
 	private String modelName = "";
 	private Block renderBlock;
-	private ScriptExecuter executer = new ScriptExecuter();
+	private final ScriptExecuter executer = new ScriptExecuter();
 
 	private ModelSetSignal myModelSet;
 	private int signalLevel = 0;
@@ -93,7 +94,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
 		this.renderBlock = par1;
 		this.blockDirection = par2;
 		this.modelName = name;
-		this.setRotation(player, 15.0F, false);
+		this.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
 		this.sendPacket();
 		this.markDirty();
 	}
@@ -124,6 +125,9 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
 	public ModelSetSignal getModelSet() {
 		if (this.myModelSet == null || this.myModelSet.isDummy()) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelSignal", this.modelName);
+			if (this.worldObj == null || !this.worldObj.isRemote) {
+				PacketNBT.sendToClient(this);
+			}
 		}
 		return this.myModelSet;
 	}
@@ -182,7 +186,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		return true;
 	}
 

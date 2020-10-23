@@ -8,10 +8,10 @@ import javax.swing.*;
 
 @SideOnly(Side.CLIENT)
 public final class WindowThread extends Thread implements IProgressWatcher {
-	private JFrame mainFrame;
-	private JProgressBar[] bars;
-	private JLabel[] labels;
-	private int[] maxValue;
+	private final JFrame mainFrame;
+	private final JProgressBar[] bars;
+	private final JLabel[] labels;
+	private final int[] maxValue;
 	private boolean shouldContinue;
 
 	public WindowThread() {
@@ -62,7 +62,7 @@ public final class WindowThread extends Thread implements IProgressWatcher {
 
 		while (this.shouldContinue) {
 			try {
-				this.sleep(500);
+				sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

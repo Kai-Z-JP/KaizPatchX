@@ -4,6 +4,7 @@ import jp.ngt.rtm.block.tileentity.TileEntityMachineBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEntityTicketVendor extends TileEntityMachineBase implements IInventory {
 	@Override
@@ -11,7 +12,16 @@ public class TileEntityTicketVendor extends TileEntityMachineBase implements IIn
 		return MachineType.Vendor;
 	}
 
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		if (this.getModelName().equals("Turnstile01")) {
+			this.setModelName("Vendor01");
+		}
+	}
+
 	/**********************************************************************************/
+
 
 	@Override
 	public int getSizeInventory() {
@@ -35,7 +45,6 @@ public class TileEntityTicketVendor extends TileEntityMachineBase implements IIn
 
 	@Override
 	public void setInventorySlotContents(int par1, ItemStack par2) {
-		;
 	}
 
 	@Override
@@ -60,12 +69,10 @@ public class TileEntityTicketVendor extends TileEntityMachineBase implements IIn
 
 	@Override
 	public void openInventory() {
-		;
 	}
 
 	@Override
 	public void closeInventory() {
-		;
 	}
 
 	@Override
@@ -75,6 +82,6 @@ public class TileEntityTicketVendor extends TileEntityMachineBase implements IIn
 
 	@Override
 	protected String getDefaultName() {
-		return "Turnstile01";
+		return "Vendor01";
 	}
 }

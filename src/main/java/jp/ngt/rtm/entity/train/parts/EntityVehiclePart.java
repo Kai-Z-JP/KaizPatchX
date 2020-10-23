@@ -7,8 +7,10 @@ import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -37,10 +39,10 @@ public abstract class EntityVehiclePart extends Entity {
 
 	@Override
 	protected void entityInit() {
-		this.dataWatcher.addObject(20, Integer.valueOf(0));//getTrain
-		this.dataWatcher.addObject(21, Float.valueOf(0));//getVec
-		this.dataWatcher.addObject(22, Float.valueOf(0));//getVec
-		this.dataWatcher.addObject(23, Float.valueOf(0));//getVec
+		this.dataWatcher.addObject(20, 0);//getTrain
+		this.dataWatcher.addObject(21, 0F);//getVec
+		this.dataWatcher.addObject(22, 0F);//getVec
+		this.dataWatcher.addObject(23, 0F);//getVec
 	}
 
 	@Override
@@ -192,7 +194,7 @@ public abstract class EntityVehiclePart extends Entity {
 	}
 
 	public void setVehicle(EntityVehicleBase vehicle) {
-		this.dataWatcher.updateObject(20, Integer.valueOf(vehicle.getEntityId()));
+		this.dataWatcher.updateObject(20, vehicle.getEntityId());
 	}
 
 	public EntityVehicleBase getVehicle() {
@@ -209,9 +211,9 @@ public abstract class EntityVehiclePart extends Entity {
 	 * EntityTrainとの相対位置を保存
 	 */
 	public void setPartPos(float x, float y, float z) {
-		this.dataWatcher.updateObject(21, Float.valueOf(x));
-		this.dataWatcher.updateObject(22, Float.valueOf(y));
-		this.dataWatcher.updateObject(23, Float.valueOf(z));
+		this.dataWatcher.updateObject(21, x);
+		this.dataWatcher.updateObject(22, y);
+		this.dataWatcher.updateObject(23, z);
 	}
 
 	/**
@@ -222,5 +224,10 @@ public abstract class EntityVehiclePart extends Entity {
 		float y = this.dataWatcher.getWatchableObjectFloat(22);
 		float z = this.dataWatcher.getWatchableObjectFloat(23);
 		return Vec3.createVectorHelper(x, y, z);
+	}
+
+	@Override
+	public ItemStack getPickedResult(MovingObjectPosition target) {
+		return this.parent.getPickedResult(target);
 	}
 }

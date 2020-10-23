@@ -43,7 +43,7 @@ public class ItemTicket extends Item {
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
 		if (this.ticketType == 1) {
 			String s = StatCollector.translateToLocal("item.ticket.remaining");
-			list.add(EnumChatFormatting.GRAY + s + ":" + String.valueOf(itemStack.getItemDamage()));
+			list.add(EnumChatFormatting.GRAY + s + ":" + itemStack.getItemDamage());
 		}
 
 		NBTTagCompound nbt = itemStack.getTagCompound();

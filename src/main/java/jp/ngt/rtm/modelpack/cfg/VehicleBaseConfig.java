@@ -16,6 +16,11 @@ public abstract class VehicleBaseConfig extends ModelConfig {
 	public String[] rollsignNames;
 	public Rollsign[] rollsigns;
 
+	/**
+	 * [ボタン][ボタンの状態名]
+	 */
+	public String[][] customButtons;
+
 	public VehicleParts[] door_left;
 	public VehicleParts[] door_right;
 	public VehicleParts[] pantograph_front;
@@ -127,6 +132,10 @@ public abstract class VehicleBaseConfig extends ModelConfig {
 
 		if (this.wheelRotationSpeed <= 0.0F) {
 			this.wheelRotationSpeed = 1.0F;
+		}
+
+		if (this.customButtons == null) {
+			this.customButtons = new String[][]{};
 		}
 	}
 

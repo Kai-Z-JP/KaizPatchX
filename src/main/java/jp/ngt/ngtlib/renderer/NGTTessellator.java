@@ -71,40 +71,40 @@ public final class NGTTessellator implements IRenderer {
 			int offs = 0;
 			while (offs < this.vertexCount) {
 				int vtc = Math.min(this.vertexCount - offs, NATIVE_BUFFER_SIZE >> 5);
-				this.intBuffer.clear();
-				this.intBuffer.put(this.rawBuffer, offs << 3, vtc << 3);
-				this.byteBuffer.position(0);
-				this.byteBuffer.limit(vtc << 5);
+				intBuffer.clear();
+				intBuffer.put(this.rawBuffer, offs << 3, vtc << 3);
+				byteBuffer.position(0);
+				byteBuffer.limit(vtc << 5);
 				offs += vtc;
 
 				if (this.hasTexture) {
-					this.floatBuffer.position(3);
-					GL11.glTexCoordPointer(2, 32, this.floatBuffer);
+					floatBuffer.position(3);
+					GL11.glTexCoordPointer(2, 32, floatBuffer);
 					GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 				}
 
 				if (this.hasBrightness) {
 					OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
-					this.shortBuffer.position(14);
-					GL11.glTexCoordPointer(2, 32, this.shortBuffer);
+					shortBuffer.position(14);
+					GL11.glTexCoordPointer(2, 32, shortBuffer);
 					GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 					OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
 				}
 
 				if (this.hasColor) {
-					this.byteBuffer.position(20);
-					GL11.glColorPointer(4, true, 32, this.byteBuffer);
+					byteBuffer.position(20);
+					GL11.glColorPointer(4, true, 32, byteBuffer);
 					GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
 				}
 
 				if (this.hasNormals) {
-					this.byteBuffer.position(24);
-					GL11.glNormalPointer(32, this.byteBuffer);
+					byteBuffer.position(24);
+					GL11.glNormalPointer(32, byteBuffer);
 					GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
 				}
 
-				this.floatBuffer.position(0);
-				GL11.glVertexPointer(3, 32, this.floatBuffer);
+				floatBuffer.position(0);
+				GL11.glVertexPointer(3, 32, floatBuffer);
 				GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 				GL11.glDrawArrays(this.drawMode, 0, vtc);
 				GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
@@ -183,7 +183,7 @@ public final class NGTTessellator implements IRenderer {
 	 */
 	private void reset() {
 		this.vertexCount = 0;
-		this.byteBuffer.clear();
+		byteBuffer.clear();
 		this.rawBufferIndex = 0;
 	}
 

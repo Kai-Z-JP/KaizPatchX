@@ -25,6 +25,6 @@ public final class DataEntryString extends DataEntry<String> {
 
 	@Override
 	public String toString() {
-		return this.data.toString();
+		return this.data;
 	}
 }

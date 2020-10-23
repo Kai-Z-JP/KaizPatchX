@@ -15,6 +15,7 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -29,6 +30,7 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 	public static Calendar CALENDAR = Calendar.getInstance();
 
 	protected List<Parts> partsList = new ArrayList<Parts>();
+	protected List<ActionParts> targetsList = new ArrayList<>();
 	protected MS modelSet;
 	protected ModelObject modelObj;
 	protected ScriptEngine script;
@@ -36,11 +38,40 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 
 	public int currentMatId;
 
+	public int currentPass;
+
+	public ActionParts hittedActionParts;
+
+	private int mouseHoldCount;
+
+	private int dragStartPos;
+
 	public PartsRenderer(String... par1) {
+	}
+
+	public void setScript(ScriptEngine se, ResourceLocation rl) {
+		this.script = se;
+	}
+
+	public ScriptEngine getScript() {
+		return this.script;
+	}
+
+	private void execScriptFunc(String func, Object... args) {
+		try {
+			ScriptUtil.doScriptFunction(this.script, func, args);
+		} catch (Exception e) {
+			throw new RuntimeException("On init script : " + this.modelSet.getConfig().getName(), e);
+		}
 	}
 
 	public Parts registerParts(Parts par1) {
 		this.partsList.add(par1);
+		if (par1 instanceof ActionParts) {
+			ActionParts actionParts = (ActionParts) par1;
+			actionParts.id = this.targetsList.size() + 1;
+			this.targetsList.add(actionParts);
+		}
 		return par1;
 	}
 
@@ -64,13 +95,61 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 	public void postRender(T t, boolean smoothing, boolean culling, float par3) {
 	}
 
+	private ActionParts selectHits(T t, int hits) {
+		if (hits <= 0)
+			return Mouse.isButtonDown(1) ? this.hittedActionParts : null;
+		int hitIndex = 0;
+		for (int i = 0; i < hits; i++) {
+			hitIndex = GLHelper.getPickedObjId(i);
+		}
+		return this.targetsList.get(hitIndex - 1);
+	}
+
+	private void checkMouseAction(T t) {
+		if (Mouse.isButtonDown(1)) {
+			if (this.hittedActionParts != null)
+				if (this.hittedActionParts.behavior == ActionType.TOGGLE) {
+					if (this.mouseHoldCount == 0)
+						onRightClick(t, this.hittedActionParts);
+					this.mouseHoldCount++;
+				} else {
+					int currentPos = (this.hittedActionParts.behavior == ActionType.DRAG_X) ? Mouse.getX() : Mouse.getY();
+					if (this.mouseHoldCount == 0)
+						this.dragStartPos = currentPos;
+					onRightDrag(t, this.hittedActionParts, currentPos - this.dragStartPos);
+					this.mouseHoldCount++;
+				}
+		} else {
+			this.mouseHoldCount = 0;
+			this.dragStartPos = 0;
+		}
+	}
+
+	private void onRightClick(T t, ActionParts parts) {
+		execScriptFunc("onRightClick", t, parts);
+	}
+
+	private void onRightDrag(T t, ActionParts parts, int move) {
+		execScriptFunc("onRightDrag", t, parts, Integer.valueOf(move));
+	}
+
 	/**
-	 * @param t    Entity or TileEntity
-	 * @param pass 0;通常, 1:半透明, 2~4:発光
-	 * @param par3
+	 * @param t           Entity or TileEntity
+	 * @param pass        0;通常, 1:半透明, 2~4:発光
+	 * @param partialTick
 	 */
-	public void render(T t, int pass, float par3) {
-		ScriptUtil.doScriptFunction(this.script, "render", t, pass, par3);
+	public void render(T t, int pass, float partialTick) {
+		if (t != null && pass == RenderPass.NORMAL.id && this.currentMatId == 0 && !this.targetsList.isEmpty())
+			render(t, RenderPass.PICK.id, partialTick);
+		this.currentPass = pass;
+		if (pass == RenderPass.PICK.id)
+			GLHelper.startMousePicking(1.0F);
+		execScriptFunc("render", t, Integer.valueOf(pass), Float.valueOf(partialTick));
+		if (pass == RenderPass.PICK.id) {
+			int hits = GLHelper.finishMousePicking();
+			this.hittedActionParts = selectHits(t, hits);
+			checkMouseAction(t);
+		}
 	}
 
 	public String getModelName() {
@@ -311,7 +390,7 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 		String s = (String) ScriptUtil.getScriptField(se, "renderClass");
 		Class clazz = Launch.classLoader.loadClass(s);
 		Constructor<R> constructor = clazz.getConstructor(String[].class);
-		R renderer = (R) constructor.newInstance(new Object[]{args});
+		R renderer = constructor.newInstance(new Object[]{args});
 		renderer.script = se;
 		se.put("renderer", renderer);
 		return renderer;

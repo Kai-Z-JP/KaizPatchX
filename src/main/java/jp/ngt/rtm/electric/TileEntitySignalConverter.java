@@ -126,7 +126,6 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 
 		@Override
 		public void setElectricity(int x, int y, int z, int level) {
-			;
 		}
 	}
 
@@ -210,7 +209,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 	}
 
 	public static class TileEntitySC_Wireless extends TileEntitySignalConverter implements IChunkLoader {
-		private static Map<Integer, List<TileEntitySC_Wireless>> ADAPTER_MAP = new HashMap<Integer, List<TileEntitySC_Wireless>>();
+		private static final Map<Integer, List<TileEntitySC_Wireless>> ADAPTER_MAP = new HashMap<Integer, List<TileEntitySC_Wireless>>();
 
 		private int prevChannel = 0;
 
@@ -230,9 +229,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 
 		private void updateAntennaList() {
 			List<TileEntitySC_Wireless> list = this.getList(this.prevChannel);
-			if (list.contains(this)) {
-				list.remove(this);
-			}
+			list.remove(this);
 			List<TileEntitySC_Wireless> list2 = this.getList(this.getChannel());
 			list2.add(this);
 			this.prevChannel = this.getChannel();
@@ -405,7 +402,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 		public final byte id;
 		public final String operator;
 
-		private ComparatorType(int par1, String par2) {
+		ComparatorType(int par1, String par2) {
 			this.id = (byte) par1;
 			this.operator = par2;
 		}

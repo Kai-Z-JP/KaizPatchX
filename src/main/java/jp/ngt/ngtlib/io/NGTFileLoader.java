@@ -55,7 +55,7 @@ public final class NGTFileLoader {
 
 	public static List<File> findFileInDirectory(File dir, FileMatcher matcher) throws IOException {
 		ScanResult result = new ScanResult();
-		findFileInDirectory(result, dir, new FileMatcher[]{matcher});
+		findFileInDirectory(result, dir, matcher);
 		return result.asList();
 	}
 
@@ -163,7 +163,6 @@ public final class NGTFileLoader {
 				NGTLog.debug("[NGTFL] Add mods dir : " + modsDir2.getAbsolutePath());
 			}
 		} catch (NullPointerException e) {
-			;
 		}
 
 		File modsDir = NGTCore.proxy.getMinecraftDirectory("mods");

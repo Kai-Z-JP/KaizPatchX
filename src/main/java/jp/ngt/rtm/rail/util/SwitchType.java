@@ -27,7 +27,6 @@ public abstract class SwitchType {
 	 * ブロック更新時に呼ばれる
 	 */
 	public void onBlockChanged(World world) {
-		;
 	}
 
 	/**

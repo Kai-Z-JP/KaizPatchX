@@ -54,7 +54,7 @@ public class Editor {
 	private final EntityEditor editorEntity;
 
 	private WorldSnapshot clipboard;
-	private Stack<WorldSnapshot> history = new Stack<WorldSnapshot>(MCTE.numberOfUndo);
+	private final Stack<WorldSnapshot> history = new Stack<WorldSnapshot>(MCTE.numberOfUndo);
 
 	public Editor(EntityEditor par1) {
 		this.editorEntity = par1;
@@ -79,7 +79,7 @@ public class Editor {
 	}
 
 	public AABBInt getSelectBox() {
-		int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
+		int minX, minY, minZ, maxX, maxY, maxZ;
 
 		int[] start = this.getEntity().getPos(true);
 		int[] end = this.getEntity().getPos(false);
@@ -87,15 +87,21 @@ public class Editor {
 			return null;//0バグ回避
 		}
 
-		minX = (start[0] < end[0]) ? start[0] : end[0];
-		maxX = (start[0] < end[0]) ? end[0] : start[0];
-		minY = (start[1] < end[1]) ? start[1] : end[1];
-		maxY = (start[1] < end[1]) ? end[1] : start[1];
-		minZ = (start[2] < end[2]) ? start[2] : end[2];
-		maxZ = (start[2] < end[2]) ? end[2] : start[2];
+		minX = Math.min(start[0], end[0]);
+		maxX = Math.max(start[0], end[0]);
+		minY = Math.min(start[1], end[1]);
+		maxY = Math.max(start[1], end[1]);
+		minZ = Math.min(start[2], end[2]);
+		maxZ = Math.max(start[2], end[2]);
+
 		maxX += 1;
 		maxY += 1;
 		maxZ += 1;
+
+		if (minX == 0 && minZ == 0) {
+			return null;//0バグ回避
+		}
+
 		return new AABBInt(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
@@ -259,7 +265,6 @@ public class Editor {
 						x1 = xSize2 - i - 1;
 					} else if (type == Transform_MirrorY) {
 						y1 = ySize2 - j - 1;
-						;
 					} else if (type == Transform_MirrorZ) {
 						z1 = zSize2 - k - 1;
 					}

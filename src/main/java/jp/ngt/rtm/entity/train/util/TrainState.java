@@ -26,7 +26,7 @@ public enum TrainState {
 	public final byte data;
 	public final String stateName;
 
-	private TrainState(int par1, int par2, String par3) {
+	TrainState(int par1, int par2, String par3) {
 		this.id = par1;
 		this.data = (byte) par2;
 		this.stateName = par3;
@@ -71,7 +71,7 @@ public enum TrainState {
 		public final byte min;
 		public final byte max;
 
-		private TrainStateType(int par1, String par2, int par3, int par4) {
+		TrainStateType(int par1, String par2, int par3, int par4) {
 			this.id = par1;
 			this.stateName = par2;
 			this.min = (byte) par3;

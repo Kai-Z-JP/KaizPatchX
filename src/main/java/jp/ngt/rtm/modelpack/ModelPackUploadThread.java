@@ -13,7 +13,7 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 
 public class ModelPackUploadThread extends Thread {
-	private ByteBuffer buffer = ByteBuffer.allocate(RTMCore.PacketSize);
+	private final ByteBuffer buffer = ByteBuffer.allocate(RTMCore.PacketSize);
 
 	public ModelPackUploadThread() {
 		super("RTM ModelPack Upload");
@@ -46,7 +46,7 @@ public class ModelPackUploadThread extends Thread {
 					this.buffer.flip();
 					RTMCore.NETWORK_WRAPPER.sendToAll(new PacketModelPack(file.getName(), size, this.buffer));
 					this.buffer.clear();
-					this.sleep(100);
+					sleep(100);
 				}
 				channel.close();
 			} catch (IOException e) {

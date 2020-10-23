@@ -1,6 +1,7 @@
 {
   "trainName": "koki100",
   "trainType": "CC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_koki100.obj",
     "textures": [

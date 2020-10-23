@@ -174,7 +174,7 @@ public final class NGTRenderer {
 		GL11.glPushMatrix();
 		if (changeLightting) {
 			GLHelper.disableLighting();
-			;//これないと若干暗くなる
+			//これないと若干暗くなる
 		}
 		GL11.glEnable(GL11.GL_ALPHA_TEST);//ガラスや鉄柵が不透明になる
 

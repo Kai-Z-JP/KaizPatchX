@@ -81,8 +81,8 @@ public class MiniatureBlockState {
 
 	private AxisAlignedBB getAABB(float[] fa) {
 		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
-				(double) fa[0], (double) fa[1], (double) fa[2],
-				(double) fa[3], (double) fa[4], (double) fa[5]);
+				fa[0], fa[1], fa[2],
+				fa[3], fa[4], fa[5]);
 		return aabb;
 	}
 

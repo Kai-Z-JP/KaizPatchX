@@ -93,8 +93,8 @@ public class BlockMeltedMetal extends BlockLiquidBase {
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
 		entity.motionY = 0.20000000298023224D;
-		entity.motionX = (double) ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F);
-		entity.motionZ = (double) ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F);
+		entity.motionX = (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F;
+		entity.motionZ = (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F;
 		entity.playSound("random.fizz", 0.4F, 2.0F + world.rand.nextFloat() * 0.4F);
 		entity.attackEntityFrom(DamageSource.lava, 1.0F);
 		entity.setFire(5);

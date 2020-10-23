@@ -1,0 +1,19 @@
+{
+  "name": "Vendor01",
+  "model": {
+    "modelFile": "ModelMachine_TicketVendor.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/machine/vendor01.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/machine/button_Vendor01.png",
+  "machineType": "Vendor",
+  "smoothing": false,
+  "doCulling": true,
+  "accuracy": "LOW",
+  "tags": "ngt5479"
+}

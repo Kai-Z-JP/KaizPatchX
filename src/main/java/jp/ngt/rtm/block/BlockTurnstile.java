@@ -41,7 +41,7 @@ public class BlockTurnstile extends BlockMachineBase {
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
 		int l = world.getBlockMetadata(x, y, z);
-		return isOpen(l) ? null : (l != 2 && l != 0 ? AxisAlignedBB.getBoundingBox((double) x + 0.375D, (double) y, (double) z, (double) x + 0.625D, (double) ((float) y + 1.5F), (double) (z + 1)) : AxisAlignedBB.getBoundingBox((double) x, (double) y, (double) ((float) z + 0.375F), (double) (x + 1), (double) ((float) y + 1.5F), (double) ((float) z + 0.625F)));
+		return isOpen(l) ? null : (l != 2 && l != 0 ? AxisAlignedBB.getBoundingBox((double) x + 0.375D, y, z, (double) x + 0.625D, (float) y + 1.5F, z + 1) : AxisAlignedBB.getBoundingBox(x, y, (float) z + 0.375F, x + 1, (float) y + 1.5F, (float) z + 0.625F));
 	}
 
 	@Override

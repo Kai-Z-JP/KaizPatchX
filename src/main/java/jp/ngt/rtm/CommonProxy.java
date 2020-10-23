@@ -77,7 +77,6 @@ public class CommonProxy {
 	}
 
 	public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch) {
-		;
 	}
 
 	/**

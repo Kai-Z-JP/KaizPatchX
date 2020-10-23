@@ -1,8 +1,10 @@
 package jp.ngt.rtm.entity.vehicle;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.entity.EntityInstalledObject;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.network.PacketVehicleMovement;
@@ -36,7 +38,7 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
 
 	@Override
 	public boolean equals(Object par1) {
-		return par1 instanceof EntityTrackerEntry ? ((EntityTrackerEntry) par1).myEntity.getEntityId() == this.myEntity.getEntityId() : false;
+		return par1 instanceof EntityTrackerEntry && ((EntityTrackerEntry) par1).myEntity.getEntityId() == this.myEntity.getEntityId();
 	}
 
 	@Override
@@ -165,12 +167,15 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
 					if (posX != this.lastScaledXPosition || posY != this.lastScaledYPosition || posZ != this.lastScaledZPosition) {
 						FMLNetworkHandler.makeEntitySpawnAdjustment(this.myEntity, par1, this.lastScaledXPosition, this.lastScaledYPosition, this.lastScaledZPosition);
 					}
-
 					if (this.myEntity.ridingEntity != null) {
 						par1.playerNetServerHandler.sendPacket(new S1BPacketEntityAttach(0, this.myEntity, this.myEntity.ridingEntity));
 					}
 
 					ForgeEventFactory.onStartEntityTracking(this.myEntity, par1);
+
+					if (this.myEntity instanceof EntityVehicleBase || this.myEntity instanceof EntityInstalledObject) {
+						PacketNBT.sendTo(this.myEntity, par1);
+					}
 				}
 			} else if (this.trackingPlayers.contains(par1)) {
 				this.trackingPlayers.remove(par1);

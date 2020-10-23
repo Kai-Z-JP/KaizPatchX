@@ -1,5 +1,7 @@
 package jp.ngt.rtm.modelpack.cfg;
 
+import java.util.Arrays;
+
 public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
 	public static final String TYPE = "ModelTrain";
 
@@ -69,15 +71,29 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
 	 * N km/h/s -> N x 0.0006944
 	 */
 	public float accelerateion;
+
+	/**
+	 * 加速度ノッチ段数と同一<br>
+	 * N km/h/s -> N x 0.0006944
+	 */
+	public float[] accelerateions;
 	/**
 	 * ノッチごとの速度上限(1~5段)
 	 */
 	public float[] maxSpeed;
+	/**
+	 * GUIオフ時は7段でデフォルトブレーキ段数固定
+	 */
+	public float[] deccelerations;
 
 	/**
 	 * カーブでの傾き具合(0.0~1.0)
 	 */
 	public float rolling;
+
+	public float rollSpeedCoefficient;
+	public float rollVariationCoefficient;
+	public float rollWidthCoefficient;
 
 	@Override
 	public void init() {
@@ -113,9 +129,19 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
 			this.accelerateion = 0.001736F;
 		}
 
-		if (this.maxSpeed == null || this.maxSpeed.length < 5) {
+		if (this.maxSpeed == null || (!this.notDisplayCab && this.maxSpeed.length != 5)) {
 			this.maxSpeed = new float[]{0.36F, 0.72F, 1.08F, 1.44F, 1.80F};
 		}
+
+		if (this.accelerateions == null || (!this.notDisplayCab && this.accelerateions.length != this.maxSpeed.length)) {
+			this.accelerateions = new float[this.maxSpeed.length];
+			Arrays.fill(this.accelerateions, this.accelerateion);
+		}
+
+		if (this.deccelerations == null || (!this.notDisplayCab && this.deccelerations.length != 9)) {
+			this.deccelerations = new float[]{-0.0002F, -0.0005F, -0.001F, -0.0015F, -0.002F, -0.0025F, -0.003F, -0.0035F, -0.01F};
+		}
+
 
 		this.rolling *= 5.0F;
 

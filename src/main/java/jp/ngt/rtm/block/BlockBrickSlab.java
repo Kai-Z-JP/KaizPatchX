@@ -63,7 +63,6 @@ public class BlockBrickSlab extends BlockSlab//ItemSlab.class
 
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister p_149651_1_) {
-		;
 	}
 
 	@Override

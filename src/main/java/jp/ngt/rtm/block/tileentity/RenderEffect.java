@@ -31,19 +31,15 @@ public class RenderEffect extends TileEntitySpecialRenderer {
 	private static final String[] partNames = {"obj1", "obj2", "obj3", "obj4", "obj5"};
 
 	public RenderEffect() {
-		Thread thread = new Thread() {
-			@Override
-			public void run() {
-				RenderEffect.this.model = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ExplosionN.mqo"), VecAccuracy.MEDIUM);
-				RenderEffect.this.sphere = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ExplosionS.mqo"), VecAccuracy.MEDIUM);
-				RenderEffect.this.ring = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ExplosionR.mqo"), VecAccuracy.MEDIUM);
-				RenderEffect.this.finishLoading = true;
-			}
-		};
-		thread.start();
+		new Thread(() -> {
+			RenderEffect.this.model = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ExplosionN.mqo"), VecAccuracy.MEDIUM);
+			RenderEffect.this.sphere = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ExplosionS.mqo"), VecAccuracy.MEDIUM);
+			RenderEffect.this.ring = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ExplosionR.mqo"), VecAccuracy.MEDIUM);
+			RenderEffect.this.finishLoading = true;
+		}).start();
 	}
 
-	private final void render(TileEntityEffect entity, double x, double y, double z, float partialTick) {
+	private void render(TileEntityEffect entity, double x, double y, double z, float partialTick) {
 		if (!this.finishLoading) {
 			return;
 		}

@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 
 @SideOnly(Side.CLIENT)
 public final class RenderUtil {
-	private static FloatBuffer colorBuffer = GLAllocation.createDirectFloatBuffer(16);
+	private static final FloatBuffer colorBuffer = GLAllocation.createDirectFloatBuffer(16);
 
 	public static void enableCustomLighting(int id, float x, float y, float z, float r, float g, float b) {
 		int light = getLight(id);

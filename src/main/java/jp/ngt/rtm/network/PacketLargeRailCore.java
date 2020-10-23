@@ -112,7 +112,6 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
 			tile0.setProperty(RailProperty.readFromNBT(message.property));
 			tile0.setRailPositions(message.railPositions);
 			if (message.dataType == TYPE_NORMAL && tile instanceof TileEntityLargeRailNormalCore) {
-				;
 			} else if (message.dataType == TYPE_SLOPE && tile instanceof TileEntityLargeRailSlopeCore) {
 				TileEntityLargeRailSlopeCore tile1 = (TileEntityLargeRailSlopeCore) tile;
 				tile1.setSlopeType(message.type);
@@ -121,6 +120,9 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
 				//tile1.setSwitchType(message.type);
 			}
 			//tile0.createRailMap();
+			for (int[] pos : tile0.getRailMap(null).getRailBlockList(RailProperty.readFromNBT(message.property))) {
+				world.markBlockForUpdate(pos[0], pos[1], pos[2]);
+			}
 		}
 		return null;
 	}

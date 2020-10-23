@@ -1,6 +1,7 @@
 {
   "trainName": "df200",
   "trainType": "DC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_df200.mqo",
     "textures": [
@@ -20,6 +21,7 @@
       ]
     ]
   },
+
   "buttonTexture": "textures/train/df200/button_df200.png",
   "sound_Stop": "train.rtm_dc40r_stn",
   "sound_S_A": "train.rtm_dc40r_go-a",
@@ -27,6 +29,7 @@
   "sound_Deceleration": "train.rtm_dc40r_i",
   "sound_D_S": "train.rtm_dc40r_i-stop",
   "sound_Horn": "train.rtm_wh_00l",
+
   "headLights": [
     {
       "type": 0,

@@ -13,7 +13,7 @@ public abstract class TileEntityPartsRenderer<MS extends ModelSetBase> extends P
 	}
 
 	public int getMetadata(TileEntity par1) {
-		return par1 == null ? 0 : ((TileEntity) par1).getBlockMetadata();
+		return par1 == null ? 0 : par1.getBlockMetadata();
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 	 * レールを再描画するかどうか(明るさ変更等)
 	 */
 	@SideOnly(Side.CLIENT)
-	public boolean shouldRerender;
+	public boolean shouldRerenderRail;
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -244,12 +244,12 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 		int endY = this.railPositions[1].blockY;
 		int endZ = this.railPositions[1].blockZ;
 
-		int minX = startX <= endX ? startX : endX;
-		int maxX = startX >= endX ? startX : endX;
-		int minY = startY <= endY ? startY : endY;
-		int maxY = startY >= endY ? startY : endY;
-		int minZ = startZ <= endZ ? startZ : endZ;
-		int maxZ = startZ >= endZ ? startZ : endZ;
+		int minX = Math.min(startX, endX);
+		int maxX = Math.max(startX, endX);
+		int minY = Math.min(startY, endY);
+		int maxY = Math.max(startY, endY);
+		int minZ = Math.min(startZ, endZ);
+		int maxZ = Math.max(startZ, endZ);
 		return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
 	}
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MacroExecutor {
-	private List<TrainCommand> commands = new ArrayList<TrainCommand>();
+	private final List<TrainCommand> commands = new ArrayList<TrainCommand>();
 	private boolean executing;
 	private long startTime;
 

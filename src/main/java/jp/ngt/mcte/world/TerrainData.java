@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class TerrainData {
-	private static BlockSet default_BlockSet = new BlockSet(Blocks.stone, 0);
+	private static final BlockSet default_BlockSet = new BlockSet(Blocks.stone, 0);
 
 	public File terrainFile;
 	public File blocksFile;
@@ -79,7 +79,7 @@ public class TerrainData {
 					int x0 = x + j;
 					int y0 = y + k;
 					int z0 = z + i;
-					MCTE.NETWORK_WRAPPER.sendToServer(new PacketGenerator(x0, y0, z0, Block.blockRegistry.getNameForObject(set.block), (byte) set.metadata));
+					MCTE.NETWORK_WRAPPER.sendToServer(new PacketGenerator(x0, y0, z0, Block.blockRegistry.getNameForObject(set.block), set.metadata));
 				}
 			}
 		}

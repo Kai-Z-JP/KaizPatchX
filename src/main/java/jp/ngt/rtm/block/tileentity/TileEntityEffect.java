@@ -19,7 +19,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.chunk.IChunkProvider;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class TileEntityEffect extends TileEntity {
@@ -161,9 +160,8 @@ public class TileEntityEffect extends TileEntity {
 		double time = (double) (Phase3 - this.tickCount) / (double) (Phase3 - Phase1);//0.0~1.0
 		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, this.getAABB(tileX, tileY, tileZ, blastSize));
 		//List list = this.worldObj.loadedEntityList;//ConcurrentModificationException
-		Iterator iterator = list.iterator();
-		while (iterator.hasNext()) {
-			Entity entity = (Entity) iterator.next();
+		for (int i = 0; i < list.size(); i++) {
+			Entity entity = (Entity) list.get(i);
 			double distanceSq = entity.getDistanceSq(tileX, tileY, tileZ);
 			if (distanceSq < d1) {
 				double dx = entity.posX - tileX;

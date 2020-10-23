@@ -12,11 +12,9 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
-import jp.ngt.rtm.entity.train.util.EnumNotch;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityPlane;
 import jp.ngt.rtm.entity.vehicle.EntityVehicle;
-import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetTrainClient;
 import jp.ngt.rtm.network.PacketRTMKey;
 import net.minecraft.client.Minecraft;
@@ -156,7 +154,7 @@ public final class RTMKeyHandlerClient {
 		if (player.isRiding() && (riding instanceof EntityTrainBase)) {
 			EntityTrainBase train = (EntityTrainBase) riding;
 			if (KEY_EB.isPressed()) {
-				train.syncTrainStateData(TrainStateType.State_Notch.id, (byte) EnumNotch.emergency_brake.id);
+				train.syncTrainStateData(TrainStateType.State_Notch.id, (byte) -(train.getModelSet().getConfig().deccelerations.length - 1));
 				this.playSound(player, RTMCore.KEY_Horn);
 				NGTLog.showChatMessage(new ChatComponentText("Push EB"));
 			} else if (KEY_CHIME_NEXT.isPressed()) {
@@ -196,7 +194,7 @@ public final class RTMKeyHandlerClient {
 					MacroRecorder.INSTANCE.recHorn(player.worldObj);
 				} else if (key == RTMCore.KEY_Chime) {
 					int index = train.getTrainStateData(9);
-					String[][] sa0 = ((TrainConfig) modelset.getConfig()).sound_Announcement;
+					String[][] sa0 = modelset.getConfig().sound_Announcement;
 					if (sa0 != null && index < sa0.length) {
 						String[] sa1 = sa0[index][1].split(":");
 						//ClientProxy.playSound(player, new ResourceLocation(sa1[0], sa1[1]));

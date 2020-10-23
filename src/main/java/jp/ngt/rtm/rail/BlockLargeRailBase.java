@@ -6,6 +6,7 @@ import jp.ngt.ngtlib.block.BlockUtil;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.RTMMaterial;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 public class BlockLargeRailBase extends BlockContainer {
+	public static final float THICKNESS = 0.0625F;
 	/**
 	 * 2:Gravel, 3:Stone, 4:Snow, 5:Asphalt
 	 */
@@ -42,7 +44,7 @@ public class BlockLargeRailBase extends BlockContainer {
 		this.setLightOpacity(0);
 		this.setResistance(15.0F);
 		//this.setHarvestLevel("pickaxe", 0);
-		this.setStepSound(par1 == 2 ? this.soundTypeGravel : (par1 == 4 ? this.soundTypeSnow : this.soundTypeStone));
+		this.setStepSound(par1 == 2 ? Block.soundTypeGravel : (par1 == 4 ? Block.soundTypeSnow : Block.soundTypeStone));
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F);
 		this.railTextureType = par1;
 	}
@@ -131,7 +133,14 @@ public class BlockLargeRailBase extends BlockContainer {
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if (tileEntity instanceof TileEntityLargeRailBase) {
+			ItemStack itemStack = new ItemStack(RTMItem.itemLargeRail);
+			RailProperty property = ((TileEntityLargeRailBase) tileEntity).getRailCore().getProperty();
+			ItemRail.writePropToItem(property, itemStack);
+			return itemStack;
+		}
 		return null;
 	}
 

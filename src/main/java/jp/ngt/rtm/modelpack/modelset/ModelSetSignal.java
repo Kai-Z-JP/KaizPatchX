@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ModelSetSignal extends ModelSetBase<SignalConfig> {
-	private static Pattern signalPattern = Pattern.compile("S\\((.+?)\\)");
-	private static Pattern intervalPattern = Pattern.compile("I\\((.+?)\\)");
-	private static Pattern partsPattern = Pattern.compile("P\\((.+?)\\)");
+	private static final Pattern signalPattern = Pattern.compile("S\\((.+?)\\)");
+	private static final Pattern intervalPattern = Pattern.compile("I\\((.+?)\\)");
+	private static final Pattern partsPattern = Pattern.compile("P\\((.+?)\\)");
 
 	public final int maxSignalLevel;
 

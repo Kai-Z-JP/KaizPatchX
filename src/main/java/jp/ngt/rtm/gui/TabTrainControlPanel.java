@@ -20,6 +20,7 @@ public class TabTrainControlPanel {
 
 	public static final TabTrainControlPanel TAB_Inventory = new TabTrainControlPanel("Player_Inventory", Item.getItemFromBlock(Blocks.chest), new ResourceLocation("rtm", "textures/gui/tab_inventory.png"));
 	public static final TabTrainControlPanel TAB_Setting = new TabTrainControlPanel("Setting", RTMItem.crowbar, new ResourceLocation("rtm", "textures/gui/tab_setting.png"));
+	public static final TabTrainControlPanel TAB_Function = new TabTrainControlPanel("Function", RTMItem.wrench, new ResourceLocation("rtm", "textures/gui/tab_setting.png"));
 	public static final TabTrainControlPanel TAB_Formation = new TabTrainControlPanel("Formation", RTMItem.itemtrain, new ResourceLocation("rtm", "textures/gui/tab_formation.png"));
 
 	public TabTrainControlPanel(String par1, Item par2, ResourceLocation par3) {

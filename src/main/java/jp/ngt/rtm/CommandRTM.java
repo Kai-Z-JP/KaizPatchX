@@ -4,12 +4,15 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
+import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,10 +29,17 @@ public class CommandRTM extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender commandSender, String[] s) {
-		EntityPlayer player = getCommandSenderAsPlayer(commandSender);
+		EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
+		if (s.length >= 1) {
+			if (s[0].equalsIgnoreCase("use1122marker")) {
+				RTMCore.NETWORK_WRAPPER.sendTo(new PacketNotice(PacketNotice.Side_CLIENT, "use1122marker," + (s.length == 2 ? Boolean.parseBoolean(s[1]) : "flip")), player);
+				return;
+			}
+		}
 
 		if (s.length == 2) {
-			byte state = (byte) ((int) Integer.valueOf(s[1]));
+
+			int state = Integer.parseInt(s[1]);
 
 			double d0 = 16.0D;
 			List list = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - d0, player.posY - d0, player.posZ - d0, player.posX + d0, player.posY + d0, player.posZ + d0));
@@ -38,15 +48,17 @@ public class CommandRTM extends CommandBase {
 				Entity entity = (Entity) iterator.next();
 				if (entity instanceof EntityTrainBase) {
 					EntityTrainBase train = (EntityTrainBase) entity;
-					if (s[0].equals("door")) {
-						train.setTrainStateData(TrainStateType.State_Door.id, state);
-					} else if (s[0].equals("pan")) {
-						train.setTrainStateData(TrainStateType.State_Pantograph.id, state);
+					if (s[0].equalsIgnoreCase("door")) {
+						train.setTrainStateData(TrainStateType.State_Door.id, (byte) state);
+					} else if (s[0].equalsIgnoreCase("pan")) {
+						train.setTrainStateData(TrainStateType.State_Pantograph.id, (byte) state);
+					} else if (s[0].equalsIgnoreCase("speed")) {
+						train.setSpeed(state / 72.0f);
 					}
 				}
 			}
 		} else {
-			if (s[0].equals("delAllTrain")) {
+			if (s[0].equalsIgnoreCase("delAllTrain")) {
 				int count = 0;
 				List list = player.worldObj.loadedEntityList;
 				for (Object object : list) {
@@ -67,4 +79,23 @@ public class CommandRTM extends CommandBase {
 			}
 		}
 	}
+
+	private static final List<String> commandList = Arrays.asList("use1122marker", "door", "pan", "speed", "delAllTrain");
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
+		if (args.length == 1) {
+			//入力されている文字列と先頭一致
+			if (args[0].length() == 0) {
+				return commandList;
+			}
+			for (String s : commandList) {
+				if (s.startsWith(args[0])) {
+					return Collections.singletonList(s);
+				}
+			}
+		}
+		return null;
+	}
+
 }

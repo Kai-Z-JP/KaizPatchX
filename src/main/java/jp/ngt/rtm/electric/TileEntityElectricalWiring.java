@@ -172,9 +172,9 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 			if (this.isActivated) {
 				Random random = this.worldObj.rand;
 				for (int l = 0; l < 3; ++l) {
-					double d1 = (double) ((float) this.xCoord + random.nextFloat());
-					double d2 = (double) ((float) this.yCoord + random.nextFloat());
-					double d3 = (double) ((float) this.zCoord + random.nextFloat());
+					double d1 = (float) this.xCoord + random.nextFloat();
+					double d2 = (float) this.yCoord + random.nextFloat();
+					double d3 = (float) this.zCoord + random.nextFloat();
 					this.worldObj.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
 				}
 			}
@@ -309,7 +309,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		}
 
 		int dis = 64;
-		List list = this.worldObj.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox((double) (this.xCoord - dis), (double) (this.yCoord - dis), (double) (this.zCoord - dis), (double) (this.xCoord + dis), (double) (this.yCoord + dis), (double) (this.zCoord + dis)));
+		List list = this.worldObj.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(this.xCoord - dis, this.yCoord - dis, this.zCoord - dis, this.xCoord + dis, this.yCoord + dis, this.zCoord + dis));
 		if (list != null && !list.isEmpty()) {
 			for (int j1 = 0; j1 < list.size(); ++j1) {
 				Entity entity = (Entity) list.get(j1);
@@ -342,7 +342,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	}
 
 	public static TileEntityElectricalWiring getWireEntity(World world, int x, int y, int z) {
-		List list = world.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox((double) (x), (double) (y), (double) (z), (double) (x + 1), (double) (y + 2), (double) (z + 1)));
+		List list = world.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 2, z + 1));
 		if (list != null && !list.isEmpty()) {
 			for (int j1 = 0; j1 < list.size(); ++j1) {
 				Entity entity = (Entity) list.get(j1);

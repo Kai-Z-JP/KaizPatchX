@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Stack<E> {
-	private List<E> list = new LinkedList<E>();
-	private int maxSize;
+	private final List<E> list = new LinkedList<E>();
+	private final int maxSize;
 
 	public Stack(int size) {
 		this.maxSize = size;

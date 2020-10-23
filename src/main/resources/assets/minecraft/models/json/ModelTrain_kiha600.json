@@ -1,6 +1,7 @@
 {
   "trainName": "kiha600",
   "trainType": "DC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_kiha600.class",
     "textures": [
@@ -20,6 +21,7 @@
       ]
     ]
   },
+
   "buttonTexture": "textures/train/kiha600/button_kiha600.png",
   "sound_Stop": "train.rtm_dc40r_stn",
   "sound_S_A": "train.rtm_dc40r_go-a",
@@ -29,6 +31,7 @@
   "sound_BrakeRelease": "train.brakeR_w",
   "sound_BrakeRelease2": "train.brakeR_w",
   "sound_Horn": "train.rtm_wh_00l",
+
   "headLights": [
     {
       "type": 0,

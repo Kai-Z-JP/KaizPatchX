@@ -104,7 +104,6 @@ public class MCTE {
 		generator = (new ItemGenerator()).setUnlocalizedName("mcte:generator").setTextureName("mcte:generator").setCreativeTab(CreativeTabs.tabTools);
 		painter = (new ItemPainter()).setUnlocalizedName("mcte:painter").setTextureName("mcte:painter").setCreativeTab(CreativeTabs.tabTools);
 		itemMiniature = (new ItemMiniature()).setUnlocalizedName("mcte:itemMiniature").setTextureName("mcte:itemMiniature").setCreativeTab(CreativeTabs.tabTools);
-		;
 
 		GameRegistry.registerBlock(minesweeper, "minesweeper");
 		GameRegistry.registerBlock(miniature, "miniature");

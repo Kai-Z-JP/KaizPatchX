@@ -27,8 +27,8 @@ public class GuiStation extends GuiScreenCustom {
 		int hw = this.width / 2;
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, hw - 155, this.height - 28, 150, 20, I18n.format("gui.done", new Object[0])));
-		this.buttonList.add(new GuiButton(1, hw + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(0, hw - 155, this.height - 28, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(new GuiButton(1, hw + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 
 		this.stationName = this.setTextField(hw - 40, 60, 80, 20, this.tileEntity.getName());
 		this.stationSize = new GuiTextField[3];
@@ -56,7 +56,6 @@ public class GuiStation extends GuiScreenCustom {
 			this.tileEntity.height = Integer.valueOf(this.stationSize[1].getText());
 			this.tileEntity.depth = Integer.valueOf(this.stationSize[2].getText());
 		} catch (NumberFormatException e) {
-			;
 		}
 		RTMCore.NETWORK_WRAPPER.sendToServer(new PacketStationData(this.tileEntity));
 	}

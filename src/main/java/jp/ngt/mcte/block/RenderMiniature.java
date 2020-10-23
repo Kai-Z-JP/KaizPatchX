@@ -107,7 +107,7 @@ public final class RenderMiniature extends TileEntitySpecialRenderer {
 		}
 
 		GLHelper.enableLighting();
-		NGTUtilClient.getMinecraft().entityRenderer.enableLightmap((double) par3);
+		NGTUtilClient.getMinecraft().entityRenderer.enableLightmap(par3);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);//明るさ戻す
 	}
 

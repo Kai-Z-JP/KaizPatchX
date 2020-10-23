@@ -1,9 +1,9 @@
 package jp.ngt.rtm.electric;
 
 import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public class BlockInsulator extends BlockConnector {
@@ -24,7 +24,7 @@ public class BlockInsulator extends BlockConnector {
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-		return new ItemStack(RTMItem.installedObject, 1, 3);
+	protected ItemStack getItem(int damage) {
+		return new ItemStack(RTMItem.installedObject, 1, ItemInstalledObject.IstlObjType.INSULATOR.id);
 	}
 }

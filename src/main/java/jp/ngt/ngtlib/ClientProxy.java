@@ -19,7 +19,7 @@ import java.io.File;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-	private static GuiWarning GUI_WARNING = new GuiWarning(NGTUtilClient.getMinecraft());
+	private static final GuiWarning GUI_WARNING = new GuiWarning(NGTUtilClient.getMinecraft());
 
 	@Override
 	public boolean isServer() {

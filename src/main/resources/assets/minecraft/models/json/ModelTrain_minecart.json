@@ -1,6 +1,7 @@
 {
   "trainName": "minecart",
   "trainType": "CC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_Minecart.class",
     "textures": [

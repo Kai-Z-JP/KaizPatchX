@@ -20,7 +20,7 @@ public interface IModelSelector {
 	int[] getPos();
 
 	@SideOnly(Side.CLIENT)
-	boolean closeGui(String par1);
+	boolean closeGui(String par1, ResourceState par2);
 
 	ModelSetBase getModelSet();
 }

@@ -10,9 +10,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityPaint extends TileEntity {
-	private int[][] colors = new int[6][256];
-	private int[][] alphas = new int[6][256];
-	private boolean[] hasColor = new boolean[6];
+	private final int[][] colors = new int[6][256];
+	private final int[][] alphas = new int[6][256];
+	private final boolean[] hasColor = new boolean[6];
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {

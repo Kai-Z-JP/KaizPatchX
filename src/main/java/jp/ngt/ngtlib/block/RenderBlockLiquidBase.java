@@ -13,7 +13,6 @@ import net.minecraft.world.IBlockAccess;
 public abstract class RenderBlockLiquidBase implements ISimpleBlockRenderingHandler {
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
-		;
 	}
 
 	@Override
@@ -21,10 +20,10 @@ public abstract class RenderBlockLiquidBase implements ISimpleBlockRenderingHand
 		if (modelId == this.getRenderId()) {
 			Tessellator tessellator = Tessellator.instance;
 			IIcon icon = renderer.getBlockIconFromSideAndMetadata(block, 0, 0);
-			double minU = (double) icon.getMinU();
-			double minV = (double) icon.getMinV();
-			double maxU = (double) icon.getMaxU();
-			double maxV = (double) icon.getMaxV();
+			double minU = icon.getMinU();
+			double minV = icon.getMinV();
+			double maxU = icon.getMaxU();
+			double maxV = icon.getMaxV();
 			double midU = (maxU + minU) / 2.0D;
 			double midV = (maxV + minV) / 2.0D;
 

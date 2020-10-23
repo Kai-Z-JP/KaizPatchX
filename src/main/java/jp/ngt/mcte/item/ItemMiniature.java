@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemMiniature extends Item {
-	private static float[] offset = new float[3];
+	private static final float[] offset = new float[3];
 
 	public ItemMiniature() {
 		super();
@@ -198,7 +198,7 @@ public class ItemMiniature extends Item {
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 		if (stack.hasTagCompound()) {
 			NBTTagCompound nbt = stack.getTagCompound();
-			NGTObject ngto = this.getNGTObject(nbt);
+			NGTObject ngto = getNGTObject(nbt);
 			float scale = getScale(nbt);
 			float power = (ngto.blockList.size() / 16) * scale;
 			entity.attackEntityFrom(DamageSource.causePlayerDamage(player), power);
@@ -215,7 +215,7 @@ public class ItemMiniature extends Item {
 
 		public final int id;
 
-		private MiniatureMode() {
+		MiniatureMode() {
 			this.id = nextId++;
 		}
 	}

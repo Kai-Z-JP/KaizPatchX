@@ -1,6 +1,7 @@
 {
   "trainName": "torpedo-car",
   "trainType": "TC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_torpedo-car.obj",
     "textures": [

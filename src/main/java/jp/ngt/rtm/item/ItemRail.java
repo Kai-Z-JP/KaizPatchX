@@ -7,6 +7,9 @@ import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.RailConfig;
 import jp.ngt.rtm.modelpack.cfg.RailConfig.BallastSet;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
+import jp.ngt.rtm.rail.BlockMarker;
+import jp.ngt.rtm.rail.TileEntityLargeRailBase;
+import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,8 +18,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -27,9 +32,33 @@ public class ItemRail extends ItemWithModel {
 	}
 
 	@Override
+	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int p_77648_7_, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
+		Block block = world.getBlock(x, y, z);
+		if (block instanceof BlockMarker) {
+			return false;
+		}
+		if (world.isRemote) {
+		} else {
+			TileEntity tile = world.getTileEntity(x, y, z);
+			if (!(tile instanceof TileEntityLargeRailBase)) {
+				return true;
+			}
+
+			TileEntityLargeRailCore core = ((TileEntityLargeRailBase) tile).getRailCore();
+			if (core == null) {
+				return true;
+			}
+
+			core.setProperty(ItemRail.getProperty(itemStack));
+			core.sendPacket();
+		}
+		return true;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		List<ModelSetBase> rails = (List<ModelSetBase>) ModelPackManager.INSTANCE.getModelList("ModelRail");
+		List<ModelSetBase> rails = ModelPackManager.INSTANCE.getModelList("ModelRail");
 		for (ModelSetBase modelSet : rails) {
 			RailConfig cfg = (RailConfig) modelSet.getConfig();
 			if (cfg.defaultBallast == null) {

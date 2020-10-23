@@ -80,14 +80,14 @@ public class ItemInstalledObject extends ItemWithModel {
 						case 0:
 							if (i1 == 0 || i1 == 2) {
 								dir = 0;
-							} else if (i1 == 1 || i1 == 3) {
+							} else {
 								dir = 4;
 							}
 							break;
 						case 1:
 							if (i1 == 0 || i1 == 2) {
 								dir = 2;
-							} else if (i1 == 1 || i1 == 3) {
+							} else {
 								dir = 6;
 							}
 							break;
@@ -112,8 +112,9 @@ public class ItemInstalledObject extends ItemWithModel {
 				if (par7 == 1) {
 					world.setBlock(par4, par5, par6, RTMBlock.crossingGate, 0, 3);
 					TileEntityCrossingGate tile = (TileEntityCrossingGate) world.getTileEntity(par4, par5, par6);
-					tile.setRotation(player, 15.0F, true);
+					tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
 					tile.setModelName(this.getModelName(itemStack));
+					tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 					block = RTMBlock.crossingGate;
 				}
 			} else if (type == IstlObjType.TURNSTILE) {
@@ -123,17 +124,19 @@ public class ItemInstalledObject extends ItemWithModel {
 				TileEntityTurnstile tile = (TileEntityTurnstile) world.getTileEntity(par4, par5, par6);
 				tile.setRotation(player, 90.0F, true);
 				tile.setModelName(this.getModelName(itemStack));
+				tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 				block = RTMBlock.turnstile;
 			} else if (type == IstlObjType.BUMPING_POST) {
-				if (par7 == 1 && setEntityOnRail(world, new EntityBumpingPost(world), par4, par5 - 1, par6, player, this.getModelName(itemStack))) {
+				if (par7 == 1 && setEntityOnRail(world, new EntityBumpingPost(world), par4, par5 - 1, par6, player, itemStack)) {
 					block = Blocks.stone;
 				}
 			} else if (type == IstlObjType.POINT) {
 				if (par7 == 1) {
 					world.setBlock(par4, par5, par6, RTMBlock.point, 0, 3);
 					TileEntityPoint tile = (TileEntityPoint) world.getTileEntity(par4, par5, par6);
-					tile.setRotation(player, 15.0F, false);
+					tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
 					tile.setModelName(this.getModelName(itemStack));
+					tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 					block = RTMBlock.point;
 				}
 			} else if (type == IstlObjType.SIGNBOARD) {
@@ -144,34 +147,40 @@ public class ItemInstalledObject extends ItemWithModel {
 				tile.setTexture("textures/signboard/ngt_a01.png");
 				block = RTMBlock.signboard;
 			} else if (type == IstlObjType.TICKET_VENDOR) {
-				world.setBlock(par4, par5, par6, RTMBlock.ticketVendor, 0, 3);
-				TileEntityTicketVendor tile = (TileEntityTicketVendor) world.getTileEntity(par4, par5, par6);
-				tile.setRotation(player, 15.0F, true);
-				block = RTMBlock.ticketVendor;
+				if (par7 == 1) {
+					world.setBlock(par4, par5, par6, RTMBlock.ticketVendor, 0, 3);
+					TileEntityTicketVendor tile = (TileEntityTicketVendor) world.getTileEntity(par4, par5, par6);
+					tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+					tile.setModelName(this.getModelName(itemStack));
+					tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+					block = RTMBlock.ticketVendor;
+				}
 			} else if (type == IstlObjType.LIGHT) {
 				world.setBlock(par4, par5, par6, RTMBlock.light, par7, 3);
 				TileEntityLight tile = (TileEntityLight) world.getTileEntity(par4, par5, par6);
-				tile.setRotation(player, 15.0F, true);
+				tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
 				tile.setModelName(this.getModelName(itemStack));
+				tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 				block = RTMBlock.light;
 			} else if (type == IstlObjType.FLAG) {
 				world.setBlock(par4, par5, par6, RTMBlock.flag, 0, 3);
 				TileEntityFlag tile = (TileEntityFlag) world.getTileEntity(par4, par5, par6);
-				tile.setRotation(player, 15.0F, true);
+				tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
 				tile.setTexture("textures/flag/flag_RTM3Anniversary.png");
 				block = RTMBlock.flag;
 			} else if (type == IstlObjType.ATC) {
-				if (par7 == 1 && ItemInstalledObject.setEntityOnRail(world, new EntityATC(world), par4, par5 - 1, par6, player, this.getModelName(itemStack))) {
+				if (par7 == 1 && this.setEntityOnRail(world, new EntityATC(world), par4, par5 - 1, par6, player, itemStack)) {
 					block = Blocks.stone;
 				}
 			} else if (type == IstlObjType.TRAIN_DETECTOR) {
-				if (par7 == 1 && ItemInstalledObject.setEntityOnRail(world, new EntityTrainDetector(world), par4, par5 - 1, par6, player, this.getModelName(itemStack))) {
+				if (par7 == 1 && this.setEntityOnRail(world, new EntityTrainDetector(world), par4, par5 - 1, par6, player, itemStack)) {
 					block = Blocks.stone;
 				}
 			} else if (type == IstlObjType.INSULATOR) {
 				world.setBlock(par4, par5, par6, RTMBlock.insulator, par7, 2);
 				TileEntityInsulator tile = (TileEntityInsulator) world.getTileEntity(par4, par5, par6);
 				tile.setModelName(this.getModelName(itemStack));
+				tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 				block = RTMBlock.insulator;
 			} else if (type == IstlObjType.CONNECTOR_IN || type == IstlObjType.CONNECTOR_OUT) {
 				Block block2 = world.getBlock(x, y, z);
@@ -182,6 +191,7 @@ public class ItemInstalledObject extends ItemWithModel {
 					world.setBlock(par4, par5, par6, RTMBlock.connector, par7, 2);
 					TileEntityConnector tile = (TileEntityConnector) world.getTileEntity(par4, par5, par6);
 					tile.setModelName(this.getModelName(itemStack));
+					tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 					tile.setConnectionTo(x, y, z, ConnectionType.DIRECT, "");
 					block = RTMBlock.connector;
 				}
@@ -196,7 +206,7 @@ public class ItemInstalledObject extends ItemWithModel {
 		return true;
 	}
 
-	public static boolean setEntityOnRail(World world, EntityInstalledObject entity, int x, int y, int z, EntityPlayer player, String modelName) {
+	public boolean setEntityOnRail(World world, EntityInstalledObject entity, int x, int y, int z, EntityPlayer player, ItemStack stack) {
 		RailMap rm0 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, null, x, y, z);
 		if (rm0 == null) {
 			return false;
@@ -218,7 +228,8 @@ public class ItemInstalledObject extends ItemWithModel {
 		entity.rotationYaw = yaw;
 		entity.rotationPitch = 0.0F;
 		world.spawnEntityInWorld(entity);
-		entity.setModelName(modelName);
+		entity.setModelName(this.getModelName(stack));
+		entity.getResourceState().readFromNBT(this.getModelState(stack).writeToNBT());
 		return true;
 	}
 
@@ -267,7 +278,7 @@ public class ItemInstalledObject extends ItemWithModel {
 		this.icons[15] = missing;
 		this.icons[IstlObjType.POINT.id] = register.registerIcon("rtm:point");
 		this.icons[IstlObjType.SIGNBOARD.id] = register.registerIcon("rtm:itemSignBoard");
-		this.icons[IstlObjType.TICKET_VENDOR.id] = register.registerIcon("rtm:itemTicketVendor");
+		this.icons[IstlObjType.TICKET_VENDOR.id] = register.registerIcon("rtm:item_ticket_vendor");
 		this.icons[IstlObjType.LIGHT.id] = register.registerIcon("rtm:lightBlock");
 		this.icons[IstlObjType.FLAG.id] = register.registerIcon("rtm:flag");
 	}
@@ -314,7 +325,7 @@ public class ItemInstalledObject extends ItemWithModel {
 		BUMPING_POST(13, MachineConfig.TYPE, MachineType.BumpingPost.toString(), "BumpingPost_Type2"),
 		POINT(16, MachineConfig.TYPE, MachineType.Point.toString(), "Point01M"),
 		SIGNBOARD(17, "", "", ""),
-		TICKET_VENDOR(18, "", "", ""),
+		TICKET_VENDOR(18, MachineConfig.TYPE, MachineType.Vendor.toString(), "Vendor01"),
 		LIGHT(19, MachineConfig.TYPE, MachineType.Light.toString(), "SearchLight01"),
 		FLAG(20, "", "", ""),
 		NONE(-1, "", "", "");
@@ -324,7 +335,7 @@ public class ItemInstalledObject extends ItemWithModel {
 		public final String subType;
 		public final String defaultModel;
 
-		private IstlObjType(int par1, String par2, String par3, String par4) {
+		IstlObjType(int par1, String par2, String par3, String par4) {
 			this.id = (byte) par1;
 			this.modelType = par2;
 			this.subType = par3;
@@ -334,6 +345,15 @@ public class ItemInstalledObject extends ItemWithModel {
 		public static IstlObjType getType(int id) {
 			for (IstlObjType type : IstlObjType.values()) {
 				if (type.id == id) {
+					return type;
+				}
+			}
+			return NONE;
+		}
+
+		public static IstlObjType getType(MachineType machineType) {
+			for (IstlObjType type : IstlObjType.values()) {
+				if (type.subType.equals(machineType.toString())) {
 					return type;
 				}
 			}

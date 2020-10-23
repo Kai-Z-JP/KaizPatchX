@@ -31,7 +31,7 @@ public class PacketNBT implements IMessage {
 		this.nbtData.setInteger("EntityId", entity.getEntityId());
 	}*/
 
-	private PacketNBT(Entity entity, boolean toClient) {
+	public PacketNBT(Entity entity, boolean toClient) {
 		this.nbtData = new NBTTagCompound();
 		entity.writeToNBT(this.nbtData);
 		this.nbtData.setBoolean("ToClient", toClient);
@@ -39,7 +39,7 @@ public class PacketNBT implements IMessage {
 		this.nbtData.setInteger("EntityId", entity.getEntityId());
 	}
 
-	private PacketNBT(TileEntity tileEntity, NBTTagCompound nbt, boolean toClient) {
+	public PacketNBT(TileEntity tileEntity, NBTTagCompound nbt, boolean toClient) {
 		this.nbtData = nbt;
 		this.nbtData.setBoolean("ToClient", toClient);
 		this.nbtData.setByte("DataType", Type_TileEntity);
@@ -48,7 +48,7 @@ public class PacketNBT implements IMessage {
 		this.nbtData.setInteger("ZPos", tileEntity.zCoord);
 	}
 
-	private PacketNBT(TileEntity tileEntity, boolean toClient) {
+	public PacketNBT(TileEntity tileEntity, boolean toClient) {
 		this.nbtData = new NBTTagCompound();
 		tileEntity.writeToNBT(this.nbtData);
 		this.nbtData.setBoolean("ToClient", toClient);
@@ -61,7 +61,7 @@ public class PacketNBT implements IMessage {
 	/**
 	 * Playerの所持アイテムにNBT書き込む(Server行きのみ)
 	 */
-	private PacketNBT(EntityPlayer player, ItemStack stack) {
+	public PacketNBT(EntityPlayer player, ItemStack stack) {
 		this.nbtData = new NBTTagCompound();
 		this.nbtData.setTag("TagData", stack.getTagCompound());
 		this.nbtData.setBoolean("ToClient", false);
@@ -150,5 +150,13 @@ public class PacketNBT implements IMessage {
 
 	public static void sendToClient(TileEntity entity) {
 		NGTCore.NETWORK_WRAPPER.sendToAll(new PacketNBT(entity, true));
+	}
+
+	public static void sendTo(Entity entity, EntityPlayerMP player) {
+		NGTCore.NETWORK_WRAPPER.sendTo(new PacketNBT(entity, true), player);
+	}
+
+	public static void sendTo(TileEntity entity, EntityPlayerMP player) {
+		NGTCore.NETWORK_WRAPPER.sendTo(new PacketNBT(entity, true), player);
 	}
 }

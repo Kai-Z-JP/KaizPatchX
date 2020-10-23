@@ -15,7 +15,7 @@ public class EditorManager {
 	/**
 	 * [PlayerName, Editor]
 	 */
-	private Map<String, Editor> editorMap = new HashMap<String, Editor>();
+	private final Map<String, Editor> editorMap = new HashMap<>();
 
 	private EditorManager() {
 	}

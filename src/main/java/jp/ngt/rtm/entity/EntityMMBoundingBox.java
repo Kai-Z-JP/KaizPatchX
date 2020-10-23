@@ -15,7 +15,7 @@ import java.util.List;
 public class EntityMMBoundingBox extends Entity {
 	private TileEntityMovingMachine movingMachine;
 	private boolean checkCollision;
-	private AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+	private final AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
 
 	public EntityMMBoundingBox(World world) {
 		super(world);

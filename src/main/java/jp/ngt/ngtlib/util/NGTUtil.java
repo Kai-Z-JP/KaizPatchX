@@ -43,7 +43,7 @@ public final class NGTUtil {
 	}
 
 	public static boolean openedLANWorld() {
-		return (isServer() || NGTUtilClient.getMinecraft().isSingleplayer()) ? false : NGTUtilClient.getMinecraft().getIntegratedServer().getPublic();
+		return !isServer() && !NGTUtilClient.getMinecraft().isSingleplayer() && NGTUtilClient.getMinecraft().getIntegratedServer().getPublic();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -74,7 +74,7 @@ public final class NGTUtil {
 
 	public static double getChunkLoadDistanceSq() {
 		int i = getChunkLoadDistance();
-		return (double) (i * i);
+		return i * i;
 	}
 
 	/**
@@ -173,7 +173,7 @@ public final class NGTUtil {
 			if (array[i] == obj) {
 				return true;
 			} else if (obj instanceof Object) {
-				if (((Object) array[i]).equals(obj)) {
+				if (array[i].equals(obj)) {
 					return true;
 				}
 			}

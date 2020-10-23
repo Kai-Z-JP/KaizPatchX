@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 public class WorldData {
 	//private Properties prop = new Properties();
-	private Config cfg = new Config();
+	private final Config cfg = new Config();
 	private WorldGenerator generator;
 	public Map<Integer, BiomeGenBase> biomeMap = new TreeMap<Integer, BiomeGenBase>();//getが早い
 	public Block baseBlock = Blocks.stone;

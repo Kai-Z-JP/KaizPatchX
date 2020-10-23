@@ -26,7 +26,6 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Calendar;
-import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class RenderNPC extends RenderBiped {
@@ -72,11 +71,7 @@ public class RenderNPC extends RenderBiped {
 			return -1;
 		}
 
-		if (entity.isInvisible()) {
-			GL11.glDepthMask(false);
-		} else {
-			GL11.glDepthMask(true);
-		}
+		GL11.glDepthMask(!entity.isInvisible());
 
 		if (par2 == 1) {
 			this.bindTexture(tex);
@@ -137,7 +132,7 @@ public class RenderNPC extends RenderBiped {
 					if (nbt.hasKey("SkullOwner", 10)) {
 						gameprofile = NBTUtil.func_152459_a(nbt.getCompoundTag("SkullOwner"));
 					} else if (nbt.hasKey("SkullOwner", 8) && !StringUtils.isNullOrEmpty(nbt.getString("SkullOwner"))) {
-						gameprofile = new GameProfile((UUID) null, nbt.getString("SkullOwner"));
+						gameprofile = new GameProfile(null, nbt.getString("SkullOwner"));
 					}
 				}
 

@@ -103,7 +103,7 @@ public final class TextureManager {
 		public final Class<? extends TextureProperty> type;
 		public final boolean useJson;
 
-		private TexturePropertyType(Class<? extends TextureProperty> clazz, boolean par2) {
+		TexturePropertyType(Class<? extends TextureProperty> clazz, boolean par2) {
 			this.type = clazz;
 			this.useJson = par2;
 		}

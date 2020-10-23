@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerTicketVendor extends Container {
 	private final TileEntityTicketVendor vendor;
-	private InventoryVendor invVendor = new InventoryVendor(this);
+	private final InventoryVendor invVendor = new InventoryVendor(this);
 
 	public ContainerTicketVendor(InventoryPlayer inventory, TileEntityTicketVendor par2) {
 		this.vendor = par2;
@@ -48,7 +48,7 @@ public class ContainerTicketVendor extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return this.vendor.getWorldObj().getBlock(this.vendor.xCoord, this.vendor.yCoord, this.vendor.zCoord) != RTMBlock.ticketVendor ? false : player.getDistanceSq((double) this.vendor.xCoord + 0.5D, (double) this.vendor.yCoord + 0.5D, (double) this.vendor.zCoord + 0.5D) <= 64.0D;
+		return this.vendor.getWorldObj().getBlock(this.vendor.xCoord, this.vendor.yCoord, this.vendor.zCoord) == RTMBlock.ticketVendor && player.getDistanceSq((double) this.vendor.xCoord + 0.5D, (double) this.vendor.yCoord + 0.5D, (double) this.vendor.zCoord + 0.5D) <= 64.0D;
 	}
 
 	@Override

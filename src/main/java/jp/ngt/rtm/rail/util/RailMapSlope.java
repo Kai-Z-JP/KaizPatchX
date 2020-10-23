@@ -17,7 +17,6 @@ public class RailMapSlope extends RailMap {
 
 	@Override
 	protected void createLine() {
-		;
 	}
 
 	@Override
@@ -115,35 +114,35 @@ public class RailMapSlope extends RailMap {
 		return this.dirDeg;
 	}
 
-	@Override
-	public float getRailPitch() {
-		switch (this.slopeType) {
-			case 0:
-				return 3.576334F;
-			case 1:
-				return 7.125016F;
-			case 2:
-				return 14.03624F;
-			case 3:
-				return 26.56505F;
-			default:
-				return 3.576334F;
-		}
-	}
+//    @Override
+//    public float getRailPitch() {
+//        switch (this.slopeType) {
+//            case 0:
+//                return 3.576334F;
+//            case 1:
+//                return 7.125016F;
+//            case 2:
+//                return 14.03624F;
+//            case 3:
+//                return 26.56505F;
+//            default:
+//                return 3.576334F;
+//        }
+//    }
 
-	@Override
-	public double getLength() {
-		switch (this.slopeType) {
-			case 0:
-				return 16.0D;
-			case 1:
-				return 8.0D;
-			case 2:
-				return 4.0D;
-			case 3:
-				return 2.0D;
-			default:
-				return 16.0D;
-		}
-	}
+//    @Override
+//    public double getLength() {
+//        switch (this.slopeType) {
+//            case 0:
+//                return 16.0D;
+//            case 1:
+//                return 8.0D;
+//            case 2:
+//                return 4.0D;
+//            case 3:
+//                return 2.0D;
+//            default:
+//                return 16.0D;
+//        }
+//    }
 }

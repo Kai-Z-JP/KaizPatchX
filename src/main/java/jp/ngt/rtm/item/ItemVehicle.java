@@ -89,6 +89,7 @@ public class ItemVehicle extends ItemWithModel {
 				vehicle.setPosition((double) x + 0.5D, (double) y + 1.0D, (double) z + 0.5D);
 				vehicle.rotationYaw = MathHelper.wrapAngleTo180_float(-player.rotationYaw);
 				vehicle.setModelName(getModelName(itemStack));
+				vehicle.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 				world.spawnEntityInWorld(vehicle);
 			}
 

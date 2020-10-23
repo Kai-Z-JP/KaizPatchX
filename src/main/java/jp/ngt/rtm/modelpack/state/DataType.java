@@ -11,7 +11,7 @@ public enum DataType {
 
 	public final String key;
 
-	private DataType(String par1) {
+	DataType(String par1) {
 		this.key = par1;
 	}
 

@@ -436,10 +436,10 @@ public class GuiTextFieldCustom extends GuiTextField {
 		GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
 		GL11.glLogicOp(GL11.GL_OR_REVERSE);
 		tessellator.startDrawingQuads();
-		tessellator.addVertex((double) par1, (double) par4, 0.0D);
-		tessellator.addVertex((double) par3, (double) par4, 0.0D);
-		tessellator.addVertex((double) par3, (double) par2, 0.0D);
-		tessellator.addVertex((double) par1, (double) par2, 0.0D);
+		tessellator.addVertex(par1, par4, 0.0D);
+		tessellator.addVertex(par3, par4, 0.0D);
+		tessellator.addVertex(par3, par2, 0.0D);
+		tessellator.addVertex(par1, par2, 0.0D);
 		tessellator.draw();
 		GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);

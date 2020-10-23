@@ -5,7 +5,6 @@ package jp.ngt.rtm.modelpack.state;
  */
 public final class DataFormatter {
 	public DataFormatter() {
-		;
 	}
 
 	public void initDataMap(DataMap dm) {

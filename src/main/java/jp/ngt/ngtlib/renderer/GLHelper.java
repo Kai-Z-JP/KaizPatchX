@@ -4,9 +4,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.util.Locker;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.Project;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +19,8 @@ public final class GLHelper {
 	public static final GLHelper INSTANCE = new GLHelper();
 	public static final Locker LOCKER = new Locker();
 
-	private List<DisplayList> activeGLLists = new ArrayList<DisplayList>();
-	private List<DisplayList> deleteGLLists = new ArrayList<DisplayList>();
+	private final List<DisplayList> activeGLLists = new ArrayList<>();
+	private final List<DisplayList> deleteGLLists = new ArrayList<>();
 
 	private GLHelper() {
 	}
@@ -93,6 +97,14 @@ public final class GLHelper {
 		GL11.glCallList(par1.value);
 	}
 
+	public static void setColor(int rgb, int alpha) {
+		float r = (rgb >> 16) / 255.0F;
+		float g = (rgb >> 8 & 0xFF) / 255.0F;
+		float b = (rgb & 0xFF) / 255.0F;
+		float a = alpha / 255.0F;
+		GL11.glColor4f(r, g, b, a);
+	}
+
 	public static void setBrightness(int par1) {
 		int x = par1 & 0xFFFF;
 		int y = par1 >> 16;
@@ -111,5 +123,37 @@ public final class GLHelper {
 
 	public static void disableLighting() {
 		GL11.glDisable(GL11.GL_LIGHTING);
+	}
+
+	private static final IntBuffer VIEWPORT_BUF = GLAllocation.createDirectIntBuffer(16);
+
+	private static final IntBuffer SELECT_BUF = GLAllocation.createDirectIntBuffer(1024);
+
+	public static void startMousePicking(float range) {
+		float mouseX = Display.getWidth() / 2.0F;
+		float mouseY = Display.getHeight() / 2.0F;
+		VIEWPORT_BUF.clear();
+		SELECT_BUF.clear();
+		GL11.glGetInteger(2978, VIEWPORT_BUF);
+		GL11.glSelectBuffer(SELECT_BUF);
+		GL11.glRenderMode(7170);
+		GL11.glInitNames();
+		GL11.glPushName(0);
+		GL11.glMatrixMode(5889);
+		GL11.glPushMatrix();
+		Project.gluPickMatrix(mouseX, VIEWPORT_BUF.get(3) - mouseY, range, range, VIEWPORT_BUF);
+		GL11.glMatrixMode(5888);
+	}
+
+	public static int finishMousePicking() {
+		GL11.glMatrixMode(5889);
+		GL11.glPopMatrix();
+		int hits = GL11.glRenderMode(7168);
+		GL11.glMatrixMode(5888);
+		return hits;
+	}
+
+	public static int getPickedObjId(int count) {
+		return SELECT_BUF.get(count * 4 + 3);
 	}
 }

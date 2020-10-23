@@ -45,7 +45,6 @@ public class RenderSeat extends Render {
 			this.model.render(entity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
 		} else if (seatType == 3)//寝台
 		{
-			;
 		}
 	}
 
@@ -56,6 +55,6 @@ public class RenderSeat extends Render {
 
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) {
-		return this.texture;
+		return texture;
 	}
 }

@@ -16,7 +16,7 @@ public class ShapedRecipes55 implements IRecipe {
 	public final int recipeWidth;
 	public final int recipeHeight;
 	public final ItemStack[] recipeItems;
-	private ItemStack recipeOutput;
+	private final ItemStack recipeOutput;
 	private boolean hasNBT;
 
 	public ShapedRecipes55(int w, int h, ItemStack[] stacks, ItemStack output) {

@@ -126,13 +126,12 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
 		GL11.glRotatef(-65.0F, 0.0F, 1.0F, 0.0F);
 		GL11.glScalef(1.2F, 1.2F, 1.2F);
 
-		VehicleBaseConfig cfg = (VehicleBaseConfig) this.cfg;
+		VehicleBaseConfig cfg = this.cfg;
 		this.vehicleModel.render(null, cfg, 0, 0.0F);
 		this.vehicleModel.render(null, cfg, 1, 0.0F);
 		this.renderPartsInGui(par1);
 	}
 
 	protected void renderPartsInGui(Minecraft par1) {
-		;
 	}
 }

@@ -92,7 +92,6 @@ public class ItemPaintTool extends Item {
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int count) {
-		;
 	}
 
 	private void paint(World world, int x, int y, int z, int dir, int paintX, int paintY, int paintZ, PaintProperty prop) {

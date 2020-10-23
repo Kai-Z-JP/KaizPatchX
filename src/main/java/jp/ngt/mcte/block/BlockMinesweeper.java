@@ -125,7 +125,6 @@ public class BlockMinesweeper extends BlockContainer {
 
 	@Override
 	public void dropBlockAsItemWithChance(World world, int par2, int par3, int par4, int par5, float par6, int par7) {
-		;
 	}
 
 	@Override
@@ -168,7 +167,7 @@ public class BlockMinesweeper extends BlockContainer {
 		public final byte id;
 		public final boolean isBreakable;
 
-		private MinesweeperType(int p1, boolean p2) {
+		MinesweeperType(int p1, boolean p2) {
 			this.id = (byte) p1;
 			this.isBreakable = p2;
 		}

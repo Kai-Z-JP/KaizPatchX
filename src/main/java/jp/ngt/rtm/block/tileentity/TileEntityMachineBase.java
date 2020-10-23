@@ -3,6 +3,7 @@ package jp.ngt.rtm.block.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.MachineType;
@@ -18,11 +19,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
 public abstract class TileEntityMachineBase extends TileEntityPlaceable implements IModelSelectorWithType {
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	private ModelSetMachine myModelSet;
 	private String modelName = "";
 	private float pitch;
-	private ScriptExecuter executer = new ScriptExecuter();
+	private final ScriptExecuter executer = new ScriptExecuter();
 
 	public int tick;
 	public boolean isGettingPower;
@@ -133,6 +134,9 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 	public ModelSetMachine getModelSet() {
 		if (this.myModelSet == null || this.myModelSet.isDummy()) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelMachine", this.modelName);
+			if (this.worldObj == null || !this.worldObj.isRemote) {
+				PacketNBT.sendToClient(this);
+			}
 		}
 		return this.myModelSet;
 	}
@@ -163,7 +167,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		return true;
 	}
 

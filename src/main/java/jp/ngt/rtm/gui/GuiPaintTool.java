@@ -20,11 +20,11 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiPaintTool extends GuiScreenCustom {
-	private static ResourceLocation texture = new ResourceLocation("rtm", "textures/gui/paintTool.png");
+	private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/gui/paintTool.png");
 
 	private final EntityPlayer player;
 	private final ItemStack paintItem;
-	private PaintProperty prop;
+	private final PaintProperty prop;
 	private int color;
 	private int paintTypeIndex;
 
@@ -50,8 +50,8 @@ public class GuiPaintTool extends GuiScreenCustom {
 		int halfW = this.width / 2;
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, halfW - 155, this.height - 28, 150, 20, I18n.format("gui.done", new Object[0])));
-		this.buttonList.add(new GuiButton(1, halfW + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(0, halfW - 155, this.height - 28, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(new GuiButton(1, halfW + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 		this.type = new GuiButtonPenType(100, halfW + 40, 20);
 		this.buttonList.add(this.type);
 

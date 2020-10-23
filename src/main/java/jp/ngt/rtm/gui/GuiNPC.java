@@ -24,7 +24,7 @@ public class GuiNPC extends GuiContainer {
 
 	protected EntityPlayer player;
 	protected EntityNPC npc;
-	private List<ModelSetBase> modelList;
+	private final List<ModelSetBase> modelList;
 	private int index;
 
 	public GuiNPC(EntityPlayer par1, EntityNPC par2) {
@@ -92,7 +92,7 @@ public class GuiNPC extends GuiContainer {
 	}
 
 	private class GuiButtonNPC extends GuiButton {
-		private int type;
+		private final int type;
 
 		public GuiButtonNPC(int id, int x, int y, int t) {
 			super(id, x, y, 10, 15, "");

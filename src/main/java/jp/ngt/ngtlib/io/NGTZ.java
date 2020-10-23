@@ -14,7 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class NGTZ {
-	private Map<String, NGTObject> objects = new HashMap<String, NGTObject>();
+	private final Map<String, NGTObject> objects = new HashMap<String, NGTObject>();
 
 	public NGTZ(ResourceLocation par1) {
 		try {

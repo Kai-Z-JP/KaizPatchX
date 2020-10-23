@@ -114,7 +114,7 @@ public class ItemAmmunition extends Item {
 		public final boolean muzzleFlash;
 
 
-		private BulletType(int par1, float par2, boolean par3) {
+		BulletType(int par1, float par2, boolean par3) {
 			this.id = (byte) par1;
 			this.damage = par2;
 			this.muzzleFlash = par3;

@@ -22,7 +22,7 @@ public class MacroRecorder {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 	public static final MacroRecorder INSTANCE = new MacroRecorder();
 
-	private List<TrainCommand> commands = new ArrayList<TrainCommand>();
+	private final List<TrainCommand> commands = new ArrayList<TrainCommand>();
 	private boolean recording;
 	private long startTime;
 
@@ -64,7 +64,7 @@ public class MacroRecorder {
 
 		try {
 			File macroFolder = this.getMacroFolder();
-			String fileName = DATE_FORMAT.format(new Date()).toString();
+			String fileName = DATE_FORMAT.format(new Date());
 			saveFile = new File(macroFolder, fileName + ".txt");
 			saveFile.createNewFile();
 			String[] texts = new String[this.commands.size()];

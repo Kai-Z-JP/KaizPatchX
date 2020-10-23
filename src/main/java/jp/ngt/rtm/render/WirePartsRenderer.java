@@ -40,7 +40,6 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
 		if (this.useScript) {
 			ScriptUtil.doScriptFunction(this.script, "renderWireStatic", tileEntity, connection, target, par8);
 		} else {
-			;
 		}
 	}
 

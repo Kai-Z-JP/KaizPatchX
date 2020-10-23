@@ -54,7 +54,7 @@ public class ItemTrain extends ItemWithModel {
 				float f0 = modelSet.getConfig().trainDistance + 4.0F;
 				RailMap rm1 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, player, entity.posX, entity.posY, entity.posZ);
 				if (distanceSq < f0 * f0 && rm0.equals(rm1)) {
-					NGTLog.sendChatMessage(player, "message.train.obstacle", new Object[]{entity.toString()});
+					NGTLog.sendChatMessage(player, "message.train.obstacle", entity.toString());
 					return true;
 				}
 			}
@@ -63,7 +63,7 @@ public class ItemTrain extends ItemWithModel {
 		int i0 = rm0.getNearlestPoint(128, (double) x + 0.5D, (double) z + 0.5D);
 		float yw0 = MathHelper.wrapAngleTo180_float(rm0.getRailRotation(128, i0));
 		float yaw = EntityBogie.fixBogieYaw(-player.rotationYaw, yw0);
-		float pitch = EntityBogie.fixBogiePitch(rm0.getRailPitch(), yw0, yaw);
+		float pitch = EntityBogie.fixBogiePitch(rm0.getRailPitch(128, i0), yw0, yaw);
 		double posX = rm0.getRailPos(128, i0)[1];
 		double posY = rm0.getRailHeight(128, i0) + EntityTrainBase.TRAIN_HEIGHT;
 		double posZ = rm0.getRailPos(128, i0)[0];
@@ -88,8 +88,10 @@ public class ItemTrain extends ItemWithModel {
 
 		String model = this.getModelName(itemStack);
 		train.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
+		train.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
 		train.setModelName(model);
 		train.spawnTrain(world);
+		train.onModelChanged();
 		--itemStack.stackSize;
 		return true;
 	}

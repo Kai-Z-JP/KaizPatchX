@@ -10,6 +10,7 @@ import jp.ngt.mcte.network.PacketEditor;
 import jp.ngt.mcte.network.PacketResetSlot;
 import jp.ngt.ngtlib.gui.GuiContainerCustom;
 import jp.ngt.ngtlib.io.NGTFileLoader;
+import jp.ngt.ngtlib.util.KeyboardUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -23,10 +24,10 @@ import java.io.File;
 @SideOnly(Side.CLIENT)
 public class GuiEditor extends GuiContainerCustom {
 	private final EntityEditor editor;
-	private GuiTextField[] textField_name = new GuiTextField[3];
-	private GuiTextField[] textField_start = new GuiTextField[3];
-	private GuiTextField[] textField_end = new GuiTextField[3];
-	private GuiTextField[] textField_clone = new GuiTextField[4];
+	private final GuiTextField[] textField_name = new GuiTextField[3];
+	private final GuiTextField[] textField_start = new GuiTextField[3];
+	private final GuiTextField[] textField_end = new GuiTextField[3];
+	private final GuiTextField[] textField_clone = new GuiTextField[4];
 	private GuiButton buttonFillMode;
 	private GuiButton buttonScale;
 	private float scale;
@@ -115,19 +116,19 @@ public class GuiEditor extends GuiContainerCustom {
 			int i0 = 0;
 			int i1 = 0;
 			int i2 = 0;
-			GuiTextField field = null;
+			GuiTextField field;
 
-			if (button.id >= 100 && button.id <= 105) {
+			if (button.id <= 105) {
 				i0 = 0;
 				i1 = button.id - 100;
 				i2 = i1 / 2;
 				field = this.textField_start[i2];
-			} else if (button.id >= 106 && button.id <= 111) {
+			} else if (button.id <= 111) {
 				i0 = 1;
 				i1 = button.id - 106;
 				i2 = i1 / 2;
 				field = this.textField_end[i2];
-			} else if (button.id >= 112 && button.id <= 117) {
+			} else {
 				i0 = 2;
 				i1 = button.id - 112;
 				i2 = i1 / 2;
@@ -145,7 +146,7 @@ public class GuiEditor extends GuiContainerCustom {
 			int i3 = i1 == 0 ? -1 : 1;
 			int i4 = this.getTextFieldValue(2, 3);
 			int i5 = i4 + i3;
-			this.textField_clone[3].setText(String.valueOf(i5 < 0 ? 0 : (i5 < 64 ? i5 : 64)));
+			this.textField_clone[3].setText(String.valueOf(i5 < 0 ? 0 : (Math.min(i5, 64))));
 		} else if (button.id == 200) {
 			this.sendPacket();
 			FilterManager.INSTANCE.execFilter(this.mc.thePlayer, "Fill");
@@ -209,7 +210,7 @@ public class GuiEditor extends GuiContainerCustom {
 			this.mc.thePlayer.closeScreen();
 		}
 
-		if ((par2 >= 2 && par2 <= 11) || (par2 >= 200 && par2 <= 205) || par2 == 12 || par2 == 14 || par2 == 211)//14:Back, 211:Del
+		if (KeyboardUtil.isIntegerKey(par2))//14:Back, 211:Del
 		{
 			this.currentTextField.textboxKeyTyped(par1, par2);
 		}
@@ -305,18 +306,18 @@ public class GuiEditor extends GuiContainerCustom {
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.setColorRGBA_F(f1, f2, f3, f);
-		tessellator.addVertex(100.0D, (double) this.height, (double) this.zLevel);
-		tessellator.addVertex(100.0D, 0.0D, (double) this.zLevel);
+		tessellator.addVertex(100.0D, this.height, this.zLevel);
+		tessellator.addVertex(100.0D, 0.0D, this.zLevel);
 		tessellator.setColorRGBA_F(f5, f6, f7, f4);
-		tessellator.addVertex(0.0D, 0.0D, (double) this.zLevel);
-		tessellator.addVertex(0.0D, (double) this.height, (double) this.zLevel);
+		tessellator.addVertex(0.0D, 0.0D, this.zLevel);
+		tessellator.addVertex(0.0D, this.height, this.zLevel);
 
 		tessellator.setColorRGBA_F(f1, f2, f3, f);
-		tessellator.addVertex((double) this.width, (double) this.height, (double) this.zLevel);
-		tessellator.addVertex((double) this.width, 0.0D, (double) this.zLevel);
+		tessellator.addVertex(this.width, this.height, this.zLevel);
+		tessellator.addVertex(this.width, 0.0D, this.zLevel);
 		tessellator.setColorRGBA_F(f5, f6, f7, f4);
-		tessellator.addVertex((double) this.width - 100.0D, 0.0D, (double) this.zLevel);
-		tessellator.addVertex((double) this.width - 100.0D, (double) this.height, (double) this.zLevel);
+		tessellator.addVertex((double) this.width - 100.0D, 0.0D, this.zLevel);
+		tessellator.addVertex((double) this.width - 100.0D, this.height, this.zLevel);
 
 		tessellator.draw();
 		GL11.glShadeModel(GL11.GL_FLAT);
@@ -331,7 +332,6 @@ public class GuiEditor extends GuiContainerCustom {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
-		;
 	}
 
 	private void sendPacket() {
@@ -370,11 +370,11 @@ public class GuiEditor extends GuiContainerCustom {
 		try {
 			switch (par1) {
 				case 0:
-					return Integer.valueOf(this.textField_start[par2].getText());
+					return Integer.parseInt(this.textField_start[par2].getText());
 				case 1:
-					return Integer.valueOf(this.textField_end[par2].getText());
+					return Integer.parseInt(this.textField_end[par2].getText());
 				case 2:
-					return Integer.valueOf(this.textField_clone[par2].getText());
+					return Integer.parseInt(this.textField_clone[par2].getText());
 			}
 		} catch (NumberFormatException e) {
 			switch (par1) {

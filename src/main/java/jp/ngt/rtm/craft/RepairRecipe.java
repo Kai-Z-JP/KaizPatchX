@@ -7,8 +7,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
 public class RepairRecipe implements IRecipe {
-	private Item toolItem;
-	private ItemStack materialItem;
+	private final Item toolItem;
+	private final ItemStack materialItem;
 
 	public RepairRecipe(Item par1, ItemStack par2) {
 		this.toolItem = par1;
@@ -26,11 +26,7 @@ public class RepairRecipe implements IRecipe {
 	@Override
 	public boolean matches(InventoryCrafting inventory, World world) {
 		ItemStack[] stacks = this.getToolAndMaterial(inventory);
-		if (stacks[0] != null && stacks[1] != null) {
-			return true;
-		}
-
-		return false;
+		return stacks[0] != null && stacks[1] != null;
 	}
 
 	/**

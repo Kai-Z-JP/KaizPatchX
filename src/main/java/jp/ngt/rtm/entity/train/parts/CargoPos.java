@@ -11,7 +11,7 @@ public enum CargoPos {
 	public final float max;
 	public final float[] zPos;
 
-	private CargoPos(float p1, float p2, float[] p3) {
+	CargoPos(float p1, float p2, float[] p3) {
 		this.min = p1;
 		this.max = p2;
 		this.zPos = p3;

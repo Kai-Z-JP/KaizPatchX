@@ -23,7 +23,7 @@ public class MirrorComponent {
 	/**
 	 * プレーヤーから鏡中心への視線
 	 */
-	private Vector3f lookVec = new Vector3f();
+	private final Vector3f lookVec = new Vector3f();
 	public float uMin;
 	public float uMax;
 	public float vMin;
@@ -32,7 +32,7 @@ public class MirrorComponent {
 	public boolean calledFromRenderer;
 	private boolean skipRender = false;
 
-	private float[] whPos = new float[4];
+	private final float[] whPos = new float[4];
 
 	public MirrorComponent(int x, int y, int z, MirrorType type, EnumFace face) {
 		this.blockX = x;

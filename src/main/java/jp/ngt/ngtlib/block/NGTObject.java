@@ -23,12 +23,12 @@ import java.util.Map.Entry;
  * RenderBlocksによるブロックの描画等に使用
  */
 public class NGTObject {
-	private static List<NGTObject> loadedNGTO = new ArrayList<NGTObject>();
+	private static final List<NGTObject> loadedNGTO = new ArrayList<NGTObject>();
 
 	public long objId;
 	public HashBiMap<Integer, BlockSet> blockIdMap = HashBiMap.create();
 	public List<BlockSet> blockList;
-	private NBTTagList entityList;
+	private final NBTTagList entityList;
 	public int xSize, ySize, zSize;
 	/**
 	 * コピー元の位置
@@ -118,7 +118,7 @@ public class NGTObject {
 				idMap.put(set, val);
 				++idCount;
 			}
-			blockIds[i] = (int) val;
+			blockIds[i] = val;
 
 			if (set.hasNBT()) {
 				nbts.setTag(String.valueOf(i), set.nbt);
@@ -366,10 +366,7 @@ public class NGTObject {
 
 				if (this.entityList != null) {
 					return this.entityList.equals(ngto.entityList);
-				} else if (ngto.entityList != null) {
-					return false;
-				}
-				return true;//Entityなし
+				} else return ngto.entityList == null;//Entityなし
 			}
 		}
 		return false;

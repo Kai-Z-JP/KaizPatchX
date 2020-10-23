@@ -141,14 +141,13 @@ public class BlockSignBoard extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
 		if (world.isRemote) {
-			player.openGui(RTMCore.instance, RTMCore.instance.guiIdSelectTexture, world, x, y, z);
+			player.openGui(RTMCore.instance, RTMCore.guiIdSelectTexture, world, x, y, z);
 		}
 		return true;
 	}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-		;
 	}
 
 	@Override

@@ -19,8 +19,8 @@ public class EntityAITravelByTrain extends EntityAIBase {
 	protected final NPCAIRideTrain aiRideTrain;
 	protected final EntityAIBase aiLeaveStation;
 
-	private EntityNPC npc;
-	private float moveSpeed;
+	private final EntityNPC npc;
+	private final float moveSpeed;
 
 	private EntityAIBase activeTask;
 	private int count;

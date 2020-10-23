@@ -57,7 +57,6 @@ public class EntityTrainDetector extends EntityElectricalWiring {
 
 	@Override
 	public void setElectricity(int par1) {
-		;
 	}
 
 	@Override
@@ -73,5 +72,10 @@ public class EntityTrainDetector extends EntityElectricalWiring {
 	@Override
 	protected String getDefaultName() {
 		return "TrainDetector_01";
+	}
+
+	@Override
+	protected ItemStack getItem() {
+		return new ItemStack(RTMItem.installedObject, 1, IstlObjType.TRAIN_DETECTOR.id);
 	}
 }

@@ -10,7 +10,6 @@ import jp.ngt.rtm.entity.train.util.FormationEntry;
 import jp.ngt.rtm.entity.train.util.TrainState;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
-import jp.ngt.rtm.modelpack.modelset.ModelSetTrainClient;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.network.PacketNotice;
@@ -36,6 +35,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class GuiTrainControlPanel extends InventoryEffectRenderer {
 	private static final ResourceLocation tabTexture = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
+	private static final int CUSTOM_BUTTOM_ID = 2000;
 
 	private int selectedTabIndex = TabTrainControlPanel.TAB_Inventory.getTabIndex();
 	/**
@@ -62,17 +62,19 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 	private GuiButton buttonChunkLoader;
 	private GuiButton buttonDestination;
 	private GuiButton buttonAnnouncement;
-	private GuiButton[] buttonDirection = new GuiButton[3];
+	private final GuiButton[] buttonDirection = new GuiButton[3];
 	/**
 	 * 0:R, L:1
 	 */
-	private GuiButtonDoor[] buttonDoor = new GuiButtonDoor[2];
+	private final GuiButtonDoor[] buttonDoor = new GuiButtonDoor[2];
+
+	private int[] dataValues;
 
 	public GuiTrainControlPanel(ContainerTrainControlPanel par1) {
 		super(par1);
 		this.train = par1.train;
 		this.player = par1.player;
-		this.modelset = (ModelSetTrainClient) par1.train.getModelSet();
+		this.modelset = par1.train.getModelSet();
 		this.player.openContainer = this.inventorySlots;
 		this.allowUserInput = true;
 	}
@@ -116,13 +118,12 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 		}
 
 		if (tab == TabTrainControlPanel.TAB_Inventory) {
-			;
 			containerTrain.inventorySlots = this.slotsList;
 
 			this.buttonList.clear();
 		} else if (tab == TabTrainControlPanel.TAB_Setting) {
 			//this.slotsList = containerTrain.inventorySlots;
-			containerTrain.inventorySlots = new ArrayList();
+			containerTrain.inventorySlots = new ArrayList<>();
 			for (int i = 0; i < 9; ++i) {
 				Slot slot = new Slot(this.player.inventory, i, 8 + i * 18, 142);
 				slot.slotNumber = containerTrain.inventorySlots.size();
@@ -153,7 +154,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 			this.buttonList.add(new GuiButton(110, this.guiLeft + 4, this.guiTop + 52, 20, 20, "<"));
 			this.buttonList.add(new GuiButton(111, this.guiLeft + 152, this.guiTop + 52, 20, 20, ">"));
 
-			if (((ModelSetVehicleBaseClient) this.modelset).rollsignTexture != null) {
+			if (((ModelSetVehicleBaseClient<TrainConfig>) this.modelset).rollsignTexture != null) {
 				this.buttonDestination = new GuiButton(128, this.guiLeft + 28, this.guiTop + 76, 120, 20, this.getFormattedText(8, this.train.getTrainStateData(8)));
 				this.buttonList.add(this.buttonDestination);
 				this.buttonList.add(new GuiButton(112, this.guiLeft + 4, this.guiTop + 76, 20, 20, "<"));
@@ -164,8 +165,27 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 			this.buttonList.add(this.buttonAnnouncement);
 			this.buttonList.add(new GuiButton(114, this.guiLeft + 4, this.guiTop + 100, 20, 20, "<"));
 			this.buttonList.add(new GuiButton(115, this.guiLeft + 152, this.guiTop + 100, 20, 20, ">"));
+		} else if (tab == TabTrainControlPanel.TAB_Function) {
+			containerTrain.inventorySlots = new ArrayList<>();
+			for (int i = 0; i < 9; ++i) {
+				Slot slot = new Slot(this.player.inventory, i, 8 + i * 18, 142);
+				slot.slotNumber = containerTrain.inventorySlots.size();
+				containerTrain.inventorySlots.add(slot);
+			}
+
+			this.buttonList.clear();
+
+			String[][] sa = this.getCustomButtons();
+			this.dataValues = new int[sa.length];
+			for (int i = 0; i < sa.length; ++i) {
+				int value = this.train.getResourceState().getDataMap().getInt("Button" + i);
+				int x = this.guiLeft + 4 + (i % 3) * (54 + 3);
+				int y = this.guiTop + 4 + (i / 3) * (20 + 4);
+				this.buttonList.add(new GuiButton(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, sa[i][value]));
+				this.dataValues[i] = value;
+			}
 		} else if (tab == TabTrainControlPanel.TAB_Formation) {
-			containerTrain.inventorySlots = new ArrayList();
+			containerTrain.inventorySlots = new ArrayList<>();
 			for (int i = 0; i < 9; ++i) {
 				Slot slot = new Slot(this.player.inventory, i, 8 + i * 18, 142);
 				slot.slotNumber = containerTrain.inventorySlots.size();
@@ -238,6 +258,16 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 					return;
 				}
 			}
+		} else if (par3 == 1) {
+			for (int i = 0; i < this.buttonList.size(); ++i) {
+				GuiButton guibutton = (GuiButton) this.buttonList.get(i);
+				if (guibutton.mousePressed(this.mc, par1, par2)) {
+					//this.selectedButton = guibutton;
+					guibutton.func_146113_a(this.mc.getSoundHandler());
+					this.buttonRightClicked(guibutton);
+				}
+			}
+			return;
 		}
 
 		super.mouseClicked(par1, par2, par3);
@@ -277,7 +307,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
 			if (i > 0) {
 				i = 1;
-			} else if (i < 0) {
+			} else {
 				i = -1;
 			}
 
@@ -351,7 +381,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 		}
 
 		if (this.slot != null && this.selectedTabIndex == TabTrainControlPanel.TAB_Inventory.getTabIndex() && this.func_146978_c(this.slot.xDisplayPosition, this.slot.yDisplayPosition, 16, 16, par1, par2)) {
-			this.drawCreativeTabHoveringText(I18n.format("inventory.binSlot", new Object[0]), par1, par2);
+			this.drawCreativeTabHoveringText(I18n.format("inventory.binSlot"), par1, par2);
 		}
 
 		if (this.maxPages != 0) {
@@ -412,7 +442,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             this.drawTexturedModalRect(i1, k + (int)((float)(l - k - 17) * this.currentScroll), 232 + (this.needsScrollBars() ? 0 : 12), 0, 12, 15);
         }*/
 
-		if (tab == null || tab.getTabPage() != tabPage) {
+		if (tab.getTabPage() != tabPage) {
 			if (tab != TabTrainControlPanel.TAB_Inventory) {
 				return;
 			}
@@ -463,7 +493,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 		int i1 = tab.isTabInFirstRow() ? -32 : this.ySize;
 
 		if (this.func_146978_c(l + 3, i1 + 3, 23, 27, par2, par3)) {
-			this.drawCreativeTabHoveringText(I18n.format(tab.getTranslatedTabLabel(), new Object[0]), par2, par3);
+			this.drawCreativeTabHoveringText(I18n.format(tab.getTranslatedTabLabel()), par2, par3);
 			return true;
 		} else {
 			return false;
@@ -577,21 +607,17 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 					RTMCore.proxy.playSound(this.train, new ResourceLocation(sa1[0], sa1[1]), 1.0F, 1.0F);
 				}
 				return;
-			} else if (button.id >= 124 && button.id <= 129) {
+			} else if (button.id <= 129) {
 				i0 = button.id - 120;
 				if (button.id == 124) {
 					i0 = TrainStateType.State_InteriorLight.id;
 				}
 				i1 = this.train.getTrainStateData(i0) + 1;
-			} else if (button.id >= 140 && button.id <= 142) {
+			} else {
 				i0 = TrainStateType.State_Direction.id;
 				i1 = button.id - 140;
 				for (int i = 0; i < 3; ++i) {
-					if (i == i1) {
-						this.buttonDirection[i].enabled = false;
-					} else {
-						this.buttonDirection[i].enabled = true;
-					}
+					this.buttonDirection[i].enabled = i != i1;
 				}
 			}
 
@@ -635,6 +661,37 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 			}
 			MacroRecorder.INSTANCE.recDoor(this.train.worldObj, type);
 		}
+
+		if (button.id >= CUSTOM_BUTTOM_ID) {
+			int index = button.id - CUSTOM_BUTTOM_ID;
+			String[] sa = this.getCustomButtons()[index];
+			int val = this.dataValues[index] + 1;
+			if (val >= sa.length) {
+				val = 0;
+			}
+			button.displayString = sa[val];
+			this.dataValues[index] = val;
+			this.onCustomButtonClick(index, val);
+		}
+	}
+
+	protected void buttonRightClicked(GuiButton button) {
+		if (button.id >= CUSTOM_BUTTOM_ID) {
+			int index = button.id - CUSTOM_BUTTOM_ID;
+			String[] sa = this.getCustomButtons()[index];
+			int val = this.dataValues[index] - 1;
+			if (val < 0) {
+				val = sa.length - 1;
+			}
+			button.displayString = sa[val];
+			this.dataValues[index] = val;
+			this.onCustomButtonClick(index, val);
+		}
+	}
+
+
+	private void onCustomButtonClick(int index, int val) {
+		this.train.getResourceState().getDataMap().setInt("Button" + index, val, 3);
 	}
 
 	private void sendTrainState(int id, byte data) {
@@ -651,23 +708,27 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 				par2 = (byte) (this.modelset.getConfig().rollsignNames.length - 1);
 			}
 			String s = "state." + stateType.stateName;
-			return I18n.format(s, new Object[0]) + " " + this.modelset.getConfig().rollsignNames[par2];
+			return I18n.format(s) + " " + this.modelset.getConfig().rollsignNames[par2];
 		} else if (stateType == TrainStateType.State_Announcement) {
 			String s = "state." + stateType.stateName;
 			String[][] sa = this.modelset.getConfig().sound_Announcement;
 			if (sa != null && par2 < sa.length) {
-				return I18n.format(s, new Object[0]) + " " + sa[par2][0];
+				return I18n.format(s) + " " + sa[par2][0];
 			}
-			return I18n.format(s, new Object[0]) + " null";
+			return I18n.format(s) + " null";
 		} else {
 			String s = "state." + stateType.stateName + "." + TrainState.getState(par1, par2).stateName;
-			return I18n.format(s, new Object[0]);
+			return I18n.format(s);
 		}
 	}
 
+	private String[][] getCustomButtons() {
+		return this.modelset.getConfig().customButtons;
+	}
+
 	private class GuiButtonFormation extends GuiButton {
-		private FormationEntry car;
-		private int v;
+		private final FormationEntry car;
+		private final int v;
 
 		public GuiButtonFormation(int id, FormationEntry entry, int posX, int posY, int posV) {
 			super(id, posX, posY, 32, 16, String.valueOf(entry.entryId + 1));
@@ -701,12 +762,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 		public boolean mousePressed(Minecraft mx, int x, int y) {
 			if (super.mousePressed(mc, x, y)) {
 				if (y - this.yPosition < 12) {
-					;
 				} else {
 					if (x - this.xPosition < 12) {
-						;//台車クリックで連結解除
+						//台車クリックで連結解除
 					} else {
-						;
 					}
 				}
 				return true;

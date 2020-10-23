@@ -32,11 +32,11 @@ public final class ModelPackManager {
 	/**
 	 * 全ModelSet
 	 */
-	private final Map<String, Map<String, ModelSetBase>> allModelSetMap = new HashMap();
+	private final Map<String, Map<String, ModelSetBase>> allModelSetMap = new HashMap<>();
 	/**
 	 * SMPで使用可能なModelSet
 	 */
-	private final Map<String, Map<String, ModelSetBase>> smpModelSetMap = new HashMap();
+	private final Map<String, Map<String, ModelSetBase>> smpModelSetMap = new HashMap<>();
 	private final Map<String, TypeEntry> typeMap = new HashMap();
 	private final Map<String, ModelSetBase> dummyMap = new HashMap();
 	/**
@@ -58,8 +58,8 @@ public final class ModelPackManager {
 	public void registerType(String type, Class<? extends ModelConfig> cfg, Class<? extends ModelSetBase> set) {
 		TypeEntry entry = new TypeEntry(cfg, set);
 		this.typeMap.put(type, entry);
-		this.allModelSetMap.put(type, new HashMap<String, ModelSetBase>());
-		this.smpModelSetMap.put(type, new HashMap<String, ModelSetBase>());
+		this.allModelSetMap.put(type, new HashMap<>());
+		this.smpModelSetMap.put(type, new HashMap<>());
 		ModelSetBase dummy = this.getNewModelSet(entry, new Class[]{});
 		this.dummyMap.put(type, dummy);
 	}
@@ -74,13 +74,9 @@ public final class ModelPackManager {
 		ModelConfig cfg = (ModelConfig) NGTJson.getObjectFromJson(json, entry.cfgClass);
 		cfg.init();
 		ModelSetBase set = this.getNewModelSet(entry, new Class[]{entry.cfgClass}, cfg);
-		if (set != null) {
-			NGTLog.debug("Registr model : " + cfg.getName() + "(" + type + ")");
-			this.allModelSetMap.get(type).put(cfg.getName(), set);
-			return cfg.getName();
-		} else {
-			throw new ModelPackException("Failed to create ModelSet", cfg.getName());
-		}
+		NGTLog.debug("Register model : " + cfg.getName() + "(" + type + ")");
+		this.allModelSetMap.get(type).put(cfg.getName(), set);
+		return cfg.getName();
 	}
 
 	/**
@@ -92,7 +88,7 @@ public final class ModelPackManager {
 			for (ModelSetBase modelSet : map.values()) {
 				ModelConfig cfg = modelSet.getConfig();
 				RTMCore.NETWORK_WRAPPER.sendTo(new PacketModelSet(count, cfg.getModelType(), cfg.getName()), player);
-				NGTLog.debug("[RTM] Send model to client : " + cfg.getName());
+//				NGTLog.debug("[RTM] Send model to client : " + cfg.getName());
 				++count;
 			}
 		}
@@ -115,7 +111,7 @@ public final class ModelPackManager {
 		ModelSetBase modelSet = this.allModelSetMap.get(type).get(name);
 		if (modelSet != null) {
 			this.smpModelSetMap.get(type).put(name, modelSet);
-			NGTLog.debug("[RTM] Add model to SMP map : " + name);
+//			NGTLog.debug("[RTM] Add model to SMP map : " + name);
 		}
 	}
 
@@ -140,18 +136,13 @@ public final class ModelPackManager {
 	}
 
 	public List<ModelSetBase> getModelList(String type) {
-		List<ModelSetBase> list = new ArrayList<ModelSetBase>();
+		List<ModelSetBase> list = new ArrayList<>();
 		Map<String, Map<String, ModelSetBase>> map = NGTUtil.isSMP() ? this.smpModelSetMap : this.allModelSetMap;
 		for (ModelSetBase modelSet : map.get(type).values()) {
 			list.add(modelSet);
 		}
 
-		Collections.sort(list, new Comparator<ModelSetBase>() {
-			@Override
-			public int compare(ModelSetBase o1, ModelSetBase o2) {
-				return o1.getConfig().getName().compareTo(o2.getConfig().getName());
-			}
-		});
+		list.sort(Comparator.comparing(o -> o.getConfig().getName()));
 		return list;
 	}
 
@@ -179,7 +170,7 @@ public final class ModelPackManager {
 
 		VecAccuracy accuracy = (cfg.accuracy == null || cfg.accuracy.equals(VecAccuracy.MEDIUM.toString())) ? VecAccuracy.MEDIUM : VecAccuracy.LOW;
 		String resource = "models/" + modelName;
-		IModelNGT model = null;
+		IModelNGT model;
 
 		try {
 			if (FileType.NGTO.match(modelName)) {
@@ -223,11 +214,7 @@ public final class ModelPackManager {
 				this.modelFileMap.put(modelName, obj);
 			}
 			return obj;
-		} catch (InstantiationException e) {
-			throw new ModelPackException("[RTM] Can't load class", modelName, e);
-		} catch (IllegalAccessException e) {
-			throw new ModelPackException("[RTM] Can't load class", modelName, e);
-		} catch (ClassNotFoundException e) {
+		} catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
 			throw new ModelPackException("[RTM] Can't load class", modelName, e);
 		}
 	}
@@ -241,7 +228,7 @@ public final class ModelPackManager {
 	public ResourceLocation getResource(String domain, String path) {
 		Map<String, ResourceLocation> map = this.resourceMap.get(domain);
 		if (map == null) {
-			map = new HashMap<String, ResourceLocation>();
+			map = new HashMap<>();
 			this.resourceMap.put(domain, map);
 		} else if (map.containsKey(path)) {
 			return map.get(path);

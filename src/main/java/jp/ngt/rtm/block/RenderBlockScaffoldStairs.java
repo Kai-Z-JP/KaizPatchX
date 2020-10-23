@@ -26,7 +26,7 @@ public class RenderBlockScaffoldStairs extends TileEntitySpecialRenderer impleme
 	public static RenderBlockScaffoldStairs INSTANCE = new RenderBlockScaffoldStairs();
 
 	private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/blocks/framework.png");
-	private DisplayList[] displayLists = new DisplayList[3];
+	private final DisplayList[] displayLists = new DisplayList[3];
 
 	private RenderBlockScaffoldStairs() {
 	}

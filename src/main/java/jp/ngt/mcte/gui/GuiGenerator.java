@@ -43,9 +43,9 @@ public class GuiGenerator extends GuiScreenCustom {
 	protected final int yPos;
 	protected final int zPos;
 	TerrainData terrainData = new TerrainData();
-	private Thumbnail[] thumbnail = new Thumbnail[2];
-	private String[] imgName = {"", ""};
-	private GuiButton[] selectButtons = new GuiButton[2];
+	private final Thumbnail[] thumbnail = new Thumbnail[2];
+	private final String[] imgName = {"", ""};
+	private final GuiButton[] selectButtons = new GuiButton[2];
 	private GuiTextField yScaleTF;
 	private GuiSlotCustom slotCustom;
 	private SlotElement[] slotElements;
@@ -68,16 +68,16 @@ public class GuiGenerator extends GuiScreenCustom {
 	public void initGui() {
 		this.buttonList.clear();
 		int i0 = ((this.height - 30) / this.thumbnail.length) + 80;
-		this.selectButtons[0] = new GuiButton(120, i0, 0, 40, 20, I18n.format("gui.mcte.select", new Object[0]));
+		this.selectButtons[0] = new GuiButton(120, i0, 0, 40, 20, I18n.format("gui.mcte.select"));
 		this.buttonList.add(this.selectButtons[0]);
-		this.selectButtons[1] = new GuiButton(121, i0, 20, 40, 20, I18n.format("gui.mcte.select", new Object[0]));
+		this.selectButtons[1] = new GuiButton(121, i0, 20, 40, 20, I18n.format("gui.mcte.select"));
 		this.buttonList.add(this.selectButtons[1]);
 
 		this.textFields.clear();
 		this.yScaleTF = this.setTextField(i0, 40, 40, 20, String.valueOf(this.terrainData.yScale));
 
-		this.buttonList.add(new GuiButton(100, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.mcte.generate", new Object[0])));
-		this.buttonList.add(new GuiButton(101, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(100, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.mcte.generate")));
+		this.buttonList.add(new GuiButton(101, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 
 		this.slotList.clear();
 		int i1 = this.width - 55 - i0;
@@ -105,7 +105,6 @@ public class GuiGenerator extends GuiScreenCustom {
 	private void selectImageFile(int par1) {
 		File file = NGTFileLoader.selectFile(new String[][]{{"PNG_File", "png"}});
 		if (file == null) {
-			;
 		} else {
 			this.setImageFile(par1, file);
 		}
@@ -186,23 +185,23 @@ public class GuiGenerator extends GuiScreenCustom {
 		this.drawDefaultBackground();
 
 		int i0 = (this.height - 30) / this.thumbnail.length;
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.terrainImage", new Object[0]), i0 + 5, 5, 0xffffff);
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.blocksImage", new Object[0]), i0 + 5, 25, 0xffffff);
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.yScale", new Object[0]), i0 + 5, 45, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.terrainImage"), i0 + 5, 5, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.blocksImage"), i0 + 5, 25, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.yScale"), i0 + 5, 45, 0xffffff);
 
 		super.drawScreen(par1, par2, par3);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		for (int i = 0; i < this.thumbnail.length; ++i) {
 			if (this.thumbnail[i] != null) {
-				double d1 = (double) (i0 * i);
+				double d1 = i0 * i;
 				this.thumbnail[i].bindTexture();
 				Tessellator tessellator = Tessellator.instance;
 				tessellator.startDrawingQuads();
-				tessellator.addVertexWithUV((double) i0, (double) i0 + d1, (double) this.zLevel, 1.0D, 1.0D);
-				tessellator.addVertexWithUV((double) i0, 0.0D + d1, (double) this.zLevel, 1.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, 0.0D + d1, (double) this.zLevel, 0.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, (double) i0 + d1, (double) this.zLevel, 0.0D, 1.0D);
+				tessellator.addVertexWithUV(i0, (double) i0 + d1, this.zLevel, 1.0D, 1.0D);
+				tessellator.addVertexWithUV(i0, 0.0D + d1, this.zLevel, 1.0D, 0.0D);
+				tessellator.addVertexWithUV(0.0D, 0.0D + d1, this.zLevel, 0.0D, 0.0D);
+				tessellator.addVertexWithUV(0.0D, (double) i0 + d1, this.zLevel, 0.0D, 1.0D);
 				tessellator.draw();
 			}
 		}
@@ -238,10 +237,10 @@ public class GuiGenerator extends GuiScreenCustom {
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.startDrawingQuads();
 			tessellator.setColorOpaque_I(color);
-			tessellator.addVertex((double) (par1 + 0), (double) (par2 + par4), (double) par5);
-			tessellator.addVertex((double) (par1 + par3), (double) (par2 + par4), (double) par5);
-			tessellator.addVertex((double) (par1 + par3), (double) (par2 + 0), (double) par5);
-			tessellator.addVertex((double) (par1 + 0), (double) (par2 + 0), (double) par5);
+			tessellator.addVertex(par1 + 0, par2 + par4, par5);
+			tessellator.addVertex(par1 + par3, par2 + par4, par5);
+			tessellator.addVertex(par1 + par3, par2 + 0, par5);
+			tessellator.addVertex(par1 + 0, par2 + 0, par5);
 			tessellator.draw();
 		}
 

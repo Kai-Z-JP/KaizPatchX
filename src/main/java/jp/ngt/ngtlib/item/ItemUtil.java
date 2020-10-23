@@ -11,9 +11,7 @@ public final class ItemUtil {
 		if (par1.getItem() == par2.getItem()) {
 			int damage1 = par1.getItemDamage();
 			int damage2 = par2.getItemDamage();
-			if (damage1 == damage2 || damage1 == 32767 || damage2 == 32767) {
-				return true;
-			}
+			return damage1 == damage2 || damage1 == 32767 || damage2 == 32767;
 		}
 		return false;
 	}

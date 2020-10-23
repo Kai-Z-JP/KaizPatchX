@@ -24,6 +24,6 @@ public class ItemMagazine extends Item {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
 		int max = itemStack.getMaxDamage();
-		list.add(EnumChatFormatting.GRAY + "Bullet:" + String.valueOf(max - itemStack.getItemDamage()) + "/" + String.valueOf(max));
+		list.add(EnumChatFormatting.GRAY + "Bullet:" + (max - itemStack.getItemDamage()) + "/" + max);
 	}
 }

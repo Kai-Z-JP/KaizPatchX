@@ -19,7 +19,7 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 	/**
 	 * {sound1, bell}
 	 */
-	private MovingSoundEntity[] atsSound = new MovingSoundEntity[2];
+	private final MovingSoundEntity[] atsSound = new MovingSoundEntity[2];
 	private int currentSignal;
 
 	public SoundUpdaterTrain(SoundHandler par1, EntityTrainBase par2) {
@@ -95,13 +95,14 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 
 	@Override
 	protected boolean changePitch() {
-		ModelSetVehicleBase<TrainConfig> modelset = (ModelSetVehicleBase) this.theTrain.getModelSet();
+		ModelSetVehicleBase<TrainConfig> modelset = this.theTrain.getModelSet();
 		float speed = this.theTrain.getSpeed();
-		return speed > 0 ? (speed < modelset.getConfig().maxSpeed[0] ? false : true) : false;
+		return speed > 0 && (!(speed < modelset.getConfig().maxSpeed[0]));
 	}
 
 	public float getMaxSpeed() {
-		return this.theTrain.getModelSet().getConfig().maxSpeed[4] * 72.0F;
+		TrainConfig cfg = this.theTrain.getModelSet().getConfig();
+		return cfg.maxSpeed[cfg.maxSpeed.length - 1] * 72.0F;
 	}
 
 	public int getNotch() {

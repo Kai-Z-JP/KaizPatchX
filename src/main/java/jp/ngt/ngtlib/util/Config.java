@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Config {
-	private Map<String, Map<String, String>> itemMap = new HashMap<String, Map<String, String>>();
+	private final Map<String, Map<String, String>> itemMap = new HashMap<String, Map<String, String>>();
 
 	public void load(File file) {
 		String[] sa = NGTText.readText(file);
@@ -16,7 +16,6 @@ public class Config {
 			String category = "";
 			for (String s : sa) {
 				if (s.startsWith("#")) {
-					;
 				} else if (s.startsWith("@")) {
 					category = s.substring(1);
 				} else if (s.contains("=")) {

@@ -3,13 +3,15 @@ package jp.ngt.ngtlib.math;
 import net.minecraft.util.MathHelper;
 
 public final class BezierCurve implements ILine {
-	private static final int MAX_N = 8192;
+	public static final int QUANTIZE = 32;
 
 	public final double[] sp;//StartPoint
 	public final double[] cpS;//ControlPoint
 	public final double[] cpE;//ControlPoint
 	public final double[] ep;//EndPoint
 	private float[] normalizedParameters;
+	private final double length;
+	private final int split;
 
 	/**
 	 * ベジェ曲線
@@ -28,6 +30,8 @@ public final class BezierCurve implements ILine {
 		this.cpS = new double[]{p3, p4};
 		this.cpE = new double[]{p5, p6};
 		this.ep = new double[]{p7, p8};
+		this.length = calcLength();
+		this.split = (int) (this.length * (double) QUANTIZE);
 	}
 
 	@Override
@@ -110,22 +114,22 @@ public final class BezierCurve implements ILine {
 			this.initNP();
 		}
 
-		int i0 = MathHelper.floor_float((float) par2 * (float) MAX_N / (float) n);
+		int i0 = MathHelper.floor_float((float) par2 * (float) this.split / (float) n);
 		return this.normalizedParameters[i0];
 	}
 
 	private void initNP() {
-		this.normalizedParameters = new float[MAX_N];
+		this.normalizedParameters = new float[this.split];
 
-		float ni = 1.0F / (float) MAX_N;
-		float[] dd = new float[MAX_N + 1];
+		float ni = 1.0F / (float) this.split;
+		float[] dd = new float[this.split + 1];
 
 		float tt = 0.0F;//区間ごとのt
 		double[] p = this.sp;
-		double[] q = new double[2];
+		double[] q;
 
 		dd[0] = 0;
-		for (int i = 1; i < MAX_N + 1; i++) {
+		for (int i = 1; i < this.split + 1; i++) {
 			tt += ni;//時間での区間を進める
 			q = this.getPointFromParameter(tt);//ttでの通常のベジェ曲線上の点を得る
 			dd[i] = dd[i - 1] + (float) this.getDistance(p[0], q[0], p[1], q[1]);//距離を足し込んで保持
@@ -133,44 +137,46 @@ public final class BezierCurve implements ILine {
 		}
 
 		//距離の合計(=dd[n])で正規化,ddはdd[0]=0<dd[1]<dd[2]<...<dd[N-1]<dd[N]=1となる
-		for (int i = 1; i < MAX_N + 1; i++) {
-			dd[i] /= dd[MAX_N];
+		for (int i = 1; i < this.split + 1; i++) {
+			dd[i] /= dd[this.split];
 		}
 
-		for (int i = 0; i < MAX_N; ++i) {
-			float t = (float) i / (float) MAX_N;
-			int k = 0;
-			for (k = 0; k < MAX_N - 1; ++k) {
+		for (int i = 0; i < this.split; ++i) {
+			float t = (float) i / (float) this.split;
+			int k;
+			for (k = 0; k < this.split - 1; ++k) {
 				if (dd[k] <= t && t <= dd[k + 1]) break;
 			}
 
 			float x = (t - dd[k]) / (dd[k + 1] - dd[k]);
-			x = (k * (1 - x) + (1 + k) * x) * (1.0F / (float) MAX_N);
+			x = (k * (1 - x) + (1 + k) * x) * (1.0F / (float) this.split);
 			this.normalizedParameters[i] = x;
 		}
 	}
 
 	@Override
 	public double getLength() {
+		return this.length;
+	}
+
+
+	private double calcLength() {
 		double x0 = this.sp[0] - this.ep[0];
 		double y0 = this.sp[1] - this.ep[1];
 		double l0 = Math.sqrt(x0 * x0 + y0 * y0);
-
 		int n = MathHelper.floor_double(l0 * 2.0D);
-		float ni = 1 / (float) n;
+		float ni = 1.0F / n;
 		float tt = 0.0F;
 		double[] p = this.sp;
-		double[] q = new double[2];
+		double[] q;
 		double[] dd = new double[n + 1];
-
-		dd[0] = 0;
+		dd[0] = 0.0D;
 		for (int i = 1; i < n + 1; i++) {
 			tt += ni;
-			q = this.getPointFromParameter(tt);
-			dd[i] = dd[i - 1] + this.getDistance(p[0], q[0], p[1], q[1]);
+			q = getPointFromParameter(tt);
+			dd[i] = dd[i - 1] + getDistance(p[0], q[0], p[1], q[1]);
 			p = q;
 		}
-
 		return dd[n];
 	}
 

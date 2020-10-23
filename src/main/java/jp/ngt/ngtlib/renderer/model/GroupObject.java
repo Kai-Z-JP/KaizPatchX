@@ -16,7 +16,7 @@ public final class GroupObject {
 	public String name;
 	public byte drawMode;
 	public float smoothingAngle;
-	public ArrayList<Face> faces = new ArrayList<Face>();
+	public ArrayList<Face> faces = new ArrayList<>();
 
 	public GroupObject(int par1) {
 		this("", par1);
@@ -42,11 +42,7 @@ public final class GroupObject {
 				}
 
 				Vertex vtx = face.vertices[i];
-				List<Face> list = faceMap.get(vtx);
-				if (list == null) {
-					list = new ArrayList<>();
-					faceMap.put(vtx, list);
-				}
+				List<Face> list = faceMap.computeIfAbsent(vtx, k -> new ArrayList<>());
 
 				if (!list.contains(face)) {
 					list.add(face);
@@ -75,6 +71,15 @@ public final class GroupObject {
 				face.addFaceForRender(tessellator, smoothing);
 			}
 		}
+	}
+
+	public GroupObject copy(String name) {
+		GroupObject go = new GroupObject(name, this.drawMode);
+		for (Face origFace : this.faces) {
+			Face face = origFace.copy();
+			go.faces.add(face);
+		}
+		return go;
 	}
 
 	protected final class FaceSet {

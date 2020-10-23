@@ -34,7 +34,7 @@ public class EntityEditor extends Entity implements IInventory {
 	//public List<BlockSet> blockList = new ArrayList<BlockSet>();
 	//public List entityList;
 	private EntityPlayer player;
-	private ItemStack[] slots = new ItemStack[2];
+	private final ItemStack[] slots = new ItemStack[2];
 	public int fillMode = 0;
 
 	@SideOnly(Side.CLIENT)

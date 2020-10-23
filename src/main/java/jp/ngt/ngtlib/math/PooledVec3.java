@@ -7,7 +7,7 @@ import net.minecraft.util.MathHelper;
  * メモリ使用削減
  */
 public final class PooledVec3 extends Vec3 {
-	private static ObjectPool<PooledVec3> POOL;
+	private static final ObjectPool<PooledVec3> POOL;
 
 	static {
 		final int size = 32;

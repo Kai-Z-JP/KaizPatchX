@@ -9,7 +9,7 @@ public enum SignalConverterType {
 
 	public final byte id;
 
-	private SignalConverterType(int p1) {
+	SignalConverterType(int p1) {
 		this.id = (byte) p1;
 	}
 

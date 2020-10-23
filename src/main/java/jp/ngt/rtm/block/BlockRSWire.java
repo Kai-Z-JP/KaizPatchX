@@ -165,9 +165,7 @@ public class BlockRSWire extends Block {
 			return true;
 		}
 
-		if (world.getStrongestIndirectPower(x, y, z) > 0) {
-			return true;
-		}
+		return world.getStrongestIndirectPower(x, y, z) > 0;
 
 		/*for(int i = 0; i < 6; ++i)
 		{
@@ -180,7 +178,6 @@ public class BlockRSWire extends Block {
 				return true;
 			}
 		}*/
-		return false;
 	}
 
 	private boolean isPowered(int metadata) {

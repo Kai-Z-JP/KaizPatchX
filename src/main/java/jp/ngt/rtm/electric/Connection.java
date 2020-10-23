@@ -113,7 +113,7 @@ public class Connection {
 				} else {
 					TileEntity te = world.getTileEntity(this.x, this.y, this.z);
 					if (te instanceof TileEntityElectricalWiring) {
-						this.connectedObject = (TileEntityElectricalWiring) te;
+						this.connectedObject = te;
 						return (TileEntityElectricalWiring) this.connectedObject;
 					}
 				}
@@ -213,7 +213,7 @@ public class Connection {
 		public final byte id;
 		public final boolean isVisible;
 
-		private ConnectionType(int par1, boolean par2) {
+		ConnectionType(int par1, boolean par2) {
 			this.id = (byte) par1;
 			this.isVisible = par2;
 		}

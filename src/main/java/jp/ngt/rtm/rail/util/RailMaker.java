@@ -4,11 +4,12 @@ import jp.ngt.ngtlib.io.NGTLog;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class RailMaker {
-	private World worldObj;
-	private List<RailPosition> rpList;
+	private final World worldObj;
+	private final List<RailPosition> rpList;
 
 	public RailMaker(World world, List<RailPosition> par2) {
 		this.worldObj = world;
@@ -17,10 +18,8 @@ public final class RailMaker {
 
 	public RailMaker(World world, RailPosition[] par2) {
 		this.worldObj = world;
-		this.rpList = new ArrayList<RailPosition>();
-		for (RailPosition rp : par2) {
-			this.rpList.add(rp);
-		}
+		this.rpList = new ArrayList<>();
+		this.rpList.addAll(Arrays.asList(par2));
 	}
 
 	private SwitchType getSwitchType() {
@@ -60,8 +59,8 @@ public final class RailMaker {
 	public SwitchType getSwitch() {
 		SwitchType type = this.getSwitchType();
 		if (type != null) {
-			List<RailPosition> switchList = new ArrayList<RailPosition>();//分岐あり
-			List<RailPosition> normalList = new ArrayList<RailPosition>();//分岐なし
+			List<RailPosition> switchList = new ArrayList<>();//分岐あり
+			List<RailPosition> normalList = new ArrayList<>();//分岐なし
 			for (RailPosition rp : this.rpList) {
 				if (rp.switchType == 1) {
 					switchList.add(rp);
@@ -77,7 +76,7 @@ public final class RailMaker {
 
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 			RailPosition rp = this.rpList.get(0);
-			NGTLog.sendChatMessageToAll("message.rail.switch_type", new Object[]{rp.blockX, rp.blockY, rp.blockZ});
+			NGTLog.sendChatMessageToAll("message.rail.switch_type", rp.blockX, rp.blockY, rp.blockZ);
 		}
 
 		return null;

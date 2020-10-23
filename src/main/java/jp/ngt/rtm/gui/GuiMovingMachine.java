@@ -32,8 +32,8 @@ public class GuiMovingMachine extends GuiScreenCustom {
 		int hw = this.width / 2;
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, hw - 155, this.height - 28, 150, 20, I18n.format("gui.done", new Object[0])));
-		this.buttonList.add(new GuiButton(1, hw + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(0, hw - 155, this.height - 28, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(new GuiButton(1, hw + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 
 		int h = 44;
 		this.buttonV = new GuiButton(100, hw - 120, h, 100, 20, "GuideVisibility : " + this.guideVisibility);

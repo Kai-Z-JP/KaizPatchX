@@ -16,7 +16,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class GuiSelectTexture extends GuiScreenCustom {
 	public final ITextureHolder holder;
-	private List<TextureProperty> properties;
+	private final List<TextureProperty> properties;
 	private int currentScroll;
 	private int prevScroll;
 	private int uCount, vCount;

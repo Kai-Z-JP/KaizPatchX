@@ -65,7 +65,7 @@ public final class RTMEventHandlerClient {
 					boolean flag3 = size[2] < event.renderer.posZ + 16 && size[5] >= event.renderer.posZ;
 					if (flag1 && flag2 && flag3) {
 						if (GLHelper.isValid(rail.glList)) {
-							rail.shouldRerender = true;
+							rail.shouldRerenderRail = true;
 						}
 					}
 				}
@@ -80,9 +80,7 @@ public final class RTMEventHandlerClient {
 
 	private boolean isPlayerSittingSeat(EntityPlayer player, byte type) {
 		if (player.isRiding() && player.ridingEntity instanceof EntityFloor) {
-			if (((EntityFloor) player.ridingEntity).getSeatType() == type) {
-				return true;
-			}
+			return ((EntityFloor) player.ridingEntity).getSeatType() == type;
 		}
 		return false;
 	}

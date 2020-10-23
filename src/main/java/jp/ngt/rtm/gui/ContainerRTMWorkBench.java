@@ -20,16 +20,16 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 public class ContainerRTMWorkBench extends Container {
-	private InventoryCrafting craftMatrix = new InventoryCrafting(this, 5, 5);
-	private InventoryCrafting invBallast = new InventoryCrafting(this, 5, 1);
-	private InventoryUneditable sample = new InventoryUneditable(this, 1, 1);
-	private InventoryCraftResult craftResult = new InventoryCraftResult();
+	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 5, 5);
+	private final InventoryCrafting invBallast = new InventoryCrafting(this, 5, 1);
+	private final InventoryUneditable sample = new InventoryUneditable(this, 1, 1);
+	private final InventoryCraftResult craftResult = new InventoryCraftResult();
 
-	private World worldObj;
-	private TileEntityTrainWorkBench workBench;
+	private final World worldObj;
+	private final TileEntityTrainWorkBench workBench;
 	protected EntityPlayer thePlayer;
 	private int lastCraftingTime;
-	private boolean isCreativeMode;
+	private final boolean isCreativeMode;
 
 	public String modelName;
 	public float railHeight = 0.0625F;
@@ -253,7 +253,7 @@ public class ContainerRTMWorkBench extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return this.worldObj.getBlock(this.workBench.xCoord, this.workBench.yCoord, this.workBench.zCoord) != RTMBlock.trainWorkBench ? false : player.getDistanceSq((double) this.workBench.xCoord + 0.5D, (double) this.workBench.yCoord + 0.5D, (double) this.workBench.zCoord + 0.5D) <= 64.0D;
+		return this.worldObj.getBlock(this.workBench.xCoord, this.workBench.yCoord, this.workBench.zCoord) == RTMBlock.trainWorkBench && player.getDistanceSq((double) this.workBench.xCoord + 0.5D, (double) this.workBench.yCoord + 0.5D, (double) this.workBench.zCoord + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public class ContainerRTMWorkBench extends Container {
 			}
 
 			if (itemstack1.stackSize == 0) {
-				slot.putStack((ItemStack) null);
+				slot.putStack(null);
 			} else {
 				slot.onSlotChanged();
 			}

@@ -62,7 +62,6 @@ public class ItemGun extends Item {
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int count) {
-		;
 	}
 
 	@Override
@@ -135,7 +134,7 @@ public class ItemGun extends Item {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
 		int max = itemStack.getMaxDamage();
-		list.add(EnumChatFormatting.GRAY + "Bullet:" + String.valueOf(max - itemStack.getItemDamage()) + "/" + String.valueOf(max));
+		list.add(EnumChatFormatting.GRAY + "Bullet:" + (max - itemStack.getItemDamage()) + "/" + max);
 	}
 
 	public Item getMagazineFromGunType() {
@@ -170,7 +169,7 @@ public class ItemGun extends Item {
 		public final float speed;
 		public boolean rapidFire;
 
-		private GunType(BulletType par1, int par2, int par3, float par4, boolean par5) {
+		GunType(BulletType par1, int par2, int par3, float par4, boolean par5) {
 			this.bulletType = par1;
 			this.maxSize = par2;
 			this.useDuration = par3;

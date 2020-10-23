@@ -1,6 +1,7 @@
 {
   "trainName": "siki1000",
   "trainType": "CC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_siki1000.mqo",
     "textures": [

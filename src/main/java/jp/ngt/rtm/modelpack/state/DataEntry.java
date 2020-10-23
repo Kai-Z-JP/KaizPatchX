@@ -26,13 +26,13 @@ public abstract class DataEntry<T> {
 		DataType dType = DataType.getType(type);
 
 		if (dType == DataType.INT) {
-			int i = data.isEmpty() ? 0 : Integer.valueOf(data);
+			int i = data.isEmpty() ? 0 : Integer.parseInt(data);
 			return new DataEntryInt(i, flag);
 		} else if (dType == DataType.DOUBLE) {
-			double d = data.isEmpty() ? 0.0D : Double.valueOf(data);
+			double d = data.isEmpty() ? 0.0D : Double.parseDouble(data);
 			return new DataEntryDouble(d, flag);
 		} else if (dType == DataType.BOOLEAN) {
-			boolean b = data.isEmpty() ? false : Boolean.valueOf(data);
+			boolean b = !data.isEmpty() && Boolean.parseBoolean(data);
 			return new DataEntryBoolean(b, flag);
 		} else if (dType == DataType.STRING) {
 			return new DataEntryString(data, flag);

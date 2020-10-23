@@ -1,6 +1,7 @@
 {
   "trainName": "s300",
   "trainType": "EC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_s300.mqo",
     "textures": [
@@ -142,9 +143,11 @@
       "disableLighting": false
     }
   ],
+
   "soundScriptPath": "scripts/sound_223.js",
   "sound_Horn": "train.rtm_wh_00l",
   "sound_BrakeRelease": "train.rtm_223_release",
+
   "headLights": [
     {
       "type": 0,

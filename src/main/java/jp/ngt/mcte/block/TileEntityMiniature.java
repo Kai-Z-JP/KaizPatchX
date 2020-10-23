@@ -276,15 +276,15 @@ public class TileEntityMiniature extends TileEntityPlaceable {
 		double d0 = NGTUtil.getChunkLoadDistanceSq() * 0.5D;
 		if (this.blocksObject != null) {
 			if (d0 < (double) this.blocksObject.xSize) {
-				d0 = (double) this.blocksObject.xSize;
+				d0 = this.blocksObject.xSize;
 			}
 
 			if (d0 < (double) this.blocksObject.ySize) {
-				d0 = (double) this.blocksObject.ySize;
+				d0 = this.blocksObject.ySize;
 			}
 
 			if (d0 < (double) this.blocksObject.zSize) {
-				d0 = (double) this.blocksObject.zSize;
+				d0 = this.blocksObject.zSize;
 			}
 		}
 		return d0;
@@ -302,7 +302,7 @@ public class TileEntityMiniature extends TileEntityPlaceable {
 			return INFINITE_EXTENT_AABB;
 		}
 
-		double sc = (double) this.scale;
+		double sc = this.scale;
 		double x0 = (double) this.blocksObject.xSize * sc * 0.5D;
 		double y0 = (double) this.blocksObject.ySize * sc;
 		double z0 = (double) this.blocksObject.zSize * sc * 0.5D;
@@ -310,7 +310,7 @@ public class TileEntityMiniature extends TileEntityPlaceable {
 		double py = (double)this.yCoord + 0.5D + (double)this.offsetY * sc;
 		double pz = (double)this.zCoord + 0.5D + (double)this.offsetZ * sc;*/
 		double px = (double) this.xCoord + 0.5D;
-		double py = (double) this.yCoord;
+		double py = this.yCoord;
 		double pz = (double) this.zCoord + 0.5D;
 		return AxisAlignedBB.getBoundingBox(px - x0, py, pz - z0, px + x0, py + y0, pz + z0);
 	}

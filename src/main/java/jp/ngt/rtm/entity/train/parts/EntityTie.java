@@ -118,7 +118,7 @@ public class EntityTie extends EntityCargo {
 				return false;
 			}
 		} else {
-			this.riddenByEntity.mountEntity((Entity) null);
+			this.riddenByEntity.mountEntity(null);
 			return true;
 		}
 	}

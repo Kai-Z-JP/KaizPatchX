@@ -19,7 +19,6 @@ public class BasicRailPartsRenderer extends RailPartsRenderer {
 
 	@Override
 	protected void renderRailDynamic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
-		;
 	}
 
 	@Override

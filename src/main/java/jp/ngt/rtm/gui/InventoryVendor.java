@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 public class InventoryVendor implements IInventory {
 	public static final byte Slot_Size = 12;
 
-	private ContainerTicketVendor container;
-	private ItemStack[] stackList;
+	private final ContainerTicketVendor container;
+	private final ItemStack[] stackList;
 
 	public InventoryVendor(ContainerTicketVendor par1) {
 		this.container = par1;

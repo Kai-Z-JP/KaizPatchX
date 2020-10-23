@@ -30,10 +30,10 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 	public static final float SPEED = 0.45F;
 	public static final float ATTACK_POWER = 1.0F;
 
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	private ModelSetNPC myModelSet;
 	private Role myRole = Role.MANNEQUIN;
-	private EntityDummyPlayer playerDummy;
+	private final EntityDummyPlayer playerDummy;
 
 	protected int useItemCount;
 
@@ -53,7 +53,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 	}
 
 	protected void setNavigator(PathNavigate navigator) {
-		NGTUtil.setValueToField(EntityLiving.class, this, navigator, new String[]{"navigator", "field_70699_by"});
+		NGTUtil.setValueToField(EntityLiving.class, this, navigator, "navigator", "field_70699_by");
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 	public void entityInit() {
 		super.entityInit();
 		this.dataWatcher.addObject(20, "MannequinNGT01");
-		this.dataWatcher.addObject(21, Byte.valueOf((byte) 0));
+		this.dataWatcher.addObject(21, (byte) 0);
 		this.dataWatcher.addObject(22, "");
 	}
 
@@ -124,7 +124,6 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 
 	@Override
 	protected void dropFewItems(boolean par1, int par2) {
-		;
 	}
 
 	protected void dropEntity() {
@@ -289,7 +288,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 	}
 
 	public void setUseItem(boolean par1) {
-		this.dataWatcher.updateObject(21, Byte.valueOf((byte) (par1 ? 1 : 0)));
+		this.dataWatcher.updateObject(21, (byte) (par1 ? 1 : 0));
 	}
 
 	public int getItemUseCount() {
@@ -306,7 +305,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 
 	@Override
 	public double getYOffset() {
-		return (double) (this.yOffset - 0.5F);
+		return this.yOffset - 0.5F;
 	}
 
 	@Override
@@ -360,7 +359,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 
 	@Override
 	public void setModelName(String name) {
-		this.dataWatcher.updateObject(20, new String(name));//ミニチュアでDWは非同期のため
+		this.dataWatcher.updateObject(20, name);//ミニチュアでDWは非同期のため
 		if (!this.worldObj.isRemote) {
 			this.onInventoryChanged();//初期化
 		}
@@ -381,7 +380,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		return true;
 	}
 

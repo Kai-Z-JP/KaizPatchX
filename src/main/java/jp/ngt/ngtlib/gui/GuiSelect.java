@@ -45,7 +45,7 @@ public class GuiSelect extends GuiScreenCustom {
 		super.initGui();
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(1, this.width / 2 - 75, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(1, this.width / 2 - 75, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class GuiSelect extends GuiScreenCustom {
 
 		@Override
 		public void draw(Minecraft par1, int par2, int par3, float par4) {
-			this.func_148171_c(par1, par2 + 1, par3 + 1, 0, 0, par4);
+			func_148171_c(par1, par2 + 1, par3 + 1, 0, 0, par4);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
 			NGTRenderHelper.getItemRenderer().renderItemIntoGUI(par1.fontRenderer, par1.getTextureManager(), this.iconItem, par2 + 2, par3 + 2);
@@ -110,10 +110,10 @@ public class GuiSelect extends GuiScreenCustom {
 			par1.getTextureManager().bindTexture(Gui.statIcons);
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.startDrawingQuads();
-			tessellator.addVertexWithUV((double) (par2 + 0), (double) (par3 + 18), (double) par6, (double) ((float) (par4 + 0) * 0.0078125F), (double) ((float) (par5 + 18) * 0.0078125F));
-			tessellator.addVertexWithUV((double) (par2 + 18), (double) (par3 + 18), (double) par6, (double) ((float) (par4 + 18) * 0.0078125F), (double) ((float) (par5 + 18) * 0.0078125F));
-			tessellator.addVertexWithUV((double) (par2 + 18), (double) (par3 + 0), (double) par6, (double) ((float) (par4 + 18) * 0.0078125F), (double) ((float) (par5 + 0) * 0.0078125F));
-			tessellator.addVertexWithUV((double) (par2 + 0), (double) (par3 + 0), (double) par6, (double) ((float) (par4 + 0) * 0.0078125F), (double) ((float) (par5 + 0) * 0.0078125F));
+			tessellator.addVertexWithUV(par2 + 0, par3 + 18, par6, (float) (par4 + 0) * 0.0078125F, (float) (par5 + 18) * 0.0078125F);
+			tessellator.addVertexWithUV(par2 + 18, par3 + 18, par6, (float) (par4 + 18) * 0.0078125F, (float) (par5 + 18) * 0.0078125F);
+			tessellator.addVertexWithUV(par2 + 18, par3 + 0, par6, (float) (par4 + 18) * 0.0078125F, (float) (par5 + 0) * 0.0078125F);
+			tessellator.addVertexWithUV(par2 + 0, par3 + 0, par6, (float) (par4 + 0) * 0.0078125F, (float) (par5 + 0) * 0.0078125F);
 			tessellator.draw();
 		}
 

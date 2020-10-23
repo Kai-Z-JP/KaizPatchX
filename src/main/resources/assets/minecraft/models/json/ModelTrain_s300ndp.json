@@ -1,6 +1,7 @@
 {
   "trainName": "s300ndp",
   "trainType": "EC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_s300ndp.mqo",
     "textures": [

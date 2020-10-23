@@ -20,11 +20,11 @@ import net.minecraft.world.IBlockAccess;
  */
 @SideOnly(Side.CLIENT)
 public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
-	private static float[][] vertex = {
+	private static final float[][] vertex = {
 			{0.0625F, 0.0F, 0.0F}, {0.0625F, 0.0625F, 0.0F}, {0.0625F, 0.9375F, 0.5F}, {0.0625F, 1.0F, 0.5F},
 			{-0.0625F, 0.0F, 0.0F}, {-0.0625F, 0.0625F, 0.0F}, {-0.0625F, 0.9375F, 0.5F}, {-0.0625F, 1.0F, 0.5F}};
 	//+x,-x,+y,-y,+z,-z
-	private static float[][] framePos = {
+	private static final float[][] framePos = {
 			vertex[3], vertex[2], vertex[0], vertex[1],
 			vertex[5], vertex[4], vertex[6], vertex[7],
 			vertex[3], vertex[1], vertex[5], vertex[7],
@@ -94,7 +94,7 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 							NGTRenderer.renderBlock(F0 * 8.0F, F0 * 15.0F, F0 * 7.0F, F0 * 16.0F, F0 * 16.0F, F0 * 9.0F, true, renderer, block, x, y, z);
 						}
 						NGTRenderer.renderBlock(F0 * 8.0F, F0 * 0.0F, F0 * 7.0F, F0 * 16.0F, F0 * 1.0F, F0 * 9.0F, true, renderer, block, x, y, z);
-						this.renderFrameParts(renderer, icon, 90.0F, (double) x + 0.5D, (double) y, (double) z + 0.5D);
+						this.renderFrameParts(renderer, icon, 90.0F, (double) x + 0.5D, y, (double) z + 0.5D);
 						//NGTRenderer.renderBlock(F0*8.0F, F0*0.0F, F0*7.0F, F0*16.0F, F0*16.0F, F0*9.0F, true, renderer, block, x, y, z);
 					}
 				} else {
@@ -113,7 +113,7 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 							NGTRenderer.renderBlock(F0 * 0.0F, F0 * 15.0F, F0 * 7.0F, F0 * 8.0F, F0 * 16.0F, F0 * 9.0F, true, renderer, block, x, y, z);
 						}
 						NGTRenderer.renderBlock(F0 * 0.0F, F0 * 0.0F, F0 * 7.0F, F0 * 8.0F, F0 * 1.0F, F0 * 9.0F, true, renderer, block, x, y, z);
-						this.renderFrameParts(renderer, icon, -90.0F, (double) x + 0.5D, (double) y, (double) z + 0.5D);
+						this.renderFrameParts(renderer, icon, -90.0F, (double) x + 0.5D, y, (double) z + 0.5D);
 						//NGTRenderer.renderBlock(F0*0.0F, F0*0.0F, F0*7.0F, F0*8.0F, F0*16.0F, F0*9.0F, true, renderer, block, x, y, z);
 					}
 				} else {
@@ -132,7 +132,7 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 							NGTRenderer.renderBlock(F0 * 7.0F, F0 * 15.0F, F0 * 8.0F, F0 * 9.0F, F0 * 16.0F, F0 * 16.0F, true, renderer, block, x, y, z);
 						}
 						NGTRenderer.renderBlock(F0 * 7.0F, F0 * 0.0F, F0 * 8.0F, F0 * 9.0F, F0 * 1.0F, F0 * 16.0F, true, renderer, block, x, y, z);
-						this.renderFrameParts(renderer, icon, 0.0F, (double) x + 0.5D, (double) y, (double) z + 0.5D);
+						this.renderFrameParts(renderer, icon, 0.0F, (double) x + 0.5D, y, (double) z + 0.5D);
 						//NGTRenderer.renderBlock(F0*7.0F, F0*0.0F, F0*8.0F, F0*9.0F, F0*16.0F, F0*16.0F, true, renderer, block, x, y, z);
 					}
 				} else {
@@ -151,7 +151,7 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 							NGTRenderer.renderBlock(F0 * 7.0F, F0 * 15.0F, F0 * 0.0F, F0 * 9.0F, F0 * 16.0F, F0 * 8.0F, true, renderer, block, x, y, z);
 						}
 						NGTRenderer.renderBlock(F0 * 7.0F, F0 * 0.0F, F0 * 0.0F, F0 * 9.0F, F0 * 1.0F, F0 * 8.0F, true, renderer, block, x, y, z);
-						this.renderFrameParts(renderer, icon, 180.0F, (double) x + 0.5D, (double) y, (double) z + 0.5D);
+						this.renderFrameParts(renderer, icon, 180.0F, (double) x + 0.5D, y, (double) z + 0.5D);
 						//NGTRenderer.renderBlock(F0*7.0F, F0*0.0F, F0*0.0F, F0*9.0F, F0*16.0F, F0*8.0F, true, renderer, block, x, y, z);
 					}
 				} else {

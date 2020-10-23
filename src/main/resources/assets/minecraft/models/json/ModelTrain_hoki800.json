@@ -1,6 +1,7 @@
 {
   "trainName": "hoki800",
   "trainType": "CC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_hoki800.mqo",
     "textures": [

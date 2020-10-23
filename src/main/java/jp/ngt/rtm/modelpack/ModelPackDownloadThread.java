@@ -39,7 +39,7 @@ public class ModelPackDownloadThread extends Thread {
 					this.channel = new FileOutputStream(new File(modsDir, this.fileName)).getChannel();
 					this.setState(2);
 					while (this.writingStatus == 2) {
-						this.sleep(50);
+						sleep(50);
 					}
 					this.channel.close();
 				} catch (FileNotFoundException e) {
@@ -52,7 +52,7 @@ public class ModelPackDownloadThread extends Thread {
 			}
 
 			try {
-				this.sleep(50);
+				sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

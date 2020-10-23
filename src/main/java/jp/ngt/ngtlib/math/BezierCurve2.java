@@ -12,17 +12,17 @@ public final class BezierCurve2 implements ILine {
 	public final float[] cpE;//ControlPoint-SP
 	public final float[] ep;//EndPoint-SP
 
-	private byte nbit = 15;
-	private byte n3bit = (byte) (nbit * 3);
-	private long N = 1L << nbit;//分割数
+	private final byte nbit = 15;
+	private final byte n3bit = (byte) (nbit * 3);
+	private final long N = 1L << nbit;//分割数
 
-	private long[] cpSI;
-	private long[] cpEI;
-	private long[] epI;
+	private final long[] cpSI;
+	private final long[] cpEI;
+	private final long[] epI;
 
-	private long[] nb0 = new long[2];
-	private long[] nb1 = new long[2];
-	private long[] nb2 = new long[2];
+	private final long[] nb0 = new long[2];
+	private final long[] nb1 = new long[2];
+	private final long[] nb2 = new long[2];
 
 	public BezierCurve2(double p1, double p2, double p3, double p4, double p5, double p6, double p7, double p8) {
 		this.sp = new double[]{p1, p2};
@@ -30,7 +30,7 @@ public final class BezierCurve2 implements ILine {
 		this.cpE = new float[]{(float) (p5 - p1), (float) (p6 - p2)};
 		this.ep = new float[]{(float) (p7 - p1), (float) (p8 - p2)};
 
-		double d = (double) CV;
+		double d = CV;
 		this.cpSI = new long[]{(long) ((double) this.cpS[0] * d), (long) ((double) this.cpS[1] * d)};
 		this.cpEI = new long[]{(long) ((double) this.cpE[0] * d), (long) ((double) this.cpE[1] * d)};
 		this.epI = new long[]{(long) ((double) this.ep[0] * d), (long) ((double) this.ep[1] * d)};
@@ -76,7 +76,7 @@ public final class BezierCurve2 implements ILine {
 	}
 
 	private void setSpliteValue(int par1) {
-		double d0 = (double) par1;
+		double d0 = par1;
 		this.cpSI[0] = MathHelper.floor_double((double) this.cpS[0] * d0);
 		this.cpSI[1] = MathHelper.floor_double((double) this.cpS[1] * d0);
 		this.cpEI[0] = MathHelper.floor_double((double) this.cpE[0] * d0);

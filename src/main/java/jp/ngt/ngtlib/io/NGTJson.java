@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public final class NGTJson {
 	public static String readFromJson(File file) {
@@ -26,7 +27,7 @@ public final class NGTJson {
 	public static void writeToJson(String json, File file) {
 		try {
 			//PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)));
 			pw.println(json);
 			pw.close();
 		} catch (IOException e) {

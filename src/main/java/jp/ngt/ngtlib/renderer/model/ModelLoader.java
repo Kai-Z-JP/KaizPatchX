@@ -32,7 +32,6 @@ public final class ModelLoader {
 				try {
 					is2 = NGTFileLoader.getInputStream(mtlFile);
 				} catch (IOException e) {
-					;
 				}
 				return loadModel(new InputStream[]{is, is2}, fileName, par1, args);
 			} else {
@@ -54,7 +53,6 @@ public final class ModelLoader {
 				try {
 					is2 = new BufferedInputStream(new FileInputStream(mtlFile));
 				} catch (IOException e) {
-					;
 				}
 				return loadModel(new InputStream[]{is, is2}, file.getName(), par1, args);
 			} else {

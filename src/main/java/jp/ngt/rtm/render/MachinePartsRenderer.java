@@ -79,8 +79,8 @@ public class MachinePartsRenderer extends TileEntityPartsRenderer<ModelSetMachin
 		return 0.0F;
 	}
 
-	private static Vector3f VEC3F_TMP = new Vector3f();
-	private static NGTVec VEC_TMP = new NGTVec(0.0D, 0.0D, 0.0D);
+	private static final Vector3f VEC3F_TMP = new Vector3f();
+	private static final NGTVec VEC_TMP = new NGTVec(0.0D, 0.0D, 0.0D);
 
 	public Vector3f getNormal(TileEntity par1, float x, float y, float z, float pitch, float yaw) {
 		if (par1 != null) {

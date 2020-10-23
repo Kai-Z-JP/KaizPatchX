@@ -28,7 +28,7 @@ public final class NGTRenderHelper {
 	 */
 	public static FloatBuffer translate(FloatBuffer buffer, float moveX, float moveY, float moveZ) {
 		float[][] fa = {{1.0F, 0.0F, 0.0F, 0.0F}, {0.0F, 1.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 1.0F, 0.0F}, {moveX, moveY, moveZ, 1.0F}};
-		return multiplｙMatrix(buffer, fa);
+		return multiplyMatrix(buffer, fa);
 	}
 
 	/**
@@ -42,18 +42,18 @@ public final class NGTRenderHelper {
 		switch (coordinate) {
 			case 'X':
 				float[][] fa0 = {{1.0F, 0.0F, 0.0F, 0.0F}, {0.0F, MathHelper.cos(angle), MathHelper.sin(angle), 0.0F}, {0.0F, -MathHelper.sin(angle), MathHelper.cos(angle), 0.0F}, {0.0F, 0.0F, 0.0F, 1.0F}};
-				return multiplｙMatrix(buffer, fa0);
+				return multiplyMatrix(buffer, fa0);
 			case 'Y':
 				float[][] fa1 = {{MathHelper.cos(angle), 0.0F, -MathHelper.sin(angle), 0.0F}, {0.0F, 1.0F, 0.0F, 0.0F}, {MathHelper.sin(angle), 0.0F, MathHelper.cos(angle), 0.0F}, {0.0F, 0.0F, 0.0F, 1.0F}};
-				return multiplｙMatrix(buffer, fa1);
+				return multiplyMatrix(buffer, fa1);
 			case 'Z':
 				float[][] fa2 = {{MathHelper.cos(angle), MathHelper.sin(angle), 0.0F, 0.0F}, {-MathHelper.sin(angle), MathHelper.cos(angle), 0.0F, 0.0F}, {0.0F, 0.0F, 1.0F, 0.0F}, {0.0F, 0.0F, 0.0F, 1.0F}};
-				return multiplｙMatrix(buffer, fa2);
+				return multiplyMatrix(buffer, fa2);
 		}
 		return buffer;
 	}
 
-	private static FloatBuffer multiplｙMatrix(FloatBuffer fb, float[][] fa) {
+	private static FloatBuffer multiplyMatrix(FloatBuffer fb, float[][] fa) {
 		FloatBuffer buffer = FloatBuffer.allocate(16);
 		for (int i = 0; i < 4; ++i) {
 			for (int j = 0; j < 4; ++j) {
@@ -174,5 +174,49 @@ public final class NGTRenderHelper {
 		float y0 = x * matrix.get(i + 1) + y * matrix.get(i + 5) + z * matrix.get(i + 9) + matrix.get(i + 13);
 		float z0 = x * matrix.get(i + 2) + y * matrix.get(i + 6) + z * matrix.get(i + 10) + matrix.get(i + 14);
 		tessellator.addVertexWithUV(x0, y0, z0, u, v);
+	}
+
+	public static void addQuadGuiFaceWithUV(float minX, float minY, float maxX, float maxY, float z, float uMin, float vMin, float uMax, float vMax) {
+		NGTTessellator tessellator = NGTTessellator.instance;
+		tessellator.addVertexWithUV(minX, maxY, z, uMin, vMax);
+		tessellator.addVertexWithUV(maxX, maxY, z, uMax, vMax);
+		tessellator.addVertexWithUV(maxX, minY, z, uMax, vMin);
+		tessellator.addVertexWithUV(minX, minY, z, uMin, vMin);
+	}
+
+	public static void addQuadGuiFace(float minX, float minY, float maxX, float maxY, float z) {
+		NGTTessellator tessellator = NGTTessellator.instance;
+		tessellator.addVertex(minX, maxY, z);
+		tessellator.addVertex(maxX, maxY, z);
+		tessellator.addVertex(maxX, minY, z);
+		tessellator.addVertex(minX, minY, z);
+	}
+
+	public static void addQuadGuiFaceWithSize(float minX, float minY, float width, float height, float z) {
+		addQuadGuiFace(minX, minY, minX + width, minY + height, z);
+	}
+
+	public static void addQuadGuiFrame(float minX, float minY, float maxX, float maxY, float z) {
+		NGTTessellator tessellator = NGTTessellator.instance;
+		tessellator.addVertex(minX, maxY, z);
+		tessellator.addVertex(maxX, maxY, z);
+		tessellator.addVertex(maxX, maxY, z);
+		tessellator.addVertex(maxX, minY, z);
+		tessellator.addVertex(maxX, minY, z);
+		tessellator.addVertex(minX, minY, z);
+		tessellator.addVertex(minX, minY, z);
+		tessellator.addVertex(minX, maxY, z);
+	}
+
+	public static void addQuadGuiFrameWithSize(float minX, float minY, float width, float height, float z) {
+		addQuadGuiFrame(minX, minY, minX + width, minY + height, z);
+	}
+
+	public static void setColor(int color) {
+		float div255 = 0.00392157F;
+		float r = (color >> 16 & 0xFF) * div255;
+		float g = (color >> 8 & 0xFF) * div255;
+		float b = (color & 0xFF) * div255;
+		GL11.glColor4f(r, g, b, 1.0F);
 	}
 }

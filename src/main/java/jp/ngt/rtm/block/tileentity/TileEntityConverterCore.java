@@ -141,7 +141,7 @@ public class TileEntityConverterCore extends TileEntityConverter {
 
 		if (!this.worldObj.isRemote && this.mode != this.prevMode) {
 			this.sendPacket();
-			NGTLog.sendChatMessageToAll("message.converter.mode" + this.mode, new Object[]{});
+			NGTLog.sendChatMessageToAll("message.converter.mode" + this.mode);
 		}
 	}
 

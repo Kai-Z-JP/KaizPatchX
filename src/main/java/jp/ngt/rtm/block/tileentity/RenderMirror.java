@@ -22,7 +22,7 @@ public class RenderMirror extends TileEntitySpecialRenderer {
 	 * その描画ループ内でテクスチャ生成が完了してるかどうか
 	 */
 	public boolean finishRender;
-	private DummyRenderer renderer;
+	private final DummyRenderer renderer;
 
 	private RenderMirror() {
 		this.renderer = new DummyRenderer(NGTUtilClient.getMinecraft());

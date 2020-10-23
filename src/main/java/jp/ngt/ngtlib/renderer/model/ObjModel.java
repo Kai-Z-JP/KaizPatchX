@@ -22,14 +22,14 @@ public final class ObjModel extends PolygonModel {
 	/**
 	 * 小数点含む必要あり
 	 */
-	private static Pattern vertexPattern = Pattern.compile("(v( (\\-){0,1}\\d+\\.\\d+){3,4} *\\n)|(v( (\\-){0,1}\\d+\\.\\d+){3,4} *$)");
-	private static Pattern vertexNormalPattern = Pattern.compile("(vn( (\\-){0,1}\\d+\\.\\d+){3,4} *\\n)|(vn( (\\-){0,1}\\d+\\.\\d+){3,4} *$)");
-	private static Pattern textureCoordinatePattern = Pattern.compile("(vt( (\\-){0,1}\\d+\\.\\d+){2,3} *\\n)|(vt( (\\-){0,1}\\d+\\.\\d+){2,3} *$)");
-	private static Pattern face_V_VT_VN_Pattern = Pattern.compile("(f( \\d+/\\d+/\\d+){3,4} *\\n)|(f( \\d+/\\d+/\\d+){3,4} *$)");
-	private static Pattern face_V_VT_Pattern = Pattern.compile("(f( \\d+/\\d+){3,4} *\\n)|(f( \\d+/\\d+){3,4} *$)");
-	private static Pattern face_V_VN_Pattern = Pattern.compile("(f( \\d+//\\d+){3,4} *\\n)|(f( \\d+//\\d+){3,4} *$)");
-	private static Pattern face_V_Pattern = Pattern.compile("(f( \\d+){3,4} *\\n)|(f( \\d+){3,4} *$)");
-	private static Pattern groupObjectPattern = Pattern.compile("([go]( [\\w\\d]+) *\\n)|([go]( [\\w\\d]+) *$)");
+	private static final Pattern vertexPattern = Pattern.compile("(v( (\\-){0,1}\\d+\\.\\d+){3,4} *\\n)|(v( (\\-){0,1}\\d+\\.\\d+){3,4} *$)");
+	private static final Pattern vertexNormalPattern = Pattern.compile("(vn( (\\-){0,1}\\d+\\.\\d+){3,4} *\\n)|(vn( (\\-){0,1}\\d+\\.\\d+){3,4} *$)");
+	private static final Pattern textureCoordinatePattern = Pattern.compile("(vt( (\\-){0,1}\\d+\\.\\d+){2,3} *\\n)|(vt( (\\-){0,1}\\d+\\.\\d+){2,3} *$)");
+	private static final Pattern face_V_VT_VN_Pattern = Pattern.compile("(f( \\d+/\\d+/\\d+){3,4} *\\n)|(f( \\d+/\\d+/\\d+){3,4} *$)");
+	private static final Pattern face_V_VT_Pattern = Pattern.compile("(f( \\d+/\\d+){3,4} *\\n)|(f( \\d+/\\d+){3,4} *$)");
+	private static final Pattern face_V_VN_Pattern = Pattern.compile("(f( \\d+//\\d+){3,4} *\\n)|(f( \\d+//\\d+){3,4} *$)");
+	private static final Pattern face_V_Pattern = Pattern.compile("(f( \\d+){3,4} *\\n)|(f( \\d+){3,4} *$)");
+	private static final Pattern groupObjectPattern = Pattern.compile("([go]( [\\w\\d]+) *\\n)|([go]( [\\w\\d]+) *$)");
 
 	private ArrayList<Vertex> vertexNormals;
 	private ArrayList<TextureCoordinate> textureCoordinates;
@@ -121,7 +121,7 @@ public final class ObjModel extends PolygonModel {
 	 * 頂点生成
 	 */
 	private Vertex parseVertex(String line, int lineCount) throws ModelFormatException {
-		if (this.isValidVertexLine(line)) {
+		if (isValidVertexLine(line)) {
 			line = line.substring(line.indexOf(' ') + 1);
 			String[] tokens = this.split(line, ' ');
 
@@ -145,7 +145,7 @@ public final class ObjModel extends PolygonModel {
 	 * 頂点法線生成
 	 */
 	private Vertex parseVertexNormal(String line, int lineCount) throws ModelFormatException {
-		if (this.isValidVertexNormalLine(line)) {
+		if (isValidVertexNormalLine(line)) {
 			line = line.substring(line.indexOf(' ') + 1);
 			String[] tokens = this.split(line, ' ');
 
@@ -164,7 +164,7 @@ public final class ObjModel extends PolygonModel {
 	}
 
 	private TextureCoordinate parseTextureCoordinate(String line, int lineCount) throws ModelFormatException {
-		if (this.isValidTextureCoordinateLine(line)) {
+		if (isValidTextureCoordinateLine(line)) {
 			line = line.substring(line.indexOf(' ') + 1);
 			String[] tokens = this.split(line, ' ');
 
@@ -179,7 +179,7 @@ public final class ObjModel extends PolygonModel {
 	}
 
 	private Face parseFace(String line, int lineCount) throws ModelFormatException {
-		if (this.isValidFaceLine(line)) {
+		if (isValidFaceLine(line)) {
 			String trimmedLine = line.substring(line.indexOf(' ') + 1);
 			String[] tokens = this.split(trimmedLine, ' ');
 
@@ -193,7 +193,7 @@ public final class ObjModel extends PolygonModel {
 	}
 
 	private Face parsePolygon(String line, String[] tokens, int lineCount) {
-		byte type = this.getValidType(line);
+		byte type = getValidType(line);
 		if (type >= 0) {
 			int size = (tokens.length - 2) * 3;//三角面化時の頂点数
 			Face face = new Face(size, this.currentMaterial);
@@ -240,7 +240,7 @@ public final class ObjModel extends PolygonModel {
 	}
 
 	private GroupObject parseGroupObject(String line, int lineCount) throws ModelFormatException {
-		if (this.isValidGroupObjectLine(line)) {
+		if (isValidGroupObjectLine(line)) {
 			String trimmedLine = line.substring(line.indexOf(' ') + 1);
 			if (trimmedLine.length() > 0) {
 				return new GroupObject(trimmedLine, GL11.GL_TRIANGLES);

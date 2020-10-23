@@ -20,7 +20,7 @@ public class RenderBogie extends Render {
 		this.shadowSize = 1.0F;
 	}
 
-	private final void renderBogie(EntityBogie bogie, double par2, double par4, double par6, float par8, float partialTick) {
+	private void renderBogie(EntityBogie bogie, double par2, double par4, double par6, float par8, float partialTick) {
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -28,8 +28,8 @@ public class RenderBogie extends Render {
 		double x = par2;
 		double y = par4;
 		double z = par6;
-		if (bogie.getTrain() != null) {
-			EntityTrainBase train = bogie.getTrain();
+		EntityTrainBase train = bogie.getTrain();
+		if (train != null) {
 			//RenderMngで足されてる補完値を引く
 			double bogieFX = bogie.lastTickPosX + (bogie.posX - bogie.lastTickPosX) * (double) partialTick;
 			double bogieFY = bogie.lastTickPosY + (bogie.posY - bogie.lastTickPosY) * (double) partialTick;
@@ -40,23 +40,25 @@ public class RenderBogie extends Render {
 			Vec3 v31 = new Vec3(pos[bogieIndex][0], pos[bogieIndex][1], pos[bogieIndex][2]);
 			v31 = v31.rotateAroundX(train.prevRotationPitch + MathHelper.wrapAngleTo180_float(train.rotationPitch - train.prevRotationPitch) * partialTick);
 			v31 = v31.rotateAroundY(train.prevRotationYaw + MathHelper.wrapAngleTo180_float(train.rotationYaw - train.prevRotationYaw) * partialTick);
-			double newX = v31.getX() + (train.lastTickPosX + ((train.posX - train.lastTickPosX) * partialTick));
-			double newY = v31.getY() + (train.lastTickPosY + ((train.posY - train.lastTickPosY) * partialTick));
-			double newZ = v31.getZ() + (train.lastTickPosZ + ((train.posZ - train.lastTickPosZ) * partialTick));
+			double newX = v31.getX() + (train.lastTickPosX + ((train.posX - train.lastTickPosX) * (double) partialTick));
+			double newY = v31.getY() + (train.lastTickPosY + ((train.posY - train.lastTickPosY) * (double) partialTick));
+			double newZ = v31.getZ() + (train.lastTickPosZ + ((train.posZ - train.lastTickPosZ) * (double) partialTick));
 			x = par2 - bogieFX + newX;
 			y = par4 - bogieFY + newY;
 			z = par6 - bogieFZ + newZ;
 		}
-		GL11.glTranslatef((float) x, (float) y, (float) z);
+		GL11.glTranslated(x, y, z);
 
 		float yaw = bogie.prevRotationYaw + MathHelper.wrapAngleTo180_float(bogie.rotationYaw - bogie.prevRotationYaw) * partialTick;
 		GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
 		float pitch = bogie.prevRotationPitch + (bogie.rotationPitch - bogie.prevRotationPitch) * partialTick;
 		GL11.glRotatef(-pitch, 1.0F, 0.0F, 0.0F);
+		float roll = bogie.prevRotationRoll + (bogie.rotationRoll - bogie.prevRotationRoll) * partialTick;
+		GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
 
 		byte index = bogie.getBogieId();
 		boolean flag = true;
-		if (bogie.getTrain() != null) {
+		if (train != null) {
 			ModelSetTrainClient modelset = (ModelSetTrainClient) bogie.getTrain().getModelSet();
 			if (!modelset.isDummy()) {
 				VehicleBaseConfig cfg = modelset.getConfig();

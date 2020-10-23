@@ -39,10 +39,9 @@ public final class RenderVehicleBase extends Render {
 	protected Vector3f lightVecF = new Vector3f();
 
 	private RenderVehicleBase() {
-		;
 	}
 
-	protected void renderVehicleBase(EntityVehicleBase vehicle, double par2, double par4, double par6, float par8, float par9) {
+	protected void renderVehicleBase(EntityVehicleBase<?> vehicle, double par2, double par4, double par6, float par8, float par9) {
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glTranslatef((float) par2, (float) par4, (float) par6);

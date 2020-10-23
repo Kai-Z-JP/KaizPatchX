@@ -16,7 +16,7 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ModelTrain_Minecart implements IModelNGT {
-	private ModelBase model = new ModelMinecart();
+	private final ModelBase model = new ModelMinecart();
 
 	@Override
 	public void renderAll(boolean smoothing) {

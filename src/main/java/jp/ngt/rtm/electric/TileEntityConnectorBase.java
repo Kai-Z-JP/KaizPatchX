@@ -2,6 +2,7 @@ package jp.ngt.rtm.electric;
 
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.NGTVec;
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
@@ -10,7 +11,7 @@ import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring implements IModelSelectorWithType {
-	private ResourceState state = new ResourceState(this);
+	private final ResourceState state = new ResourceState(this);
 	private String modelName = "";
 	private ModelSetConnector myModelSet;
 	public NGTVec wirePos;
@@ -46,6 +47,9 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
 	public ModelSetConnector getModelSet() {
 		if (this.myModelSet == null || this.myModelSet.isDummy()) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelConnector", this.modelName);
+			if (this.worldObj == null || !this.worldObj.isRemote) {
+				PacketNBT.sendToClient(this);
+			}
 
 			if (this.worldObj != null)//readNBT時ぬるぽ回避
 			{
@@ -102,7 +106,7 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
 	}
 
 	@Override
-	public boolean closeGui(String par1) {
+	public boolean closeGui(String par1, ResourceState par2) {
 		this.setModelName(par1);
 		return true;
 	}

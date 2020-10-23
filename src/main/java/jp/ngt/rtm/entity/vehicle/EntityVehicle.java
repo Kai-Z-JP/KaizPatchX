@@ -203,7 +203,7 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 
 		this.speed += moveForward * cfg.getAcceleration(this.onGround);
 		float maxSpeed = cfg.getMaxSpeed(this.onGround);
-		float f0 = (float) ((moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround));
+		float f0 = (moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround);
 		f0 *= cfg.changeYawOnStopping ? ((this.speed >= 0.0F) ? 1.0F : -1.0F) : (this.speed / maxSpeed);
 		float maxYaw = cfg.getMaxYaw(this.onGround);
 		if (f0 > maxYaw) {
@@ -294,7 +294,7 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 			ModelSetVehicleBase<VehicleConfig> set = this.getModelSet();
 			float[] pos = set.getConfig().getPlayerPos()[0];
 			double d0 = this.vibration + this.riddenByEntity.getYOffset();
-			Vec3 vec = Vec3.createVectorHelper((double) pos[0], (double) pos[1] + d0, (double) pos[2]);
+			Vec3 vec = Vec3.createVectorHelper(pos[0], (double) pos[1] + d0, pos[2]);
 			vec.rotateAroundZ(NGTMath.toRadians(-this.rotationRoll));
 			vec.rotateAroundX(NGTMath.toRadians(this.rotationPitch));
 			vec.rotateAroundY(NGTMath.toRadians(this.rotationYaw));
@@ -312,7 +312,6 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 
 	@Override
 	protected void fall(float par1) {
-		;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -321,8 +320,8 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 		this.vehicleX = x;
 		this.vehicleY = y;
 		this.vehicleZ = z;
-		this.vehicleYaw = (double) yaw;
-		this.vehiclePitch = (double) pitch;
+		this.vehicleYaw = yaw;
+		this.vehiclePitch = pitch;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -331,7 +330,6 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 	}
 
 	public void setUpDown(int par1) {
-		;
 	}
 
 	@Override
@@ -407,10 +405,10 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 	}
 
 	@Override
-	protected void onModelChanged(ModelSetVehicleBase<VehicleConfig> par1) {
-		super.onModelChanged(par1);
+	protected void onModelChanged() {
+		super.onModelChanged();
 
-		VehicleConfig cfg = par1.getConfig();
+		VehicleConfig cfg = this.getModelSet().getConfig();
 		this.setSize(cfg.getSize()[0], cfg.getSize()[1]);
 	}
 }

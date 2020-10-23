@@ -18,7 +18,7 @@ import java.util.List;
 public final class RecipeManager {
 	public static final RecipeManager INSTANCE = new RecipeManager();
 
-	private List<IRecipe> recipesList = new ArrayList<IRecipe>();
+	private final List<IRecipe> recipesList = new ArrayList<IRecipe>();
 
 	private RecipeManager() {
 	}
@@ -33,7 +33,7 @@ public final class RecipeManager {
 		int k = 0;
 
 		if (objs[i] instanceof String[]) {
-			String[] astring = (String[]) ((String[]) objs[i++]);
+			String[] astring = (String[]) objs[i++];
 
 			for (int l = 0; l < astring.length; ++l) {
 				String s1 = astring[l];

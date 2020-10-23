@@ -1,6 +1,7 @@
 {
   "trainName": "objTest",
   "trainType": "Test",
+
   "trainModel2": {
     "modelFile": "ModelTrain_objTest.mqo",
     "textures": [

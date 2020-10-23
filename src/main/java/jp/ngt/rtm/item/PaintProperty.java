@@ -50,7 +50,7 @@ public class PaintProperty {
 		public final int iconU;
 		public final int iconV;
 
-		private EnumPaintType(int u, int v) {
+		EnumPaintType(int u, int v) {
 			this.iconU = u;
 			this.iconV = v;
 		}

@@ -67,7 +67,7 @@ public class ItemCargo extends ItemWithModel {
 			float rotationInterval = 15.0F;
 			int yaw = MathHelper.floor_double(NGTMath.normalizeAngle(-player.rotationYaw + 180.0D + (rotationInterval / 2.0D)) / (double) rotationInterval);
 			float yawF = (float) yaw * rotationInterval;
-			cargo.setPositionAndRotation((double) par4 + 0.5D, (double) par5, (double) par6 + 0.5D, yawF, 0.0F);
+			cargo.setPositionAndRotation((double) par4 + 0.5D, par5, (double) par6 + 0.5D, yawF, 0.0F);
 			cargo.readCargoFromItem();
 
 			if (damage == 1 && ((EntityArtillery) cargo).getModelName().isEmpty()) {

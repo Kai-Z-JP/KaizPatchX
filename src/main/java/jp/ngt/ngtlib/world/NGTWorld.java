@@ -36,8 +36,8 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 	 * 明るさの取得に使用
 	 */
 	public final int posX, posY, posZ;
-	private List<TileEntity> renderTileEntities = new ArrayList<TileEntity>();
-	private Map<Integer, Entity> entityIdMap = new HashMap<Integer, Entity>();
+	private final List<TileEntity> renderTileEntities = new ArrayList<TileEntity>();
+	private final Map<Integer, Entity> entityIdMap = new HashMap<Integer, Entity>();
 	public boolean tileEntityLoaded;
 
 	private int nextEntityId;
@@ -106,7 +106,6 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 					entity.onUpdate();
 				} catch (Exception e)//etc. cast WorldServer
 				{
-					;
 				}
 				entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
 			}
@@ -115,7 +114,6 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 
 	private Entity getEntityFromNBT(NBTTagCompound nbt) {
 		if ("Player".equals(nbt.getString("id"))) {
-			;
 		}
 		return EntityList.createEntityFromNBT(nbt, this);
 	}

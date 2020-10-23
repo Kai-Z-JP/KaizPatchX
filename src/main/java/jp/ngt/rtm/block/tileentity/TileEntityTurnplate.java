@@ -68,7 +68,6 @@ public class TileEntityTurnplate extends TileEntity {
 	 * ブロック破壊
 	 */
 	public void removed() {
-		;
 	}
 
 	@Override

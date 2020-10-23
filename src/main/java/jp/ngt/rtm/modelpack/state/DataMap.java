@@ -7,6 +7,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -112,7 +113,7 @@ public final class DataMap {
 		String key = sa[3];
 		String type = sa[4];
 		String data = sa[5];
-		int flag = Integer.valueOf(sa[6]);
+		int flag = Integer.parseInt(sa[6]);
 		int fSync = flag & SYNC_FLAG;
 		int fSave = flag & SAVE_FLAG;
 		if (onClient) {
@@ -123,14 +124,14 @@ public final class DataMap {
 		DataEntry de = DataEntry.getEntry(type, data, flag);
 
 		if (target.equals("E")) {
-			int id = Integer.valueOf(targetId);
+			int id = Integer.parseInt(targetId);
 			Entity entity = world.getEntityByID(id);
 			if (entity instanceof IModelSelector) {
 				((IModelSelector) entity).getResourceState().getDataMap().set(key, de, flag);
 			}
 		} else if (target.equals("T")) {
 			String[] sa2 = targetId.split(" ");
-			TileEntity entity = world.getTileEntity(Integer.valueOf(sa2[0]), Integer.valueOf(sa2[1]), Integer.valueOf(sa2[2]));
+			TileEntity entity = world.getTileEntity(Integer.parseInt(sa2[0]), Integer.parseInt(sa2[1]), Integer.parseInt(sa2[2]));
 			if (entity instanceof IModelSelector) {
 				((IModelSelector) entity).getResourceState().getDataMap().set(key, de, flag);
 			}
@@ -153,7 +154,7 @@ public final class DataMap {
 
 		boolean sync = ((flag & SYNC_FLAG) != 0);
 		boolean onServerSide = NGTUtil.isServer();
-		if (onServerSide || !sync || (this.entity == null)) {
+		if (onServerSide || !sync || (this.entity == null) || this.entity instanceof Item) {
 			//Client側かつ同期する場合は、一旦Server経由でセットするので、ここでは処理しない
 			//ただしアイテム状態(entity==null)はここでset
 			this.map.put(key, value);
@@ -173,7 +174,7 @@ public final class DataMap {
 	 */
 	public boolean set(String key, String value, int flag) {
 		Matcher matcher = VAL_TYPE.matcher(value);
-		DataEntry entry = null;
+		DataEntry entry;
 		if (matcher.find()) {
 			String type = matcher.group().replace("(", "").replace(")", "");
 			String val2 = matcher.replaceAll("");
@@ -197,7 +198,7 @@ public final class DataMap {
 	}
 
 	public String getArg() {
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		int count = 0;
 		for (Entry<String, DataEntry> entry : this.map.entrySet()) {
 			++count;
@@ -268,9 +269,8 @@ public final class DataMap {
 	public double getDouble(String key) {
 		try {
 			DataEntryDouble de = this.get(key);
-			double value = (de != null) ? de.get() : 0.0D;
 			//NGTLog.debug("get:" + value);
-			return value;
+			return (de != null) ? de.get() : 0.0D;
 		} catch (Exception e) {
 			NGTLog.debug("%s is not Double", key);
 			return 0.0D;

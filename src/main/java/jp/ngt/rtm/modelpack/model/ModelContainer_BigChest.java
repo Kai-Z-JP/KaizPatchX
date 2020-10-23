@@ -15,7 +15,7 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ModelContainer_BigChest implements IModelNGT {
-	private ModelChest model = new ModelChest();
+	private final ModelChest model = new ModelChest();
 
 	@Override
 	public void renderAll(boolean smoothing) {
@@ -30,12 +30,10 @@ public class ModelContainer_BigChest implements IModelNGT {
 
 	@Override
 	public void renderOnly(boolean smoothing, String... groupNames) {
-		;
 	}
 
 	@Override
 	public void renderPart(boolean smoothing, String partName) {
-		;
 	}
 
 	@Override

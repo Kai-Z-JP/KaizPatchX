@@ -113,6 +113,6 @@ public class RSPort {
 	public enum PortType {
 		IN,
 		OUT,
-		NONE;
+		NONE
 	}
 }

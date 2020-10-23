@@ -31,11 +31,11 @@ public class GuiFilterSetting extends GuiScreenCustom {
 	private final GuiEditor parentGui;
 	private final List<EditFilterBase> filters = new ArrayList<EditFilterBase>();
 
-	private List<GuiButton> filterButtons;
-	private List<GuiButton> filterSettingButtons;
+	private final List<GuiButton> filterButtons;
+	private final List<GuiButton> filterSettingButtons;
 	private int currentScrollL;
-	private List<GuiTextField> guiElementNames;
-	private List<IGuiElement> guiElements;
+	private final List<GuiTextField> guiElementNames;
+	private final List<IGuiElement> guiElements;
 	private int currentScrollR;
 	private int selectedFilterId;
 

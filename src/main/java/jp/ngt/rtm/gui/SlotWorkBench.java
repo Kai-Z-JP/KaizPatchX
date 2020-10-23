@@ -11,7 +11,7 @@ import net.minecraft.stats.AchievementList;
 
 public class SlotWorkBench extends Slot {
 	private final IInventory craftMatrix;
-	private EntityPlayer thePlayer;
+	private final EntityPlayer thePlayer;
 	private int amountCrafted;
 
 	public SlotWorkBench(EntityPlayer player, IInventory inventory1, IInventory inventory2, int p_i1823_4_, int p_i1823_5_, int p_i1823_6_) {

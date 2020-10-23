@@ -14,6 +14,7 @@ import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTImage;
 import jp.ngt.ngtlib.io.NGTImage.Thumbnail;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.util.KeyboardUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -41,9 +42,9 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 
 	private final GuiCreateWorld createWorldGui;
 	private WorldData worldData;
-	private Thumbnail[] thumbnail = new Thumbnail[2];
-	private String[] imgName = {"", ""};
-	private GuiButton[] selectButtons = new GuiButton[3];
+	private final Thumbnail[] thumbnail = new Thumbnail[2];
+	private final String[] imgName = {"", ""};
+	private final GuiButton[] selectButtons = new GuiButton[3];
 	private GuiTextField minYTF;
 	private GuiTextField yScaleTF;
 	private GuiTextField seaLevelTF;
@@ -64,14 +65,14 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 		int i0 = ((this.height - 30) / this.thumbnail.length) + 80;
 
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.done", new Object[0])));
-		this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel", new Object[0])));
+		this.buttonList.add(new GuiButton(0, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel")));
 
-		this.selectButtons[0] = new GuiButton(10, i0, 0, 40, 20, I18n.format("gui.mcte.select", new Object[0]));
+		this.selectButtons[0] = new GuiButton(10, i0, 0, 40, 20, I18n.format("gui.mcte.select"));
 		this.buttonList.add(this.selectButtons[0]);
-		this.selectButtons[1] = new GuiButton(11, i0, 20, 40, 20, I18n.format("gui.mcte.select", new Object[0]));
+		this.selectButtons[1] = new GuiButton(11, i0, 20, 40, 20, I18n.format("gui.mcte.select"));
 		this.buttonList.add(this.selectButtons[1]);
-		this.selectButtons[2] = new GuiButton(12, i0, 40, 40, 20, I18n.format("gui.mcte.select", new Object[0]));
+		this.selectButtons[2] = new GuiButton(12, i0, 40, 40, 20, I18n.format("gui.mcte.select"));
 		this.buttonList.add(this.selectButtons[2]);
 
 		this.textFields.clear();
@@ -136,7 +137,7 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 			this.mc.thePlayer.closeScreen();
 		}
 
-		if ((par2 >= 2 && par2 <= 11) || (par2 >= 200 && par2 <= 205) || par2 == 12 || par2 == 14 || par2 == 211)//14:Back, 211:Del
+		if (KeyboardUtil.isIntegerKey(par2))//14:Back, 211:Del
 		{
 			this.currentTextField.textboxKeyTyped(par1, par2);
 		}
@@ -153,26 +154,26 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 		this.drawDefaultBackground();
 		super.drawScreen(par1, par2, par3);
 
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.terrainImage", new Object[0]), i0 + 5, 5, 0xffffff);
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.biomesImage", new Object[0]), i0 + 5, 25, 0xffffff);
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.baseBlock", new Object[0]), i0 + 5, 45, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.terrainImage"), i0 + 5, 5, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.biomesImage"), i0 + 5, 25, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.baseBlock"), i0 + 5, 45, 0xffffff);
 
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.minY", new Object[0]), i0 + 5, 65, 0xffffff);
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.yScale", new Object[0]), i0 + 5, 85, 0xffffff);
-		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.seaLevel", new Object[0]), i0 + 5, 105, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.minY"), i0 + 5, 65, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.yScale"), i0 + 5, 85, 0xffffff);
+		this.drawString(this.fontRendererObj, I18n.format("gui.mcte.seaLevel"), i0 + 5, 105, 0xffffff);
 
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		for (int i = 0; i < this.thumbnail.length; ++i) {
 			if (this.thumbnail[i] != null) {
-				double d1 = (double) (i0 * i);
+				double d1 = i0 * i;
 				this.thumbnail[i].bindTexture();
 				Tessellator tessellator = Tessellator.instance;
 				tessellator.startDrawingQuads();
-				tessellator.addVertexWithUV((double) i0, (double) i0 + d1, (double) this.zLevel, 1.0D, 1.0D);
-				tessellator.addVertexWithUV((double) i0, 0.0D + d1, (double) this.zLevel, 1.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, 0.0D + d1, (double) this.zLevel, 0.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, (double) i0 + d1, (double) this.zLevel, 0.0D, 1.0D);
+				tessellator.addVertexWithUV(i0, (double) i0 + d1, this.zLevel, 1.0D, 1.0D);
+				tessellator.addVertexWithUV(i0, 0.0D + d1, this.zLevel, 1.0D, 0.0D);
+				tessellator.addVertexWithUV(0.0D, 0.0D + d1, this.zLevel, 0.0D, 0.0D);
+				tessellator.addVertexWithUV(0.0D, (double) i0 + d1, this.zLevel, 0.0D, 1.0D);
 				tessellator.draw();
 			}
 		}
@@ -180,7 +181,7 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 
 	private void selectBlock() {
 		Iterator<Block> iterator0 = Block.blockRegistry.iterator();
-		List<ItemStack> list0 = new ArrayList<ItemStack>();
+		List<ItemStack> list0 = new ArrayList<>();
 		while (iterator0.hasNext()) {
 			Block block = iterator0.next();
 			Item item = Item.getItemFromBlock(block);
@@ -189,30 +190,22 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 			}
 		}
 
-		List<ItemStack> list1 = new ArrayList<ItemStack>();
-		Iterator<ItemStack> iterator1 = list0.iterator();
-		while (iterator1.hasNext()) {
-			ItemStack stack = iterator1.next();
+		List<ItemStack> list1 = new ArrayList<>();
+		for (ItemStack stack : list0) {
 			Block block = Block.getBlockFromItem(stack.getItem());
 			if (stack.getItemDamage() == 0 && block != null && !block.hasTileEntity(stack.getItemDamage())) {
 				list1.add(stack);
 			}
 		}
 
-		ISelector selector = new ISelector() {
-			@Override
-			public void select(Object par1) {
-				GuiCreatePictorialWorld.this.worldData.baseBlock = (Block) par1;
-			}
-
-		};
+		ISelector selector = par1 -> GuiCreatePictorialWorld.this.worldData.baseBlock = (Block) par1;
 
 		SlotElementItem[] slots = new SlotElementItem[list1.size()];
 		for (int i = 0; i < slots.length; ++i) {
 			ItemStack stack = list1.get(i);
 			Block block = Block.getBlockFromItem(stack.getItem());
 			String s = stack.getDisplayName();
-			slots[i] = new SlotElementItem<Block>(selector, block, s, stack);
+			slots[i] = new SlotElementItem<>(selector, block, s, stack);
 		}
 
 		this.mc.displayGuiScreen(new GuiSelect(this, slots));
@@ -253,7 +246,7 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 					this.worldData.biomesImagePath = file.getAbsolutePath();
 					break;
 			}
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 		}
 	}
 
@@ -266,7 +259,7 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 			return;
 		}
 
-		Map<Integer, BiomeGenBase> map = new TreeMap<Integer, BiomeGenBase>();
+		Map<Integer, BiomeGenBase> map = new TreeMap<>();
 		int[] ia = new int[4];//{RGBA}
 		for (int i = 0; i < image.getWidth(); ++i) {
 			for (int j = 0; j < image.getHeight(); ++j) {
@@ -282,7 +275,6 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 			}
 		}
 
-		int i0 = ((this.height - 30) / this.thumbnail.length) + 10;
 		int i = 0;
 		SlotBiomeColor[] sb = new SlotBiomeColor[map.size()];
 		Set<Entry<Integer, BiomeGenBase>> set = map.entrySet();
@@ -327,10 +319,10 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.startDrawingQuads();
 			tessellator.setColorOpaque_I(color);
-			tessellator.addVertex((double) (par1 + 0), (double) (par2 + par4), (double) par5);
-			tessellator.addVertex((double) (par1 + par3), (double) (par2 + par4), (double) par5);
-			tessellator.addVertex((double) (par1 + par3), (double) (par2 + 0), (double) par5);
-			tessellator.addVertex((double) (par1 + 0), (double) (par2 + 0), (double) par5);
+			tessellator.addVertex(par1, par2 + par4, par5);
+			tessellator.addVertex(par1 + par3, par2 + par4, par5);
+			tessellator.addVertex(par1 + par3, par2, par5);
+			tessellator.addVertex(par1, par2, par5);
 			tessellator.draw();
 		}
 

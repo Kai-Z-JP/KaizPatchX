@@ -11,7 +11,7 @@ import java.util.List;
 public class ContainerTrainControlPanel extends ContainerPlayer {
 	public final EntityTrainBase train;
 	public final EntityPlayer player;
-	private List slotsList;
+	private final List slotsList;
 
 	public ContainerTrainControlPanel(EntityTrainBase par1, EntityPlayer par2) {
 		super(par2.inventory, !par2.worldObj.isRemote, par2);

@@ -35,14 +35,20 @@ public abstract class Vertex {
 
 	public abstract void setVec(float x, float y, float z);
 
-	public void add(Vertex vertex) {
-		this.setVec(this.getX() + vertex.getX(), this.getY() + vertex.getY(), this.getZ() + vertex.getZ());
+	public Vertex add(Vertex vertex) {
+		this.setVec(getX() + vertex.getX(), getY() + vertex.getY(), getZ() + vertex.getZ());
+		return this;
+	}
+
+	public Vertex expand(float par1) {
+		this.setVec(getX() * par1, getY() * par1, getZ() * par1);
+		return this;
 	}
 
 	public void normalize() {
-		double dx = (double) this.getX();
-		double dy = (double) this.getY();
-		double dz = (double) this.getZ();
+		double dx = this.getX();
+		double dy = this.getY();
+		double dz = this.getZ();
 		double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
 		double l0 = 1.0D / length;
 		this.setVec((float) (dx * l0), (float) (dy * l0), (float) (dz * l0));

@@ -107,7 +107,7 @@ public class BlockFurnaceFire extends BlockLiquidBase {
 
 			if (sizeCoke > 0 || sizeIron > 0) {
 				if (!world.isRemote) {
-					List list = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox((double) x, (double) y, (double) z, (double) x + 1.0D, (double) y + 1.0D, (double) z + 1.0D));
+					List list = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x, y, z, (double) x + 1.0D, (double) y + 1.0D, (double) z + 1.0D));
 					if (list != null && !list.isEmpty()) {
 						int i2 = 0;
 						for (int i = 0; i < list.size(); ++i) {
@@ -162,8 +162,8 @@ public class BlockFurnaceFire extends BlockLiquidBase {
 
 			if (flag1) {
 				entity.motionY = 0.20000000298023224D;
-				entity.motionX = (double) ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F);
-				entity.motionZ = (double) ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F);
+				entity.motionX = (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F;
+				entity.motionZ = (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F;
 				entity.playSound("random.fizz", 0.4F, 2.0F + world.rand.nextFloat() * 0.4F);
 			}
 		}
@@ -207,9 +207,9 @@ public class BlockFurnaceFire extends BlockLiquidBase {
 			double d7;
 
 			if (world.getBlock(x, y + 1, z).getMaterial() == Material.air && !world.getBlock(x, y + 1, z).isOpaqueCube()) {
-				d5 = (double) ((float) x + random.nextFloat());
+				d5 = (float) x + random.nextFloat();
 				d6 = (double) y + this.maxY;
-				d7 = (double) ((float) z + random.nextFloat());
+				d7 = (float) z + random.nextFloat();
 				world.spawnParticle("explode", d5, d6, d7, 0.0D, 0.0D, 0.0D);
 
 	            /*if(random.nextInt(100) == 0)
@@ -222,14 +222,14 @@ public class BlockFurnaceFire extends BlockLiquidBase {
 	            }*/
 
 				if (random.nextInt(200) == 0) {
-					world.playSound((double) x, (double) y, (double) z, "liquid.lava", 0.2F + random.nextFloat() * 0.2F, 0.9F + random.nextFloat() * 0.15F, false);
+					world.playSound(x, y, z, "liquid.lava", 0.2F + random.nextFloat() * 0.2F, 0.9F + random.nextFloat() * 0.15F, false);
 				}
 			}
 
 			if (random.nextInt(10) == 0 && World.doesBlockHaveSolidTopSurface(world, x, y - 1, z) && !world.getBlock(x, y - 2, z).getMaterial().blocksMovement()) {
-				d5 = (double) ((float) x + random.nextFloat());
+				d5 = (float) x + random.nextFloat();
 				d6 = (double) y - 1.05D;
-				d7 = (double) ((float) z + random.nextFloat());
+				d7 = (float) z + random.nextFloat();
 				world.spawnParticle("dripLava", d5, d6, d7, 0.0D, 0.0D, 0.0D);
 			}
 		}

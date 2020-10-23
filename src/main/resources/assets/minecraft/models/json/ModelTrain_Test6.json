@@ -1,6 +1,7 @@
 {
   "trainName": "Test6",
   "trainType": "Test",
+
   "trainModel2": {
     "modelFile": "chino_ball.ngtz",
     "textures": [

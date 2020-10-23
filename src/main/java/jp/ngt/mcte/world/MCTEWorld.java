@@ -14,7 +14,7 @@ import java.util.List;
 public class MCTEWorld extends NGTWorld {
 	public boolean updated;
 	private long tickCount;
-	private List<BUEntry> updateList = new ArrayList<BUEntry>();
+	private final List<BUEntry> updateList = new ArrayList<BUEntry>();
 
 	public MCTEWorld(World par1, NGTObject par2, int x2, int y2, int z2) {
 		super(par1, par2, x2, y2, z2);
@@ -130,7 +130,6 @@ public class MCTEWorld extends NGTWorld {
 
 	@Override
 	public void updateEntities() {
-		;
 	}
 
 	/**

@@ -1,0 +1,196 @@
+package jp.ngt.rtm.rail;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.renderer.NGTTessellator;
+import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.RTMBlock;
+import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.rail.util.RailMap;
+import jp.ngt.rtm.rail.util.RailPosition;
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.GL11;
+
+@SideOnly(Side.CLIENT)
+public abstract class RenderMarkerBlockBase {
+	protected final String[] displayStrings = new String[RTMCore.markerDisplayDistance / 10];
+
+	public RenderMarkerBlockBase() {
+		for (int i = 0; i < this.displayStrings.length; i++) {
+			this.displayStrings[i] = (i + 1) * 10 + "m";
+		}
+	}
+
+	public abstract void renderTileEntityMarker(TileEntityMarker tileEntity, double par2, double par4, double par6, float par8);
+
+	protected void renderDistanceMark(TileEntityMarker marker) {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
+		int meta = marker.blockMetadata;
+		Block block = marker.getBlockType();
+		int color = (block == RTMBlock.marker) ? 16711680 : 255;
+		float dir = BlockMarker.getMarkerDir(marker.getBlockType(), meta) * 45.0F;
+		GL11.glRotatef(dir, 0.0F, 1.0F, 0.0F);
+		GL11.glDisable(3553);
+		float f0 = 0.4F;
+		NGTTessellator tessellator = NGTTessellator.instance;
+		tessellator.startDrawingQuads();
+		tessellator.setColorOpaque_I(color);
+		for (int i = 1; i < this.displayStrings.length; i++) {
+			float f1 = i * 10.0F;
+			tessellator.addVertex(-f0, 0.0F, f0 + f1);
+			tessellator.addVertex(-f0, 0.0F, -f0 + f1);
+			tessellator.addVertex(f0, 0.0F, -f0 + f1);
+			tessellator.addVertex(f0, 0.0F, f0 + f1);
+		}
+		tessellator.draw();
+		GL11.glEnable(3553);
+		FontRenderer fontRenderer = NGTUtilClient.getMinecraft().fontRenderer;
+		for (String displayString : this.displayStrings) {
+			GL11.glTranslatef(0.0F, 0.0F, 10.0F);
+			GL11.glPushMatrix();
+			GL11.glRotatef(-(RenderManager.instance).playerViewY - dir, 0.0F, 1.0F, 0.0F);
+			GL11.glScalef(-0.25F, -0.25F, 0.25F);
+			int i0 = fontRenderer.getStringWidth(displayString) / 2;
+			fontRenderer.drawString(displayString, -i0 / 2, -10, color);
+			GL11.glPopMatrix();
+		}
+		GL11.glPopMatrix();
+	}
+
+	protected void renderLine(TileEntityMarker tileEntity, float x, float y, float z) {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x, y, z);
+
+		Tessellator tessellator = Tessellator.instance;
+		for (RailMap rm : tileEntity.getRailMaps()) {
+			GL11.glPushMatrix();
+			float x0 = (float) (rm.getStartRP().posX - tileEntity.getMarkerRP().posX);
+			float y0 = (float) (rm.getStartRP().posY - tileEntity.getMarkerRP().posY);
+			float z0 = (float) (rm.getStartRP().posZ - tileEntity.getMarkerRP().posZ);
+			GL11.glTranslatef(x0, y0, z0);
+			tessellator.startDrawing(GL11.GL_LINE_STRIP);
+			tessellator.setColorOpaque_I(0x004000);
+			int max = (int) ((float) rm.getLength() * 2.0F);
+			double[] p2 = rm.getRailPos(max, 0);
+			double h2 = rm.getRailHeight(max, 0);
+			for (int i = 0; i < max + 1; ++i) {
+				double[] p1 = rm.getRailPos(max, i);
+				tessellator.addVertex(p1[1] - p2[1], rm.getRailHeight(max, i) - h2, p1[0] - p2[0]);
+			}
+			tessellator.draw();
+			GL11.glPopMatrix();
+		}
+
+		GL11.glPopMatrix();
+	}
+
+	protected void renderGrid(TileEntityMarker marker) {
+		GL11.glPushMatrix();
+		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawing(1);
+		tessellator.setColorOpaque_I(0);
+		for (int[] ia : marker.getGrid()) {
+			renderFrame(tessellator, (ia[0] - marker.xCoord), (ia[1] - marker.yCoord), (ia[2] - marker.zCoord), 1.0F, 1.0F, 1.0F);
+		}
+		tessellator.draw();
+		GL11.glPopMatrix();
+	}
+
+	protected RailPosition getOppositeRail(TileEntityMarker tileEntity) {
+		if (tileEntity.getRailMaps() == null) {
+			return null;
+		}
+
+		RailPosition rp = tileEntity.getMarkerRP();
+		RailPosition oppositeRP = null;
+		for (RailMap map : tileEntity.getRailMaps()) {
+			if (map.getStartRP().equals(rp)) {
+				oppositeRP = map.getEndRP();
+				break;
+			} else if (map.getEndRP().equals(rp)) {
+				oppositeRP = map.getStartRP();
+				break;
+			}
+		}
+		return oppositeRP;
+	}
+
+	protected RailPosition getNeighborRail(TileEntityMarker tileEntity) {
+		int[] pos = tileEntity.getMarkerRP().getNeighborPos();
+		TileEntity tile = tileEntity.getWorldObj().getTileEntity(pos[0], pos[1], pos[2]);
+		if (!(tile instanceof TileEntityLargeRailBase)) {
+			return null;
+		}
+
+		TileEntityLargeRailCore core = ((TileEntityLargeRailBase) tile).getRailCore();
+		if (core == null) {
+			return null;
+		}
+
+		double distanceSq = Double.MAX_VALUE;
+		RailPosition rp = null;
+		for (RailMap map : core.getAllRailMaps()) {
+			double d2 = NGTMath.getDistanceSq(tileEntity.getMarkerRP().posX, tileEntity.getMarkerRP().posZ, map.getStartRP().posX, map.getStartRP().posZ);
+			if (d2 < distanceSq) {
+				distanceSq = d2;
+				rp = map.getStartRP();
+			}
+
+			d2 = NGTMath.getDistanceSq(tileEntity.getMarkerRP().posX, tileEntity.getMarkerRP().posZ, map.getEndRP().posX, map.getEndRP().posZ);
+			if (d2 < distanceSq) {
+				distanceSq = d2;
+				rp = map.getEndRP();
+			}
+		}
+
+		return rp;
+	}
+
+	protected void renderFrame(Tessellator tessellator, double minX, double minY, double minZ, double width, double height, double depth) {
+		double maxX = minX + width;
+		double maxY = minY + height;
+		double maxZ = minZ + depth;
+
+		tessellator.addVertex(minX, minY, minZ);//minY
+		tessellator.addVertex(maxX, minY, minZ);
+
+		tessellator.addVertex(minX, minY, maxZ);
+		tessellator.addVertex(maxX, minY, maxZ);
+
+		tessellator.addVertex(minX, minY, minZ);
+		tessellator.addVertex(minX, minY, maxZ);
+
+		tessellator.addVertex(maxX, minY, minZ);
+		tessellator.addVertex(maxX, minY, maxZ);
+
+		tessellator.addVertex(minX, minY, minZ);//tate
+		tessellator.addVertex(minX, maxY, minZ);
+
+		tessellator.addVertex(maxX, minY, minZ);
+		tessellator.addVertex(maxX, maxY, minZ);
+
+		tessellator.addVertex(minX, minY, maxZ);
+		tessellator.addVertex(minX, maxY, maxZ);
+
+		tessellator.addVertex(maxX, minY, maxZ);
+		tessellator.addVertex(maxX, maxY, maxZ);
+
+		tessellator.addVertex(minX, maxY, minZ);//maxY
+		tessellator.addVertex(maxX, maxY, minZ);
+
+		tessellator.addVertex(minX, maxY, maxZ);
+		tessellator.addVertex(maxX, maxY, maxZ);
+
+		tessellator.addVertex(minX, maxY, minZ);
+		tessellator.addVertex(minX, maxY, maxZ);
+
+		tessellator.addVertex(maxX, maxY, minZ);
+		tessellator.addVertex(maxX, maxY, maxZ);
+	}
+}

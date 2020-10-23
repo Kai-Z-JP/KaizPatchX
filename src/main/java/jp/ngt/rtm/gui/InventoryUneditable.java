@@ -6,8 +6,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class InventoryUneditable implements IInventory {
-	private ItemStack[] stackList;
-	private int inventoryWidth;
+	private final ItemStack[] stackList;
+	private final int inventoryWidth;
 
 	public InventoryUneditable(Container container, int size) {
 		this.stackList = new ItemStack[size];

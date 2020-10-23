@@ -9,7 +9,7 @@ import javax.script.ScriptEngine;
 
 public abstract class ModelSetBase<T extends ModelConfig> {
 	protected final T cfg;
-	private boolean isDummyModel;
+	private final boolean isDummyModel;
 
 	public ScriptEngine serverSE;
 

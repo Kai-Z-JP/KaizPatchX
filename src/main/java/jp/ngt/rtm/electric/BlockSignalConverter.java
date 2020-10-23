@@ -49,7 +49,7 @@ public class BlockSignalConverter extends BlockContainer implements IBlockConnec
 			return true;
 		} else {
 			if (world.isRemote) {
-				player.openGui(RTMCore.instance, RTMCore.instance.guiIdSignalConverter, player.worldObj, par2, par3, par4);
+				player.openGui(RTMCore.instance, RTMCore.guiIdSignalConverter, player.worldObj, par2, par3, par4);
 			}
 			return true;
 		}

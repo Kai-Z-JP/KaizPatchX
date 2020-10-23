@@ -16,11 +16,9 @@ public class VendorScreenPayment extends VendorScreen {
 
 	@Override
 	public void init(int guiLeft, int guiTop) {
-		;
 	}
 
 	@Override
 	public void onClickButton(GuiButton button) {
-		;
 	}
 }

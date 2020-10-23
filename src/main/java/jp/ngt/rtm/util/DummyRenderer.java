@@ -50,7 +50,7 @@ public final class DummyRenderer {
 	 */
 	public static int anaglyphField;//R+GB->立体視モード
 
-	private Minecraft mc;
+	private final Minecraft mc;
 	private float farPlaneDistance;
 	private int rendererUpdateCount;
 	private final DynamicTexture lightmapTexture;
@@ -79,11 +79,11 @@ public final class DummyRenderer {
 	private float torchFlickerDX;
 	private float torchFlickerY;
 	private float torchFlickerDY;
-	private Random random;
+	private final Random random;
 	private int rainSoundCounter;
 	private float[] rainXCoords;
 	private float[] rainYCoords;
-	private FloatBuffer fogColorBuffer;
+	private final FloatBuffer fogColorBuffer;
 	private float fogColorRed;
 	private float fogColorGreen;
 	private float fogColorBlue;
@@ -423,7 +423,6 @@ public final class DummyRenderer {
 		}
 
 		if (!Display.isActive() && this.mc.gameSettings.pauseOnLostFocus && (!this.mc.gameSettings.touchscreen || !Mouse.isButtonDown(1))) {
-			;
 		} else {
 			this.prevFrameTime = Minecraft.getSystemTime();
 		}
@@ -557,7 +556,7 @@ public final class DummyRenderer {
 			ForgeHooksClient.setRenderPass(0);
 			//ToDo: Try and figure out how to make particles render sorted correctly.. {They render behind water}
 			RenderHelper.disableStandardItemLighting();
-			this.disableLightmap((double) par1);
+			this.disableLightmap(par1);
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPopMatrix();
 			GL11.glPushMatrix();
@@ -571,12 +570,12 @@ public final class DummyRenderer {
             GL11.glDisable(GL11.GL_BLEND);*/
 
 			EffectRenderer effectrenderer = this.mc.effectRenderer;
-			this.enableLightmap((double) par1);
+			this.enableLightmap(par1);
 			effectrenderer.renderLitParticles(viewer, par1);
 			RenderHelper.disableStandardItemLighting();
 			this.setupFog(mirror, 0, par1);
 			effectrenderer.renderParticles(viewer, par1);
-			this.disableLightmap((double) par1);
+			this.disableLightmap(par1);
 
 			GL11.glDepthMask(false);
 			GL11.glEnable(GL11.GL_CULL_FACE);
@@ -699,17 +698,17 @@ public final class DummyRenderer {
 					float f2 = this.random.nextFloat();
 
 					if (block.getMaterial() == Material.lava) {
-						this.mc.effectRenderer.addEffect(new EntitySmokeFX(worldclient, (double) ((float) k1 + f1), (double) ((float) i2 + 0.1F) - block.getBlockBoundsMinY(), (double) ((float) l1 + f2), 0.0D, 0.0D, 0.0D));
+						this.mc.effectRenderer.addEffect(new EntitySmokeFX(worldclient, (float) k1 + f1, (double) ((float) i2 + 0.1F) - block.getBlockBoundsMinY(), (float) l1 + f2, 0.0D, 0.0D, 0.0D));
 					} else if (block.getMaterial() != Material.air) {
 						++l;
 
 						if (this.random.nextInt(l) == 0) {
-							d0 = (double) ((float) k1 + f1);
+							d0 = (float) k1 + f1;
 							d1 = (double) ((float) i2 + 0.1F) - block.getBlockBoundsMinY();
-							d2 = (double) ((float) l1 + f2);
+							d2 = (float) l1 + f2;
 						}
 
-						this.mc.effectRenderer.addEffect(new EntityRainFX(worldclient, (double) ((float) k1 + f1), (double) ((float) i2 + 0.1F) - block.getBlockBoundsMinY(), (double) ((float) l1 + f2)));
+						this.mc.effectRenderer.addEffect(new EntityRainFX(worldclient, (float) k1 + f1, (double) ((float) i2 + 0.1F) - block.getBlockBoundsMinY(), (float) l1 + f2));
 					}
 				}
 			}
@@ -726,7 +725,7 @@ public final class DummyRenderer {
 		float f1 = this.mc.theWorld.getRainStrength(par2);
 
 		if (f1 > 0.0F) {
-			this.enableLightmap((double) par2);
+			this.enableLightmap(par2);
 
 			if (this.rainXCoords == null) {
 				this.rainXCoords = new float[1024];
@@ -803,7 +802,7 @@ public final class DummyRenderer {
 						}
 
 						if (l1 != i2) {
-							this.random.setSeed((long) (i1 * i1 * 3121 + i1 * 45238971 ^ l * l * 418711 + l * 13761));
+							this.random.setSeed(i1 * i1 * 3121 + i1 * 45238971 ^ l * l * 418711 + l * 13761);
 							float f9 = biomegenbase.getFloatTemperature(i1, l1, l);
 							float f10;
 							double d4;
@@ -827,10 +826,10 @@ public final class DummyRenderer {
 								tessellator.setBrightness(world.getLightBrightnessForSkyBlocks(i1, j2, l, 0));
 								tessellator.setColorRGBA_F(f13, f13, f13, ((1.0F - f12 * f12) * 0.5F + 0.5F) * f1);
 								tessellator.setTranslation(-d0 * 1.0D, -d1 * 1.0D, -d2 * 1.0D);
-								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, (double) l1, (double) ((float) l - f7) + 0.5D, (double) (0.0F * f8), (double) ((float) l1 * f8 / 4.0F + f10 * f8));
-								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, (double) l1, (double) ((float) l + f7) + 0.5D, (double) (1.0F * f8), (double) ((float) l1 * f8 / 4.0F + f10 * f8));
-								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, (double) i2, (double) ((float) l + f7) + 0.5D, (double) (1.0F * f8), (double) ((float) i2 * f8 / 4.0F + f10 * f8));
-								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, (double) i2, (double) ((float) l - f7) + 0.5D, (double) (0.0F * f8), (double) ((float) i2 * f8 / 4.0F + f10 * f8));
+								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, l1, (double) ((float) l - f7) + 0.5D, 0.0F * f8, (float) l1 * f8 / 4.0F + f10 * f8);
+								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, l1, (double) ((float) l + f7) + 0.5D, 1.0F * f8, (float) l1 * f8 / 4.0F + f10 * f8);
+								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, i2, (double) ((float) l + f7) + 0.5D, 1.0F * f8, (float) i2 * f8 / 4.0F + f10 * f8);
+								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, i2, (double) ((float) l - f7) + 0.5D, 0.0F * f8, (float) i2 * f8 / 4.0F + f10 * f8);
 								tessellator.setTranslation(0.0D, 0.0D, 0.0D);
 							} else {
 								if (b1 != 1) {
@@ -853,10 +852,10 @@ public final class DummyRenderer {
 								tessellator.setBrightness((world.getLightBrightnessForSkyBlocks(i1, j2, l, 0) * 3 + 15728880) / 4);
 								tessellator.setColorRGBA_F(f15, f15, f15, ((1.0F - f14 * f14) * 0.3F + 0.5F) * f1);
 								tessellator.setTranslation(-d0 * 1.0D, -d1 * 1.0D, -d2 * 1.0D);
-								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, (double) l1, (double) ((float) l - f7) + 0.5D, (double) (0.0F * f8 + f16), (double) ((float) l1 * f8 / 4.0F + f10 * f8 + f11));
-								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, (double) l1, (double) ((float) l + f7) + 0.5D, (double) (1.0F * f8 + f16), (double) ((float) l1 * f8 / 4.0F + f10 * f8 + f11));
-								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, (double) i2, (double) ((float) l + f7) + 0.5D, (double) (1.0F * f8 + f16), (double) ((float) i2 * f8 / 4.0F + f10 * f8 + f11));
-								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, (double) i2, (double) ((float) l - f7) + 0.5D, (double) (0.0F * f8 + f16), (double) ((float) i2 * f8 / 4.0F + f10 * f8 + f11));
+								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, l1, (double) ((float) l - f7) + 0.5D, 0.0F * f8 + f16, (float) l1 * f8 / 4.0F + f10 * f8 + f11);
+								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, l1, (double) ((float) l + f7) + 0.5D, 1.0F * f8 + f16, (float) l1 * f8 / 4.0F + f10 * f8 + f11);
+								tessellator.addVertexWithUV((double) ((float) i1 + f6) + 0.5D, i2, (double) ((float) l + f7) + 0.5D, 1.0F * f8 + f16, (float) i2 * f8 / 4.0F + f10 * f8 + f11);
+								tessellator.addVertexWithUV((double) ((float) i1 - f6) + 0.5D, i2, (double) ((float) l - f7) + 0.5D, 0.0F * f8 + f16, (float) i2 * f8 / 4.0F + f10 * f8 + f11);
 								tessellator.setTranslation(0.0D, 0.0D, 0.0D);
 							}
 						}
@@ -871,7 +870,7 @@ public final class DummyRenderer {
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glDisable(GL11.GL_BLEND);
 			GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-			this.disableLightmap((double) par2);
+			this.disableLightmap(par2);
 		}
 	}
 
@@ -882,7 +881,7 @@ public final class DummyRenderer {
 		WorldClient world = this.mc.theWorld;
 		EntityLivingBase entity = mirror.getViewer();
 		float f1 = 0.25F + 0.75F * (float) this.mc.gameSettings.renderDistanceChunks / 16.0F;
-		f1 = 1.0F - (float) Math.pow((double) f1, 0.25D);
+		f1 = 1.0F - (float) Math.pow(f1, 0.25D);
 		Vec3 vec3 = world.getSkyColor(entity, par2);
 		float f2 = (float) vec3.xCoord;
 		float f3 = (float) vec3.yCoord;

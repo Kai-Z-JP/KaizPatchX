@@ -63,9 +63,9 @@ public class EntityBullet extends EntityArrow {
 		this.setLocationAndAngles(shooter.posX, shooter.posY + (double) shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
 		float yawRad = NGTMath.toRadians(this.rotationYaw);
 		float pitchRad = NGTMath.toRadians(this.rotationPitch);
-		this.motionX = (double) (-MathHelper.sin(yawRad) * MathHelper.cos(pitchRad));
-		this.motionZ = (double) (MathHelper.cos(yawRad) * MathHelper.cos(pitchRad));
-		this.motionY = (double) (-MathHelper.sin(pitchRad));
+		this.motionX = -MathHelper.sin(yawRad) * MathHelper.cos(pitchRad);
+		this.motionZ = MathHelper.cos(yawRad) * MathHelper.cos(pitchRad);
+		this.motionY = -MathHelper.sin(pitchRad);
 		this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, speed, 1.0F);
 		this.shootingEntity = shooter;
 	}
@@ -79,7 +79,7 @@ public class EntityBullet extends EntityArrow {
 		double d0 = target.posX - shooter.posX;
 		double d1 = target.boundingBox.minY + (double) (target.height / 3.0F) - this.posY;
 		double d2 = target.posZ - shooter.posZ;
-		double distance = (double) MathHelper.sqrt_double(d0 * d0 + d2 * d2);
+		double distance = MathHelper.sqrt_double(d0 * d0 + d2 * d2);
 
 		if (distance >= 1.0E-7D) {
 			float f2 = (float) (NGTMath.toDegrees(Math.atan2(d2, d0))) - 90.0F;
@@ -94,8 +94,8 @@ public class EntityBullet extends EntityArrow {
 
 	@Override
 	protected void entityInit() {
-		this.dataWatcher.addObject(16, Byte.valueOf((byte) 0));//破壊可能
-		this.dataWatcher.addObject(17, Byte.valueOf((byte) -1));//弾の種類
+		this.dataWatcher.addObject(16, (byte) 0);//破壊可能
+		this.dataWatcher.addObject(17, (byte) -1);//弾の種類
 	}
 
 	private void setBulletSize() {
@@ -139,9 +139,7 @@ public class EntityBullet extends EntityArrow {
 		if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
 			float f = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
 			this.prevRotationYaw = this.rotationYaw = (float) (NGTMath.toDegrees(Math.atan2(par1, par5)));
-			this.prevRotationPitch = this.rotationPitch = (float) (NGTMath.toDegrees(Math.atan2(par3, (double) f)));
-			this.prevRotationPitch = this.rotationPitch;
-			this.prevRotationYaw = this.rotationYaw;
+			this.prevRotationPitch = this.rotationPitch = (float) (NGTMath.toDegrees(Math.atan2(par3, f)));
 			this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
 			this.ticksInGround = 0;
 		}
@@ -154,7 +152,7 @@ public class EntityBullet extends EntityArrow {
 		if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
 			float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 			this.prevRotationYaw = this.rotationYaw = (float) (NGTMath.toDegrees(Math.atan2(this.motionX, this.motionZ)));
-			this.prevRotationPitch = this.rotationPitch = (float) (NGTMath.toDegrees(Math.atan2(this.motionY, (double) f)));
+			this.prevRotationPitch = this.rotationPitch = (float) (NGTMath.toDegrees(Math.atan2(this.motionY, f)));
 		}
 
 		Block block = this.worldObj.getBlock(this.tileX, this.tileY, this.tileZ);
@@ -280,8 +278,7 @@ public class EntityBullet extends EntityArrow {
 			float f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 			this.rotationYaw = (float) (NGTMath.toDegrees(Math.atan2(this.motionX, this.motionZ)));
 
-			for (this.rotationPitch = (float) NGTMath.toDegrees(Math.atan2(this.motionY, (double) f2)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
-				;
+			for (this.rotationPitch = (float) NGTMath.toDegrees(Math.atan2(this.motionY, f2)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
 			}
 
 			while (this.rotationPitch - this.prevRotationPitch >= 180.0F) {
@@ -374,7 +371,7 @@ public class EntityBullet extends EntityArrow {
 	}
 
 	public void setBulletType(BulletType par1) {
-		this.dataWatcher.updateObject(17, Byte.valueOf(par1.id));
+		this.dataWatcher.updateObject(17, par1.id);
 	}
 
 	@Override
@@ -386,9 +383,9 @@ public class EntityBullet extends EntityArrow {
 		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
 
 		if (par1) {
-			this.dataWatcher.updateObject(16, Byte.valueOf((byte) (b0 & -2)));
+			this.dataWatcher.updateObject(16, (byte) (b0 & -2));
 		} else {
-			this.dataWatcher.updateObject(16, Byte.valueOf((byte) (b0 | 1)));
+			this.dataWatcher.updateObject(16, (byte) (b0 | 1));
 		}
 	}
 
@@ -419,8 +416,7 @@ public class EntityBullet extends EntityArrow {
 			if (!this.worldObj.isRemote) {
 				Block block = this.worldObj.getBlock(x, y, z);
 				float hardness = block.getBlockHardness(this.worldObj, x, y, z);
-				if (block != null && hardness > 0.0F && hardness < 500.0F) ;
-				{
+				if (hardness > 0.0F && hardness < 500.0F) {
 					if (doMobGriefing) {
 						this.worldObj.setBlockToAir(x, y, z);
 					}
@@ -432,8 +428,7 @@ public class EntityBullet extends EntityArrow {
 			if (!this.worldObj.isRemote) {
 				Block block = this.worldObj.getBlock(x, y, z);
 				float hardness = block.getBlockHardness(this.worldObj, x, y, z);
-				if (block != null && hardness > 0.0F && hardness < 500.0F) ;
-				{
+				if (hardness > 0.0F && hardness < 500.0F) {
 					this.worldObj.setBlock(x, y, z, RTMBlock.effect, RTMCore.ATOMIC_BOM_META, 3);
 					this.worldObj.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 				}
@@ -453,7 +448,7 @@ public class EntityBullet extends EntityArrow {
 					}
 				} else if (this.landingBlock.getMaterial() == Material.tnt) {
 					if (!this.worldObj.isRemote) {
-						((BlockTNT) Blocks.tnt).func_150114_a(this.worldObj, x, y, z, 1, (EntityLivingBase) null);
+						((BlockTNT) Blocks.tnt).func_150114_a(this.worldObj, x, y, z, 1, null);
 						this.worldObj.setBlockToAir(x, y, z);
 						this.setDead();
 					}

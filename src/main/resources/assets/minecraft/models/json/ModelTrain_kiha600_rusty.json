@@ -1,6 +1,7 @@
 {
   "trainName": "kiha600_rusty",
   "trainType": "DC",
+
   "trainModel2": {
     "modelFile": "ModelTrain_kiha600.class",
     "textures": [

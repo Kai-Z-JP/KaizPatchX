@@ -267,22 +267,20 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		if (tile != null) {
 			Connection c0 = this.getConnection(tile.xCoord, tile.yCoord, tile.zCoord);
 			if (c0 == null && !wireType.isEmpty()) {
-                boolean isBlock = !(tile instanceof TileEntityDummyEW);
-                ConnectionType type = isBlock ? ConnectionType.WIRE : ConnectionType.TO_ENTITY;
-                tile.isActivated = false;
-                boolean flag;
-                if (this instanceof TileEntityDummyEW) {
-                    type = ConnectionType.TO_ENTITY;
-                    flag = tile.setConnectionTo(this.xCoord, this.yCoord, this.zCoord, type, wireType);
-                } else {
-                    flag = this.setConnectionTo(tile.xCoord, tile.yCoord, tile.zCoord, type, wireType);
-                }
+				boolean isBlock = !(tile instanceof TileEntityDummyEW);
+				ConnectionType type = isBlock ? ConnectionType.WIRE : ConnectionType.TO_ENTITY;
+				tile.isActivated = false;
+				boolean flag;
+				if (this instanceof TileEntityDummyEW) {
+					type = ConnectionType.TO_ENTITY;
+				}
+				flag = tile.setConnectionTo(this.xCoord, this.yCoord, this.zCoord, type, wireType);
 
-                if (flag) {
-                    //Playerとの接続解除
-                    tile.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.NONE, "");
-                    return true;
-                }
+				if (flag) {
+					//Playerとの接続解除
+					tile.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.NONE, "");
+					return true;
+				}
 			}
 		}
 		return false;

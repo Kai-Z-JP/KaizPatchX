@@ -166,7 +166,7 @@ public class RailMap {
 	 */
 	public void setRail(World world, Block block, int x0, int y0, int z0, RailProperty prop) {
 		this.createRailList(prop);
-		setBaseBlock(world, x0, y0, z0);
+//		setBaseBlock(world, x0, y0, z0);
 		for (int[] rail : this.rails) {
 			int x = rail[0];
 			int y = rail[1];

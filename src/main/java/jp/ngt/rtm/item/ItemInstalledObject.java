@@ -195,6 +195,13 @@ public class ItemInstalledObject extends ItemWithModel {
 					tile.setConnectionTo(x, y, z, ConnectionType.DIRECT, "");
 					block = RTMBlock.connector;
 				}
+			} else if (type == IstlObjType.SPEAKER) {
+				world.setBlock(par4, par5, par6, RTMBlock.speaker, par7, 3);
+				TileEntitySpeaker tile = (TileEntitySpeaker) world.getTileEntity(par4, par5, par6);
+				tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+				tile.setModelName(this.getModelName(itemStack));
+				tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+				block = RTMBlock.speaker;
 			}
 
 			if (block != null) {
@@ -252,14 +259,14 @@ public class ItemInstalledObject extends ItemWithModel {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int par1) {
-		int j = MathHelper.clamp_int(par1, 0, 20);
+		int j = MathHelper.clamp_int(par1, 0, 24);
 		return this.icons[j];
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {
 		IIcon missing = register.registerIcon("ngtlib.missing");
-		this.icons = new IIcon[21];
+		this.icons = new IIcon[25];
 		this.icons[IstlObjType.FLUORESCENT_GLASS.id] = register.registerIcon("rtm:fluorescent");
 		this.icons[IstlObjType.FLUORESCENT_DIAMOND.id] = register.registerIcon("rtm:fluorescent");
 		this.icons[IstlObjType.FLUORESCENT_BROKEN.id] = register.registerIcon("rtm:fluorescent");
@@ -281,6 +288,10 @@ public class ItemInstalledObject extends ItemWithModel {
 		this.icons[IstlObjType.TICKET_VENDOR.id] = register.registerIcon("rtm:item_ticket_vendor");
 		this.icons[IstlObjType.LIGHT.id] = register.registerIcon("rtm:lightBlock");
 		this.icons[IstlObjType.FLAG.id] = register.registerIcon("rtm:flag");
+		this.icons[21] = missing;
+		this.icons[22] = missing;
+		this.icons[IstlObjType.SPEAKER.id] = register.registerIcon("rtm:speaker");
+		this.icons[24] = missing;
 	}
 
 	@Override
@@ -328,6 +339,10 @@ public class ItemInstalledObject extends ItemWithModel {
 		TICKET_VENDOR(18, MachineConfig.TYPE, MachineType.Vendor.toString(), "Vendor01"),
 		LIGHT(19, MachineConfig.TYPE, MachineType.Light.toString(), "SearchLight01"),
 		FLAG(20, "", "", ""),
+		//		STAIR(21, "", "", ""),
+//		SCAFFOLD(22, "", "", ""),
+		SPEAKER(23, MachineConfig.TYPE, MachineType.Speaker.toString(), "Speaker01"),
+		//		MECHANISM(24, "", "", ""),
 		NONE(-1, "", "", "");
 
 		public final byte id;

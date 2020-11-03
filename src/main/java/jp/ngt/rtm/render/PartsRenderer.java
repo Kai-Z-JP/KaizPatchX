@@ -130,8 +130,8 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 	}
 
 	private void onRightDrag(T t, ActionParts parts, int move) {
-		execScriptFunc("onRightDrag", t, parts, Integer.valueOf(move));
-	}
+        execScriptFunc("onRightDrag", t, parts, move);
+    }
 
 	/**
 	 * @param t           Entity or TileEntity
@@ -139,18 +139,18 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 	 * @param partialTick
 	 */
 	public void render(T t, int pass, float partialTick) {
-		if (t != null && pass == RenderPass.NORMAL.id && this.currentMatId == 0 && !this.targetsList.isEmpty())
-			render(t, RenderPass.PICK.id, partialTick);
-		this.currentPass = pass;
-		if (pass == RenderPass.PICK.id)
-			GLHelper.startMousePicking(1.0F);
-		execScriptFunc("render", t, Integer.valueOf(pass), Float.valueOf(partialTick));
-		if (pass == RenderPass.PICK.id) {
-			int hits = GLHelper.finishMousePicking();
-			this.hittedActionParts = selectHits(t, hits);
-			checkMouseAction(t);
-		}
-	}
+        if (t != null && pass == RenderPass.NORMAL.id && this.currentMatId == 0 && !this.targetsList.isEmpty())
+            render(t, RenderPass.PICK.id, partialTick);
+        this.currentPass = pass;
+        if (pass == RenderPass.PICK.id)
+            GLHelper.startMousePicking(1.0F);
+        execScriptFunc("render", t, pass, partialTick);
+        if (pass == RenderPass.PICK.id) {
+            int hits = GLHelper.finishMousePicking();
+            this.hittedActionParts = selectHits(t, hits);
+            checkMouseAction(t);
+        }
+    }
 
 	public String getModelName() {
 		return this.modelSet.getConfig().getName();

@@ -48,7 +48,7 @@ public class TileEntityPoint extends TileEntityMachineBase {
 	}
 
 	@Override
-	public MachineType getMachinleType() {
+	public MachineType getMachineType() {
 		return MachineType.Point;
 	}
 

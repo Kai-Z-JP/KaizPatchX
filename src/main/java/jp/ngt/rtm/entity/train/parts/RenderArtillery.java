@@ -87,7 +87,7 @@ public class RenderArtillery extends Render {
 
 	private boolean shouldRender(EntityArtillery par1) {
 		if (par1.riddenByEntity != null && par1.riddenByEntity.equals(NGTUtilClient.getMinecraft().thePlayer)) {
-			return ClientProxy.getViewMode(NGTUtilClient.getMinecraft().thePlayer) != ClientProxy.ViewMode_Artillery;
+			return ClientProxy.getViewMode() != ClientProxy.ViewMode_Artillery;
 		}
 		return true;
 	}

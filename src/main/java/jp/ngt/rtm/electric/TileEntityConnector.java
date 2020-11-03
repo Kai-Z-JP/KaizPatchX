@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
-import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityConnector extends TileEntityConnectorBase {
 	private static final int METADATA = 6;
@@ -79,12 +78,12 @@ public class TileEntityConnector extends TileEntityConnectorBase {
 		return NGTUtil.getChunkLoadDistanceSq();
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(this.xCoord - 32, this.yCoord - 16, this.zCoord - 32, this.xCoord + 32, this.yCoord + 16, this.zCoord + 32);
-		return bb;
-	}
+//	@Override
+//	@SideOnly(Side.CLIENT)
+//	public AxisAlignedBB getRenderBoundingBox() {
+//		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(this.xCoord - 32, this.yCoord - 16, this.zCoord - 32, this.xCoord + 32, this.yCoord + 16, this.zCoord + 32);
+//		return bb;
+//	}
 
 	@Override
 	public String getSubType() {

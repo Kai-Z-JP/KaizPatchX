@@ -66,9 +66,15 @@ public class BogieController {
 	}
 
 	public void setDead() {
-		this.getBogie(0).setDead();
-		this.getBogie(1).setDead();
-	}
+        EntityBogie bogieF = this.getBogie(0);
+        if (bogieF != null) {
+            bogieF.setDead();
+        }
+        EntityBogie bogieB = this.getBogie(1);
+        if (bogieB != null) {
+            bogieB.setDead();
+        }
+    }
 
 //	public void moveTrainWithBogie(EntityTrainBase train, float speed) {
 //		if (speed == 0.0F) {

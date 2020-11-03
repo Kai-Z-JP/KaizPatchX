@@ -63,7 +63,7 @@ public abstract class BlockMachineBase extends BlockContainer {
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity instanceof TileEntityMachineBase) {
-			MachineType machineType = ((TileEntityMachineBase) tileEntity).getMachinleType();
+			MachineType machineType = ((TileEntityMachineBase) tileEntity).getMachineType();
 			ItemStack itemStack = new ItemStack(RTMItem.installedObject);
 			itemStack.setItemDamage(ItemInstalledObject.IstlObjType.getType(machineType).id);
 			((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityMachineBase) tileEntity).getModelName());

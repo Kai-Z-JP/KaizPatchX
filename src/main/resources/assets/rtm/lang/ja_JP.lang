@@ -46,6 +46,7 @@ item.rtm:installedObject.17.name=看板
 item.rtm:installedObject.18.name=券売機
 item.rtm:installedObject.19.name=照明
 item.rtm:installedObject.20.name=旗
+item.rtm:installedObject.23.name=スピーカー
 item.rtm:material.0.name=シャフト
 item.rtm:material.1.name=車輪
 item.rtm:material.2.name=ディーゼルエンジン
@@ -110,6 +111,7 @@ item.rtm:money.5.name=￥500
 item.rtm:money.6.name=￥1000
 item.rtm:money.7.name=￥5000
 item.rtm:money.8.name=￥10000
+item.rtm:camera.name=カメラ
 
 item.rtm:handgun.name=拳銃
 item.rtm:rifle.name=ライフル

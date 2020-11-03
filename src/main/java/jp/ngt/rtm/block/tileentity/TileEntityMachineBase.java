@@ -101,7 +101,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 		}
 	}
 
-	public abstract MachineType getMachinleType();
+	public abstract MachineType getMachineType();
 
 	protected void sendPacket() {
 		NGTUtil.sendPacketToClient(this);
@@ -173,7 +173,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 
 	@Override
 	public String getSubType() {
-		return this.getMachinleType().toString();
+		return this.getMachineType().toString();
 	}
 
 	@Override

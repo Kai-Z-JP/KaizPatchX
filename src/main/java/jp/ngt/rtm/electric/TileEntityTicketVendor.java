@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEntityTicketVendor extends TileEntityMachineBase implements IInventory {
 	@Override
-	public MachineType getMachinleType() {
+	public MachineType getMachineType() {
 		return MachineType.Vendor;
 	}
 

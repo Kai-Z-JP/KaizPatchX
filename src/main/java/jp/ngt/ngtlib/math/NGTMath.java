@@ -213,14 +213,28 @@ public final class NGTMath {
 	}
 
 	public static double firstSqrt(double value) {
-		return sqrtX(value, value, 4);
-	}
+        return sqrtX(value, value, 4);
+    }
 
-	private static double sqrtX(double value, double x0, int n) {
-		if (n > 0) {
-			value = (value + x0 / value) * 0.5D;
-			return sqrtX(value, x0, --n);
-		}
-		return value;
-	}
+    private static double sqrtX(double value, double x0, int n) {
+        if (n > 0) {
+            value = (value + x0 / value) * 0.5D;
+            return sqrtX(value, x0, --n);
+        }
+        return value;
+    }
+
+    public static double sigmoid(double x, double c) {
+        if (x <= 0.0D)
+            return 0.0D;
+        if (x >= 1.0D)
+            return 1.0D;
+        double f0 = (x - 0.5D) * c;
+        double f1 = f0 / Math.sqrt(1.0D + f0 * f0);
+        return (f1 + 1.0D) * 0.5D;
+    }
+
+    public static int clamp(int value, int min, int max) {
+        return (value < min) ? min : (Math.min(value, max));
+    }
 }

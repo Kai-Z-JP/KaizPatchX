@@ -105,7 +105,9 @@ public class Formation {
 	 */
 	public void setTrain(EntityTrainBase par1, int par3, int par5) {
 		this.setEntry(new FormationEntry(par1, par3, par5), par3);
-		this.sendPacket();
+		if (!par1.worldObj.isRemote) {
+			this.sendPacket();
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

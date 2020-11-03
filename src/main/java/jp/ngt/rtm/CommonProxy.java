@@ -77,7 +77,10 @@ public class CommonProxy {
 	}
 
 	public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch) {
-	}
+        if (sound != null) {
+            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketPlaySound(entity, sound, vol, pitch));
+        }
+    }
 
 	/**
 	 * Sever/Clientでインスタンス分けて取得

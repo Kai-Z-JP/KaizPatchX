@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.ClientProxy;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
+import jp.ngt.rtm.gui.camera.Camera;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.util.RTMUtil;
@@ -44,18 +45,24 @@ public class GuiIngameCustom extends GuiScreen {
 				this.renderArtilleryGui((EntityArtillery) this.mc.thePlayer.ridingEntity);
 			}
 		} else if (event.type == ElementType.HELMET) {
-			byte viewMode = ClientProxy.getViewMode(this.mc.thePlayer);
-			if (viewMode >= 0) {
-				int k = event.resolution.getScaledWidth();
-				int l = event.resolution.getScaledHeight();
-				if (viewMode == 3) {
-					this.renderNVD(k, l);
-				} else {
-					this.renderScope(k, l);
-				}
-				event.setCanceled(true);
-			}
-		} else if (event.type == ElementType.DEBUG) {
+            byte viewMode = ClientProxy.getViewMode();
+            if (viewMode >= 0) {
+                int k = event.resolution.getScaledWidth();
+                int l = event.resolution.getScaledHeight();
+                if (viewMode == 3) {
+                    this.renderNVD(k, l);
+                } else if (viewMode == 1 || viewMode == 2) {
+                    this.renderScope(k, l);
+                }
+                event.setCanceled(true);
+            }
+            if (viewMode == 4) {
+                Camera.INSTANCE.render(this.mc, (RenderGameOverlayEvent) event, event
+                        .resolution.getScaledWidth(), event.resolution.getScaledHeight());
+            } else {
+                Camera.INSTANCE.off();
+            }
+        } else if (event.type == ElementType.DEBUG) {
 			//if(this.mc.gameSettings.showDebugInfo)
 			this.setScale(event.resolution);
 			this.renderDebugGui();

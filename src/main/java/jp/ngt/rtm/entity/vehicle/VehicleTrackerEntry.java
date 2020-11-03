@@ -4,7 +4,6 @@ import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
-import jp.ngt.rtm.entity.EntityInstalledObject;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.network.PacketVehicleMovement;
@@ -161,22 +160,22 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
 					this.motionY = this.myEntity.motionY;
 					this.motionZ = this.myEntity.motionZ;
 
-					int posX = MathHelper.floor_double(this.myEntity.posX * 32.0D);
-					int posY = MathHelper.floor_double(this.myEntity.posY * 32.0D);
-					int posZ = MathHelper.floor_double(this.myEntity.posZ * 32.0D);
-					if (posX != this.lastScaledXPosition || posY != this.lastScaledYPosition || posZ != this.lastScaledZPosition) {
-						FMLNetworkHandler.makeEntitySpawnAdjustment(this.myEntity, par1, this.lastScaledXPosition, this.lastScaledYPosition, this.lastScaledZPosition);
-					}
-					if (this.myEntity.ridingEntity != null) {
-						par1.playerNetServerHandler.sendPacket(new S1BPacketEntityAttach(0, this.myEntity, this.myEntity.ridingEntity));
-					}
+                    int posX = MathHelper.floor_double(this.myEntity.posX * 32.0D);
+                    int posY = MathHelper.floor_double(this.myEntity.posY * 32.0D);
+                    int posZ = MathHelper.floor_double(this.myEntity.posZ * 32.0D);
+                    if (posX != this.lastScaledXPosition || posY != this.lastScaledYPosition || posZ != this.lastScaledZPosition) {
+                        FMLNetworkHandler.makeEntitySpawnAdjustment(this.myEntity, par1, this.lastScaledXPosition, this.lastScaledYPosition, this.lastScaledZPosition);
+                    }
+                    if (this.myEntity.ridingEntity != null) {
+                        par1.playerNetServerHandler.sendPacket(new S1BPacketEntityAttach(0, this.myEntity, this.myEntity.ridingEntity));
+                    }
 
-					ForgeEventFactory.onStartEntityTracking(this.myEntity, par1);
+                    if (this.myEntity instanceof EntityTrainBase) {
+                        PacketNBT.sendToClient(this.myEntity);
+                    }
 
-					if (this.myEntity instanceof EntityVehicleBase || this.myEntity instanceof EntityInstalledObject) {
-						PacketNBT.sendTo(this.myEntity, par1);
-					}
-				}
+                    ForgeEventFactory.onStartEntityTracking(this.myEntity, par1);
+                }
 			} else if (this.trackingPlayers.contains(par1)) {
 				this.trackingPlayers.remove(par1);
 				par1.func_152339_d(this.myEntity);

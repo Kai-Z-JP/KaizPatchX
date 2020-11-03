@@ -58,6 +58,8 @@ public final class RTMItem {
 	public static Item itemPipe;
 	public static Item paintTool;
 
+	public static Item camera;
+
 	public static final byte RAIL_ICON = 6;
 	public static final byte RAIL_SHAPE = 8;
 
@@ -107,6 +109,8 @@ public final class RTMItem {
 		itemPipe = (new ItemPipe()).setUnlocalizedName("rtm:itemPipe").setTextureName("rtm:itemPipe").setCreativeTab(CreativeTabRTM.tabIndustry);
 		paintTool = (new ItemPaintTool()).setUnlocalizedName("rtm:paintTool").setTextureName("rtm:paintTool").setCreativeTab(CreativeTabRTM.tabRTMTools);
 
+		camera = (new ItemCamera()).setUnlocalizedName("rtm:camera").setTextureName("rtm:camera").setCreativeTab(CreativeTabRTM.tabRTMTools);
+
 		GameRegistry.registerItem(bogie, "rtm:bogie");
 		GameRegistry.registerItem(installedObject, "rtm:installedObject");
 		GameRegistry.registerItem(material, "rtm:material");
@@ -152,12 +156,14 @@ public final class RTMItem {
 		GameRegistry.registerItem(itemPipe, "rtm:itemPipe");
 		GameRegistry.registerItem(paintTool, "paint_tool");
 
+		GameRegistry.registerItem(camera, "rtm:camera");
+
 		OreDictionary.registerOre("ingotSteel", new ItemStack(steel_ingot, 1, 0));
 		OreDictionary.registerOre("fuelCoke", new ItemStack(coke, 1, 0));
 	}
 
 	private static Map<Integer, String> getItemMaterial() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
+		Map<Integer, String> map = new HashMap<>();
 		map.put(0, "rtm:shaft");
 		map.put(1, "rtm:wheel");
 		map.put(2, "rtm:DE");
@@ -172,7 +178,7 @@ public final class RTMItem {
 	}
 
 	private static Map<Integer, String> getItemMoney() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
+		Map<Integer, String> map = new HashMap<>();
 		for (MoneyType type : MoneyType.values()) {
 			map.put(type.getId(), "rtm:money_" + type.getId());
 		}
@@ -180,7 +186,7 @@ public final class RTMItem {
 	}
 
 	private static Map<Integer, String> getItemMirror() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
+		Map<Integer, String> map = new HashMap<>();
 		map.put(0, "rtm:itemMirror");
 		for (int i = 1; i < 16; i += 2) {
 			map.put(20 + i, "rtm:itemMirrorBlock");

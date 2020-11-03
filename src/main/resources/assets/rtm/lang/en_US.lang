@@ -46,6 +46,7 @@ item.rtm:installedObject.17.name=Signboard
 item.rtm:installedObject.18.name=
 item.rtm:installedObject.19.name=Light
 item.rtm:installedObject.20.name=Flag
+item.rtm:installedObject.23.name=Speaker
 item.rtm:material.0.name=Shaft
 item.rtm:material.1.name=Wheel
 item.rtm:material.2.name=Diesel Engine
@@ -110,6 +111,7 @@ item.rtm:money.5.name=Y500
 item.rtm:money.6.name=Y1000
 item.rtm:money.7.name=Y5000
 item.rtm:money.8.name=Y10000
+item.rtm:camera.name=camera
 
 item.rtm:handgun.name=Hand gun
 item.rtm:rifle.name=Rifle

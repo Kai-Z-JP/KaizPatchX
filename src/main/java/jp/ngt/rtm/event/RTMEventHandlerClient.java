@@ -11,6 +11,7 @@ import jp.ngt.rtm.entity.RenderBullet;
 import jp.ngt.rtm.entity.npc.EntityNPC;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.gui.GuiIngameCustom;
+import jp.ngt.rtm.gui.camera.Camera;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.sound.RTMSoundHandler;
 import net.minecraft.client.Minecraft;
@@ -26,19 +27,31 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public final class RTMEventHandlerClient {
-	private final RTMSoundHandler soundHandler;
-	private final GuiIngameCustom guiIngame;
+    private final RTMSoundHandler soundHandler;
+    private final GuiIngameCustom guiIngame;
 
-	public RTMEventHandlerClient(Minecraft par1) {
-		this.soundHandler = new RTMSoundHandler();
-		this.guiIngame = new GuiIngameCustom(par1);
-	}
+    public RTMEventHandlerClient(Minecraft par1) {
+        this.soundHandler = new RTMSoundHandler();
+        this.guiIngame = new GuiIngameCustom(par1);
+    }
 
-	@SubscribeEvent
-	public void onRenderGui(RenderGameOverlayEvent.Pre event)//GuiIngame, GuiIngameForge
-	{
-		this.guiIngame.onRenderGui(event);
-	}
+    @SubscribeEvent
+    public void onTick(RenderWorldLastEvent event) {
+        byte viewMode = ClientProxy.getViewMode();
+        if (viewMode == 4) {
+            Camera.INSTANCE.onRenderWorldPost();
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderGui(RenderGameOverlayEvent.Pre event)//GuiIngame, GuiIngameForge
+    {
+        byte viewMode = ClientProxy.getViewMode();
+        if (viewMode == 4) {
+            Camera.INSTANCE.onRenderGameOverlayPre();
+        }
+        this.guiIngame.onRenderGui(event);
+    }
 
 	@SubscribeEvent
 	public void onUpdateFOV(FOVUpdateEvent event)//EntityRenderer.updateFovModifierHand()
@@ -125,14 +138,14 @@ public final class RTMEventHandlerClient {
 
 	@SubscribeEvent
 	public void onRenderPlayerHand(RenderHandEvent event) {
-		EntityPlayer player = NGTUtilClient.getMinecraft().thePlayer;
-		byte viewMode = ClientProxy.getViewMode(player);
-		if (viewMode >= 0 && viewMode < 3) {
-			event.setCanceled(true);
-		}
+        EntityPlayer player = NGTUtilClient.getMinecraft().thePlayer;
+        byte viewMode = ClientProxy.getViewMode();
+        if (viewMode >= 0 && viewMode < 3) {
+            event.setCanceled(true);
+        }
 
-		RenderBullet.INSTANCE.onPlayerRender(player, true);
-	}
+        RenderBullet.INSTANCE.onPlayerRender(player, true);
+    }
 
 	//NVD////////////////////////////////////////////////////////////////////////
 
@@ -157,9 +170,9 @@ public final class RTMEventHandlerClient {
 	}
 
 	private boolean isPlayerWearedNVD(EntityLivingBase entity) {
-		EntityPlayer viewer = NGTUtilClient.getMinecraft().thePlayer;
-		return entity != viewer && ClientProxy.getViewMode(viewer) == 3;
-	}
+        EntityPlayer viewer = NGTUtilClient.getMinecraft().thePlayer;
+        return entity != viewer && ClientProxy.getViewMode() == 3;
+    }
 
 	/////////////////////////////////////////////////////////////////////////////
 }

@@ -28,7 +28,7 @@ public abstract class PacketTileEntity implements IMessage {
 	protected abstract void write(ByteBuf buffer);
 
 	@Override
-	public void fromBytes(ByteBuf buffer) {
+	public final void fromBytes(ByteBuf buffer) {
 		this.x = buffer.readInt();
 		this.y = buffer.readInt();
 		this.z = buffer.readInt();

@@ -202,21 +202,21 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 		return NGTUtil.getChunkLoadDistanceSq();
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox() {
-		if (!this.isLoaded()) {
-			return INFINITE_EXTENT_AABB;
-		}
-
-		if (this.renderAABB == null) {
-			this.renderAABB = this.getRenderAABB();
-			if (this.renderAABB == null) {
-				return INFINITE_EXTENT_AABB;
-			}//ぬるぽ回避
-		}
-		return this.renderAABB;
-	}
+//	@Override
+//	@SideOnly(Side.CLIENT)
+//	public AxisAlignedBB getRenderBoundingBox() {
+//		if (!this.isLoaded()) {
+//			return INFINITE_EXTENT_AABB;
+//		}
+//
+//		if (this.renderAABB == null) {
+//			this.renderAABB = this.getRenderAABB();
+//			if (this.renderAABB == null) {
+//				return INFINITE_EXTENT_AABB;
+//			}//ぬるぽ回避
+//		}
+//		return this.renderAABB;
+//	}
 
 	/**
 	 * レールの描画用AABBを取得<br>

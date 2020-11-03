@@ -11,6 +11,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.network.ConnectionManager;
+import jp.ngt.rtm.sound.SpeakerSounds;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -37,6 +38,7 @@ public final class RTMEventHandler {
 		if (NGTUtil.isSMP() || NGTUtil.openedLANWorld()) {
 			ModelPackManager.INSTANCE.sendModelSetsToClient((EntityPlayerMP) event.player);
 		}
+		SpeakerSounds.getInstance(true).syncSoundList();
 	}
 
 	@SubscribeEvent

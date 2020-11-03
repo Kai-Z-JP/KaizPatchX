@@ -48,26 +48,26 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		Connection.writeListToNBT(nbt, this.connections);
 	}
 
-	protected Connection getConnection(int x, int y, int z) {
-		for (Connection connection : this.connections) {
-			if (connection.x == x && connection.y == y && connection.z == z) {
-				return connection;
-			}
-		}
-		return null;
-	}
+    protected Connection getConnection(int x, int y, int z) {
+        for (Connection connection : this.connections) {
+            if (connection.x == x && connection.y == y && connection.z == z) {
+                return connection;
+            }
+        }
+        return null;
+    }
 
-	public List<Connection> getConnnectionList() {
-		return this.connections;
-	}
+    public List<Connection> getConnectionList() {
+        return this.connections;
+    }
 
-	/**
-	 * Root側で呼び出し
-	 */
-	public boolean setConnectionTo(int x, int y, int z, ConnectionType type, String name) {
-		boolean flag = false;
-		if (type == ConnectionType.NONE)//切断
-		{
+    /**
+     * Root側で呼び出し
+     */
+    public boolean setConnectionTo(int x, int y, int z, ConnectionType type, String name) {
+        boolean flag = false;
+        if (type == ConnectionType.NONE)//切断
+        {
 			Connection c0 = this.getConnection(x, y, z);
 			if (c0 != null) {
 				this.connections.remove(c0);
@@ -81,15 +81,15 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 			this.connections.add(new Connection(true, x, y, z, type, name));
 			flag = true;
 		} else {
-			Block block = this.worldObj.getBlock(x, y, z);
-			if (type == ConnectionType.TO_ENTITY || (block != null && block instanceof IBlockConnective)) {
-				TileEntityElectricalWiring tile = this.getWireTileEntity(x, y, z, type);
-				ConnectionType type2 = (type == ConnectionType.TO_ENTITY) ? ConnectionType.WIRE : type;
-				if (type == ConnectionType.DIRECT || (tile != null && tile.setConnectionFrom(this.xCoord, this.yCoord, this.zCoord, type2, name))) {
-					this.connections.add(new Connection(true, x, y, z, type, name));
-					flag = true;
-				}
-			}
+            Block block = this.worldObj.getBlock(x, y, z);
+            if (type == ConnectionType.TO_ENTITY || (block instanceof IBlockConnective)) {
+                TileEntityElectricalWiring tile = this.getWireTileEntity(x, y, z, type);
+                ConnectionType type2 = (type == ConnectionType.TO_ENTITY) ? ConnectionType.WIRE : type;
+                if (type == ConnectionType.DIRECT || (tile != null && tile.setConnectionFrom(this.xCoord, this.yCoord, this.zCoord, type2, name))) {
+                    this.connections.add(new Connection(true, x, y, z, type, name));
+                    flag = true;
+                }
+            }
 		}
 
 		if (!this.worldObj.isRemote && flag) {
@@ -211,11 +211,9 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	 * プレーヤー右クリック時
 	 */
 	public boolean onRightClick(EntityPlayer player) {
-		boolean flag = false;
 		if (this.isActivated) {
 			this.isActivated = false;
 			this.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.NONE, "");
-			flag = true;
 		} else {
 			String wireType = getWireType(player);
 			if (wireType.isEmpty()) {
@@ -223,28 +221,24 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 					return true;
 				} else {
 					this.isActivated = true;
-					flag = true;
 				}
 			} else//アイテムを持っている
 			{
 				if (this.createConnection(player, wireType)) {
 					if (!player.capabilities.isCreativeMode) {
 						--player.inventory.getCurrentItem().stackSize;
-					}
-					//this.setConnectionTo(player.getEntityId(), -1, 0, 0);
-					return true;
-				} else {
-					this.isActivated = true;
-					this.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.TO_PLAYER, wireType);
-					flag = true;
-				}
-			}
-		}
+                    }
+                    //this.setConnectionTo(player.getEntityId(), -1, 0, 0);
+                    return true;
+                } else {
+                    this.isActivated = true;
+                    this.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.TO_PLAYER, wireType);
+                }
+            }
+        }
 
-		if (flag) {
-			this.getDescriptionPacket();
-		}
-		return flag;
+        this.getDescriptionPacket();
+        return true;
 	}
 
 	/**
@@ -273,38 +267,38 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		if (tile != null) {
 			Connection c0 = this.getConnection(tile.xCoord, tile.yCoord, tile.zCoord);
 			if (c0 == null && !wireType.isEmpty()) {
-				boolean isBlock = !(tile instanceof TileEntityDummyEW);
-				ConnectionType type = isBlock ? ConnectionType.WIRE : ConnectionType.TO_ENTITY;
-				tile.isActivated = false;
-				boolean flag = false;
-				if (this instanceof TileEntityDummyEW) {
-					type = ConnectionType.TO_ENTITY;
-					flag = tile.setConnectionTo(this.xCoord, this.yCoord, this.zCoord, type, wireType);
-				} else {
-					flag = this.setConnectionTo(tile.xCoord, tile.yCoord, tile.zCoord, type, wireType);
-				}
+                boolean isBlock = !(tile instanceof TileEntityDummyEW);
+                ConnectionType type = isBlock ? ConnectionType.WIRE : ConnectionType.TO_ENTITY;
+                tile.isActivated = false;
+                boolean flag;
+                if (this instanceof TileEntityDummyEW) {
+                    type = ConnectionType.TO_ENTITY;
+                    flag = tile.setConnectionTo(this.xCoord, this.yCoord, this.zCoord, type, wireType);
+                } else {
+                    flag = this.setConnectionTo(tile.xCoord, tile.yCoord, tile.zCoord, type, wireType);
+                }
 
-				if (type != ConnectionType.NONE && flag) {
-					//Playerとの接続解除
-					tile.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.NONE, "");
-					return true;
-				}
+                if (flag) {
+                    //Playerとの接続解除
+                    tile.setConnectionTo(player.getEntityId(), -1, 0, ConnectionType.NONE, "");
+                    return true;
+                }
 			}
 		}
 		return false;
 	}
 
 	private TileEntityElectricalWiring searchActiveTEEW() {
-		int dis0 = 128;
-		int dis1 = dis0 / 2;
-		for (int i = 0; i < dis0; ++i) {
-			for (int j = 0; j < dis0; ++j) {
-				for (int k = 0; k < dis0; ++k) {
-					TileEntityElectricalWiring tile0 = this.getWireTileEntity(this.xCoord - dis1 + i, this.yCoord - dis1 + j, this.zCoord - dis1 + k, ConnectionType.NONE);
-					if (!(i == dis1 && j == dis1 && k == dis1) && tile0 != null && tile0.isActivated) {
-						return tile0;
-					}
-				}
+        int dis0 = 256;
+        int dis1 = dis0 / 2;
+        for (int i = 0; i < dis0; ++i) {
+            for (int j = 0; j < dis0; ++j) {
+                for (int k = 0; k < dis0; ++k) {
+                    TileEntityElectricalWiring tile0 = this.getWireTileEntity(this.xCoord - dis1 + i, this.yCoord - dis1 + j, this.zCoord - dis1 + k, ConnectionType.NONE);
+                    if (!(i == dis1 && j == dis1 && k == dis1) && tile0 != null && tile0.isActivated) {
+                        return tile0;
+                    }
+                }
 			}
 		}
 
@@ -325,20 +319,20 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	}
 
 	protected TileEntityElectricalWiring getWireTileEntity(int x, int y, int z, ConnectionType type) {
-		Connection connection = this.getConnection(x, y, z);
-		if (connection != null && connection.getElectricalWiring(this.worldObj) != null) {
-			return connection.getElectricalWiring(this.worldObj);
-		}
+        Connection connection = this.getConnection(x, y, z);
+        if (connection != null && connection.getElectricalWiring(this.worldObj) != null) {
+            return connection.getElectricalWiring(this.worldObj);
+        }
 
-		if (type == ConnectionType.TO_ENTITY) {
-			return getWireEntity(this.worldObj, x, y, z);
-		}
+        if (type == ConnectionType.TO_ENTITY) {
+            return getWireEntity(this.worldObj, x, y, z);
+        }
 
-		TileEntity tile = this.worldObj.getTileEntity(x, y, z);
-		if (tile != null && tile instanceof TileEntityElectricalWiring) {
-			return (TileEntityElectricalWiring) tile;
-		}
-		return null;
+        TileEntity tile = this.worldObj.getTileEntity(x, y, z);
+        if (tile instanceof TileEntityElectricalWiring) {
+            return (TileEntityElectricalWiring) tile;
+        }
+        return null;
 	}
 
 	public static TileEntityElectricalWiring getWireEntity(World world, int x, int y, int z) {

@@ -69,17 +69,17 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
 	}
 
 	protected void renderAllWire(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
-		GL11.glPushMatrix();
-		NGTVec vec = tileEntity.wirePos;
-		GL11.glTranslatef((float) par2 + 0.5F + (float) vec.xCoord, (float) par4 + 0.5F + (float) vec.yCoord, (float) par6 + 0.5F + (float) vec.zCoord);
+        GL11.glPushMatrix();
+        NGTVec vec = tileEntity.wirePos;
+        GL11.glTranslatef((float) par2 + 0.5F + (float) vec.xCoord, (float) par4 + 0.5F + (float) vec.yCoord, (float) par6 + 0.5F + (float) vec.zCoord);
 
-		for (Connection connection : tileEntity.getConnnectionList()) {
-			if (connection.type.isVisible && connection.isRoot) {
-				this.renderWire(tileEntity, connection, par2, par4, par6, par8);
-			}
-		}
-		GL11.glPopMatrix();
-	}
+        for (Connection connection : tileEntity.getConnectionList()) {
+            if (connection.type.isVisible && connection.isRoot) {
+                this.renderWire(tileEntity, connection, par2, par4, par6, par8);
+            }
+        }
+        GL11.glPopMatrix();
+    }
 
 	private void renderWire(TileEntityConnectorBase tileEntity, Connection connection, double par2, double par4, double par6, float par8) {
 		ModelSetWireClient modelSet = (ModelSetWireClient) connection.getModelSet();

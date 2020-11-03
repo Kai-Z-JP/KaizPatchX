@@ -10,6 +10,7 @@ import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
 import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.rail.TileEntityMarker;
+import jp.ngt.rtm.sound.SpeakerSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -56,14 +57,16 @@ public class PacketNoticeHandlerClient implements IMessageHandler<PacketNotice, 
 					return null;
 				}
 				DataMap.receivePacket(msg, message, world, true);
-			} else if (msg.startsWith("use1122marker")) {
-				String[] sa0 = msg.split(",");
-				boolean use1122marker = sa0[1].equals("flip") ? !RTMCore.use1122Marker : Boolean.parseBoolean(sa0[1]);
-				RTMCore.use1122Marker = use1122marker;
-				RTMCore.marker.setValue(use1122marker);
-				RTMCore.cfg.save();
-				NGTUtil.getClientPlayer().addChatMessage(new ChatComponentText("Config: use1122marker = " + use1122marker));
-			}
+            } else if (msg.startsWith("use1122marker")) {
+                String[] sa0 = msg.split(",");
+                boolean use1122marker = sa0[1].equals("flip") ? !RTMCore.use1122Marker : Boolean.parseBoolean(sa0[1]);
+                RTMCore.use1122Marker = use1122marker;
+                RTMCore.marker.setValue(use1122marker);
+                RTMCore.cfg.save();
+                NGTUtil.getClientPlayer().addChatMessage(new ChatComponentText("Config: use1122marker = " + use1122marker));
+            } else if (msg.startsWith("speaker")) {
+                SpeakerSounds.getInstance(false).onGetPacket(msg, false);
+            }
 		}
 		return null;
 	}

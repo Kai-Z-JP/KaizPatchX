@@ -20,22 +20,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> implements IModelSelectorWithType {
     protected double speed;
     public float vibration;
-
-    private final List aabbList = new ArrayList();
-    private boolean tracked;
-
-    @SideOnly(Side.CLIENT)
-    private int vehiclePosRotationInc;
-    @SideOnly(Side.CLIENT)
-    private double vehicleX, vehicleY, vehicleZ;
-    @SideOnly(Side.CLIENT)
-    private double vehicleYaw, vehiclePitch, vehicleRoll;
 
     public EntityVehicle(World world) {
         super(world);
@@ -106,14 +93,12 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 
     @Override
     protected void updateMovement() {
-
         if (this.shouldUpdateMotion()) {
             if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityLivingBase) {
                 EntityLivingBase living = (EntityLivingBase) this.riddenByEntity;
                 this.updateMotion(living, living.moveStrafing, living.moveForward);
             }
         }
-
         super.updateMovement();
     }
 
@@ -142,7 +127,6 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
             this.vibration = dxz > 0.0D ? 0.025F : 0.01F;
         }
     }
-
 
     protected boolean shouldUpdateMotion() {
         return this.onGround;

@@ -79,8 +79,8 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 	}
 
 	@Override
-	public void onUpdate() {
-		super.onUpdate();
+	public void onVehicleUpdate() {
+		super.onVehicleUpdate();
 
 		if (!this.worldObj.isRemote) {
 			for (int i = 0; i < this.cargoSlots.length; ++i) {
@@ -131,7 +131,7 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 	}
 
 	private EntityCargo createCargoEntity(byte slot) {
-		EntityCargo cargo = null;
+		EntityCargo cargo;
 		int damage = this.cargoSlots[slot].getItemDamage();
 		switch (damage) {
 			case 0:

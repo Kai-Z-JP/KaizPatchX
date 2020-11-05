@@ -14,6 +14,7 @@ import jp.ngt.rtm.modelpack.ScriptExecuter;
 import jp.ngt.rtm.modelpack.cfg.VehicleBaseConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.state.ResourceState;
+import jp.ngt.rtm.network.PacketVehicleMovement;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +41,10 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
     private final ScriptExecuter executer = new ScriptExecuter();
 
     private boolean floorLoaded;
+    /**
+     * TrainTrackerEntryを生成したかどうか
+     */
+    private boolean tracked;
     private EntityLivingBase rider;
 
     public float rotationRoll;
@@ -77,6 +82,12 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         this.preventEntitySpawning = true;
         this.ignoreFrustumCheck = true;
         this.soundUpdater = world != null ? RTMCore.proxy.getSoundUpdater(this) : null;
+
+        if (world.isRemote) {
+            //チャンク外での描画を行うため、天候エフェクトとして追加
+            world.addWeatherEffect(this);
+            ignoreFrustumCheck = false;
+        }
     }
 
     @Override
@@ -155,11 +166,24 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
                     floor.setDead();
                 }
             }
+
+            //ワールドリロード後にVehicleを消そうとするとWeatherEffectとして残る問題対応
+            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketVehicleMovement(this, true));
         }
     }
 
+    private boolean ignoreUpdate;
+
     @Override
-    public void onUpdate() {
+    public final void onUpdate() {
+        if (!this.worldObj.isRemote || this.ignoreUpdate)//WEとして更新するとガクガクする
+        {
+            this.onVehicleUpdate();
+        }
+        this.ignoreUpdate ^= true;
+    }
+
+    protected void onVehicleUpdate() {
         super.onUpdate();
 
         this.prevRotationRoll = this.rotationRoll;
@@ -170,22 +194,79 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
             }
 
             this.updateAnimation();
-        } else {
-            if (!this.floorLoaded || this.vehicleFloors.contains(null) || this.vehicleFloors.stream().anyMatch(entityFloor -> entityFloor.isDead)) {
+            this.updatePosAndRotationClient();
+        } else//!isRemote
+        {
+            if (!this.tracked) {
+                this.tracked = VehicleTrackerEntry.trackingVehicle(this);
+            }
+
+            if (!this.floorLoaded) {
                 this.setupFloors(this.myModelSet);
             }
 
-            if (this.riddenByEntity != null) {
-                if (this.rider == null && this.riddenByEntity instanceof EntityLivingBase) {
-                    this.rider = (EntityLivingBase) this.riddenByEntity;
+            Entity passenger = this.riddenByEntity;
+            if (passenger != null) {
+                if (this.rider == null && passenger instanceof EntityLivingBase) {
+                    this.rider = (EntityLivingBase) passenger;
                 }
             } else if (this.rider != null) {
-                fixRiderPos(this.rider, this);
+                //fixRiderPos(this.rider, this);
                 this.rider = null;
             }
 
             this.executer.execScript(this);
+
+            this.updateBlockCollisionState();
+            this.updateEntityCollisionState();
+
+            this.updateFallState();
+            this.updateMovement();
         }
+    }
+
+    /**
+     * (Server Only)
+     */
+    protected void updateBlockCollisionState() {
+    }
+
+    /**
+     * (Server Only)
+     */
+    protected void updateEntityCollisionState() {
+    }
+
+    protected void updateFallState() {
+        this.motionY -= 0.05D;
+    }
+
+    protected void updateMovement() {
+        this.applyPhysicalEffect();
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+    }
+
+    protected void applyPhysicalEffect() {
+        this.motionX *= 0.9900000095367432D;
+        this.motionY *= 0.949999988079071D;
+        this.motionZ *= 0.9900000095367432D;
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected void updatePosAndRotationClient() {
+        if (this.vehiclePosRotationInc > 0) {
+            float d0 = 1.0F / (float) this.vehiclePosRotationInc;
+            this.posX += (this.vehicleX - this.posX) * d0;
+            this.posY += (this.vehicleY - this.posY) * d0;
+            this.posZ += (this.vehicleZ - this.posZ) * d0;
+            this.rotationYaw += MathHelper.wrapAngleTo180_float((float) (this.vehicleYaw - (double) this.rotationYaw)) * d0;
+            this.rotationPitch += (this.vehiclePitch - (double) this.rotationPitch) * d0;
+            this.rotationRoll = this.getRoll() + (this.vehicleRoll - this.getRoll()) * d0;
+            --this.vehiclePosRotationInc;
+        }
+
+        this.setRotation(this.rotationYaw, this.rotationPitch);
+        this.setPosition(this.posX, this.posY, this.posZ);
     }
 
     /**
@@ -242,6 +323,12 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         //NGTLog.debug("x:%4.6f, z:%4.6f", this.posX - this.vehicleX, this.posZ - this.vehicleZ);
     }
 
+    @SideOnly(Side.CLIENT)
+    public void setRollAndSpeed(float speed, float roll) {
+        this.setSpeed(speed);
+        this.vehicleRoll = roll;
+    }
+
     public float getRoll() {
         return this.rotationRoll;
     }
@@ -290,8 +377,8 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
         this.vehicleFloors.clear();
 
-        for (int i = 0; i < this.getModelSet().getConfig().getSlotPos().length; ++i) {
-            float[] fa = this.getModelSet().getConfig().getSlotPos()[i];
+        for (int i = 0; i < par1.getConfig().getSlotPos().length; ++i) {
+            float[] fa = par1.getConfig().getSlotPos()[i];
             EntityFloor floor = new EntityFloor(this.worldObj, this, new float[]{fa[0], fa[1], fa[2]}, (byte) fa[3]);
             if (this.worldObj.spawnEntityInWorld(floor)) {
                 this.vehicleFloors.add(floor);

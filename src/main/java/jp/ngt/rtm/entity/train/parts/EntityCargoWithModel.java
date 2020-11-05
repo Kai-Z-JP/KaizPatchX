@@ -88,9 +88,6 @@ public abstract class EntityCargoWithModel<T extends ModelSetBase> extends Entit
 		if (this.myModelSet == null || this.myModelSet.isDummy() || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
 			this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
 			this.onSetNewModel(this.myModelSet);
-//			if (this.worldObj == null || !this.worldObj.isRemote) {
-//				PacketNBT.sendToClient(this);
-//			}
 		}
 		return this.myModelSet;
 	}

@@ -23,6 +23,7 @@ public abstract class EntityVehiclePart extends Entity {
     protected boolean isIndependent;
     private EntityVehicleBase parent;
     private UUID unloadedParent;
+    public boolean needsUpdatePos;
 
     private EntityLivingBase rider;
 
@@ -153,7 +154,7 @@ public abstract class EntityVehiclePart extends Entity {
             super.onUpdate();
 
             EntityVehicleBase vehicle = this.getVehicle();
-            if (vehicle != null && (vehicle.prevPosX != vehicle.posX || vehicle.prevPosZ != vehicle.posZ)) {
+            if (vehicle != null && ((vehicle.prevPosX != vehicle.posX || vehicle.prevPosZ != vehicle.posZ) || this.needsUpdatePos)) {
                 this.updatePartPos(vehicle);
             }
         }
@@ -169,12 +170,13 @@ public abstract class EntityVehiclePart extends Entity {
         v3.rotateAroundY(NGTMath.toRadians(vehicle.rotationYaw));
         this.setPosition(vehicle.posX + v3.xCoord, vehicle.posY + v3.yCoord, vehicle.posZ + v3.zCoord);
         this.setRotation(vehicle.rotationYaw, vehicle.rotationPitch);
+        this.needsUpdatePos = false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)//NetClientHandler.handleEntity, par9は常に3
     public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        if (this.getVehicle() == null || this.getVehicle().getSpeed() <= 0.0F) {
+        if (this.getVehicle() == null) {
             this.setPosition(par1, par3, par5);
             this.setRotation(par7, par8);
         }
@@ -202,8 +204,6 @@ public abstract class EntityVehiclePart extends Entity {
             Entity entity = this.worldObj.getEntityByID(this.dataWatcher.getWatchableObjectInt(20));
             if (entity instanceof EntityVehicleBase) {
                 this.parent = (EntityVehicleBase) entity;
-            } else {
-                this.setDead();
             }
         }
         return this.parent;

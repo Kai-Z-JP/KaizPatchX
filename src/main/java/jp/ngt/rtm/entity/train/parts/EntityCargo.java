@@ -36,7 +36,7 @@ public abstract class EntityCargo extends EntityVehiclePart {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(24, Byte.valueOf((byte) 0));
+		this.dataWatcher.addObject(24, (byte) 0);
 	}
 
 	protected byte getCargoId() {

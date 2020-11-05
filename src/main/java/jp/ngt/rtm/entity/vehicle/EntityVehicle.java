@@ -8,11 +8,9 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.cfg.VehicleConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -26,389 +24,341 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> implements IModelSelectorWithType {
-	protected double speed;
-	public float vibration;
+    protected double speed;
+    public float vibration;
 
-	private final List aabbList = new ArrayList();
-	private boolean tracked;
+    private final List aabbList = new ArrayList();
+    private boolean tracked;
 
-	@SideOnly(Side.CLIENT)
-	private int vehiclePosRotationInc;
-	@SideOnly(Side.CLIENT)
-	private double vehicleX, vehicleY, vehicleZ;
-	@SideOnly(Side.CLIENT)
-	private double vehicleYaw, vehiclePitch, vehicleRoll;
+    @SideOnly(Side.CLIENT)
+    private int vehiclePosRotationInc;
+    @SideOnly(Side.CLIENT)
+    private double vehicleX, vehicleY, vehicleZ;
+    @SideOnly(Side.CLIENT)
+    private double vehicleYaw, vehiclePitch, vehicleRoll;
 
-	public EntityVehicle(World world) {
-		super(world);
-		this.setSize(2.0F, 2.0F);
+    public EntityVehicle(World world) {
+        super(world);
+        this.setSize(2.0F, 2.0F);
 
-		if (world.isRemote) {
-			this.seatRotation = -MAX_SEAT_ROTATION;
-		}
-	}
+        if (world.isRemote) {
+            this.seatRotation = -MAX_SEAT_ROTATION;
+        }
+    }
 
-	@Override
-	protected void entityInit() {
-		super.entityInit();
-		this.dataWatcher.addObject(21, Float.valueOf(0.0F));
-		this.dataWatcher.addObject(22, Byte.valueOf((byte) 0));
-		this.dataWatcher.addObject(23, Float.valueOf(0.0F));
-	}
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        this.dataWatcher.addObject(21, 0.0F);
+        this.dataWatcher.addObject(22, (byte) 0);
+        this.dataWatcher.addObject(23, 0.0F);
+    }
 
-	@Override
-	public AxisAlignedBB getCollisionBox(Entity entity) {
-		return entity.canBePushed() ? null : entity.boundingBox;
-	}
+    @Override
+    public AxisAlignedBB getCollisionBox(Entity entity) {
+        return entity.canBePushed() ? null : entity.boundingBox;
+    }
 
-	@Override
-	public double getMountedYOffset() {
-		return 0.0D;
-	}
+    @Override
+    public double getMountedYOffset() {
+        return 0.0D;
+    }
 
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbt) {
-		super.readEntityFromNBT(nbt);
-	}
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound nbt) {
+        super.readEntityFromNBT(nbt);
+    }
 
-	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbt) {
-		super.writeEntityToNBT(nbt);
-	}
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound nbt) {
+        super.writeEntityToNBT(nbt);
+    }
 
-	@Override
-	public void onUpdate() {
-		super.onUpdate();
+    @Override
+    public void onVehicleUpdate() {
+        super.onVehicleUpdate();
 
-		double dxz = this.motionX * this.motionX + this.motionZ * this.motionZ;
+        this.updateVibration();
 
-		if (this.vibration > 0.0F) {
-			this.vibration = 0.0F;
-		} else {
-			this.vibration = dxz > 0.0D ? 0.025F : 0.01F;
-		}
+        if (this.worldObj.isRemote) {
+            //NGTLog.debug("" + this.getAccelerationForward());
+        } else {
+            //Packet送信しまくり
+            //this.updateResourceState();//座席更新
 
-		this.updateCollisionState();
-		this.updateFallState();
+            this.dataWatcher.updateObject(21, (float) this.speed);
+            this.dataWatcher.updateObject(22, (byte) (this.onGround ? 1 : 0));
+            this.setSpeed((float) this.speed);
 
-		if (this.worldObj.isRemote) {
-			if (this.vehiclePosRotationInc > 0) {
-				this.posX += (this.vehicleX - this.posX) / (double) this.vehiclePosRotationInc;
-				this.posY += (this.vehicleY - this.posY) / (double) this.vehiclePosRotationInc;
-				this.posZ += (this.vehicleZ - this.posZ) / (double) this.vehiclePosRotationInc;
-				this.rotationYaw += MathHelper.wrapAngleTo180_double(this.vehicleYaw - (double) this.rotationYaw) / (float) this.vehiclePosRotationInc;
-				this.rotationPitch += (this.vehiclePitch - (double) this.rotationPitch) / (double) this.vehiclePosRotationInc;
-				this.rotationRoll += (this.vehicleRoll - (double) this.rotationRoll) / (double) this.vehiclePosRotationInc;
-				--this.vehiclePosRotationInc;
+            this.updateRotation();
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+        }
+    }
 
-				this.setRotation(this.rotationYaw, this.rotationPitch);
-			} else {
-            	/*this.posX += this.motionX;
-            	this.posY += this.motionY;
-            	this.posZ += this.motionZ;*/
-			}
+    @Override
+    protected void updateFallState() {
+        if (this.onGround) {
+            this.motionY = 0.0D;
+        } else {
+            super.updateFallState();
+        }
+    }
 
-			this.setPosition(this.posX, this.posY, this.posZ);
-		} else {
-			this.getModelSet();//座席更新
+    @Override
+    protected void updateMovement() {
 
-			if (!this.tracked) {
-				this.tracked = VehicleTrackerEntry.trackingVehicle(this);
-			}
+        if (this.shouldUpdateMotion()) {
+            if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityLivingBase) {
+                EntityLivingBase living = (EntityLivingBase) this.riddenByEntity;
+                this.updateMotion(living, living.moveStrafing, living.moveForward);
+            }
+        }
 
-			List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.25D, 0.25D, 0.25D));
-			if (list != null && !list.isEmpty()) {
-				for (int k = 0; k < list.size(); ++k) {
-					Entity entity = (Entity) list.get(k);
-					if (entity != this.riddenByEntity && entity.canBePushed()) {
-						this.applyEntityCollision(entity);
-					}
-				}
-			}
+        super.updateMovement();
+    }
 
-			if (this.shouldUpdateMotion()) {
-				if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityLivingBase) {
-					EntityLivingBase living = (EntityLivingBase) this.riddenByEntity;
-					this.updateMotion(living, living.moveStrafing, living.moveForward);
-				}
-			} else {
-				if (this.onGround) {
-					this.speed *= this.getModelSet().getConfig().getFriction(this.onGround);
-					this.motionX *= 0.9;
-					this.motionY = 0.0D;
-					this.motionZ *= 0.9;
-				} else {
-					this.speed *= 0.9999D;
-					this.motionX *= 0.9900000095367432D;
-					this.motionY *= 0.949999988079071D;
-					this.motionZ *= 0.9900000095367432D;
-				}
-			}
+    @Override
+    protected void applyPhysicalEffect() {
+        if (!this.shouldUpdateMotion()) {
+            if (this.onGround) {
+                this.speed *= this.getModelSet().getConfig().getFriction(this.onGround);
+                this.motionX *= 0.9;
+                this.motionY = 0.0D;
+                this.motionZ *= 0.9;
+            } else {
+                this.speed *= 0.9999D;
+                this.motionX *= 0.9900000095367432D;
+                this.motionY *= 0.949999988079071D;
+                this.motionZ *= 0.9900000095367432D;
+            }
+        }
+    }
 
-			this.moveEntity(this.motionX, this.motionY, this.motionZ);
-			this.dataWatcher.updateObject(21, (float) this.speed);
-			this.dataWatcher.updateObject(22, (byte) (this.onGround ? 1 : 0));
-			this.setSpeed((float) this.speed);
+    protected void updateVibration() {
+        double dxz = this.motionX * this.motionX + this.motionZ * this.motionZ;
+        if (this.vibration > 0.0F) {
+            this.vibration = 0.0F;
+        } else {
+            this.vibration = dxz > 0.0D ? 0.025F : 0.01F;
+        }
+    }
 
-			this.updateRotation();
-			this.setRotation(this.rotationYaw, this.rotationPitch);
-		}
-	}
 
-	protected boolean shouldUpdateMotion() {
-		return this.onGround;
-	}
+    protected boolean shouldUpdateMotion() {
+        return this.onGround;
+    }
 
-	protected void updateCollisionState() {
-		int x = MathHelper.floor_double(this.posX);
-		int y = (int) this.boundingBox.minY;
-		int z = MathHelper.floor_double(this.posZ);
-		Block block = this.worldObj.getBlock(x, y, z);
-		boolean isAir = block == Blocks.air;
-		boolean isLiquid = block.getMaterial().isLiquid();
-		if (isAir || isLiquid || block.getCollisionBoundingBoxFromPool(this.worldObj, x, y, z) == null) {
-			--y;
-			block = this.worldObj.getBlock(x, y, z);
-			this.inWater = isLiquid;
-		}
+    protected void updateMotion(EntityLivingBase entity, float moveStrafe, float moveForward) {
+        VehicleConfig cfg = this.getModelSet().getConfig();
 
-		/*AxisAlignedBB aabb = null;
-		if(block instanceof BlockLargeRailBase)
-		{
-			this.aabbList.clear();
-			block.addCollisionBoxesToList(this.worldObj, x, y, z,
-					AxisAlignedBB.getBoundingBox(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D), this.aabbList, this);
-			if(!this.aabbList.isEmpty())
-			{
-				aabb = (AxisAlignedBB)this.aabbList.get(0);
-			}
-		}
-		else
-		{
-			aabb = block.getCollisionBoundingBoxFromPool(this.worldObj, x, y, z);
-		}
-		this.onGround = (aabb == null) ? false : (this.boundingBox.minY - aabb.maxY <= 0.0625D);*/
-	}
+        this.speed += moveForward * cfg.getAcceleration(this.onGround);
+        float maxSpeed = cfg.getMaxSpeed(this.onGround);
+        float f0 = (moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround);
+        f0 *= cfg.changeYawOnStopping ? ((this.speed >= 0.0F) ? 1.0F : -1.0F) : (this.speed / maxSpeed);
+        float maxYaw = cfg.getMaxYaw(this.onGround);
+        if (f0 > maxYaw) {
+            f0 = maxYaw;
+        } else if (f0 < -maxYaw) {
+            f0 = -maxYaw;
+        }
+        this.rotationYaw += f0;
 
-	protected void updateFallState() {
-		if (this.onGround) {
-			this.motionY = 0.0D;
-		} else {
-			this.motionY -= 0.05D;
-		}
-	}
+        if (this.speed > maxSpeed) {
+            this.speed = maxSpeed;
+        } else if (this.speed < -maxSpeed) {
+            this.speed = -maxSpeed;
+        }
 
-	protected void updateMotion(EntityLivingBase entity, float moveStrafe, float moveForward) {
-		VehicleConfig cfg = this.getModelSet().getConfig();
+        Vec3 vec = this.getMotionVec();
+        this.motionX = vec.xCoord;
+        this.motionZ = vec.zCoord;
+        if (moveForward == 0.0F) {
+            this.speed *= cfg.getFriction(this.onGround);
+        }
 
-		this.speed += moveForward * cfg.getAcceleration(this.onGround);
-		float maxSpeed = cfg.getMaxSpeed(this.onGround);
-		float f0 = (moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround);
-		f0 *= cfg.changeYawOnStopping ? ((this.speed >= 0.0F) ? 1.0F : -1.0F) : (this.speed / maxSpeed);
-		float maxYaw = cfg.getMaxYaw(this.onGround);
-		if (f0 > maxYaw) {
-			f0 = maxYaw;
-		} else if (f0 < -maxYaw) {
-			f0 = -maxYaw;
-		}
-		this.rotationYaw += f0;
+        if (Math.abs(this.speed) < 0.001D) {
+            this.speed = 0.0D;
+            this.motionX = this.motionZ = 0.0D;
+        }
+    }
 
-		if (this.speed > maxSpeed) {
-			this.speed = maxSpeed;
-		} else if (this.speed < -maxSpeed) {
-			this.speed = -maxSpeed;
-		}
+    protected Vec3 getMotionVec() {
+        Vec3 vec = Vec3.createVectorHelper(0.0D, 0.0D, this.speed);
+        float maxSpeed = this.getModelSet().getConfig().getMaxSpeed(this.onGround);
+        //滑り再現:1.0~0.0
+        float f0 = (float) (1.0D - (this.speed / maxSpeed));
+        float f1 = this.prevRotationYaw + (MathHelper.wrapAngleTo180_float(this.rotationYaw - this.prevRotationYaw) * f0);
+        float yaw2 = (this.onGround || this.inWater) ? f1 : this.rotationYaw;
+        vec.rotateAroundY(NGTMath.toRadians(yaw2));
+        return vec;
+    }
 
-		Vec3 vec = this.getMotionVec();
-		this.motionX = vec.xCoord;
-		this.motionZ = vec.zCoord;
-		if (moveForward == 0.0F) {
-			this.speed *= cfg.getFriction(this.onGround);
-		}
+    protected void updateRotation() {
+        if (this.onGround) {
+            if (this.motionX != 0.0D || this.motionZ != 0.0D) {
+                double hFront = this.getBlockHeight(this.rotationYaw);
+                double hBack = this.getBlockHeight(this.rotationYaw + 180.0F);
+                double hLeft = this.getBlockHeight(this.rotationYaw + 90.0F);
+                double hRight = this.getBlockHeight(this.rotationYaw - 90.0F);
+                float yawFB = (float) NGTMath.toDegrees(Math.atan2(hFront - hBack, this.width));
+                float yawLR = (float) NGTMath.toDegrees(Math.atan2(hLeft - hRight, this.width));
+                this.rotationPitch = yawFB;
+                this.rotationRoll = yawLR;
+            } else {
+                this.rotationPitch *= 0.75F;
+                this.rotationRoll *= 0.75F;
+            }
+        } else {
+            this.rotationPitch *= 0.75F;
+            this.rotationRoll *= 0.75F;
+        }
 
-		if (Math.abs(this.speed) < 0.001D) {
-			this.speed = 0.0D;
-			this.motionX = this.motionZ = 0.0D;
-		}
-	}
+        if (Math.abs(this.rotationPitch) < 0.01F) {
+            this.rotationPitch = 0.0F;
+        }
 
-	protected Vec3 getMotionVec() {
-		Vec3 vec = Vec3.createVectorHelper(0.0D, 0.0D, this.speed);
-		float maxSpeed = this.getModelSet().getConfig().getMaxSpeed(this.onGround);
-		//滑り再現:1.0~0.0
-		float f0 = (float) (1.0D - (this.speed / maxSpeed));
-		float f1 = this.prevRotationYaw + (MathHelper.wrapAngleTo180_float(this.rotationYaw - this.prevRotationYaw) * f0);
-		float yaw2 = (this.onGround || this.inWater) ? f1 : this.rotationYaw;
-		vec.rotateAroundY(NGTMath.toRadians(yaw2));
-		return vec;
-	}
+        if (Math.abs(this.rotationRoll) < 0.01F) {
+            this.rotationRoll = 0.0F;
+        }
+    }
 
-	protected void updateRotation() {
-		if (this.onGround) {
-			if (this.motionX != 0.0D || this.motionZ != 0.0D) {
-				double hFront = this.getBlockHeight(this.rotationYaw);
-				double hBack = this.getBlockHeight(this.rotationYaw + 180.0F);
-				double hLeft = this.getBlockHeight(this.rotationYaw + 90.0F);
-				double hRight = this.getBlockHeight(this.rotationYaw - 90.0F);
-				float yawFB = (float) NGTMath.toDegrees(Math.atan2(hFront - hBack, this.width));
-				float yawLR = (float) NGTMath.toDegrees(Math.atan2(hLeft - hRight, this.width));
-				this.rotationPitch = yawFB;
-				this.rotationRoll = yawLR;
-			} else {
-				this.rotationPitch *= 0.75F;
-				this.rotationRoll *= 0.75F;
-			}
-		} else {
-			this.rotationPitch *= 0.75F;
-			this.rotationRoll *= 0.75F;
-		}
+    private double getBlockHeight(float yaw) {
+        float rad = NGTMath.toRadians(yaw);
+        double r = (double) this.width * 0.5D;
+        double x = (double) MathHelper.sin(rad) * r + this.posX;
+        double z = (double) MathHelper.cos(rad) * r + this.posZ;
+        int blockX = MathHelper.floor_double(x);
+        int blockZ = MathHelper.floor_double(z);
+        //int blockY = this.worldObj.getHeightValue(blockX, blockZ) - 1;
+        int blockY = MathHelper.floor_double(this.posY) + 8;
+        for (int i = 0; !this.worldObj.isSideSolid(blockX, blockY, blockZ, ForgeDirection.UP) && i < 16; ++i) {
+            --blockY;
+        }
+        AxisAlignedBB aabb = this.worldObj.getBlock(blockX, blockY, blockZ).getCollisionBoundingBoxFromPool(this.worldObj, blockX, blockY, blockZ);
+        return aabb != null ? aabb.maxY - this.posY : 0.0D;
+    }
 
-		if (Math.abs(this.rotationPitch) < 0.01F) {
-			this.rotationPitch = 0.0F;
-		}
+    @Override
+    public void updateRiderPosition() {
+        if (this.riddenByEntity != null) {
+            ModelSetVehicleBase<VehicleConfig> set = this.getModelSet();
+            float[] pos = set.getConfig().getPlayerPos()[0];
+            double d0 = this.vibration + this.riddenByEntity.getYOffset();
+            Vec3 vec = Vec3.createVectorHelper(pos[0], (double) pos[1] + d0, pos[2]);
+            vec.rotateAroundZ(NGTMath.toRadians(-this.rotationRoll));
+            vec.rotateAroundX(NGTMath.toRadians(this.rotationPitch));
+            vec.rotateAroundY(NGTMath.toRadians(this.rotationYaw));
+            double x = this.posX + vec.xCoord;
+            double y = this.posY + vec.yCoord;
+            double z = this.posZ + vec.zCoord;
+            this.riddenByEntity.setPosition(x, y, z);
+        }
+    }
 
-		if (Math.abs(this.rotationRoll) < 0.01F) {
-			this.rotationRoll = 0.0F;
-		}
-	}
+    @Override
+    protected void updateFallState(double fallDistance, boolean par2) {
+        super.updateFallState(fallDistance, par2);
+    }
 
-	private double getBlockHeight(float yaw) {
-		float rad = NGTMath.toRadians(yaw);
-		double r = (double) this.width * 0.5D;
-		double x = (double) MathHelper.sin(rad) * r + this.posX;
-		double z = (double) MathHelper.cos(rad) * r + this.posZ;
-		int blockX = MathHelper.floor_double(x);
-		int blockZ = MathHelper.floor_double(z);
-		//int blockY = this.worldObj.getHeightValue(blockX, blockZ) - 1;
-		int blockY = MathHelper.floor_double(this.posY) + 8;
-		for (int i = 0; !this.worldObj.isSideSolid(blockX, blockY, blockZ, ForgeDirection.UP) && i < 16; ++i) {
-			--blockY;
-		}
-		AxisAlignedBB aabb = this.worldObj.getBlock(blockX, blockY, blockZ).getCollisionBoundingBoxFromPool(this.worldObj, blockX, blockY, blockZ);
-		return aabb != null ? aabb.maxY - this.posY : 0.0D;
-	}
+    @Override
+    protected void fall(float par1) {
+    }
 
-	@Override
-	public void updateRiderPosition() {
-		if (this.riddenByEntity != null) {
-			ModelSetVehicleBase<VehicleConfig> set = this.getModelSet();
-			float[] pos = set.getConfig().getPlayerPos()[0];
-			double d0 = this.vibration + this.riddenByEntity.getYOffset();
-			Vec3 vec = Vec3.createVectorHelper(pos[0], (double) pos[1] + d0, pos[2]);
-			vec.rotateAroundZ(NGTMath.toRadians(-this.rotationRoll));
-			vec.rotateAroundX(NGTMath.toRadians(this.rotationPitch));
-			vec.rotateAroundY(NGTMath.toRadians(this.rotationYaw));
-			double x = this.posX + vec.xCoord;
-			double y = this.posY + vec.yCoord;
-			double z = this.posZ + vec.zCoord;
-			this.riddenByEntity.setPosition(x, y, z);
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int par6) {
+        this.vehiclePosRotationInc = par6;
+        this.vehicleX = x;
+        this.vehicleY = y;
+        this.vehicleZ = z;
+        this.vehicleYaw = yaw;
+        this.vehiclePitch = pitch;
+    }
 
-	@Override
-	protected void updateFallState(double fallDistance, boolean par2) {
-		super.updateFallState(fallDistance, par2);
-	}
+    @SideOnly(Side.CLIENT)
+    public void setRoll(float par1) {
+        this.vehicleRoll = par1;
+    }
 
-	@Override
-	protected void fall(float par1) {
-	}
+    public void setUpDown(int par1) {
+    }
 
-	@SideOnly(Side.CLIENT)
-	public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int par6) {
-		this.vehiclePosRotationInc = par6;
-		this.vehicleX = x;
-		this.vehicleY = y;
-		this.vehicleZ = z;
-		this.vehicleYaw = yaw;
-		this.vehiclePitch = pitch;
-	}
+    @Override
+    public boolean interactFirst(EntityPlayer player) {
+        if (player.isSneaking()) {
+            if (this.worldObj.isRemote) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdSelectEntityModel, player.worldObj, this.getEntityId(), 0, 0);
+            }
+            return true;
+        }
 
-	@SideOnly(Side.CLIENT)
-	public void setRoll(float par1) {
-		this.vehicleRoll = par1;
-	}
+        if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != player) {
+            return true;
+        } else {
+            if (!this.worldObj.isRemote) {
+                player.mountEntity(this);
+            }
+            return true;
+        }
+    }
 
-	public void setUpDown(int par1) {
-	}
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float par2) {
+        if (!this.worldObj.isRemote && source.getEntity() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) source.getEntity();
+            if (PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_VEHICLE)) {
+                this.setDead();
 
-	@Override
-	public boolean interactFirst(EntityPlayer player) {
-		if (player.isSneaking()) {
-			if (this.worldObj.isRemote) {
-				player.openGui(RTMCore.instance, RTMCore.guiIdSelectEntityModel, player.worldObj, this.getEntityId(), 0, 0);
-			}
-			return true;
-		}
+                if (!player.capabilities.isCreativeMode) {
+                    this.entityDropItem(this.getVehicleItem(), 0.5F);
+                }
+            }
+        }
+        return true;
+    }
 
-		if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != player) {
-			return true;
-		} else {
-			if (!this.worldObj.isRemote) {
-				player.mountEntity(this);
-			}
-			return true;
-		}
-	}
+    protected abstract ItemStack getVehicleItem();
 
-	@Override
-	public boolean attackEntityFrom(DamageSource source, float par2) {
-		if (!this.worldObj.isRemote && source.getEntity() instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) source.getEntity();
-			if (PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_VEHICLE)) {
-				this.setDead();
+    @Override
+    public void applyEntityCollision(Entity entity) {
+        if (!this.worldObj.isRemote) {
+            if (entity != this.riddenByEntity) {
+                if (entity instanceof EntityLivingBase) {
+                    double dxz = this.motionX * this.motionX + this.motionZ * this.motionZ;
+                    if (dxz > 0.0D) {
+                        float strength = (float) (dxz / this.getModelSet().getConfig().getMaxSpeed(this.onGround));
+                        if (strength > 0.5F) {
+                            entity.attackEntityFrom(DamageSource.causeThornsDamage(this), strength);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-				if (!player.capabilities.isCreativeMode) {
-					this.entityDropItem(this.getVehicleItem(), 0.5F);
-				}
-			}
-		}
-		return true;
-	}
+    @Override
+    public float getSpeed() {
+        return this.dataWatcher.getWatchableObjectFloat(23);
+    }
 
-	protected abstract ItemStack getVehicleItem();
+    public void setSpeed(float par1) {
+        this.dataWatcher.updateObject(23, par1);
+    }
 
-	@Override
-	public void applyEntityCollision(Entity entity) {
-		if (!this.worldObj.isRemote) {
-			if (entity != this.riddenByEntity) {
-				if (entity instanceof EntityLivingBase) {
-					double dxz = this.motionX * this.motionX + this.motionZ * this.motionZ;
-					if (dxz > 0.0D) {
-						float strength = (float) (dxz / this.getModelSet().getConfig().getMaxSpeed(this.onGround));
-						if (strength > 0.5F) {
-							entity.attackEntityFrom(DamageSource.causeThornsDamage(this), strength);
-						}
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public String getModelType() {
+        return "ModelVehicle";
+    }
 
-	@Override
-	public float getSpeed() {
-		return this.dataWatcher.getWatchableObjectFloat(23);
-	}
+    @Override
+    public String getSubType() {
+        return this.getModelSet().getConfig().getSubType();
+    }
 
-	public void setSpeed(float par1) {
-		this.dataWatcher.updateObject(23, par1);
-	}
+    @Override
+    protected void onModelChanged() {
+        super.onModelChanged();
 
-	@Override
-	public String getModelType() {
-		return "ModelVehicle";
-	}
-
-	@Override
-	public String getSubType() {
-		return this.getModelSet().getConfig().getSubType();
-	}
-
-	@Override
-	protected void onModelChanged() {
-		super.onModelChanged();
-
-		VehicleConfig cfg = this.getModelSet().getConfig();
-		this.setSize(cfg.getSize()[0], cfg.getSize()[1]);
-	}
+        VehicleConfig cfg = this.getModelSet().getConfig();
+        this.setSize(cfg.getSize()[0], cfg.getSize()[1]);
+    }
 }

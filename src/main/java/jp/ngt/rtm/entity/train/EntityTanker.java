@@ -26,9 +26,4 @@ public class EntityTanker extends EntityTrainBase {
 	protected void writeEntityToNBT(NBTTagCompound nbt) {
 		super.writeEntityToNBT(nbt);
 	}
-
-	@Override
-	public void onUpdate() {
-		super.onUpdate();
-	}
 }

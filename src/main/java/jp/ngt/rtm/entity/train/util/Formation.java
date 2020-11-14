@@ -351,5 +351,4 @@ public class Formation {
             }
         }
     }
-
 }

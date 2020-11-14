@@ -154,7 +154,7 @@ public abstract class EntityVehiclePart extends Entity {
             super.onUpdate();
 
             EntityVehicleBase vehicle = this.getVehicle();
-            if (vehicle != null && ((vehicle.prevPosX != vehicle.posX || vehicle.prevPosZ != vehicle.posZ) || this.needsUpdatePos)) {
+            if (vehicle != null) {
                 this.updatePartPos(vehicle);
             }
         }
@@ -176,7 +176,7 @@ public abstract class EntityVehiclePart extends Entity {
     @Override
     @SideOnly(Side.CLIENT)//NetClientHandler.handleEntity, par9は常に3
     public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        if (this.getVehicle() == null) {
+        if (this.getVehicle() == null || this.getVehicle().getSpeed() <= 0.0F) {
             this.setPosition(par1, par3, par5);
             this.setRotation(par7, par8);
         }

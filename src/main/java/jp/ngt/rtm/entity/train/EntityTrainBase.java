@@ -199,13 +199,20 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }
     }
 
+//    @Override
+//    protected void updateMovement() {
+//        if (this.existBogies()) {
+//            this.moveTrain();
+//            super.updateMovement();
+//            this.bogieController.updateBogiePos(this, 0, BogieController.UpdateFlag.NONE);
+//            this.bogieController.updateBogiePos(this, 1, BogieController.UpdateFlag.NONE);
+//        }
+//    }
+
     @Override
     protected void updateMovement() {
-        if (this.existBogies()) {
-            this.moveTrain();
-            super.updateMovement();
-            this.bogieController.updateBogiePos(this, 0, BogieController.UpdateFlag.NONE);
-            this.bogieController.updateBogiePos(this, 1, BogieController.UpdateFlag.NONE);
+        if (this.formation.isFrontCar(this)) {
+            this.formation.updateTrainMovement();
         }
     }
 

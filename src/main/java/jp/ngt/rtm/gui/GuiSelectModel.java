@@ -28,6 +28,7 @@ import org.lwjgl.util.glu.Project;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiSelectModel extends GuiScreenCustom {
@@ -53,18 +54,14 @@ public class GuiSelectModel extends GuiScreenCustom {
 	}
 
 	public GuiSelectModel(World par1, IModelSelectorWithType par2) {
-		this(par1, (IModelSelector) par2);
+        this(par1, (IModelSelector) par2);
 
-		String type = par2.getSubType();
-		List<ModelSetBase> list = ModelPackManager.INSTANCE.getModelList(par2.getModelType());
-		this.modelListAll = new ArrayList<>();
-		for (ModelSetBase modelSet : list) {
-			if (type.isEmpty() || ((IConfigWithType) modelSet.getConfig()).getSubType().equals(type)) {
-				this.modelListAll.add(modelSet);
-			}
-		}
-		this.modelListSelect = new ArrayList<>();
-	}
+        String type = par2.getSubType();
+        List<ModelSetBase> list = ModelPackManager.INSTANCE.getModelList(par2.getModelType());
+        this.modelListAll = new ArrayList<>();
+        list.stream().filter(modelSet -> type.isEmpty() || ((IConfigWithType) modelSet.getConfig()).getSubType().equals(type)).forEach(modelSet -> this.modelListAll.add(modelSet));
+        this.modelListSelect = new ArrayList<>();
+    }
 
 	@Override
 	public void initGui() {
@@ -89,32 +86,27 @@ public class GuiSelectModel extends GuiScreenCustom {
 		if (keyword == null || keyword.length() == 0) {
 			this.modelListSelect.addAll(this.modelListAll);
 		} else {
-			for (ModelSetBase set : this.modelListAll) {
-				if (set.getConfig().tags.contains(keyword)) {
-					this.modelListSelect.add(set);
-				}
-			}
-		}
+            this.modelListAll.stream().filter(set -> set.getConfig().tags.contains(keyword)).forEach(set -> this.modelListSelect.add(set));
+        }
 
-		//名前順にソート
-		this.modelListSelect.sort(Comparator.comparing(o -> o.getConfig().getName()));
+        //名前順にソート
+        this.modelListSelect.sort(Comparator.comparing(o -> o.getConfig().getName()));
 
-		this.buttonList.clear();
+        this.buttonList.clear();
 
-		int i0 = (this.height / 2) - 16;
-		this.selectButtons = new GuiButtonSelectModel[this.modelListSelect.size()];
-		for (int i = 0; i < this.selectButtons.length; ++i) {
-			ModelSetBase modelSet = this.modelListSelect.get(i);
-			this.selectButtons[i] = new GuiButtonSelectModel(i, 10, i0 + 32 * i,
-					(IModelSetClient) modelSet, modelSet.getConfig().getName(), this);
-			this.buttonList.add(this.selectButtons[i]);
-
-			if (modelSet.getConfig().getName().equals(this.selector.getModelName())) {
-				this.currentScroll = i;
-				this.selectButtons[i].isSelected = true;
-			}
-		}
-		this.resetButtonPos();
+        int i0 = (this.height / 2) - 16;
+        this.selectButtons = new GuiButtonSelectModel[this.modelListSelect.size()];
+        IntStream.range(0, this.selectButtons.length).forEach(i -> {
+            ModelSetBase modelSet = this.modelListSelect.get(i);
+            this.selectButtons[i] = new GuiButtonSelectModel(i, 10, i0 + 32 * i,
+                    (IModelSetClient) modelSet, modelSet.getConfig().getName(), this);
+            this.buttonList.add(this.selectButtons[i]);
+            if (modelSet.getConfig().getName().equals(this.selector.getModelName())) {
+                this.currentScroll = i;
+                this.selectButtons[i].isSelected = true;
+            }
+        });
+        this.resetButtonPos();
 
 		this.buttonList.add(new GuiButton(900, this.width + 36, this.height - 20, 100, 20, "cansel"));
 	}
@@ -257,12 +249,10 @@ public class GuiSelectModel extends GuiScreenCustom {
 	 * ボタンの位置更新
 	 */
 	private void resetButtonPos() {
-		int i0 = (this.height / 2) - 16;
+        int i0 = (this.height / 2) - 16;
 
-		for (int i = 0; i < this.selectButtons.length; ++i) {
-			this.selectButtons[i].yPosition = i0 + 32 * (i - this.currentScroll);
-		}
-	}
+        IntStream.range(0, this.selectButtons.length).forEach(i -> this.selectButtons[i].yPosition = i0 + 32 * (i - this.currentScroll));
+    }
 
 	public static void renderModel(IModelSetClient par1, Minecraft par2) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

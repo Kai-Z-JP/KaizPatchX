@@ -45,16 +45,16 @@ public class RailMapSlope extends RailMap {
 
 	@Override
 	public void setRail(World world, Block block, int x0, int y0, int z0, RailProperty prop) {
-		for (int i = 0; i < this.rails.size(); ++i) {
-			int x = this.rails.get(i)[0];
-			int y = this.rails.get(i)[1];
-			int z = this.rails.get(i)[2];
-			world.setBlock(x, y, z, block, this.getHeight(x, z), 2);
-			TileEntityLargeRailSlopeBase tile = (TileEntityLargeRailSlopeBase) world.getTileEntity(x, y, z);
-			tile.setStartPoint(x0, y0, z0);
-		}
-		this.rails.clear();
-	}
+        this.rails.forEach(rail -> {
+            int x = rail[0];
+            int y = rail[1];
+            int z = rail[2];
+            world.setBlock(x, y, z, block, this.getHeight(x, z), 2);
+            TileEntityLargeRailSlopeBase tile = (TileEntityLargeRailSlopeBase) world.getTileEntity(x, y, z);
+            tile.setStartPoint(x0, y0, z0);
+        });
+        this.rails.clear();
+    }
 
 	private int getHeight(int x, int z) {
 		int ix1 = Math.abs(x - this.startRP.blockX);
@@ -71,8 +71,6 @@ public class RailMapSlope extends RailMap {
 
 	@Override
 	public int getNearlestPoint(int par1, double par2, double par3) {
-		double px = par2;
-		double pz = par3;
 		int i = 0;
 		double pd = 32.0D;
 

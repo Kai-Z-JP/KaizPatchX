@@ -62,16 +62,16 @@ public class BlockSlot extends BlockContainer implements IPipeConnectable {
 		Block b0 = world.getBlock(x1, y1, z1);
 
 		if (b0 == RTMBlock.pipe) {
-			List<BlockSet> list = ((BlockPipe) RTMBlock.pipe).setLiquid(world, x1, y1, z1, x, y, z, new ArrayList<BlockSet>(), 0);
-			while (!list.isEmpty()) {
-				BlockSet bs = list.get(world.rand.nextInt(list.size()));
-				if (this.setLiquid(world, bs.x, bs.y, bs.z, block, metadata)) {
-					return true;
-				}
-				list.remove(bs);
-			}
-			return false;
-		} else {
+            List<BlockSet> list = ((BlockPipe) RTMBlock.pipe).setLiquid(world, x1, y1, z1, x, y, z, new ArrayList<>(), 0);
+            while (!list.isEmpty()) {
+                BlockSet bs = list.get(world.rand.nextInt(list.size()));
+                if (this.setLiquid(world, bs.x, bs.y, bs.z, block, metadata)) {
+                    return true;
+                }
+                list.remove(bs);
+            }
+            return false;
+        } else {
 			return this.setLiquid(world, x1, y1, z1, block, metadata);
 		}
 	}

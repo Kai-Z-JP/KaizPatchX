@@ -12,9 +12,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandRTM extends CommandBase {
 	@Override
@@ -43,9 +42,8 @@ public class CommandRTM extends CommandBase {
 
 			double d0 = 16.0D;
 			List list = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - d0, player.posY - d0, player.posZ - d0, player.posX + d0, player.posY + d0, player.posZ + d0));
-			Iterator iterator = list.iterator();
-			while (iterator.hasNext()) {
-				Entity entity = (Entity) iterator.next();
+			for (Object o : list) {
+				Entity entity = (Entity) o;
 				if (entity instanceof EntityTrainBase) {
 					EntityTrainBase train = (EntityTrainBase) entity;
 					if (s[0].equalsIgnoreCase("door")) {
@@ -83,17 +81,13 @@ public class CommandRTM extends CommandBase {
 	private static final List<String> commandList = Arrays.asList("use1122marker", "door", "pan", "speed", "delAllTrain");
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
 		if (args.length == 1) {
 			//入力されている文字列と先頭一致
 			if (args[0].length() == 0) {
 				return commandList;
 			}
-			for (String s : commandList) {
-				if (s.startsWith(args[0])) {
-					return Collections.singletonList(s);
-				}
-			}
+			return commandList.stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
 		}
 		return null;
 	}

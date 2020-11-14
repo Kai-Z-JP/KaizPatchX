@@ -453,8 +453,8 @@ public class EntityBogie extends Entity implements Lockable {
             //位置補正はRendererでやる
             this.setPosition(newX, newY, newZ);
         }
-//		this.setRotation(this.rotationYaw, this.rotationPitch);
-//		this.setPosition(this.posX, this.posY, this.posZ);
+        this.setRotation(this.rotationYaw, this.rotationPitch);
+        this.setPosition(this.posX, this.posY, this.posZ);
     }
 
     @Override

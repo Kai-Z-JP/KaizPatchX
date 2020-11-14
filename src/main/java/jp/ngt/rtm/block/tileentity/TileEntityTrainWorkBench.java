@@ -12,6 +12,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 public class TileEntityTrainWorkBench extends TileEntity //implements IInventory
 {
 	private ItemStack[] craftSlots = new ItemStack[30];
@@ -25,27 +28,24 @@ public class TileEntityTrainWorkBench extends TileEntity //implements IInventory
 		super.readFromNBT(nbt);
 		NBTTagList nbttaglist = nbt.getTagList("Items", 10);
 		this.craftSlots = new ItemStack[30];
-		for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-			NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(i);
+		IntStream.range(0, nbttaglist.tagCount()).mapToObj(nbttaglist::getCompoundTagAt).forEach(nbt1 -> {
 			int j = nbt1.getByte("Slot") & 255;
-			if (j >= 0 && j < this.craftSlots.length) {
+			if (j < this.craftSlots.length) {
 				this.craftSlots[j] = ItemStack.loadItemStackFromNBT(nbt1);
 			}
-		}
+		});
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		NBTTagList tagList = new NBTTagList();
-		for (int i = 0; i < this.craftSlots.length; ++i) {
-			if (this.craftSlots[i] != null) {
-				NBTTagCompound nbt1 = new NBTTagCompound();
-				nbt1.setByte("Slot", (byte) i);
-				this.craftSlots[i].writeToNBT(nbt1);
-				tagList.appendTag(nbt1);
-			}
-		}
+		IntStream.range(0, this.craftSlots.length).filter(i -> this.craftSlots[i] != null).forEach(i -> {
+			NBTTagCompound nbt1 = new NBTTagCompound();
+			nbt1.setByte("Slot", (byte) i);
+			this.craftSlots[i].writeToNBT(nbt1);
+			tagList.appendTag(nbt1);
+		});
 		nbt.setTag("Items", tagList);
 	}
 
@@ -64,23 +64,15 @@ public class TileEntityTrainWorkBench extends TileEntity //implements IInventory
 	}
 
 	public void readItemsFromTile(IInventory inventory, IInventory inv2) {
-		for (int i = 0; i < 25; ++i) {
-			inventory.setInventorySlotContents(i, this.craftSlots[i]);
-		}
+		IntStream.range(0, 25).forEach(i1 -> inventory.setInventorySlotContents(i1, this.craftSlots[i1]));
 
-		for (int i = 25; i < 30; ++i) {
-			inv2.setInventorySlotContents(i - 25, this.craftSlots[i]);
-		}
+		IntStream.range(25, 30).forEach(i -> inv2.setInventorySlotContents(i - 25, this.craftSlots[i]));
 	}
 
 	public void writeItemsToTile(IInventory inventory, IInventory inv2) {
-		for (int i = 0; i < this.craftSlots.length; ++i) {
-			this.craftSlots[i] = inventory.getStackInSlot(i);
-		}
+		Arrays.setAll(this.craftSlots, inventory::getStackInSlot);
 
-		for (int i = 25; i < 30; ++i) {
-			this.craftSlots[i] = inv2.getStackInSlot(i - 25);
-		}
+		IntStream.range(25, 30).forEach(i -> this.craftSlots[i] = inv2.getStackInSlot(i - 25));
 
 		this.sendPacket();
 	}

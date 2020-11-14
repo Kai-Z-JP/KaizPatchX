@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class Menu {
 	private final List<MenuEntry> menuList = new ArrayList<>();
@@ -55,20 +57,14 @@ public class Menu {
 
 		if (s != null && !s.isEmpty()) {
 			try {
-				NBTTagCompound nbt0 = (NBTTagCompound) JsonToNBT.func_150315_a(s);
-				NBTTagList nbttaglist = nbt0.getTagList("list", 10);
-				for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-					NBTTagCompound nbt = nbttaglist.getCompoundTagAt(i);
-					MenuEntry entry = MenuEntry.readFromNBT(nbt);
-					if (entry != null) {
-						this.add(entry);
-					}
-				}
+                NBTTagCompound nbt0 = (NBTTagCompound) JsonToNBT.func_150315_a(s);
+                NBTTagList nbttaglist = nbt0.getTagList("list", 10);
+                IntStream.range(0, nbttaglist.tagCount()).mapToObj(nbttaglist::getCompoundTagAt).map(MenuEntry::readFromNBT).filter(Objects::nonNull).forEach(this::add);
 
-				if (!this.menuList.isEmpty()) {
-					return true;
-				}
-			} catch (NBTException e) {
+                if (!this.menuList.isEmpty()) {
+                    return true;
+                }
+            } catch (NBTException e) {
 				e.printStackTrace();
 			}
 		}
@@ -80,14 +76,12 @@ public class Menu {
 
 	@Override
 	public String toString() {
-		NBTTagList nbttaglist = new NBTTagList();
-		for (MenuEntry entry : this.menuList) {
-			nbttaglist.appendTag(entry.writeToNBT());
-		}
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setTag("list", nbttaglist);
-		return nbt.toString();
-	}
+        NBTTagList nbttaglist = new NBTTagList();
+        this.menuList.stream().map(MenuEntry::writeToNBT).forEach(nbttaglist::appendTag);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setTag("list", nbttaglist);
+        return nbt.toString();
+    }
 
 	public boolean exportToText() {
 		File file = NGTFileLoader.saveFile(FileType.JSON);

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +24,7 @@ public final class NGTClassUtil {
 		ClassLoader classLoader = NGTCore.class.getClassLoader();
 		String s1 = pathStartFrom(file.getPath(), "zip");
 		String filename = resourceNameToClassName(pathStartWith(s1, PATH_HEAD));
-		Class<?> clazz = classLoader.loadClass(filename);
-		return clazz;
+		return classLoader.loadClass(filename);
 	}
 
 	public static String fileNameToClassName(String name) {
@@ -57,14 +57,14 @@ public final class NGTClassUtil {
 		return clazz.newInstance();
 	}
 
-	public static <T> Class<T> compile(String name, String source) throws ReflectiveOperationException {
+	public static <T> Class<T> compile(String name, String source) {
 		if (COMPILER == null) {
 			NGTLog.debug("*** Compiler not found ***");
 			return null;
 		}
 
 		final String source2 = source.replaceAll("\t", "");
-		URI uri = URI.create("string:///" + name.replaceAll(".", "/") + Kind.SOURCE.extension);
+		URI uri = URI.create("string:///" + name.replaceAll("\\.", "/") + Kind.SOURCE.extension);
 		JavaFileObject sourceObj = new SimpleJavaFileObject(uri, Kind.SOURCE) {
 			@Override
 			public CharSequence getCharContent(boolean par1) throws IOException {
@@ -72,18 +72,16 @@ public final class NGTClassUtil {
 			}
 		};
 
-		List<? extends JavaFileObject> src = Arrays.asList(sourceObj);
+		List<? extends JavaFileObject> src = Collections.singletonList(sourceObj);
 		String classPath = System.getProperty("java.class.path");
 		List<String> options = Arrays.asList("-classpath", classPath);
 		NGTLog.debug("Set class path : " + classPath);
-		DiagnosticCollector<JavaFileObject> listner = new DiagnosticCollector<JavaFileObject>();
+		DiagnosticCollector<JavaFileObject> listner = new DiagnosticCollector<>();
 		VirtualFileManager manager = new VirtualFileManager(COMPILER, listner);
 
 		CompilationTask compilerTask = COMPILER.getTask(null, manager, listner, options, null, src);
 		if (!compilerTask.call()) {
-			for (Diagnostic diag : listner.getDiagnostics()) {
-				NGTLog.debug("Error on line %d in %s", diag.getLineNumber(), diag);
-			}
+			listner.getDiagnostics().forEach(diag -> NGTLog.debug("Error on line %d in %s", diag.getLineNumber(), diag));
 			throw new RuntimeException("Error on parse source : " + name);
 		}
 
@@ -94,8 +92,7 @@ public final class NGTClassUtil {
 		map.put(name, manager.getByteData(name));
 
 		try {
-			Class<T> c = (Class<T>) cl.loadClass(name);
-			return c;
+			return (Class<T>) cl.loadClass(name);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}

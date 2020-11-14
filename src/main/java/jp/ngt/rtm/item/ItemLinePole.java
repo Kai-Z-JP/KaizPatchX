@@ -27,46 +27,44 @@ public class ItemLinePole extends Item {
 
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
-		if (world.isRemote) {
-			return true;
-		} else {
-			int meta = itemStack.getItemDamage();
-			int x = par4;
-			int y = par5;
-			int z = par6;
-			Block block = null;
+        if (!world.isRemote) {
+            int meta = itemStack.getItemDamage();
+            int x = par4;
+            int y = par5;
+            int z = par6;
+            Block block;
 
-			if (par7 == 0)//up
-			{
-				--par5;
-			} else if (par7 == 1)//down
-			{
-				++par5;
-			} else if (par7 == 2)//south
-			{
-				--par6;
-			} else if (par7 == 3)//north
-			{
-				++par6;
-			} else if (par7 == 4)//east
-			{
-				--par4;
-			} else if (par7 == 5)//west
-			{
-				++par4;
-			}
+            if (par7 == 0)//up
+            {
+                --par5;
+            } else if (par7 == 1)//down
+            {
+                ++par5;
+            } else if (par7 == 2)//south
+            {
+                --par6;
+            } else if (par7 == 3)//north
+            {
+                ++par6;
+            } else if (par7 == 4)//east
+            {
+                --par4;
+            } else if (par7 == 5)//west
+            {
+                ++par4;
+            }
 
-			if (!world.isAirBlock(par4, par5, par6)) {
-				return true;
-			}
+            if (!world.isAirBlock(par4, par5, par6)) {
+                return true;
+            }
 
-			world.setBlock(par4, par5, par6, RTMBlock.linePole, meta, 2);
-			block = RTMBlock.linePole;
-			world.playSoundEffect((double) par4 + 0.5D, (double) par5 + 0.5D, (double) par6 + 0.5D, block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
-			--itemStack.stackSize;
-			return true;
-		}
-	}
+            world.setBlock(par4, par5, par6, RTMBlock.linePole, meta, 2);
+            block = RTMBlock.linePole;
+            world.playSoundEffect((double) par4 + 0.5D, (double) par5 + 0.5D, (double) par6 + 0.5D, block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
+            --itemStack.stackSize;
+        }
+        return true;
+    }
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {

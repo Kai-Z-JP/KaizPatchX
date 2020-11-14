@@ -48,10 +48,10 @@ public final class NGTUtilClient {
 
 	public static int getLightValue(World world, int x, int y, int z) {
 		if (world.blockExists(x, 0, z)) {
-			int sky = world.getSkyBlockTypeBrightness(EnumSkyBlock.Sky, x, y, z);
-			int block = world.getSkyBlockTypeBrightness(EnumSkyBlock.Block, x, y, z);
-			return sky > block ? sky : block;
-		}
+            int sky = world.getSkyBlockTypeBrightness(EnumSkyBlock.Sky, x, y, z);
+            int block = world.getSkyBlockTypeBrightness(EnumSkyBlock.Block, x, y, z);
+            return Math.max(sky, block);
+        }
 		return 0;
 	}
 
@@ -69,15 +69,12 @@ public final class NGTUtilClient {
 				}
 			}*/
 
-			hasShader = 0;
-			List<String> list = CoreModManager.getLoadedCoremods();
-			for (String name : list) {
-				if (name.contains(NGTCore.shaderModName)) {
-					hasShader = 1;
-					break;
-				}
-			}
-		}
+            hasShader = 0;
+            List<String> list = CoreModManager.getLoadedCoremods();
+            if (list.stream().anyMatch(name -> name.contains(NGTCore.shaderModName))) {
+                hasShader = 1;
+            }
+        }
 		return hasShader == 1;
 	}
 

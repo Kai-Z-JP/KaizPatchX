@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityAIDrivingWithDiagram extends EntityAIDrivingWithSignal {
-	private final List<TrainDiagram> diagram = new ArrayList<TrainDiagram>();
+    private final List<TrainDiagram> diagram = new ArrayList<>();
 
-	public class TrainDiagram {
-		public final int time;
-		public final String command;
-		public final int pointX;
-		public final int pointY;
-		public final int pointZ;
+    public static class TrainDiagram {
+        public final int time;
+        public final String command;
+        public final int pointX;
+        public final int pointY;
+        public final int pointZ;
 
-		public TrainDiagram(int par1Time, String par2Command, int par3X, int par4Y, int par5Z) {
-			this.time = par1Time;
-			this.command = par2Command;
-			this.pointX = par3X;
+        public TrainDiagram(int par1Time, String par2Command, int par3X, int par4Y, int par5Z) {
+            this.time = par1Time;
+            this.command = par2Command;
+            this.pointX = par3X;
 			this.pointY = par4Y;
 			this.pointZ = par5Z;
 		}
@@ -55,18 +55,18 @@ public class EntityAIDrivingWithDiagram extends EntityAIDrivingWithSignal {
 			int pY = 0;
 			int pZ = 0;
 			try {
-				t = Integer.valueOf(sArray2[0]);
-				com = sArray2[1];
-				pX = Integer.valueOf(sArray2[2]);
-				pY = Integer.valueOf(sArray2[3]);
-				pZ = Integer.valueOf(sArray2[4]);
-			} catch (NumberFormatException e) {
-				this.diagram.clear();
-				this.diagram.add(new TrainDiagram(0, "finish", 0, 0, 0));
-				NGTLog.sendChatMessageToAll("Illegal format");
-				return;
-			} catch (ArrayIndexOutOfBoundsException e) {
-			}
+                t = Integer.parseInt(sArray2[0]);
+                com = sArray2[1];
+                pX = Integer.parseInt(sArray2[2]);
+                pY = Integer.parseInt(sArray2[3]);
+                pZ = Integer.parseInt(sArray2[4]);
+            } catch (NumberFormatException e) {
+                this.diagram.clear();
+                this.diagram.add(new TrainDiagram(0, "finish", 0, 0, 0));
+                NGTLog.sendChatMessageToAll("Illegal format");
+                return;
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+            }
 			this.diagram.add(new TrainDiagram(t, com, pX, pY, pZ));
 			NGTLog.debug("add diagram : " + s);
 		}
@@ -97,73 +97,76 @@ public class EntityAIDrivingWithDiagram extends EntityAIDrivingWithSignal {
 			if (worldTime >= td.time - 2 && worldTime <= td.time + 2) {
 				if (signalLevel >= 0 && signalLevel < 5) {
 					this.train.setNotch(4);
-					this.diagram.remove(0);
-					NGTLog.debug("motorman start train");
-				}
-			}
-			return;
-		}
+                    this.diagram.remove(0);
+                    NGTLog.debug("motorman start train");
+                }
+            }
+            return;
+        }
 
-		float distance = this.getDistanceTrain(this.train, td.pointX, td.pointZ);
-		float margin = (float) (td.time - worldTime);
-		float prevSpeed = this.train.getSpeed();
-		float ac1 = 0.0F;//目標加速度
-		int notch = 0;
-		int notchS = 0;
-		if (signalLevel > 0) {
-			notchS = EnumNotch.getNotchFromSignal(signalLevel).id;
-		}
+        float distance = this.getDistanceTrain(this.train, td.pointX, td.pointZ);
+        float margin = (float) (td.time - worldTime);
+        float prevSpeed = this.train.getSpeed();
+        float ac1;//目標加速度
+        int notch = 0;
+        int notchS = 0;
+        if (signalLevel > 0) {
+            notchS = EnumNotch.getNotchFromSignal(signalLevel).id;
+        }
 
-		if (td.command.equals("set_speed")) {
-			float speed = (float) td.pointX / 72.0F;
-			ac1 = (speed - prevSpeed) / margin;
-			notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
-		} else if (td.command.equals("pass")) {
-			ac1 = 2 * (distance - prevSpeed * margin) / (margin * margin);
-			if (ac1 > 0) {
-				float sp0 = prevSpeed + ac1 * margin;//目標速度
-				notch = EnumNotch.getSuitableNotchFromSpeed(sp0).id;
-			} else if (ac1 < 0) {
-				notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
-			}
-		} else if (td.command.equals("stop")) {
-			if (distance <= 360.0F) {
-				ac1 = -prevSpeed / margin;
-				if (0.5F * prevSpeed * margin < distance) {
-					ac1 += 0.00075F;
-				}
-				notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
-			} else {
-				distance -= 360.0F;
-				margin -= 600.0F;
-				ac1 = 2 * (distance - (prevSpeed * margin)) / (margin * margin);
-				if (ac1 >= 0.0F) {
-					if (ac1 < EnumNotch.accelerate_1.acceleration && prevSpeed >= EnumNotch.accelerate_4.max_speed) {
-						notch = EnumNotch.inertia.id;
-					} else {
-						notch = EnumNotch.accelerate_4.id;
-					}
-				} else if (ac1 > EnumNotch.brake_1.acceleration) {
-					notch = EnumNotch.inertia.id;
-				} else {
-					notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
-				}
-			}
+        switch (td.command) {
+            case "set_speed":
+                float speed = (float) td.pointX / 72.0F;
+                ac1 = (speed - prevSpeed) / margin;
+                notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
+                break;
+            case "pass":
+                ac1 = 2 * (distance - prevSpeed * margin) / (margin * margin);
+                if (ac1 > 0) {
+                    float sp0 = prevSpeed + ac1 * margin;//目標速度
+                    notch = EnumNotch.getSuitableNotchFromSpeed(sp0).id;
+                } else if (ac1 < 0) {
+                    notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
+                }
+                break;
+            case "stop":
+                if (distance <= 360.0F) {
+                    ac1 = -prevSpeed / margin;
+                    if (0.5F * prevSpeed * margin < distance) {
+                        ac1 += 0.00075F;
+                    }
+                    notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
+                } else {
+                    distance -= 360.0F;
+                    margin -= 600.0F;
+                    ac1 = 2 * (distance - (prevSpeed * margin)) / (margin * margin);
+                    if (ac1 >= 0.0F) {
+                        if (ac1 < EnumNotch.accelerate_1.acceleration && prevSpeed >= EnumNotch.accelerate_4.max_speed) {
+                            notch = EnumNotch.inertia.id;
+                        } else {
+                            notch = EnumNotch.accelerate_4.id;
+                        }
+                    } else if (ac1 > EnumNotch.brake_1.acceleration) {
+                        notch = EnumNotch.inertia.id;
+                    } else {
+                        notch = EnumNotch.getSuitableNotchFromAcceleration(ac1).id;
+                    }
+                }
 
-			if (worldTime >= td.time - 2 && worldTime <= td.time + 2) {
-				notch = -4;
-				NGTLog.debug("motorman stop train");
-			}
-		}
+                if (worldTime >= td.time - 2 && worldTime <= td.time + 2) {
+                    notch = -4;
+                    NGTLog.debug("motorman stop train");
+                }
+                break;
+        }
 
-		if (signalLevel > 0) {
-			notch = notch <= notchS ? notch : notchS;
-		}
+        if (signalLevel > 0) {
+            notch = Math.min(notch, notchS);
+        }
 		this.train.setNotch(notch);
 		if (worldTime >= td.time - 2 && worldTime <= td.time + 2) {
 			this.diagram.remove(0);
 		}
-		return;
 	}
 
 	private float getDistanceTrain(Entity entity, double par1, double par2) {

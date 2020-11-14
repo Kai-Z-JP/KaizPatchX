@@ -217,21 +217,21 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         this.motionZ *= d0;
 
         //motion利用のpitch計算はガクガクする
-
-        float f0 = 0.125F;
-
-        if (this.rotationPitch > 0.0F) {
-            this.rotationPitch -= f0;
-        } else if (this.rotationPitch < 0.0F) {
-            this.rotationPitch += f0;
-        }
-
-        if (Math.abs(this.rotationPitch) < f0) {
-            this.rotationPitch = 0.0F;
-        }
-
-        this.getBogie(0).rotationPitch = this.rotationPitch;
-        this.getBogie(1).rotationPitch = this.rotationPitch * -1.0F;
+//
+//        float f0 = 0.125F;
+//
+//        if (this.rotationPitch > 0.0F) {
+//            this.rotationPitch -= f0;
+//        } else if (this.rotationPitch < 0.0F) {
+//            this.rotationPitch += f0;
+//        }
+//
+//        if (Math.abs(this.rotationPitch) < f0) {
+//            this.rotationPitch = 0.0F;
+//        }
+//
+//        this.getBogie(0).rotationPitch = this.rotationPitch;
+//        this.getBogie(1).rotationPitch = this.rotationPitch * -1.0F;
     }
 
     @SideOnly(Side.CLIENT)
@@ -609,9 +609,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      * EntityBogieで呼ばれる
      */
     protected boolean interactTrain(EntityBogie bogie, EntityPlayer player) {
-        if (this.riddenByEntity != null && !this.riddenByEntity.equals(player)) {
-            return true;
-        } else {
+        if (this.riddenByEntity == null || this.riddenByEntity.equals(player)) {
             if (!this.worldObj.isRemote) {
                 boolean canRide = this.getModelSet() != null;
                 ItemStack itemstack = player.inventory.getCurrentItem();
@@ -646,8 +644,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                     }
                 }
             }
-            return true;
         }
+        return true;
     }
 
     private void mountEntityToTrain(Entity entity, int direction) {
@@ -1101,10 +1099,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                 this.setupChunks(x, z);
             }
 
-            for (ChunkCoordIntPair chunk : this.loadedChunks) {
-                ForgeChunkManager.forceChunk(this.ticket, chunk);
-                //ForgeChunkManager.reorderChunk(this.ticket, chunk);//並び替え
-            }
+            //ForgeChunkManager.reorderChunk(this.ticket, chunk);//並び替え
+            this.loadedChunks.forEach(chunk -> ForgeChunkManager.forceChunk(this.ticket, chunk));
             ChunkCoordIntPair myChunk = new ChunkCoordIntPair(x, z);//省くと機能しない
             ForgeChunkManager.forceChunk(this.ticket, myChunk);
         }

@@ -39,7 +39,7 @@ function renderRailDynamic(tileEntity, posX, posY, posZ, par8, pass) {
 }
 
 function renderPoint(tileEntity, point) {
-    if (point.branchDir == RailDir.NONE)//分岐なし部分
+    if (point.branchDir === RailDir.NONE)//分岐なし部分
     {
         var rm = point.rmMain;
         var max = Math.floor(rm.getLength() * 2.0);

@@ -38,22 +38,22 @@ public class GuiSelectTexture extends GuiScreenCustom {
 
 		for (int v = 0; v < yCount; ++v) {
 			for (int u = 0; u < this.uCount; ++u) {
-				int index = v * this.uCount + u;
-				if (index >= this.properties.size()) {
-					break;
-				}
-				TextureProperty prop = this.properties.get(index);
-				float f0 = 1.0F;
-				if (prop.width > prop.height) {
-					f0 = (float) x / prop.width;
-				} else {
-					f0 = (float) y / prop.height;
-				}
+                int index = v * this.uCount + u;
+                if (index >= this.properties.size()) {
+                    break;
+                }
+                TextureProperty prop = this.properties.get(index);
+                float f0;
+                if (prop.width > prop.height) {
+                    f0 = (float) x / prop.width;
+                } else {
+                    f0 = (float) y / prop.height;
+                }
 
-				int w = (int) (prop.width * f0);
-				int h = (int) (prop.height * f0);
-				int xPos = x * u + ((x - w) / 2);
-				int yPos = y * v + ((y - h) / 2);
+                int w = (int) (prop.width * f0);
+                int h = (int) (prop.height * f0);
+                int xPos = x * u + ((x - w) / 2);
+                int yPos = y * v + ((y - h) / 2);
 				this.buttonList.add(new GuiButtonSelectTexture(index, xPos, yPos, w, h, prop));
 			}
 		}
@@ -84,18 +84,18 @@ public class GuiSelectTexture extends GuiScreenCustom {
 		int scroll = Mouse.getEventDWheel();
 
 		if (scroll != 0) {
-			this.prevScroll = this.currentScroll;
-			scroll = scroll > 0 ? 1 : (scroll < 0 ? -1 : 0);
-			this.currentScroll -= scroll;
+            this.prevScroll = this.currentScroll;
+            scroll = Integer.compare(scroll, 0);
+            this.currentScroll -= scroll;
 
-			if (this.currentScroll < 0) {
-				this.currentScroll = 0;
-			}
+            if (this.currentScroll < 0) {
+                this.currentScroll = 0;
+            }
 
-			int size2 = this.properties.size() / this.uCount;
+            int size2 = this.properties.size() / this.uCount;
 
-			if (this.currentScroll >= size2) {
-				this.currentScroll = size2 - 1;
+            if (this.currentScroll >= size2) {
+                this.currentScroll = size2 - 1;
 			}
 
 			this.renewButton(this.currentScroll);
@@ -104,14 +104,14 @@ public class GuiSelectTexture extends GuiScreenCustom {
 
 	protected void renewButton(int scroll) {
 		if (this.currentScroll != this.prevScroll) {
-			int y = this.height / this.vCount;
-			if (this.prevScroll > this.currentScroll) {
-				y = -y;
-			}
+            int y = this.height / this.vCount;
+            if (this.prevScroll > this.currentScroll) {
+                y = -y;
+            }
 
-			for (int i = 0; i < this.buttonList.size(); ++i) {
-				((GuiButtonSelectTexture) this.buttonList.get(i)).moveButton(y);
-			}
-		}
+            for (Object o : this.buttonList) {
+                ((GuiButtonSelectTexture) o).moveButton(y);
+            }
+        }
 	}
 }

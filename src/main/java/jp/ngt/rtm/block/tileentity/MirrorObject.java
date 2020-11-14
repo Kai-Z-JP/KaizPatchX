@@ -25,11 +25,11 @@ import java.util.List;
  * 同じ鏡面に属するMirrorComponentの集合
  */
 public class MirrorObject {
-	public static final List<MirrorObject> MIRROR_OBJECTS = new ArrayList<MirrorObject>();
+	public static final List<MirrorObject> MIRROR_OBJECTS = new ArrayList<>();
 	private static Timer TIMER;
 	private static int tick;
 
-	private final List<MirrorComponent> components = new ArrayList<MirrorComponent>();
+	private final List<MirrorComponent> components = new ArrayList<>();
 	private final DummyViewer dummyViewer;
 	private final Framebuffer buffer;
 	private final SubRenderGlobal renderGlobal;
@@ -64,8 +64,7 @@ public class MirrorObject {
 	public static void add(World world, MirrorComponent par1, EnumFace par2, MirrorType par3) {
 		Vec3 vec = par1.getMirrorPos(par2);
 
-		for (int i = 0; i < MIRROR_OBJECTS.size(); ++i) {
-			MirrorObject obj = MIRROR_OBJECTS.get(i);
+		for (MirrorObject obj : MIRROR_OBJECTS) {
 			if (par2 == obj.face && NGTMath.isVecEquals(obj.facePos, vec)) {
 				obj.components.add(par1);
 				par1.mirrorObject = obj;
@@ -105,10 +104,7 @@ public class MirrorObject {
 			tick = 0;
 			float f0 = TIMER.renderPartialTicks;
 
-			for (int i = 0; i < MIRROR_OBJECTS.size(); ++i) {
-				MirrorObject obj = MIRROR_OBJECTS.get(i);
-				obj.update(renderer, f0);
-			}
+			MIRROR_OBJECTS.forEach(obj -> obj.update(renderer, f0));
 		}
 	}
 
@@ -154,8 +150,7 @@ public class MirrorObject {
 
 	private void updateMirrorComponents(EntityLivingBase viewer) {
 		boolean b = true;
-		for (int i = 0; i < this.components.size(); ++i) {
-			MirrorComponent component = this.components.get(i);
+		for (MirrorComponent component : this.components) {
 			component.update(this, viewer);
 			b &= component.skipRender();
 		}
@@ -205,11 +200,8 @@ public class MirrorObject {
 		//this.fov = NGTMath.toDegrees((float)Math.atan2(this.height, this.depth)) * 2.0F;
 		//this.aspect = this.width / this.height;
 
-		for (int i = 0; i < this.components.size(); ++i) {
-			MirrorComponent component = this.components.get(i);
-			//component.updateUV(this.width, this.height);
-			component.updateFrustrum(this.top, this.bottom, this.left, this.right);
-		}
+		//component.updateUV(this.width, this.height);
+		this.components.forEach(component -> component.updateFrustrum(this.top, this.bottom, this.left, this.right));
 	}
 
 	private void setViewPoint(double px, double py, double pz) {

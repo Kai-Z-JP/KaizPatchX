@@ -9,54 +9,51 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class InventoryNPC implements IInventory {
-	private final EntityNPC npc;
-	public ItemStack[] mainInventory = new ItemStack[9 * 3];
-	public ItemStack[] armorInventory = new ItemStack[4];
-	public boolean isOpening;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
-	public InventoryNPC(EntityNPC par1) {
-		this.npc = par1;
-	}
+public class InventoryNPC implements IInventory {
+    private final EntityNPC npc;
+    public ItemStack[] mainInventory = new ItemStack[9 * 3];
+    public ItemStack[] armorInventory = new ItemStack[4];
+    public boolean isOpening;
+
+    public InventoryNPC(EntityNPC par1) {
+        this.npc = par1;
+    }
 
 	public NBTTagList writeToNBT(NBTTagList nbtList) {
-		for (int i = 0; i < this.mainInventory.length; ++i) {
-			if (this.mainInventory[i] != null) {
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setByte("Slot", (byte) i);
-				this.mainInventory[i].writeToNBT(nbt);
-				nbtList.appendTag(nbt);
-			}
-		}
+        IntStream.range(0, this.mainInventory.length).filter(i -> this.mainInventory[i] != null).forEach(i -> {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setByte("Slot", (byte) i);
+            this.mainInventory[i].writeToNBT(nbt);
+            nbtList.appendTag(nbt);
+        });
 
-		for (int i = 0; i < this.armorInventory.length; ++i) {
-			if (this.armorInventory[i] != null) {
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setByte("Slot", (byte) (i + 100));
-				this.armorInventory[i].writeToNBT(nbt);
-				nbtList.appendTag(nbt);
-			}
-		}
+        IntStream.range(0, this.armorInventory.length).filter(i -> this.armorInventory[i] != null).forEach(i -> {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setByte("Slot", (byte) (i + 100));
+            this.armorInventory[i].writeToNBT(nbt);
+            nbtList.appendTag(nbt);
+        });
 
-		return nbtList;
-	}
+        return nbtList;
+    }
 
 	public void readFromNBT(NBTTagList nbtList) {
-		for (int i = 0; i < nbtList.tagCount(); ++i) {
-			NBTTagCompound nbt = nbtList.getCompoundTagAt(i);
-			int j = nbt.getByte("Slot") & 255;
-			ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbt);
+        IntStream.range(0, nbtList.tagCount()).mapToObj(nbtList::getCompoundTagAt).forEach(nbt -> {
+            int j = nbt.getByte("Slot") & 255;
+            ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbt);
+            if (itemstack != null) {
+                if (j < this.mainInventory.length) {
+                    this.mainInventory[j] = itemstack;
+                }
 
-			if (itemstack != null) {
-				if (j >= 0 && j < this.mainInventory.length) {
-					this.mainInventory[j] = itemstack;
-				}
-
-				if (j >= 100 && j < this.armorInventory.length + 100) {
-					this.armorInventory[j - 100] = itemstack;
-				}
-			}
-		}
+                if (j >= 100 && j < this.armorInventory.length + 100) {
+                    this.armorInventory[j - 100] = itemstack;
+                }
+            }
+        });
 	}
 
 	@Override
@@ -84,20 +81,19 @@ public class InventoryNPC implements IInventory {
 		if (aitemstack[index] != null) {
 			ItemStack itemstack;
 
-			if (aitemstack[index].stackSize <= size) {
-				itemstack = aitemstack[index];
-				aitemstack[index] = null;
-				return itemstack;
-			} else {
-				itemstack = aitemstack[index].splitStack(size);
+            if (aitemstack[index].stackSize <= size) {
+                itemstack = aitemstack[index];
+                aitemstack[index] = null;
+            } else {
+                itemstack = aitemstack[index].splitStack(size);
 
-				if (aitemstack[index].stackSize == 0) {
-					aitemstack[index] = null;
-				}
+                if (aitemstack[index].stackSize == 0) {
+                    aitemstack[index] = null;
+                }
 
-				return itemstack;
-			}
-		} else {
+            }
+            return itemstack;
+        } else {
 			return null;
 		}
 	}
@@ -171,31 +167,20 @@ public class InventoryNPC implements IInventory {
 	}
 
 	public void dropAllItems() {
-		for (int i = 0; i < this.mainInventory.length; ++i) {
-			if (this.mainInventory[i] != null) {
-				this.npc.entityDropItem(this.mainInventory[i], 0.5F);
-				this.mainInventory[i] = null;
-			}
-		}
+        IntStream.range(0, this.mainInventory.length).filter(i -> this.mainInventory[i] != null).forEach(i -> {
+            this.npc.entityDropItem(this.mainInventory[i], 0.5F);
+            this.mainInventory[i] = null;
+        });
 
-		for (int i = 0; i < this.armorInventory.length; ++i) {
-			if (this.armorInventory[i] != null) {
-				this.npc.entityDropItem(this.armorInventory[i], 0.5F);
-				this.armorInventory[i] = null;
-			}
-		}
-	}
+        IntStream.range(0, this.armorInventory.length).filter(i -> this.armorInventory[i] != null).forEach(i -> {
+            this.npc.entityDropItem(this.armorInventory[i], 0.5F);
+            this.armorInventory[i] = null;
+        });
+    }
 
 	public int getTotalArmorValue() {
-		int i = 0;
-		for (int j = 0; j < this.armorInventory.length; ++j) {
-			if (this.armorInventory[j] != null && this.armorInventory[j].getItem() instanceof ItemArmor) {
-				int k = ((ItemArmor) this.armorInventory[j].getItem()).damageReduceAmount;
-				i += k;
-			}
-		}
-		return i;
-	}
+        return Arrays.stream(this.armorInventory).filter(itemStack -> itemStack != null && itemStack.getItem() instanceof ItemArmor).mapToInt(itemStack -> ((ItemArmor) itemStack.getItem()).damageReduceAmount).sum();
+    }
 
 	public void damageArmor(EntityLivingBase entity, float damage) {
 		damage /= 4.0F;

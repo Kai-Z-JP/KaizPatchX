@@ -9,21 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class FormationManager {
-	private static final String SAVE_NAME = "rtm_formations";
+    private static final String SAVE_NAME = "rtm_formations";
 
-	private final boolean isRemote;
-	private FormationData saveData;
-	private final Map<Long, Formation> formationMap = new HashMap<Long, Formation>();
+    private final boolean isRemote;
+    private FormationData saveData;
+    private final Map<Long, Formation> formationMap = new HashMap<>();
 
-	public FormationManager(boolean par1) {
-		this.isRemote = par1;
-	}
+    public FormationManager(boolean par1) {
+        this.isRemote = par1;
+    }
 
-	public static FormationManager getInstance() {
-		return RTMCore.proxy.getFormationManager();
-	}
+    public static FormationManager getInstance() {
+        return RTMCore.proxy.getFormationManager();
+    }
 
-	public void loadData(World world) {
+    public void loadData(World world) {
 		if (world instanceof WorldServer && world.provider.dimensionId == 0) {
 			FormationData data = (FormationData) world.mapStorage.loadData(FormationData.class, SAVE_NAME);
 			if (data == null) {

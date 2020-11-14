@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.IntStream;
 
 /**
  * ブロックの集合<br>
  * RenderBlocksによるブロックの描画等に使用
  */
 public class NGTObject {
-	private static final List<NGTObject> loadedNGTO = new ArrayList<NGTObject>();
+	private static final List<NGTObject> loadedNGTO = new ArrayList<>();
 
 	public long objId;
 	public HashBiMap<Integer, BlockSet> blockIdMap = HashBiMap.create();
@@ -102,7 +102,7 @@ public class NGTObject {
 	public NBTTagCompound writeToNBT() {
 		//NGTLog.startTimer();
 
-		Map<BlockSet, Integer> idMap = new HashMap<BlockSet, Integer>();
+		Map<BlockSet, Integer> idMap = new HashMap<>();
 		idMap.put(BlockSet.AIR, 0);
 		int idCount = 1;
 
@@ -133,9 +133,7 @@ public class NGTObject {
 			data.setIntArray("IData", blockIds);
 		} else {
 			byte[] bytes = new byte[blockIds.length];
-			for (int i = 0; i < bytes.length; ++i) {
-				bytes[i] = (byte) (blockIds[i] - 128);
-			}
+			IntStream.range(0, bytes.length).forEach(i -> bytes[i] = (byte) (blockIds[i] - 128));
 			data.setByteArray("BData", bytes);
 		}
 		data.setTag("NBTs", nbts);
@@ -144,12 +142,12 @@ public class NGTObject {
 		//Idリスト書き込み、数ms
 		//NGTLog.startTimer();
 		NBTTagList tagList2 = new NBTTagList();
-		for (Entry<BlockSet, Integer> set : idMap.entrySet()) {
+		idMap.forEach((key, value) -> {
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setTag("Set", set.getKey().writeToNBT());
-			tag.setInteger("Id", set.getValue());
+			tag.setTag("Set", key.writeToNBT());
+			tag.setInteger("Id", value);
 			tagList2.appendTag(tag);
-		}
+		});
 		data.setTag("IdList", tagList2);
 		//NGTLog.stopTimer("write nbt (IdList)");
 
@@ -174,43 +172,40 @@ public class NGTObject {
 			data = decompress(data);
 		}
 
-		Map<Integer, BlockSet> idMap = new HashMap<Integer, BlockSet>();
+		Map<Integer, BlockSet> idMap = new HashMap<>();
 		idMap.put(0, BlockSet.AIR);
 
 		//Idリストを読み出す
 		NBTTagList tagList2 = data.getTagList("IdList", 10);
-		for (int i = 0; i < tagList2.tagCount(); ++i) {
-			NBTTagCompound tag = tagList2.getCompoundTagAt(i);
+		IntStream.range(0, tagList2.tagCount()).mapToObj(tagList2::getCompoundTagAt).forEach(tag -> {
 			BlockSet set = BlockSet.readFromNBT(tag.getCompoundTag("Set"));
 			int id = tag.getInteger("Id");
 			idMap.put(id, set);
-		}
+		});
 
 		//IdからBlockSetを読み出す
 		int[] ids;
-		List<BlockSet> list = new ArrayList<BlockSet>();
+		List<BlockSet> list = new ArrayList<>();
 		if (data.hasKey("IData") || data.hasKey("Blocks")) {
 			ids = data.hasKey("IData") ? data.getIntArray("IData") : data.getIntArray("Blocks");//互換性
 		} else {
 			byte[] bytes = data.getByteArray("BData");
 			ids = new int[bytes.length];
-			for (int i = 0; i < bytes.length; ++i) {
-				ids[i] = (int) bytes[i] + 128;
-			}
+			IntStream.range(0, bytes.length).forEach(i -> ids[i] = (int) bytes[i] + 128);
 		}
 
 		if (ids != null) {
 			NBTTagCompound nbts = data.getCompoundTag("NBTs");
-			for (int i = 0; i < ids.length; ++i) {
+			IntStream.range(0, ids.length).forEach(i -> {
 				int id = ids[i];
-				BlockSet set = idMap.containsKey(id) ? idMap.get(id) : BlockSet.AIR;
+				BlockSet set = idMap.getOrDefault(id, BlockSet.AIR);
 				if (nbts.hasKey(String.valueOf(i))) {
 					NBTTagCompound tagData = nbts.getCompoundTag(String.valueOf(i));
 					list.add(set.setNBT(tagData));
 				} else {
 					list.add(set);
 				}
-			}
+			});
 		}
 
 		int x = data.getInteger("SizeX");
@@ -328,7 +323,7 @@ public class NGTObject {
 				}
 			}
 
-			this.lightValue = brightness > 15 ? 15 : (brightness < 0 ? 0 : brightness);
+			this.lightValue = brightness > 15 ? 15 : (Math.max(brightness, 0));
 
 			/*int totalLight = 0;
 			int count = 0;

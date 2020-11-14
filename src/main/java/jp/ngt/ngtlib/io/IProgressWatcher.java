@@ -1,11 +1,15 @@
 package jp.ngt.ngtlib.io;
 
 public interface IProgressWatcher {
-	void setMaxValue(int id, int value, String label);
+    void setMaxValue(int id, int value, String label);
 
-	void setValue(int id, int value, String label);
+    void addMaxValue(int id, int value);
 
-	void setText(int id, String label);
+    void setValue(int id, int value, String label);
 
-	void finish();
+    void addValue(int id, String label);
+
+    void setText(int id, String label);
+
+    void finish();
 }

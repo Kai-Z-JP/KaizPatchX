@@ -164,8 +164,8 @@ public class RenderBlockLargeRail implements ISimpleBlockRenderingHandler {
 	}
 
 	private double getV(double par1) {
-		return par1 > 1.0D ? 1.0D : (par1 < 0.0D ? 0.0D : par1);
-	}
+        return par1 > 1.0D ? 1.0D : (Math.max(par1, 0.0D));
+    }
 
 	@Override
 	public boolean shouldRender3DInInventory(int par1) {

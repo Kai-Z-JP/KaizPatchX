@@ -16,54 +16,36 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class NGTZModel implements IModelNGT {
 	private final List<NGTOParts> objects = new ArrayList();
 	private final float scale;
 
-	private final ArrayList<GroupObject> parts = new ArrayList<GroupObject>();
-	private final Map<String, Material> materials = new HashMap<String, Material>();
+	private final ArrayList<GroupObject> parts = new ArrayList<>();
+	private final Map<String, Material> materials = new HashMap<>();
 
 	public NGTZModel(ResourceLocation par1, float par2) {
 		Map<String, NGTObject> objs = (new NGTZ(par1)).getObjects();
-		for (Entry<String, NGTObject> set : objs.entrySet()) {
-			this.objects.add(new NGTOParts(set.getKey(), set.getValue()));
-		}
+		objs.entrySet().stream().map(set -> new NGTOParts(set.getKey(), set.getValue())).forEach(this.objects::add);
 		this.materials.put(NGTOModel.GROUP_NAME, new Material((byte) 0, TextureMap.locationBlocksTexture));
 		this.scale = par2;
 	}
 
 	@Override
 	public void renderAll(boolean smoothing) {
-		for (NGTOParts obj : this.objects) {
-			obj.render(this.scale);
-		}
+		this.objects.forEach(obj -> obj.render(this.scale));
 	}
 
 	@Override
 	public void renderOnly(boolean smoothing, String... groupNames) {
-		for (NGTOParts obj : this.objects) {
-			for (String s : groupNames) {
-				if (s.equals(obj.name)) {
-					obj.render(this.scale);
-				}
-			}
-		}
+		this.objects.forEach(obj -> Arrays.stream(groupNames).filter(s -> s.equals(obj.name)).forEach(s -> obj.render(this.scale)));
 	}
 
 	@Override
 	public void renderPart(boolean smoothing, String partName) {
-		for (NGTOParts obj : this.objects) {
-			if (partName.equals(obj.name)) {
-				obj.render(this.scale);
-			}
-		}
+		this.objects.stream().filter(obj -> partName.equals(obj.name)).forEach(obj -> obj.render(this.scale));
 	}
 
 	@Override
@@ -86,7 +68,7 @@ public class NGTZModel implements IModelNGT {
 		return FileType.NGTZ;
 	}
 
-	private class NGTOParts {
+	private static class NGTOParts {
 		private final String name;
 		private final NGTObject ngto;
 		private DisplayList[] glLists;

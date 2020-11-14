@@ -126,11 +126,7 @@ public class BlockMiniature extends BlockContainer {
 				list.add(aabb);
 			}
 		} else {
-			for (AxisAlignedBB aabb : aabbList) {
-				if (aabb != null && pbb.intersectsWith(aabb)) {
-					list.add(aabb);
-				}
-			}
+			aabbList.stream().filter(aabb -> aabb != null && pbb.intersectsWith(aabb)).forEach(list::add);
 		}
 	}
 
@@ -195,7 +191,7 @@ public class BlockMiniature extends BlockContainer {
 
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> ret = new ArrayList<>();
 		ret.add(this.getMiniatureItem(world, x, y, z));
 		return ret;
 	}

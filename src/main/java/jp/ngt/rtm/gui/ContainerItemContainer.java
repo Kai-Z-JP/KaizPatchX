@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class ContainerItemContainer extends Container {
@@ -116,21 +115,20 @@ public class ContainerItemContainer extends Container {
 				}
 			} else if (this.field_94536_g == 2) {
 				if (!this.field_94537_h.isEmpty()) {
-					itemstack3 = inventoryplayer.getItemStack().copy();
-					i1 = inventoryplayer.getItemStack().stackSize;
-					Iterator iterator = this.field_94537_h.iterator();
+                    itemstack3 = inventoryplayer.getItemStack().copy();
+                    i1 = inventoryplayer.getItemStack().stackSize;
 
-					while (iterator.hasNext()) {
-						Slot slot1 = (Slot) iterator.next();
+                    for (Object o : this.field_94537_h) {
+                        Slot slot1 = (Slot) o;
 
-						if (slot1 != null && func_94527_a(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize >= this.field_94537_h.size() && this.canDragIntoSlot(slot1)) {
-							ItemStack itemstack1 = itemstack3.copy();
-							int j1 = slot1.getHasStack() ? slot1.getStack().stackSize : 0;
-							func_94525_a(this.field_94537_h, this.field_94535_f, itemstack1, j1);
+                        if (slot1 != null && func_94527_a(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize >= this.field_94537_h.size() && this.canDragIntoSlot(slot1)) {
+                            ItemStack itemstack1 = itemstack3.copy();
+                            int j1 = slot1.getHasStack() ? slot1.getStack().stackSize : 0;
+                            func_94525_a(this.field_94537_h, this.field_94535_f, itemstack1, j1);
 
-							if (itemstack1.stackSize > itemstack1.getMaxStackSize()) {
-								itemstack1.stackSize = itemstack1.getMaxStackSize();
-							}
+                            if (itemstack1.stackSize > itemstack1.getMaxStackSize()) {
+                                itemstack1.stackSize = itemstack1.getMaxStackSize();
+                            }
 
 							if (itemstack1.stackSize > slot1.getSlotStackLimit()) {
 								itemstack1.stackSize = slot1.getSlotStackLimit();

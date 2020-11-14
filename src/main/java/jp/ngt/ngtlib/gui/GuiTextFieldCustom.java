@@ -71,27 +71,27 @@ public class GuiTextFieldCustom extends GuiTextField {
 
 	@Override
 	public String getSelectedText() {
-		int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-		int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
-		return this.text.substring(i, j);
-	}
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
+        return this.text.substring(i, j);
+    }
 
 	@Override
 	public void writeText(String p_146191_1_) {
-		String s1 = "";
-		String s2 = ChatAllowedCharacters.filerAllowedCharacters(p_146191_1_);
-		int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-		int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
-		int k = this.maxStringLength - this.text.length() - (i - this.selectionEnd);
-		boolean flag = false;
+        String s1 = "";
+        String s2 = ChatAllowedCharacters.filerAllowedCharacters(p_146191_1_);
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
+        int k = this.maxStringLength - this.text.length() - (i - this.selectionEnd);
+        boolean flag = false;
 
-		if (this.text.length() > 0) {
-			s1 = s1 + this.text.substring(0, i);
-		}
+        if (this.text.length() > 0) {
+            s1 = s1 + this.text.substring(0, i);
+        }
 
-		int l;
+        int l;
 
-		if (k < s2.length()) {
+        if (k < s2.length()) {
 			s1 = s1 + s2.substring(0, k);
 			l = k;
 		} else {

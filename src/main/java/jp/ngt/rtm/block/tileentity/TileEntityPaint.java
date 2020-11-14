@@ -9,6 +9,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.stream.IntStream;
+
 public class TileEntityPaint extends TileEntity {
 	private final int[][] colors = new int[6][256];
 	private final int[][] alphas = new int[6][256];
@@ -19,11 +21,7 @@ public class TileEntityPaint extends TileEntity {
 		super.readFromNBT(nbt);
 		int[] ia = nbt.getIntArray("Colors");
 		if (ia.length == 6 * 256) {
-			for (int i = 0; i < 6; ++i) {
-				for (int j = 0; j < 256; ++j) {
-					this.colors[i][j] = ia[i * 256 + j];
-				}
-			}
+			IntStream.range(0, 6).forEach(i -> System.arraycopy(ia, i * 256, this.colors[i], 0, 256));
 		}
 
 		byte[] ba = nbt.getByteArray("Alphas");
@@ -37,9 +35,7 @@ public class TileEntityPaint extends TileEntity {
 
 		byte[] ba2 = nbt.getByteArray("HasColor");
 		if (ba2.length == 6) {
-			for (int i = 0; i < 6; ++i) {
-				this.hasColor[i] = (ba2[i] == 1);
-			}
+			IntStream.range(0, 6).forEach(i -> this.hasColor[i] = (ba2[i] == 1));
 		}
 	}
 
@@ -47,11 +43,7 @@ public class TileEntityPaint extends TileEntity {
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		int[] ia = new int[6 * 256];
-		for (int i = 0; i < 6; ++i) {
-			for (int j = 0; j < 256; ++j) {
-				ia[i * 256 + j] = this.colors[i][j];
-			}
-		}
+		IntStream.range(0, 6).forEach(i -> System.arraycopy(this.colors[i], 0, ia, i * 256, 256));
 		nbt.setIntArray("Colors", ia);
 
 		byte[] ba = new byte[6 * 256];
@@ -63,9 +55,7 @@ public class TileEntityPaint extends TileEntity {
 		nbt.setByteArray("Alphas", ba);
 
 		byte[] ba2 = new byte[6];
-		for (int i = 0; i < 6; ++i) {
-			ba2[i] = (byte) (this.hasColor[i] ? 1 : 0);
-		}
+		IntStream.range(0, 6).forEach(i -> ba2[i] = (byte) (this.hasColor[i] ? 1 : 0));
 		nbt.setByteArray("HasColor", ba2);
 	}
 

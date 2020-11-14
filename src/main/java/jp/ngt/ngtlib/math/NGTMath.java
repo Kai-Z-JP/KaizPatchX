@@ -3,7 +3,9 @@ package jp.ngt.ngtlib.math;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public final class NGTMath {
 	public static final Random RANDOM = new Random();
@@ -19,9 +21,7 @@ public final class NGTMath {
 		TO_RAD = Math.PI / 180.0D;
 		TO_DEG = 180.0D / Math.PI;
 
-		for (int i = 0; i < RAND_TABLE.length; ++i) {
-			RAND_TABLE[i] = RANDOM.nextDouble();
-		}
+		Arrays.setAll(RAND_TABLE, i -> RANDOM.nextDouble());
 	}
 
 	/**
@@ -93,7 +93,7 @@ public final class NGTMath {
 		}
 
 		try {
-			int num = Integer.valueOf(par1);
+			int num = Integer.parseInt(par1);
 			if (num < par2) {
 				return par2;
 			} else if (num > par3) {
@@ -117,7 +117,7 @@ public final class NGTMath {
 		}
 
 		try {
-			float num = Float.valueOf(par1);
+			float num = Float.parseFloat(par1);
 			if (num < par2) {
 				return par2;
 			} else if (num > par3) {
@@ -133,11 +133,7 @@ public final class NGTMath {
 		if (par2 <= 0) {
 			return 1.0D;
 		} else {
-			double d0 = 1.0D;
-			for (int i = 0; i < par2; ++i) {
-				d0 *= par1;
-			}
-			return d0;
+			return IntStream.range(0, par2).mapToDouble(i -> par1).reduce(1.0D, (a, b) -> a * b);
 		}
 	}
 

@@ -13,22 +13,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Role {
-	private static final Map<String, Role> nameMap = new HashMap<String, Role>();
+    private static final Map<String, Role> nameMap = new HashMap<>();
 
-	public static final Role PASSENGER = new RolePassenger("passenger");
-	public static final Role ATTENDANT = new RoleAttendant("attendant");
-	public static final Role MANNEQUIN = new Role("mannequin");
-	public static final Role GUARD = new RoleGuard("guard");
-	public static final Role MOTORMAN = new Role("motorman");
-	public static final Role SALESPERSON = new RoleSalesperson("salesperson");
+    public static final Role PASSENGER = new RolePassenger("passenger");
+    public static final Role ATTENDANT = new RoleAttendant("attendant");
+    public static final Role MANNEQUIN = new Role("mannequin");
+    public static final Role GUARD = new RoleGuard("guard");
+    public static final Role MOTORMAN = new Role("motorman");
+    public static final Role SALESPERSON = new RoleSalesperson("salesperson");
 
-	public Role(String name) {
-		nameMap.put(name, this);
+    public Role(String name) {
+        nameMap.put(name, this);
 	}
 
 	public static Role getRole(String name) {
-		return nameMap.containsKey(name) ? nameMap.get(name) : MANNEQUIN;
-	}
+        return nameMap.getOrDefault(name, MANNEQUIN);
+    }
 
 	public void init(EntityNPC entity) {
 		entity.getNavigator().clearPathEntity();

@@ -21,7 +21,7 @@ function onUpdate(su) {
     var speed = su.getSpeed();
     var maxSp = 120;
 
-    if (notch == 0) {
+    if (notch === 0) {
         su.stopSound('rtm', 'train.223_s0');
         su.stopSound('rtm', 'train.223_s1');
         su.stopSound('rtm', 'train.223_s2');

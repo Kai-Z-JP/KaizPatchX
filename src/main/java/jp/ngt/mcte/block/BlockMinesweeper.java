@@ -14,6 +14,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
+
 public class BlockMinesweeper extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
@@ -142,9 +144,7 @@ public class BlockMinesweeper extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register) {
 		this.icons = new IIcon[14];
-		for (int i = 0; i < this.icons.length; ++i) {
-			this.icons[i] = register.registerIcon("mcte:ms_" + i);
-		}
+		Arrays.setAll(this.icons, i -> register.registerIcon("mcte:ms_" + i));
 	}
 
 	public enum MinesweeperType {

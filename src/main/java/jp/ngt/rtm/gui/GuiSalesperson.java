@@ -23,31 +23,32 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public final class GuiSalesperson extends GuiNPC {
 	private final int MIN_SLOT_INDEX = 4 * 9 + 4;
 	private final int MENU_BUTTON_ROW = 7;
 
-	protected final boolean isOwner;
-	protected final Menu menu;
+    protected final boolean isOwner;
+    protected final Menu menu;
 
-	private MenuEntry selectedMenu;
-	private int amountMoney = 0;
-	private boolean showMenu = false;
-	private int pageIndex = 0;
-	private int maxPage = 0;
-	private int selectedRow = 0;
-	private String message = "";
+    private MenuEntry selectedMenu;
+    private int amountMoney = 0;
+    private boolean showMenu = false;
+    private int pageIndex = 0;
+    private int maxPage = 0;
+    private int selectedRow = 0;
+    private String message;
 
-	private final GuiButton[] delButtons = new GuiButton[MENU_BUTTON_ROW];
-	private final MenuEntry[] menuItems = new MenuEntry[MENU_BUTTON_ROW];
-	private final GuiButton[] decButtons = new GuiButton[MENU_BUTTON_ROW];
-	private final GuiButton[] addButtons = new GuiButton[MENU_BUTTON_ROW];
-	private final int[] itemCounts = new int[MENU_BUTTON_ROW];
+    private final GuiButton[] delButtons = new GuiButton[MENU_BUTTON_ROW];
+    private final MenuEntry[] menuItems = new MenuEntry[MENU_BUTTON_ROW];
+    private final GuiButton[] decButtons = new GuiButton[MENU_BUTTON_ROW];
+    private final GuiButton[] addButtons = new GuiButton[MENU_BUTTON_ROW];
+    private final int[] itemCounts = new int[MENU_BUTTON_ROW];
 
-	public GuiSalesperson(EntityPlayer par1, EntityNPC par2) {
-		super(par1, par2);
+    public GuiSalesperson(EntityPlayer par1, EntityNPC par2) {
+        super(par1, par2);
 
 		this.isOwner = (par1.equals(par2.getOwner()));
 		this.menu = new Menu(par2.getMenu());
@@ -69,35 +70,35 @@ public final class GuiSalesperson extends GuiNPC {
 			this.buttonList.clear();
 
 			this.buttonList.add(new GuiButton(300, this.guiLeft + (this.xSize / 2) - 20, this.guiTop + this.ySize - 25, 40, 20, I18n.format("gui.npc.close")));
-			this.buttonList.add(new GuiButton(301, this.guiLeft + this.xSize - 70, this.guiTop + 5, 20, 20, "<"));
-			this.buttonList.add(new GuiButton(302, this.guiLeft + this.xSize - 25, this.guiTop + 5, 20, 20, ">"));
-			GuiButton bImport = new GuiButton(303, this.guiLeft + 5, this.guiTop + 5, 40, 20, I18n.format("gui.npc.import"));
-			GuiButton bExport = new GuiButton(304, this.guiLeft + 50, this.guiTop + 5, 40, 20, I18n.format("gui.npc.export"));
-			bImport.enabled = this.isOwner;
-			bExport.enabled = this.isOwner;
-			this.buttonList.add(bImport);
-			this.buttonList.add(bExport);
+            this.buttonList.add(new GuiButton(301, this.guiLeft + this.xSize - 70, this.guiTop + 5, 20, 20, "<"));
+            this.buttonList.add(new GuiButton(302, this.guiLeft + this.xSize - 25, this.guiTop + 5, 20, 20, ">"));
+            GuiButton bImport = new GuiButton(303, this.guiLeft + 5, this.guiTop + 5, 40, 20, I18n.format("gui.npc.import"));
+            GuiButton bExport = new GuiButton(304, this.guiLeft + 50, this.guiTop + 5, 40, 20, I18n.format("gui.npc.export"));
+            bImport.enabled = this.isOwner;
+            bExport.enabled = this.isOwner;
+            this.buttonList.add(bImport);
+            this.buttonList.add(bExport);
 
-			List<MenuEntry> list = this.menu.getList();
-			for (int i = 0; i < MENU_BUTTON_ROW; ++i) {
-				int menuIndex = this.pageIndex * MENU_BUTTON_ROW + i;
-				if (menuIndex < list.size()) {
-					int y = this.guiTop + 30 + i * 24;
-					this.delButtons[i] = new GuiButton(1000 + i, this.guiLeft + 5, y, 20, 20, "X");
-					this.buttonList.add(this.delButtons[i]);
-					this.menuItems[i] = list.get(menuIndex);
-					this.decButtons[i] = new GuiButton(2000 + i, this.guiLeft + this.xSize - 60, y, 20, 20, "-");
-					this.buttonList.add(this.decButtons[i]);
-					this.addButtons[i] = new GuiButton(3000 + i, this.guiLeft + this.xSize - 25, y, 20, 20, "+");
-					this.buttonList.add(this.addButtons[i]);
-				} else {
-					this.delButtons[i] = null;
-					this.menuItems[i] = null;
-					this.decButtons[i] = null;
-					this.addButtons[i] = null;
-				}
-				this.itemCounts[i] = 0;
-			}
+            List<MenuEntry> list = this.menu.getList();
+            IntStream.range(0, MENU_BUTTON_ROW).forEach(i -> {
+                int menuIndex = this.pageIndex * MENU_BUTTON_ROW + i;
+                if (menuIndex < list.size()) {
+                    int y = this.guiTop + 30 + i * 24;
+                    this.delButtons[i] = new GuiButton(1000 + i, this.guiLeft + 5, y, 20, 20, "X");
+                    this.buttonList.add(this.delButtons[i]);
+                    this.menuItems[i] = list.get(menuIndex);
+                    this.decButtons[i] = new GuiButton(2000 + i, this.guiLeft + this.xSize - 60, y, 20, 20, "-");
+                    this.buttonList.add(this.decButtons[i]);
+                    this.addButtons[i] = new GuiButton(3000 + i, this.guiLeft + this.xSize - 25, y, 20, 20, "+");
+                    this.buttonList.add(this.addButtons[i]);
+                } else {
+                    this.delButtons[i] = null;
+                    this.menuItems[i] = null;
+                    this.decButtons[i] = null;
+                    this.addButtons[i] = null;
+                }
+                this.itemCounts[i] = 0;
+            });
 
 			this.maxPage = (this.menu.getList().size() - 1) / MENU_BUTTON_ROW;
 			this.selectRow(0);
@@ -225,23 +226,23 @@ public final class GuiSalesperson extends GuiNPC {
 			this.fontRendererObj.drawString(String.format("￥%d", money), this.guiLeft + 115, this.guiTop + 32, 0x000000);
 			this.fontRendererObj.drawString(this.message, this.guiLeft + 83, this.guiTop + 72, 0xFF0000);
 		} else {
-			this.drawDefaultBackground();
+            this.drawDefaultBackground();
 
-			int x0 = (this.width - this.xSize) / 2;
-			int y0 = (this.height - this.ySize) / 2;
-			this.drawGradientRect(x0, y0, x0 + this.xSize, y0 + this.ySize, 0xFFE0E0E0, 0xFFE0E0E0);
+            int x0 = (this.width - this.xSize) / 2;
+            int y0 = (this.height - this.ySize) / 2;
+            this.drawGradientRect(x0, y0, x0 + this.xSize, y0 + this.ySize, 0xFFE0E0E0, 0xFFE0E0E0);
 
-			for (int i = 0; i < this.buttonList.size(); ++i) {
-				((GuiButton) this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY);
-			}
+            for (Object o : this.buttonList) {
+                ((GuiButton) o).drawButton(this.mc, mouseX, mouseY);
+            }
 
-			this.fontRendererObj.drawString(String.format("%d/%d", this.pageIndex, this.maxPage),
-					this.guiLeft + this.xSize - 45, this.guiTop + 10, 0x000000);
+            this.fontRendererObj.drawString(String.format("%d/%d", this.pageIndex, this.maxPage),
+                    this.guiLeft + this.xSize - 45, this.guiTop + 10, 0x000000);
 
-			for (int i = 0; i < MENU_BUTTON_ROW; ++i) {
-				if (this.menuItems[i] == null) {
-					break;
-				}
+            for (int i = 0; i < MENU_BUTTON_ROW; ++i) {
+                if (this.menuItems[i] == null) {
+                    break;
+                }
 
 				int y = this.guiTop + 35 + i * 24;
 

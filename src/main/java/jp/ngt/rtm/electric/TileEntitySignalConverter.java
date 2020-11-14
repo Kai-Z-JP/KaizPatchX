@@ -91,8 +91,6 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 
 	public static TileEntitySignalConverter createTileEntity(int par1) {
 		switch (SignalConverterType.getType(par1)) {
-			case RSIn:
-				return new TileEntitySC_RSIn();
 			case RSOut:
 				return new TileEntitySC_RSOut();
 			case Increment:
@@ -209,7 +207,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 	}
 
 	public static class TileEntitySC_Wireless extends TileEntitySignalConverter implements IChunkLoader {
-		private static final Map<Integer, List<TileEntitySC_Wireless>> ADAPTER_MAP = new HashMap<Integer, List<TileEntitySC_Wireless>>();
+		private static final Map<Integer, List<TileEntitySC_Wireless>> ADAPTER_MAP = new HashMap<>();
 
 		private int prevChannel = 0;
 
@@ -219,11 +217,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 		}
 
 		private List<TileEntitySC_Wireless> getList(int par1) {
-			List<TileEntitySC_Wireless> list = ADAPTER_MAP.get(par1);
-			if (list == null) {
-				list = new ArrayList<TileEntitySC_Wireless>();
-				ADAPTER_MAP.put(par1, list);
-			}
+			List<TileEntitySC_Wireless> list = ADAPTER_MAP.computeIfAbsent(par1, k -> new ArrayList<>());
 			return list;
 		}
 
@@ -290,9 +284,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 		@Override
 		public void setElectricity(int x, int y, int z, int level) {
 			List<TileEntitySC_Wireless> list = this.getList(this.getChannel());
-			for (TileEntitySC_Wireless tile : list) {
-				tile.setWirelessSignal(this.xCoord, this.yCoord, this.zCoord, level);
-			}
+			list.forEach(tile -> tile.setWirelessSignal(this.xCoord, this.yCoord, this.zCoord, level));
 		}
 
 		private void setWirelessSignal(int x, int y, int z, int level) {
@@ -373,10 +365,8 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 					this.finishSetup = true;
 				}
 
-				for (ChunkCoordIntPair chunk : this.loadedChunks) {
-					ForgeChunkManager.forceChunk(this.ticket, chunk);
-					//ForgeChunkManager.reorderChunk(this.ticket, chunk);//並び替え
-				}
+				//ForgeChunkManager.reorderChunk(this.ticket, chunk);//並び替え
+				this.loadedChunks.forEach(chunk -> ForgeChunkManager.forceChunk(this.ticket, chunk));
 				ChunkCoordIntPair myChunk = new ChunkCoordIntPair(x, z);//省くと機能しない
 				ForgeChunkManager.forceChunk(this.ticket, myChunk);
 			}
@@ -408,12 +398,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
 		}
 
 		public static ComparatorType getType(int par1) {
-			for (ComparatorType type : ComparatorType.values()) {
-				if (type.id == par1) {
-					return type;
-				}
-			}
-			return EQUAL;
+			return Arrays.stream(ComparatorType.values()).filter(type -> type.id == par1).findFirst().orElse(EQUAL);
 		}
 	}
 }

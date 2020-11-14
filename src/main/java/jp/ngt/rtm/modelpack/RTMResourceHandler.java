@@ -20,35 +20,35 @@ public class RTMResourceHandler {
 	 * モデルパックで追加したsound.jsonの登録
 	 */
 	public static List<String> registerSounds() {
-		NGTLog.debug("[RTM](Client) Start registering sounds.json");
-		List<String> list = new ArrayList<String>();
-		SimpleReloadableResourceManager rm = (SimpleReloadableResourceManager) NGTUtilClient.getMinecraft().getResourceManager();
-		IMetadataSerializer ms = getMetadataSerializer(rm);
-		Map resourceManagers = getDomainResourceManagers(rm);
-		if (ms == null || resourceManagers == null) {
-			NGTLog.debug("[RTM](Client) Can't start registering sounds.json");
-			return list;
-		}
+        NGTLog.debug("[RTM](Client) Start registering sounds.json");
+        List<String> list = new ArrayList<>();
+        SimpleReloadableResourceManager rm = (SimpleReloadableResourceManager) NGTUtilClient.getMinecraft().getResourceManager();
+        IMetadataSerializer ms = getMetadataSerializer(rm);
+        Map resourceManagers = getDomainResourceManagers(rm);
+        if (ms == null || resourceManagers == null) {
+            NGTLog.debug("[RTM](Client) Can't start registering sounds.json");
+            return list;
+        }
 
-		List<File> fileList = NGTFileLoader.findFile((file) -> {
-			String name = file.getName();
-			return name.startsWith("sounds") && name.endsWith(".json");
-		});
-		for (File file : fileList) {
-			String path = file.getAbsolutePath();
-			int index0 = path.indexOf("assets") + 7;
-			int index1 = path.indexOf("sounds", index0) - 1;
-			if (index0 > 0 && index1 > 0 && index1 - index0 > 0) {
-				String domain = path.substring(index0, index1);
-				if (domain.startsWith("sound_")) {
-					list.add(domain);
-					rm.getResourceDomains().add(domain);
-					RTMResourceManager rrm = new RTMResourceManager(ms, file.getParentFile());
-					resourceManagers.put(domain, rrm);
-					NGTLog.debug("[RTM](Client) Register sounds.json, domain:" + domain);
-				}
-			}
-		}
+        List<File> fileList = NGTFileLoader.findFile((file) -> {
+            String name = file.getName();
+            return name.startsWith("sounds") && name.endsWith(".json");
+        });
+        fileList.forEach(file -> {
+            String path = file.getAbsolutePath();
+            int index0 = path.indexOf("assets") + 7;
+            int index1 = path.indexOf("sounds", index0) - 1;
+            if (index0 > 0 && index1 > 0 && index1 - index0 > 0) {
+                String domain = path.substring(index0, index1);
+                if (domain.startsWith("sound_")) {
+                    list.add(domain);
+                    rm.getResourceDomains().add(domain);
+                    RTMResourceManager rrm = new RTMResourceManager(ms, file.getParentFile());
+                    resourceManagers.put(domain, rrm);
+                    NGTLog.debug("[RTM](Client) Register sounds.json, domain:" + domain);
+                }
+            }
+        });
 		return list;
 	}
 

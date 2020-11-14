@@ -35,8 +35,8 @@ public final class BlockUtil {
 		Block[] connected = getConnectedBlock(world, x, y, z);
 		for (int i0 = 0; i0 < 6; ++i0) {
 			int i2 = 0;
-			for (int i1 = 0; i1 < blocks.length; ++i1) {
-				i2 += (connected[i0] == blocks[i1] ? 1 : 0);
+			for (Block block : blocks) {
+				i2 += (connected[i0] == block ? 1 : 0);
 			}
 			b0[i0] = (i2 > 0);
 		}
@@ -47,9 +47,9 @@ public final class BlockUtil {
 		boolean[] b0 = new boolean[6];
 		for (int i0 = 0; i0 < 6; ++i0) {
 			int i2 = 0;
-			for (int i1 = 0; i1 < blocks.length; ++i1) {
-				boolean flag1 = blocks[i1][0].equals(world.getBlock(x + field_01[i0][0], y + field_01[i0][1], z + field_01[i0][2]));
-				boolean flag2 = blocks[i1][1].equals(-1) || blocks[i1][1].equals(world.getBlockMetadata(x + field_01[i0][0], y + field_01[i0][1], z + field_01[i0][2]));
+			for (Object[] block : blocks) {
+				boolean flag1 = block[0].equals(world.getBlock(x + field_01[i0][0], y + field_01[i0][1], z + field_01[i0][2]));
+				boolean flag2 = block[1].equals(-1) || block[1].equals(world.getBlockMetadata(x + field_01[i0][0], y + field_01[i0][1], z + field_01[i0][2]));
 				if (flag1 && flag2) {
 					b0[i0] = true;
 					break;
@@ -69,7 +69,7 @@ public final class BlockUtil {
 	}
 
 	public static List<int[]> getBlockList(IBlockAccess world, int x, int y, int z, Block block, int range) {
-		List<int[]> array = new ArrayList<int[]>();
+		List<int[]> array = new ArrayList<>();
 		int r2 = range * 2;
 		for (int i0 = 0; i0 < r2; ++i0) {
 			for (int i1 = 0; i1 < r2; ++i1) {

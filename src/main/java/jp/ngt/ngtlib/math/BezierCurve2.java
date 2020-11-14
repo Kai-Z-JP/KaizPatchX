@@ -50,15 +50,15 @@ public final class BezierCurve2 implements ILine {
 	}
 
 	private int[] getPointFromParameter(int par1, int par2) {
-		int t = par2 < 0 ? 0 : (par2 > par1 ? par1 : par2);
-		int tp = par1 - par2;
-		int i0 = t * t * t;
-		int i1 = 3 * t * t * tp;
-		int i2 = 3 * t * tp * tp;
-		int x = 0;//i0*epI[0] + i1*cpEI[0] + i2*cpSI[0];
-		int y = 0;//i0*epI[1] + i1*cpEI[1] + i2*cpSI[1];
-		return new int[]{x, y};
-	}
+        int t = par2 < 0 ? 0 : (Math.min(par2, par1));
+        int tp = par1 - par2;
+        int i0 = t * t * t;
+        int i1 = 3 * t * t * tp;
+        int i2 = 3 * t * tp * tp;
+        int x = 0;//i0*epI[0] + i1*cpEI[0] + i2*cpSI[0];
+        int y = 0;//i0*epI[1] + i1*cpEI[1] + i2*cpSI[1];
+        return new int[]{x, y};
+    }
 
 	@Override
 	public int getNearlestPoint(int par1, double par2, double par3) {
@@ -76,12 +76,11 @@ public final class BezierCurve2 implements ILine {
 	}
 
 	private void setSpliteValue(int par1) {
-		double d0 = par1;
-		this.cpSI[0] = MathHelper.floor_double((double) this.cpS[0] * d0);
-		this.cpSI[1] = MathHelper.floor_double((double) this.cpS[1] * d0);
-		this.cpEI[0] = MathHelper.floor_double((double) this.cpE[0] * d0);
-		this.cpEI[1] = MathHelper.floor_double((double) this.cpE[1] * d0);
-		this.epI[0] = MathHelper.floor_double((double) this.ep[0] * d0);
-		this.epI[1] = MathHelper.floor_double((double) this.ep[1] * d0);
-	}
+        this.cpSI[0] = MathHelper.floor_double((double) this.cpS[0] * (double) par1);
+        this.cpSI[1] = MathHelper.floor_double((double) this.cpS[1] * (double) par1);
+        this.cpEI[0] = MathHelper.floor_double((double) this.cpE[0] * (double) par1);
+        this.cpEI[1] = MathHelper.floor_double((double) this.cpE[1] * (double) par1);
+        this.epI[0] = MathHelper.floor_double((double) this.ep[0] * (double) par1);
+        this.epI[1] = MathHelper.floor_double((double) this.ep[1] * (double) par1);
+    }
 }

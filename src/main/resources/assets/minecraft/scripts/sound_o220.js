@@ -5,7 +5,7 @@ function onUpdate(su) {
     var speed = su.getSpeed();
     var notch = su.getNotch();
 
-    if (notch == 0) {
+    if (notch === 0) {
         su.stopSound("rtm", "train.tsurikake");
         su.stopSound("rtm", "train.tsurikake_x2");
 

@@ -19,15 +19,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
-public class ContainerRTMWorkBench extends Container {
-	private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 5, 5);
-	private final InventoryCrafting invBallast = new InventoryCrafting(this, 5, 1);
-	private final InventoryUneditable sample = new InventoryUneditable(this, 1, 1);
-	private final InventoryCraftResult craftResult = new InventoryCraftResult();
+import java.util.stream.IntStream;
 
-	private final World worldObj;
-	private final TileEntityTrainWorkBench workBench;
-	protected EntityPlayer thePlayer;
+public class ContainerRTMWorkBench extends Container {
+    private final InventoryCrafting craftMatrix = new InventoryCrafting(this, 5, 5);
+    private final InventoryCrafting invBallast = new InventoryCrafting(this, 5, 1);
+    private final InventoryUneditable sample = new InventoryUneditable(this, 1, 1);
+    private final InventoryCraftResult craftResult = new InventoryCraftResult();
+
+    private final World worldObj;
+    private final TileEntityTrainWorkBench workBench;
+    protected EntityPlayer thePlayer;
 	private int lastCraftingTime;
 	private final boolean isCreativeMode;
 
@@ -53,31 +55,28 @@ public class ContainerRTMWorkBench extends Container {
 		this.addSlotToContainer(new SlotWorkBench(inventory.player, this.craftMatrix, this.craftResult, 0, 138, 38));
 
 		//見本スロット
-		this.addSlotToContainer(new Slot(this.sample, 0, 138, 12));
+        this.addSlotToContainer(new Slot(this.sample, 0, 138, 12));
 
-		//クラフトスロット
-		for (int i = 0; i < 5; ++i) {
-			for (int j = 0; j < 5; ++j) {
-				this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 5, 8 + j * 18, 12 + i * 18));
-			}
-		}
+        //クラフトスロット
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 5, 8 + j * 18, 12 + i * 18));
+            }
+        }
 
-		//インベントリ(手持ち)
-		for (int i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(inventory, i, 8 + i * 18, 164));//1Slot:18
-		}
+        //インベントリ(手持ち)
+        //1Slot:18
+        IntStream.range(0, 9).mapToObj(i -> new Slot(inventory, i, 8 + i * 18, 164)).forEach(this::addSlotToContainer);
 
-		if (this.workbenchType == 1) {
-			//道床スロット
-			for (int i = 0; i < 5; ++i) {
-				this.addSlotToContainer(new Slot(this.invBallast, i, 8 + i * 18, 104));
-			}
-		} else if (this.workbenchType == 0) {
-			//インベントリ
-			for (int i = 0; i < 3; ++i) {
-				for (int j = 0; j < 9; ++j) {
-					this.addSlotToContainer(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 106 + i * 18));
-				}
+        if (this.workbenchType == 1) {
+            //道床スロット
+            IntStream.range(0, 5).mapToObj(i -> new Slot(this.invBallast, i, 8 + i * 18, 104)).forEach(this::addSlotToContainer);
+        } else if (this.workbenchType == 0) {
+            //インベントリ
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 9; ++j) {
+                    this.addSlotToContainer(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 106 + i * 18));
+                }
 			}
 		}
 
@@ -140,14 +139,10 @@ public class ContainerRTMWorkBench extends Container {
 	 * 本来はSlotWorkBench.onPickupFromSlot()で行う
 	 */
 	private void consumeItemsInCraftMatrix() {
-		for (int i = 0; i < this.craftMatrix.getSizeInventory(); ++i) {
-			this.decrSlotItem(this.craftMatrix, i);
-		}
+        IntStream.range(0, this.craftMatrix.getSizeInventory()).forEach(i -> this.decrSlotItem(this.craftMatrix, i));
 
-		for (int i = 0; i < this.invBallast.getSizeInventory(); ++i) {
-			this.decrSlotItem(this.invBallast, i);
-		}
-	}
+        IntStream.range(0, this.invBallast.getSizeInventory()).forEach(i -> this.decrSlotItem(this.invBallast, i));
+    }
 
 	private void decrSlotItem(InventoryCrafting inventory, int slotNum) {
 		ItemStack itemInSlot = inventory.getStackInSlot(slotNum);
@@ -211,25 +206,25 @@ public class ContainerRTMWorkBench extends Container {
 
 	@Override
 	public void detectAndSendChanges() {
-		if (this.workBench.getCraftingTime() == TileEntityTrainWorkBench.Max_CraftingTime && this.getSampeItem() != null) {
-			this.craftResult.setInventorySlotContents(0, this.getSampeItem().copy());
-			if (this.workbenchType == 0 || !this.isCreativeMode) {
-				this.sample.setInventorySlotContents(0, null);
-			}
-		}
+        if (this.workBench.getCraftingTime() == TileEntityTrainWorkBench.Max_CraftingTime && this.getSampeItem() != null) {
+            this.craftResult.setInventorySlotContents(0, this.getSampeItem().copy());
+            if (this.workbenchType == 0 || !this.isCreativeMode) {
+                this.sample.setInventorySlotContents(0, null);
+            }
+        }
 
-		super.detectAndSendChanges();
+        super.detectAndSendChanges();
 
-		for (int i = 0; i < this.crafters.size(); ++i) {
-			ICrafting icrafting = (ICrafting) this.crafters.get(i);
+        for (Object crafter : this.crafters) {
+            ICrafting icrafting = (ICrafting) crafter;
 
-			if (this.lastCraftingTime != this.workBench.getCraftingTime()) {
-				icrafting.sendProgressBarUpdate(this, 0, this.workBench.getCraftingTime());
-			}
-		}
+            if (this.lastCraftingTime != this.workBench.getCraftingTime()) {
+                icrafting.sendProgressBarUpdate(this, 0, this.workBench.getCraftingTime());
+            }
+        }
 
-		this.lastCraftingTime = this.workBench.getCraftingTime();
-	}
+        this.lastCraftingTime = this.workBench.getCraftingTime();
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)

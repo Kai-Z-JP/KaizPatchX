@@ -19,9 +19,10 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public abstract class TileEntityElectricalWiring extends TileEntityCustom {
-	protected List<Connection> connections = new ArrayList<Connection>();
+	protected List<Connection> connections = new ArrayList<>();
 
 	public boolean isActivated;
 	private int signal;
@@ -49,12 +50,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	}
 
     protected Connection getConnection(int x, int y, int z) {
-        for (Connection connection : this.connections) {
-            if (connection.x == x && connection.y == y && connection.z == z) {
-                return connection;
-            }
-        }
-        return null;
+	    return this.connections.stream().filter(connection -> connection.x == x && connection.y == y && connection.z == z).findFirst().orElse(null);
     }
 
     public List<Connection> getConnectionList() {
@@ -157,11 +153,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	 * 全てに信号送信
 	 */
 	protected void sendElectricityToAll(int level) {
-		for (Connection connection : this.connections) {
-			if (connection.type != ConnectionType.NONE) {
-				this.sendElectricity(connection, level, 0);
-			}
-		}
+		this.connections.stream().filter(connection -> connection.type != ConnectionType.NONE).forEach(connection -> this.sendElectricity(connection, level, 0));
 	}
 
 	@Override
@@ -171,21 +163,17 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		if (this.worldObj.isRemote) {
 			if (this.isActivated) {
 				Random random = this.worldObj.rand;
-				for (int l = 0; l < 3; ++l) {
+				IntStream.range(0, 3).forEach(d -> {
 					double d1 = (float) this.xCoord + random.nextFloat();
 					double d2 = (float) this.yCoord + random.nextFloat();
 					double d3 = (float) this.zCoord + random.nextFloat();
 					this.worldObj.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
-				}
+				});
 			}
 		} else {
 			//接続が有効かを確認
-			List<Connection> list = new ArrayList<Connection>(this.connections);
-			for (Connection connection : list) {
-				if (!connection.isAvailable(this.worldObj) || connection.type == ConnectionType.NONE) {
-					this.setConnectionTo(connection.x, connection.y, connection.z, ConnectionType.NONE, "");
-				}
-			}
+			List<Connection> list = new ArrayList<>(this.connections);
+			list.stream().filter(connection -> !connection.isAvailable(this.worldObj) || connection.type == ConnectionType.NONE).forEach(connection -> this.setConnectionTo(connection.x, connection.y, connection.z, ConnectionType.NONE, ""));
 
 			//信号の処理
 			if (this.prevSignal >= 0 && this.prevSignal != this.signal) {
@@ -303,8 +291,8 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		int dis = 64;
 		List list = this.worldObj.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(this.xCoord - dis, this.yCoord - dis, this.zCoord - dis, this.xCoord + dis, this.yCoord + dis, this.zCoord + dis));
 		if (list != null && !list.isEmpty()) {
-			for (int j1 = 0; j1 < list.size(); ++j1) {
-				Entity entity = (Entity) list.get(j1);
+			for (Object o : list) {
+				Entity entity = (Entity) o;
 				if (entity instanceof EntityElectricalWiring) {
 					if (((EntityElectricalWiring) entity).tileEW.isActivated) {
 						return ((EntityElectricalWiring) entity).tileEW;
@@ -336,8 +324,8 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	public static TileEntityElectricalWiring getWireEntity(World world, int x, int y, int z) {
 		List list = world.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 2, z + 1));
 		if (list != null && !list.isEmpty()) {
-			for (int j1 = 0; j1 < list.size(); ++j1) {
-				Entity entity = (Entity) list.get(j1);
+			for (Object o : list) {
+				Entity entity = (Entity) o;
 				if (entity instanceof EntityElectricalWiring) {
 					return ((EntityElectricalWiring) entity).tileEW;
 				}
@@ -354,9 +342,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 	 * ブロック破壊時に呼ばれる
 	 */
 	public void onBlockBreaked() {
-		for (Connection connection : this.connections) {
-			this.sendElectricity(connection, 0, 0);
-		}
+		this.connections.forEach(connection -> this.sendElectricity(connection, 0, 0));
 	}
 
 	@Override
@@ -372,11 +358,11 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 		int difX = x - prevX;
 		int difY = y - prevY;
 		int difZ = z - prevZ;
-		for (Connection connection : this.connections) {
+		this.connections.forEach(connection -> {
 			connection.x += difX;
 			connection.y += difY;
 			connection.z += difZ;
-		}
+		});
 		super.setPos(x, y, z, prevX, prevY, prevZ);
 	}
 }

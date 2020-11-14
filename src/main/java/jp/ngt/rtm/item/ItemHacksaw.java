@@ -27,18 +27,16 @@ public class ItemHacksaw extends Item {
 		} else {
 			Block block = world.getBlock(x, y, z);
 			if (block == RTMBlock.steelSlab && world.getBlockMetadata(x, y, z) == 0) {
-				if (world.isRemote) {
-					return true;
-				} else {
-					player.entityDropItem(new ItemStack(RTMItem.steel_ingot, 1, 0), 0.5F);
-					world.setBlock(x, y, z, Blocks.air);
-					itemstack.damageItem(1, player);
-					player.addStat(RTMAchievement.getSteel, 1);
-					return true;
-				}
-			} else {
-				return false;
-			}
+                if (!world.isRemote) {
+                    player.entityDropItem(new ItemStack(RTMItem.steel_ingot, 1, 0), 0.5F);
+                    world.setBlock(x, y, z, Blocks.air);
+                    itemstack.damageItem(1, player);
+                    player.addStat(RTMAchievement.getSteel, 1);
+                }
+                return true;
+            } else {
+                return false;
+            }
 		}
 	}
 

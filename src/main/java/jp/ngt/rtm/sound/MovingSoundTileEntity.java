@@ -48,11 +48,11 @@ public class MovingSoundTileEntity extends MovingSound {
 	}
 
 	public void setVolume(float par1) {
-		float vol = par1 * RTMCore.trainSoundVol;
-		this.prevVolume = vol < 0.0F ? 0.0F : vol;
-	}
+        float vol = par1 * RTMCore.trainSoundVol;
+        this.prevVolume = Math.max(vol, 0.0F);
+    }
 
 	public void setPitch(float par1) {
-		this.prevPitch = par1 < 0.0F ? 0.0F : par1;
-	}
+        this.prevPitch = Math.max(par1, 0.0F);
+    }
 }

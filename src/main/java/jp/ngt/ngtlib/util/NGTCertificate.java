@@ -50,17 +50,17 @@ public class NGTCertificate {
 	}
 
 	public static boolean registerKey(EntityPlayer player, String key) {
-		List<String> strings = new ArrayList<String>();
-		try {
-			URL url = new URL("https://dl.dropboxusercontent.com/s/tukcqsaylqfhx7j/key.ngt");
-			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-			String string;
-			while ((string = br.readLine()) != null) {
-				strings.add(string);
-			}
-			br.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+        List<String> strings = new ArrayList<>();
+        try {
+            URL url = new URL("https://dl.dropboxusercontent.com/s/tukcqsaylqfhx7j/key.ngt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String string;
+            while ((string = br.readLine()) != null) {
+                strings.add(string);
+            }
+            br.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
 			NGTLog.sendChatMessage(player, "message.regKey.0");
 			return false;
 		} catch (IOException e) {
@@ -70,17 +70,17 @@ public class NGTCertificate {
 		}
 
 		if (strings.size() > 0) {
-			String[] sa = strings.toArray(new String[strings.size()]);
-			if (sa[0] == null || sa[0].equals("unavailable")) {
-				NGTLog.sendChatMessage(player, "message.regKey.2");
-				return false;
-			} else if (sa[0].equals("available")) {
-				NGTLog.sendChatMessage(player, "message.regKey.3");
-				return true;
-			} else if (sa[0].equals(key)) {
-				NGTLog.sendChatMessage(player, "message.regKey.4");
-				return true;
-			}
+            String[] sa = strings.toArray(new String[0]);
+            if (sa[0] == null || sa[0].equals("unavailable")) {
+                NGTLog.sendChatMessage(player, "message.regKey.2");
+                return false;
+            } else if (sa[0].equals("available")) {
+                NGTLog.sendChatMessage(player, "message.regKey.3");
+                return true;
+            } else if (sa[0].equals(key)) {
+                NGTLog.sendChatMessage(player, "message.regKey.4");
+                return true;
+            }
 		}
 
 		NGTLog.sendChatMessage(player, "message.regKey.5");

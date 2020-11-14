@@ -1,14 +1,16 @@
 package jp.ngt.rtm.electric;
 
+import java.util.Arrays;
+
 public enum SignalLevel {
-	/**
-	 * 高速進行
-	 */
-	HIGH_SPEED_PROCEED(6, 1.2F, 1.5F),
-	/**
-	 * 進行
-	 */
-	PROCEED(5, 0.9F, 1.2F),
+    /**
+     * 高速進行
+     */
+    HIGH_SPEED_PROCEED(6, 1.2F, 1.5F),
+    /**
+     * 進行
+     */
+    PROCEED(5, 0.9F, 1.2F),
 	/**
 	 * 減速
 	 */
@@ -39,12 +41,7 @@ public enum SignalLevel {
 	}
 
 	public static SignalLevel getSignal(int par1) {
-		for (SignalLevel signal : SignalLevel.values()) {
-			if (signal.level == par1) {
-				return signal;
-			}
-		}
-		return STOP;
+        return Arrays.stream(SignalLevel.values()).filter(signal -> signal.level == par1).findFirst().orElse(STOP);
 	}
 
 	/**

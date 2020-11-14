@@ -33,14 +33,13 @@ public class ItemCrowbar extends ItemSword {
 			} else {
 				for (int i = 0; i < 64; ++i) {
 					for (int j = 0; j < 64; ++j) {
-						int x = par4 + i - 32;
-						int y = par5;
-						int z = par6 + j - 32;
-						TileEntity tile0 = world.getTileEntity(x, y, z);
-						if (tile0 instanceof TileEntityLargeRailBase && ((TileEntityLargeRailBase) tile0).getRailCore() == null) {
-							world.setBlockToAir(x, y, z);
-						}
-					}
+                        int x = par4 + i - 32;
+                        int z = par6 + j - 32;
+                        TileEntity tile0 = world.getTileEntity(x, par5, z);
+                        if (tile0 instanceof TileEntityLargeRailBase && ((TileEntityLargeRailBase) tile0).getRailCore() == null) {
+                            world.setBlockToAir(x, par5, z);
+                        }
+                    }
 				}
 			}
 		}

@@ -10,15 +10,17 @@ import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
+
 @SideOnly(Side.CLIENT)
 public class Parts {
-	public final String[] objNames;
-	private GroupObject[] objs;
-	private DisplayList[] gLists;
+    public final String[] objNames;
+    private GroupObject[] objs;
+    private DisplayList[] gLists;
 
-	public Parts(String... par1) {
-		this.objNames = par1;
-	}
+    public Parts(String... par1) {
+        this.objNames = par1;
+    }
 
 	public void init(PartsRenderer renderer) {
 		this.gLists = new DisplayList[renderer.modelObj.textures.length];
@@ -59,9 +61,8 @@ public class Parts {
 				if (smoothing)
 					GL11.glShadeModel(7425);
 				if (ignoreMatId(renderer)) {
-					for (DisplayList glo : this.gLists)
-						GLHelper.callList(glo);
-				} else {
+                    Arrays.stream(this.gLists).forEach(GLHelper::callList);
+                } else {
 					GLHelper.callList(this.gLists[i]);
 				}
 				if (smoothing)

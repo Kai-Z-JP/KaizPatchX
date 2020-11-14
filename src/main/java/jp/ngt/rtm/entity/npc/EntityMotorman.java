@@ -26,6 +26,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class EntityMotorman extends EntityNPC {
 	private final EntityAIDriveWithMacro aiMacro;
@@ -106,13 +108,9 @@ public class EntityMotorman extends EntityNPC {
 	@SideOnly(Side.CLIENT)
 	public void setMacro(File file) {
 		String[] sa = NGTText.readText(file);
-		StringBuilder sb = new StringBuilder("TMacro");
-		for (String s : sa) {
-			sb.append(TrainCommand.SEPARATOR);
-			sb.append(s);
-		}
+		String sb = Arrays.stream(sa).map(s -> TrainCommand.SEPARATOR + s).collect(Collectors.joining("", "TMacro", ""));
 		RTMCore.NETWORK_WRAPPER.sendToServer(
-				new PacketNotice(PacketNotice.Side_SERVER, sb.toString(), this));
+				new PacketNotice(PacketNotice.Side_SERVER, sb, this));
 		NGTLog.sendChatMessage(NGTUtil.getClientPlayer(), "Set macro : " + file.getName());
 	}
 

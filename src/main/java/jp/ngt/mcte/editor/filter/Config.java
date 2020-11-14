@@ -7,6 +7,7 @@ import jp.ngt.mcte.editor.filter.CfgParameter.CfgParameterString;
 import jp.ngt.ngtlib.io.NGTText;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +17,7 @@ public class Config {
 	/**
 	 * パラメータは追加順に保持
 	 */
-	public final Map<String, CfgParameter> parameters = new LinkedHashMap<String, CfgParameter>();
+	public final Map<String, CfgParameter> parameters = new LinkedHashMap<>();
 
 	public Config() {
 	}
@@ -121,12 +122,7 @@ public class Config {
 	}
 
 	public void load(String[] sa) {
-		for (String s : sa) {
-			String[] sa2 = s.split(SEPARATOR);
-			if (this.parameters.containsKey(sa2[0])) {
-				this.parameters.get(sa2[0]).setRawValue(sa2[1]);
-			}
-		}
+		Arrays.stream(sa).map(s -> s.split(SEPARATOR)).filter(sa2 -> this.parameters.containsKey(sa2[0])).forEach(sa2 -> this.parameters.get(sa2[0]).setRawValue(sa2[1]));
 	}
 
 	public void save(File file) {

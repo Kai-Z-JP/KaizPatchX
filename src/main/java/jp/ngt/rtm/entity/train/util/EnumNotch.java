@@ -1,14 +1,16 @@
 package jp.ngt.rtm.entity.train.util;
 
+import java.util.Arrays;
+
 public enum EnumNotch {
-	accelerate_5(5, 1.80F, 0.002F),
-	accelerate_4(4, 1.44F, 0.002F),
-	accelerate_3(3, 1.08F, 0.002F),
-	accelerate_2(2, 0.72F, 0.002F),
-	accelerate_1(1, 0.36F, 0.002F),
-	inertia(0, 0.0F, 0.0F),
-	brake_1(-1, 0.0F, -0.0005F),
-	brake_2(-2, 0.0F, -0.001F),
+    accelerate_5(5, 1.80F, 0.002F),
+    accelerate_4(4, 1.44F, 0.002F),
+    accelerate_3(3, 1.08F, 0.002F),
+    accelerate_2(2, 0.72F, 0.002F),
+    accelerate_1(1, 0.36F, 0.002F),
+    inertia(0, 0.0F, 0.0F),
+    brake_1(-1, 0.0F, -0.0005F),
+    brake_2(-2, 0.0F, -0.001F),
 	brake_3(-3, 0.0F, -0.0015F),
 	brake_4(-4, 0.0F, -0.002F),
 	brake_5(-5, 0.0F, -0.0025F),
@@ -84,15 +86,10 @@ public enum EnumNotch {
 	 * @param par1 : 目標加速度
 	 */
 	public static EnumNotch getSuitableNotchFromAcceleration(float par1) {
-		if (par1 > 0.0F) {
-			return accelerate_4;
-		}
+        if (par1 > 0.0F) {
+            return accelerate_4;
+        }
 
-		for (EnumNotch notch : EnumNotch.values()) {
-			if (notch.acceleration <= par1 && notch.acceleration + 0.0005F > par1) {
-				return notch;
-			}
-		}
-		return inertia;
-	}
+        return Arrays.stream(EnumNotch.values()).filter(notch -> notch.acceleration <= par1 && notch.acceleration + 0.0005F > par1).findFirst().orElse(inertia);
+    }
 }

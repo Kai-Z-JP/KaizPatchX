@@ -17,20 +17,18 @@ public class ItemBellows extends Item {
 
 	@Override
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
-		if (world.isRemote) {
-			return true;
-		} else {
-			if (world.getBlock(x, y, z) == RTMBlock.brickSlab) {
-				if (world.rand.nextInt(5) == 0) {
-					int x1 = x - BlockUtil.facing[side][0];
-					int y1 = y - BlockUtil.facing[side][1];
-					int z1 = z - BlockUtil.facing[side][2];
-					boolean b = this.setLiquid(world, x1, y1, z1, RTMBlock.furnaceFire, 0);
-				}
-			}
-			return true;
-		}
-	}
+        if (!world.isRemote) {
+            if (world.getBlock(x, y, z) == RTMBlock.brickSlab) {
+                if (world.rand.nextInt(5) == 0) {
+                    int x1 = x - BlockUtil.facing[side][0];
+                    int y1 = y - BlockUtil.facing[side][1];
+                    int z1 = z - BlockUtil.facing[side][2];
+                    boolean b = this.setLiquid(world, x1, y1, z1, RTMBlock.furnaceFire, 0);
+                }
+            }
+        }
+        return true;
+    }
 
 	protected boolean setLiquid(World world, int x, int y, int z, Block block, int metadata) {
 		int m0 = world.getBlockMetadata(x, y, z);

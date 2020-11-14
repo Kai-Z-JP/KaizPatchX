@@ -11,6 +11,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.stream.IntStream;
+
 public class TileEntityPipe extends TileEntity {
 	/**
 	 * 0:x, 1:y, 2:z
@@ -53,7 +55,7 @@ public class TileEntityPipe extends TileEntity {
 	}
 
 	public void searchConnection() {
-		for (int i = 0; i < 6; ++i) {
+		IntStream.range(0, 6).forEach(i -> {
 			int x0 = this.xCoord + BlockUtil.facing[i][0];
 			int y0 = this.yCoord + BlockUtil.facing[i][1];
 			int z0 = this.zCoord + BlockUtil.facing[i][2];
@@ -67,7 +69,7 @@ public class TileEntityPipe extends TileEntity {
 			} else {
 				this.connection[i] = 0;
 			}
-		}
+		});
 
 		if (this.getBlockMetadata() % 2 == 0) {
 			//まっすぐパイプ
@@ -97,7 +99,6 @@ public class TileEntityPipe extends TileEntity {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
-		return bb;
+		return AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
 	}
 }

@@ -30,25 +30,22 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class RenderItemMiniature implements IItemRenderer {
-	public static final RenderItemMiniature INSTANCE = new RenderItemMiniature();
+    public static final RenderItemMiniature INSTANCE = new RenderItemMiniature();
 
-	private final Map<ItemStack, RenderProp> propMap = new HashMap<ItemStack, RenderProp>();
+    private final Map<ItemStack, RenderProp> propMap = new HashMap<>();
 
-	private RenderItemMiniature() {
-	}
+    private RenderItemMiniature() {
+    }
 
-	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return item.hasTagCompound();
-	}
+    @Override
+    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
+        return item.hasTagCompound();
+    }
 
-	@Override
+    @Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-		switch (helper) {
-			default:
-				return false;
-		}
-	}
+        return false;
+    }
 
 	private void renderItemAsArmor(ItemStack item) {
 		this.renderItem(ItemRenderType.EQUIPPED, item);
@@ -72,17 +69,11 @@ public class RenderItemMiniature implements IItemRenderer {
 		boolean useOffset = true;
 		float f0 = prop.scale;
 		switch (type) {
-			case ENTITY:
-				break;
 			case EQUIPPED:
 				if ("isArmor".equals(data[0])) {
 				} else {
 					GL11.glTranslatef(0.375F, -0.0625F, -0.0625F);
 				}
-				break;
-			case EQUIPPED_FIRST_PERSON:
-				break;
-			case FIRST_PERSON_MAP:
 				break;
 			case INVENTORY:
 				//RenderItem.renderItemIntoGUI()
@@ -231,32 +222,32 @@ public class RenderItemMiniature implements IItemRenderer {
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	private class RenderProp {
-		public NGTObject ngto;
-		public float offsetX, offsetY, offsetZ;
-		public float scale;
-		public int mode;
+    @SideOnly(Side.CLIENT)
+    private static class RenderProp {
+        public NGTObject ngto;
+        public float offsetX, offsetY, offsetZ;
+        public float scale;
+        public int mode;
 
-		public NGTWorld world;
-		public DisplayList[] glLists;
-		public float corX, corZ;
-		public float scaleInInventory;
+        public NGTWorld world;
+        public DisplayList[] glLists;
+        public float corX, corZ;
+        public float scaleInInventory;
 
 		public RenderProp(NGTObject par1, ItemStack item) {
 			this.ngto = par1;
-			this.world = new NGTWorld(NGTUtil.getClientWorld(), par1);
-			this.corX = (float) par1.xSize * 0.5F;
-			this.corZ = (float) par1.zSize * 0.5F;
-			NBTTagCompound nbt = item.getTagCompound();
-			float[] fa = ItemMiniature.getOffset(nbt);
-			this.offsetX = fa[0];
-			this.offsetY = fa[1];
-			this.offsetZ = fa[2];
-			this.scale = ItemMiniature.getScale(nbt);
-			this.mode = ItemMiniature.getMode(nbt).id;
-			int i0 = par1.xSize > par1.ySize ? (par1.xSize > par1.zSize ? par1.xSize : par1.zSize) : (par1.ySize > par1.zSize ? par1.ySize : par1.zSize);
-			this.scaleInInventory = 1.0F / (float) i0;
-		}
+            this.world = new NGTWorld(NGTUtil.getClientWorld(), par1);
+            this.corX = (float) par1.xSize * 0.5F;
+            this.corZ = (float) par1.zSize * 0.5F;
+            NBTTagCompound nbt = item.getTagCompound();
+            float[] fa = ItemMiniature.getOffset(nbt);
+            this.offsetX = fa[0];
+            this.offsetY = fa[1];
+            this.offsetZ = fa[2];
+            this.scale = ItemMiniature.getScale(nbt);
+            this.mode = ItemMiniature.getMode(nbt).id;
+            int i0 = par1.xSize > par1.ySize ? (Math.max(par1.xSize, par1.zSize)) : (Math.max(par1.ySize, par1.zSize));
+            this.scaleInInventory = 1.0F / (float) i0;
+        }
 	}
 }

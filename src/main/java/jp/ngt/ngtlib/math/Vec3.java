@@ -148,7 +148,7 @@ public class Vec3 {
 	}
 
 	public double getAngleCos(Vec3 vec) {
-		double d0 = this.dotProduct(vec) / (this.length() * vec.length());
-		return d0 > 1.0D ? 1.0D : d0;
-	}
+        double d0 = this.dotProduct(vec) / (this.length() * vec.length());
+        return Math.min(d0, 1.0D);
+    }
 }

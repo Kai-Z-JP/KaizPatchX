@@ -2,7 +2,10 @@ package jp.ngt.rtm.modelpack;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.*;
+import jp.ngt.ngtlib.io.FileType;
+import jp.ngt.ngtlib.io.NGTClassUtil;
+import jp.ngt.ngtlib.io.NGTJson;
+import jp.ngt.ngtlib.io.NGTText;
 import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
@@ -74,7 +77,7 @@ public final class ModelPackManager {
 		ModelConfig cfg = (ModelConfig) NGTJson.getObjectFromJson(json, entry.cfgClass);
 		cfg.init();
 		ModelSetBase set = this.getNewModelSet(entry, new Class[]{entry.cfgClass}, cfg);
-		NGTLog.debug("Register model : " + cfg.getName() + "(" + type + ")");
+//		NGTLog.debug("Register model : " + cfg.getName() + "(" + type + ")");
 		this.allModelSetMap.get(type).put(cfg.getName(), set);
 		return cfg.getName();
 	}
@@ -102,9 +105,7 @@ public final class ModelPackManager {
 	public void addModelSetName(int count, String type, String name) {
 		assert NGTUtil.isSMP() && !NGTUtil.isServer();
 		if (count == 0) {
-			for (Map<String, ModelSetBase> map : this.smpModelSetMap.values()) {
-				map.clear();
-			}
+			this.smpModelSetMap.values().forEach(Map::clear);
 		}
 
 		//getModelSet()はSMPで呼んではいけない(戒め)
@@ -136,11 +137,8 @@ public final class ModelPackManager {
 	}
 
 	public List<ModelSetBase> getModelList(String type) {
-		List<ModelSetBase> list = new ArrayList<>();
 		Map<String, Map<String, ModelSetBase>> map = NGTUtil.isSMP() ? this.smpModelSetMap : this.allModelSetMap;
-		for (ModelSetBase modelSet : map.get(type).values()) {
-			list.add(modelSet);
-		}
+		List<ModelSetBase> list = new ArrayList<>(map.get(type).values());
 
 		list.sort(Comparator.comparing(o -> o.getConfig().getName()));
 		return list;
@@ -269,7 +267,7 @@ public final class ModelPackManager {
 		return rawScript;
 	}
 
-	public class TypeEntry {
+	public static class TypeEntry {
 		public final Class<? extends ModelConfig> cfgClass;
 		public final Class<? extends ModelSetBase> modelsetClass;
 

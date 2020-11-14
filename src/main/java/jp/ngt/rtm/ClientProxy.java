@@ -54,6 +54,7 @@ import net.minecraftforge.common.MinecraftForge;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -151,16 +152,14 @@ public class ClientProxy extends CommonProxy {
         }
 
         List<File> fileList = NGTFileLoader.findFile((file) -> file.getName().equals("pack.json"));
-        for (File file : fileList) {
-            String json = NGTJson.readFromJson(file);
-            try {
-                PackInfo info = (PackInfo) NGTJson.getObjectFromJson(json, PackInfo.class);
-                if (info != null) {
-                    VersionChecker.addToCheckList(info);
-                }
-            } catch (NGTFileLoadException e) {
-                e.printStackTrace();
-            }
+        try {
+            fileList.stream()
+                    .map(NGTJson::readFromJson)
+                    .map(json -> (PackInfo) NGTJson.getObjectFromJson(json, PackInfo.class))
+                    .filter(Objects::nonNull)
+                    .forEach(VersionChecker::addToCheckList);
+        } catch (NGTFileLoadException e) {
+            e.printStackTrace();
         }
 
         VersionChecker.addToCheckList(new PackInfo(RTMCore.metadata.name, RTMCore.metadata.url, RTMCore.metadata.updateUrl, RTMCore.metadata.version));
@@ -208,7 +207,7 @@ public class ClientProxy extends CommonProxy {
         this.missing.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
     }
 
-    public class ModelMissing extends ModelBase {
+    public static class ModelMissing extends ModelBase {
         ModelRenderer shape1;
 
         public ModelMissing() {
@@ -245,11 +244,10 @@ public class ClientProxy extends CommonProxy {
     public float getFov(EntityPlayer player, float fov) {
         switch (getViewMode()) {
             case ViewMode_Artillery:
+            case ViewMode_AMR:
                 return 0.1F;
             case ViewMode_SR:
                 return 0.25F;
-            case ViewMode_AMR:
-                return 0.1F;
             case ViewMode_Camera:
                 return Camera.INSTANCE.getFov();
             default:

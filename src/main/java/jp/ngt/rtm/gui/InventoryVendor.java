@@ -44,18 +44,17 @@ public class InventoryVendor implements IInventory {
 	public ItemStack decrStackSize(int par1, int par2) {
 		ItemStack stack = this.getStackInSlot(par1);
 		if (stack != null) {
-			if (stack.stackSize <= par2) {
-				this.setInventorySlotContents(par1, null);
-				return stack;
-			} else {
-				stack = stack.splitStack(par2);
-				if (this.getStackInSlot(par1).stackSize == 0) {
-					this.setInventorySlotContents(par1, null);
-				}
+            if (stack.stackSize <= par2) {
+                this.setInventorySlotContents(par1, null);
+            } else {
+                stack = stack.splitStack(par2);
+                if (this.getStackInSlot(par1).stackSize == 0) {
+                    this.setInventorySlotContents(par1, null);
+                }
 
-				return stack;
-			}
-		}
+            }
+            return stack;
+        }
 		return null;
 	}
 

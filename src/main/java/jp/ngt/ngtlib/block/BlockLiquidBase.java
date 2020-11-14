@@ -9,6 +9,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Random;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public abstract class BlockLiquidBase extends BlockLiquid {
 	public BlockLiquidBase(Material par1) {
@@ -164,41 +166,38 @@ public abstract class BlockLiquidBase extends BlockLiquid {
 
 	protected void meltBlock(World world, int x, int y, int z) {
 		Block block = world.getBlock(x, y, z);
-		if (block.getMaterial() == RTMMaterial.fireproof || block.getMaterial() == RTMMaterial.melted || block.getMaterial() == Material.air || block.getMaterial() == Material.lava || block.getMaterial() == Material.water) {
-			return;
+		if (Stream.of(RTMMaterial.fireproof, RTMMaterial.melted, Material.air, Material.lava, Material.water).anyMatch(material2 -> block.getMaterial() == material2)) {
 		} else if (block.getMaterial() == Material.ground) {
 			//world.setBlock(x, y, z, RTMCore.slag, 15, 2);
 			this.setFire(world, x, y, z);
 		} else if (block == Blocks.bedrock) {
-			return;
-		} else if ((block.getMaterial() == Material.rock || block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil)) {
+		} else if ((Stream.of(Material.rock, Material.iron, Material.anvil).anyMatch(material1 -> block.getMaterial() == material1))) {
 			if (block.getBlockHardness(world, x, y, z) < 3.5F) {
 				//world.setBlock(x, y, z, RTMCore.slag, 15, 2);
 				this.setFire(world, x, y, z);
 			}
 		} else if (block.getMaterial() == Material.sand || block.getMaterial() == Material.clay) {
-			return;
 		} else if (block == Blocks.tnt) {
 			world.setBlock(x, y, z, Blocks.air);
 			Blocks.tnt.onBlockDestroyedByPlayer(world, x, y, z, 1);
 		} else if (block.getMaterial().getCanBurn()) {
 			this.setFire(world, x, y, z);
-		} else if (block.getMaterial() == Material.grass || block.getMaterial() == Material.circuits || block.getMaterial() == Material.sponge || block.getMaterial() == Material.plants || block.getMaterial() == Material.coral || block.getMaterial() == Material.cactus || block.getMaterial() == Material.web || block.getMaterial() == Material.gourd) {
+		} else if (Stream.of(Material.grass, Material.circuits, Material.sponge, Material.plants, Material.coral, Material.cactus, Material.web, Material.gourd).anyMatch(v -> block.getMaterial() == v)) {
 			this.setFire(world, x, y, z);
-		} else if (block.getMaterial() == Material.fire || block.getMaterial() == Material.glass || block.getMaterial() == Material.redstoneLight || block.getMaterial() == Material.ice || block.getMaterial() == Material.packedIce || block.getMaterial() == Material.snow || block.getMaterial() == Material.craftedSnow || block.getMaterial() == Material.cake) {
+		} else if (Stream.of(Material.fire, Material.glass, Material.redstoneLight, Material.ice, Material.packedIce, Material.snow, Material.craftedSnow, Material.cake).anyMatch(material -> block.getMaterial() == material)) {
 			world.setBlock(x, y, z, Blocks.air, 0, 2);
 		}
 		//dragonEgg,portal
 	}
 
 	private void setFire(World world, int x, int y, int z) {
-		for (int i = 0; i < BlockUtil.facing.length; ++i) {
+		IntStream.range(0, BlockUtil.facing.length).forEach(i -> {
 			int x0 = x - BlockUtil.facing[i][0];
 			int y0 = y - BlockUtil.facing[i][1];
 			int z0 = z - BlockUtil.facing[i][2];
 			if (world.getBlock(x0, y0, z0) == Blocks.air) {
 				world.setBlock(x0, y0, z0, Blocks.fire, i, 2);
 			}
-		}
+		});
 	}
 }

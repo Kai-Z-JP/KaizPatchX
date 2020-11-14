@@ -16,7 +16,7 @@ public class EditFilterFill extends EditFilterBase {
 	public void init(Config par) {
 		super.init(par);
 
-		this.typeMap = new LinkedHashMap<String, EditFilterFill.FillBase>();
+		this.typeMap = new LinkedHashMap<>();
 		this.typeMap.put("FillAll", new FillAll());
 		this.typeMap.put("FillCylinderX", new FillCylinderX());
 		this.typeMap.put("FillCylinderY", new FillCylinderY());
@@ -49,16 +49,14 @@ public class EditFilterFill extends EditFilterBase {
 			editor.record(box);
 			editor.repeat(box, fillBase);
 			//editor.fill(box, blockSet);
-			for (int[] pos : fillBase.getBlockPos()) {
-				editor.setBlock(pos[0], pos[1], pos[2], blockSet);
-			}
+			fillBase.getBlockPos().forEach(pos -> editor.setBlock(pos[0], pos[1], pos[2], blockSet));
 			return true;
 		}
 		return false;
 	}
 
-	private abstract class FillBase implements Repeatable {
-		private final List<int[]> posList = new ArrayList<int[]>();
+	private abstract static class FillBase implements Repeatable {
+		private final List<int[]> posList = new ArrayList<>();
 
 		public void init() {
 			this.posList.clear();
@@ -73,14 +71,14 @@ public class EditFilterFill extends EditFilterBase {
 		}
 	}
 
-	private class FillAll extends FillBase {
+	private static class FillAll extends FillBase {
 		@Override
 		public void processing(AABBInt box, int index, int x, int y, int z) {
 			this.addPos(x, y, z);
 		}
 	}
 
-	private class FillCylinderX extends FillBase {
+	private static class FillCylinderX extends FillBase {
 		@Override
 		public void processing(AABBInt box, int index, int x, int y, int z) {
 			double[] center = {(double) (box.maxX + box.minX) / 2.0D, (double) (box.maxY + box.minY) / 2.0D, (double) (box.maxZ + box.minZ) / 2.0D};
@@ -94,7 +92,7 @@ public class EditFilterFill extends EditFilterBase {
 		}
 	}
 
-	private class FillCylinderY extends FillBase {
+	private static class FillCylinderY extends FillBase {
 		@Override
 		public void processing(AABBInt box, int index, int x, int y, int z) {
 			double[] center = {(double) (box.maxX + box.minX) / 2.0D, (double) (box.maxY + box.minY) / 2.0D, (double) (box.maxZ + box.minZ) / 2.0D};
@@ -108,7 +106,7 @@ public class EditFilterFill extends EditFilterBase {
 		}
 	}
 
-	private class FillCylinderZ extends FillBase {
+	private static class FillCylinderZ extends FillBase {
 		@Override
 		public void processing(AABBInt box, int index, int x, int y, int z) {
 			double[] center = {(double) (box.maxX + box.minX) / 2.0D, (double) (box.maxY + box.minY) / 2.0D, (double) (box.maxZ + box.minZ) / 2.0D};
@@ -122,7 +120,7 @@ public class EditFilterFill extends EditFilterBase {
 		}
 	}
 
-	private class FillEllipsoid extends FillBase {
+	private static class FillEllipsoid extends FillBase {
 		@Override
 		public void processing(AABBInt box, int index, int x, int y, int z) {
 			double[] center = {(double) (box.maxX + box.minX) / 2.0D, (double) (box.maxY + box.minY) / 2.0D, (double) (box.maxZ + box.minZ) / 2.0D};

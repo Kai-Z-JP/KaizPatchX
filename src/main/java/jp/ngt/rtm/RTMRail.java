@@ -6,15 +6,17 @@ import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
-public final class RTMRail {
-	private static final String[] railTexture = {"rtm:tp", "rtm:tp", "gravel", "stone", "snow", "rtm:asphalt"};
+import java.util.stream.IntStream;
 
-	public static Block largeRailBase0;
-	public static Block largeRailCore0;
-	public static Block largeRailSwitchBase0;
-	public static Block largeRailSwitchCore0;
-	public static Block largeRailSlopeBase0;
-	public static Block largeRailSlopeCore0;
+public final class RTMRail {
+    private static final String[] railTexture = {"rtm:tp", "rtm:tp", "gravel", "stone", "snow", "rtm:asphalt"};
+
+    public static Block largeRailBase0;
+    public static Block largeRailCore0;
+    public static Block largeRailSwitchBase0;
+    public static Block largeRailSwitchCore0;
+    public static Block largeRailSlopeBase0;
+    public static Block largeRailSlopeCore0;
 
 	public static Block[] largeRailBase = new Block[railTexture.length];
 	public static Block[] largeRailCore = new Block[railTexture.length];
@@ -24,41 +26,41 @@ public final class RTMRail {
 	public static Block[] largeRailSlopeCore = new Block[railTexture.length];
 
 	public static void init() {
-		largeRailBase0 = (new BlockLargeRailBase(2)).setBlockName("rtm:LRBase").setBlockTextureName(railTexture[2]);
-		largeRailCore0 = (new BlockLargeRailCore(2)).setBlockName("rtm:LRCore").setBlockTextureName(railTexture[2]);
-		largeRailSwitchBase0 = (new BlockLargeRailSwitchBase(2)).setBlockName("rtm:LRSBase").setBlockTextureName(railTexture[2]);
-		largeRailSwitchCore0 = (new BlockLargeRailSwitchCore(2)).setBlockName("rtm:LRSCore").setBlockTextureName(railTexture[3]);
-		largeRailSlopeBase0 = (new BlockLargeRailSlopeBase(2)).setBlockName("rtm:LRLBase").setBlockTextureName(railTexture[2]);
-		largeRailSlopeCore0 = (new BlockLargeRailSlopeCore(2)).setBlockName("rtm:LRLCore").setBlockTextureName(railTexture[2]);
+        largeRailBase0 = (new BlockLargeRailBase(2)).setBlockName("rtm:LRBase").setBlockTextureName(railTexture[2]);
+        largeRailCore0 = (new BlockLargeRailCore(2)).setBlockName("rtm:LRCore").setBlockTextureName(railTexture[2]);
+        largeRailSwitchBase0 = (new BlockLargeRailSwitchBase(2)).setBlockName("rtm:LRSBase").setBlockTextureName(railTexture[2]);
+        largeRailSwitchCore0 = (new BlockLargeRailSwitchCore(2)).setBlockName("rtm:LRSCore").setBlockTextureName(railTexture[3]);
+        largeRailSlopeBase0 = (new BlockLargeRailSlopeBase(2)).setBlockName("rtm:LRLBase").setBlockTextureName(railTexture[2]);
+        largeRailSlopeCore0 = (new BlockLargeRailSlopeCore(2)).setBlockName("rtm:LRLCore").setBlockTextureName(railTexture[2]);
 
-		for (int i = 0; i < railTexture.length; ++i) {
-			largeRailBase[i] = (new BlockLargeRailBase(i)).setBlockName("rtm:LRBase." + i).setBlockTextureName(railTexture[i]);
-			largeRailCore[i] = (new BlockLargeRailCore(i)).setBlockName("rtm:LRCore." + i).setBlockTextureName(railTexture[i]);
-			largeRailSwitchBase[i] = (new BlockLargeRailSwitchBase(i)).setBlockName("rtm:LRSBase." + i).setBlockTextureName(railTexture[i]);
-			largeRailSwitchCore[i] = (new BlockLargeRailSwitchCore(i)).setBlockName("rtm:LRSCore." + i).setBlockTextureName(railTexture[i]);
-			largeRailSlopeBase[i] = (new BlockLargeRailSlopeBase(i)).setBlockName("rtm:LRLBase." + i).setBlockTextureName(railTexture[i]);
-			largeRailSlopeCore[i] = (new BlockLargeRailSlopeCore(i)).setBlockName("rtm:LRLCore." + i).setBlockTextureName(railTexture[i]);
-		}
+        IntStream.range(0, railTexture.length).forEach(i -> {
+            largeRailBase[i] = (new BlockLargeRailBase(i)).setBlockName("rtm:LRBase." + i).setBlockTextureName(railTexture[i]);
+            largeRailCore[i] = (new BlockLargeRailCore(i)).setBlockName("rtm:LRCore." + i).setBlockTextureName(railTexture[i]);
+            largeRailSwitchBase[i] = (new BlockLargeRailSwitchBase(i)).setBlockName("rtm:LRSBase." + i).setBlockTextureName(railTexture[i]);
+            largeRailSwitchCore[i] = (new BlockLargeRailSwitchCore(i)).setBlockName("rtm:LRSCore." + i).setBlockTextureName(railTexture[i]);
+            largeRailSlopeBase[i] = (new BlockLargeRailSlopeBase(i)).setBlockName("rtm:LRLBase." + i).setBlockTextureName(railTexture[i]);
+            largeRailSlopeCore[i] = (new BlockLargeRailSlopeCore(i)).setBlockName("rtm:LRLCore." + i).setBlockTextureName(railTexture[i]);
+        });
 
-		GameRegistry.registerBlock(largeRailBase0, "rtm:LRBase");
-		GameRegistry.registerBlock(largeRailCore0, "rtm:LRCore");
-		GameRegistry.registerBlock(largeRailSwitchBase0, "rtm:LRSBase");
-		GameRegistry.registerBlock(largeRailSwitchCore0, "rtm:LRSCore");
-		GameRegistry.registerBlock(largeRailSlopeBase0, "rtm:LRLBase");
-		GameRegistry.registerBlock(largeRailSlopeCore0, "rtm:LRLCore");
+        GameRegistry.registerBlock(largeRailBase0, "rtm:LRBase");
+        GameRegistry.registerBlock(largeRailCore0, "rtm:LRCore");
+        GameRegistry.registerBlock(largeRailSwitchBase0, "rtm:LRSBase");
+        GameRegistry.registerBlock(largeRailSwitchCore0, "rtm:LRSCore");
+        GameRegistry.registerBlock(largeRailSlopeBase0, "rtm:LRLBase");
+        GameRegistry.registerBlock(largeRailSlopeCore0, "rtm:LRLCore");
 
-		for (int i = 0; i < railTexture.length; ++i)//インスタンス使いまわして登録は不可
-		{
-			GameRegistry.registerBlock(largeRailBase[i], "LRBase_" + i);
-			GameRegistry.registerBlock(largeRailCore[i], "LRCore_" + i);
-			GameRegistry.registerBlock(largeRailSwitchBase[i], "LRSBase_" + i);
-			GameRegistry.registerBlock(largeRailSwitchCore[i], "LRSCore_" + i);
-			GameRegistry.registerBlock(largeRailSlopeBase[i], "LRLBase_" + i);
-			GameRegistry.registerBlock(largeRailSlopeCore[i], "LRLCore_" + i);
-		}
+        //インスタンス使いまわして登録は不可
+        IntStream.range(0, railTexture.length).forEach(i -> {
+            GameRegistry.registerBlock(largeRailBase[i], "LRBase_" + i);
+            GameRegistry.registerBlock(largeRailCore[i], "LRCore_" + i);
+            GameRegistry.registerBlock(largeRailSwitchBase[i], "LRSBase_" + i);
+            GameRegistry.registerBlock(largeRailSwitchCore[i], "LRSCore_" + i);
+            GameRegistry.registerBlock(largeRailSlopeBase[i], "LRLBase_" + i);
+            GameRegistry.registerBlock(largeRailSlopeCore[i], "LRLCore_" + i);
+        });
 
-		GameRegistry.registerTileEntity(TileEntityLargeRailBase.class, "TERailBase");
-		GameRegistry.registerTileEntity(TileEntityLargeRailNormalCore.class, "TERailCore");
+        GameRegistry.registerTileEntity(TileEntityLargeRailBase.class, "TERailBase");
+        GameRegistry.registerTileEntity(TileEntityLargeRailNormalCore.class, "TERailCore");
 		GameRegistry.registerTileEntity(TileEntityLargeRailSwitchBase.class, "TERailSwitchBase");
 		GameRegistry.registerTileEntity(TileEntityLargeRailSwitchCore.class, "TERailSwitchCore");
 		GameRegistry.registerTileEntity(TileEntityLargeRailSlopeBase.class, "TERailSlopeBase");

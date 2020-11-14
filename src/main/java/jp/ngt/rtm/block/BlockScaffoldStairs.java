@@ -22,6 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class BlockScaffoldStairs extends BlockContainer {
 	/**
@@ -62,9 +63,7 @@ public class BlockScaffoldStairs extends BlockContainer {
 
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-		for (int i = 0; i < 16; ++i) {
-			par3List.add(new ItemStack(par1, 1, i));
-		}
+		IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(par3List::add);
 	}
 
 	@Override
@@ -100,12 +99,12 @@ public class BlockScaffoldStairs extends BlockContainer {
 					super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 				}
 
-				for (int i = 0; i < 4; ++i) {
+				IntStream.range(0, 4).forEach(i -> {
 					float f0 = i * 0.25F;
 					float f1 = (dir == 2) ? f0 : 0.75F - f0;
 					this.setBlockBounds(0.0F, 0.0F + f0, f1, 1.0F, 0.25F + f0, 0.25F + f1);
 					super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-				}
+				});
 			} else//X
 			{
 				if (flag3 != 3) {
@@ -118,12 +117,12 @@ public class BlockScaffoldStairs extends BlockContainer {
 					super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 				}
 
-				for (int i = 0; i < 4; ++i) {
+				IntStream.range(0, 4).forEach(i -> {
 					float f0 = i * 0.25F;
 					float f1 = (dir == 1) ? f0 : 0.75F - f0;
 					this.setBlockBounds(f1, 0.0F + f0, 0.0F, 0.25F + f1, 0.25F + f0, 1.0F);
 					super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-				}
+				});
 			}
 
 			this.setBlockBoundsForItemRender();

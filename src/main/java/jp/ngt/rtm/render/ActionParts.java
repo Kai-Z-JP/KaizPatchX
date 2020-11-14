@@ -3,9 +3,15 @@ package jp.ngt.rtm.render;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.GLHelper;
-import jp.ngt.ngtlib.renderer.model.*;
+import jp.ngt.ngtlib.renderer.model.GroupObject;
+import jp.ngt.ngtlib.renderer.model.IModelNGT;
+import jp.ngt.ngtlib.renderer.model.VecAccuracy;
+import jp.ngt.ngtlib.renderer.model.Vertex;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class ActionParts extends Parts {
@@ -30,20 +36,19 @@ public class ActionParts extends Parts {
 	private void setupOutlineModel(PartsRenderer renderer) {
 		GroupObject[] objs = getObjects(renderer.modelObj.model);
 		this.outlineModels = new GroupObject[objs.length];
-		for (int i = 0; i < objs.length; i++) {
+		IntStream.range(0, objs.length).forEach(i -> {
 			GroupObject go = objs[i].copy("outline_" + i);
 			go.smoothingAngle = 180.0F;
 			go.calcVertexNormals(VecAccuracy.MEDIUM);
-			for (int j = 0; j < go.faces.size(); j++) {
-				Face face = go.faces.get(j);
-				for (int k = 0; k < face.vertices.length; k++) {
+			go.faces.forEach(face -> {
+				IntStream.range(0, face.vertices.length).forEach(k -> {
 					Vertex vNormal = face.vertexNormals[k].copy(VecAccuracy.MEDIUM);
 					face.vertices[k] = face.vertices[k].add(vNormal.expand(0.005F));
-				}
+				});
 				face.calculateFaceNormal(VecAccuracy.MEDIUM);
-			}
+			});
 			this.outlineModels[i] = go;
-		}
+		});
 	}
 
 	public void render(PartsRenderer renderer) {
@@ -68,9 +73,7 @@ public class ActionParts extends Parts {
 		GLHelper.disableLighting();
 		GL11.glDisable(3553);
 		GLHelper.setColor(color, 255);
-		for (GroupObject obj : this.outlineModels) {
-			obj.render(false);
-		}
+		Arrays.stream(this.outlineModels).forEach(obj -> obj.render(false));
 		GLHelper.setColor(16777215, 255);
 		GL11.glEnable(3553);
 		GLHelper.enableLighting();

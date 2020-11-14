@@ -43,13 +43,13 @@ public class ModelContainer_BigChest implements IModelNGT {
 
 	@Override
 	public ArrayList<GroupObject> getGroupObjects() {
-		return new ArrayList<GroupObject>();
-	}
+        return new ArrayList<>();
+    }
 
 	@Override
 	public Map<String, Material> getMaterials() {
-		return new HashMap<String, Material>();
-	}
+        return new HashMap<>();
+    }
 
 	@Override
 	public FileType getType() {

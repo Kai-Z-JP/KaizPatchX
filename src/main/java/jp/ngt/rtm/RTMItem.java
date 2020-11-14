@@ -9,8 +9,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class RTMItem {
 	public static Item bogie;
@@ -178,12 +180,8 @@ public final class RTMItem {
 	}
 
 	private static Map<Integer, String> getItemMoney() {
-		Map<Integer, String> map = new HashMap<>();
-		for (MoneyType type : MoneyType.values()) {
-			map.put(type.getId(), "rtm:money_" + type.getId());
-		}
-		return map;
-	}
+        return Arrays.stream(MoneyType.values()).collect(Collectors.toMap(MoneyType::getId, type -> "rtm:money_" + type.getId(), (a, b) -> b));
+    }
 
 	private static Map<Integer, String> getItemMirror() {
 		Map<Integer, String> map = new HashMap<>();
@@ -219,12 +217,7 @@ public final class RTMItem {
 		}
 
 		public static int getPrice(int id) {
-			for (MoneyType type : MoneyType.values()) {
-				if (type.id == id) {
-					return type.price;
-				}
-			}
-			return 0;
-		}
+            return Arrays.stream(MoneyType.values()).filter(type -> type.id == id).findFirst().map(type -> type.price).orElse((short) 0);
+        }
 	}
 }

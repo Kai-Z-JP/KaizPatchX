@@ -2,15 +2,17 @@ package jp.ngt.rtm.rail.util;
 
 import net.minecraft.world.World;
 
-public class RailMapSwitch extends RailMap {
-	public final RailDir startDir, endDir;
-	private final int[] count = new int[2];
-	private boolean isOpen;
-	public static final int MAX_COUNT = 80;
+import java.util.stream.IntStream;
 
-	public RailMapSwitch(RailPosition par1, RailPosition par2, RailDir sDir, RailDir eDir) {
-		super(par1, par2);
-		this.startDir = sDir;
+public class RailMapSwitch extends RailMap {
+    public final RailDir startDir, endDir;
+    private final int[] count = new int[2];
+    private boolean isOpen;
+    public static final int MAX_COUNT = 80;
+
+    public RailMapSwitch(RailPosition par1, RailPosition par2, RailDir sDir, RailDir eDir) {
+        super(par1, par2);
+        this.startDir = sDir;
 		this.endDir = eDir;
 	}
 
@@ -18,21 +20,17 @@ public class RailMapSwitch extends RailMap {
 	//TileEntity.updateEntity()のタイミングで呼ばれる
 	public void onUpdate(World world) {
 		if (world.isRemote) {
-			for (int i = 0; i < 2; ++i) {
-				if ((i == 0 && this.startDir == RailDir.NONE) || (i == 1 && this.endDir == RailDir.NONE)) {
-					continue;
-				}
-
-				if (this.isOpen) {
-					if (this.count[i] > 0) {
-						--this.count[i];
-					}
-				} else {
-					if (this.count[i] < MAX_COUNT) {
-						++this.count[i];
-					}
-				}
-			}
+            IntStream.range(0, 2).filter(i -> (i != 0 || this.startDir != RailDir.NONE) && (i != 1 || this.endDir != RailDir.NONE)).forEach(i -> {
+                if (this.isOpen) {
+                    if (this.count[i] > 0) {
+                        --this.count[i];
+                    }
+                } else {
+                    if (this.count[i] < MAX_COUNT) {
+                        ++this.count[i];
+                    }
+                }
+            });
 		}
 	}
 

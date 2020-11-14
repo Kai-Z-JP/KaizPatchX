@@ -175,14 +175,13 @@ public class BlockMarker extends BlockContainer {
 				for (int i = 0; i < dis2; ++i) {
 					{
 						for (int k = 0; k < dis2; ++k) {
-							int x0 = x - dis1 + i;
-							int y0 = y;// - hei1 + j;
-							int z0 = z - dis1 + k;
-							Block block = world.getBlock(x0, y0, z0);
-							if (block == RTMBlock.marker || block == RTMBlock.markerSwitch) {
-								list.add(this.getRailPosition(world, x0, y0, z0));
-							}
-						}
+                            int x0 = x - dis1 + i;
+                            int z0 = z - dis1 + k;
+                            Block block = world.getBlock(x0, y, z0);
+                            if (block == RTMBlock.marker || block == RTMBlock.markerSwitch) {
+                                list.add(this.getRailPosition(world, x0, y, z0));
+                            }
+                        }
 					}
 				}
 
@@ -256,13 +255,12 @@ public class BlockMarker extends BlockContainer {
 		if (!makeRail || flag) {
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			if (tileEntity instanceof TileEntityMarker) {
-				List<int[]> posList = new ArrayList<>();
-				for (int i = 0; i < list.size(); i++) {
-					RailPosition rp = list.get(i);
-					posList.add(new int[]{rp.blockX, rp.blockY, rp.blockZ});
-				}
-				((TileEntityMarker) tileEntity).setMarkersPos(posList);
-			}
+                List<int[]> posList = new ArrayList<>();
+                for (RailPosition rp : list) {
+                    posList.add(new int[]{rp.blockX, rp.blockY, rp.blockZ});
+                }
+                ((TileEntityMarker) tileEntity).setMarkersPos(posList);
+            }
 			return false;
 		}
 		for (RailMapSwitch railMapSwitch : arrayOfRailMapSwitch) {
@@ -316,11 +314,11 @@ public class BlockMarker extends BlockContainer {
 		} else {
 			TileEntity tile = world.getTileEntity(x0, y0, z0);
 			if (tile instanceof TileEntityMarker) {
-				List<int[]> list = new ArrayList<int[]>();
-				list.add(new int[]{x0, y0, z0});
-				list.add(new int[]{x1, y0, z1});
-				((TileEntityMarker) tile).setMarkersPos(list);
-			}
+                List<int[]> list = new ArrayList<>();
+                list.add(new int[]{x0, y0, z0});
+                list.add(new int[]{x1, y0, z1});
+                ((TileEntityMarker) tile).setMarkersPos(list);
+            }
 			return false;
 		}
 	}
@@ -367,9 +365,6 @@ public class BlockMarker extends BlockContainer {
 	public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
 		switch (this.markerType) {
 			case 0:
-				list.add(new ItemStack(par1, 1, 0));
-				list.add(new ItemStack(par1, 1, 4));
-				break;
 			case 1:
 				list.add(new ItemStack(par1, 1, 0));
 				list.add(new ItemStack(par1, 1, 4));

@@ -34,7 +34,7 @@ public class ModelPackUploadThread extends Thread {
 			String name = file.getName();
 			return name.startsWith("ModelPack_") && name.endsWith(".zip");
 		});
-		for (File file : fileList) {
+		fileList.forEach(file -> {
 			try {
 				NGTLog.debug("[RTM](UploadThread) Start uploading " + file.getName());
 				RTMCore.NETWORK_WRAPPER.sendToAll(new PacketModelPack("start_file:" + file.getName(), 0, ByteBuffer.allocate(RTMCore.PacketSize)));
@@ -49,12 +49,10 @@ public class ModelPackUploadThread extends Thread {
 					sleep(100);
 				}
 				channel.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
+			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		});
 		RTMCore.NETWORK_WRAPPER.sendToAll(new PacketModelPack("finish", 0, ByteBuffer.allocate(RTMCore.PacketSize)));
 		NGTLog.debug("[RTM](UploadThread) Finish uploading ModelPack");
 	}

@@ -35,7 +35,7 @@ function render(entity, pass, par3) {
 
     GL11.glTranslatef(0.0, 0.25, 0.0);
 
-    if (pass == 0) {
+    if (pass === 0) {
         base.render(renderer);
 
         renderer.rotate(pitch, 'X', 0.0, 0.0, 0.0);

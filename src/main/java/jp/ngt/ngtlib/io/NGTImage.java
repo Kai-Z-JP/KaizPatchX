@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 public final class NGTImage {
 	public static int[] getARGBFromInt(int par1) {
@@ -26,13 +27,7 @@ public final class NGTImage {
 	 */
 	public static int getColorValue(int par1) {
 		int[] argb = getARGBFromInt(par1);
-		int value = 0;
-		for (int i = 1; i < argb.length; ++i) {
-			if (value < argb[i]) {
-				value = argb[i];
-			}
-		}
-		return value;
+		return Arrays.stream(argb, 1, argb.length).filter(i -> i >= 0).max().orElse(0);
 	}
 
 	/**

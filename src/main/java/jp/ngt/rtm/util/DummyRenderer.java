@@ -128,16 +128,13 @@ public final class DummyRenderer {
 
 			if (this.shaderIndex != shaderCount) {
 				try {
-					logger.info("Selecting effect " + shaderResourceLocations[this.shaderIndex]);
-					this.theShaderGroup = new ShaderGroup(this.mc.getTextureManager(), this.mc.getResourceManager(), buffer, shaderResourceLocations[this.shaderIndex]);
-					this.theShaderGroup.createBindFramebuffers(this.mc.displayWidth, this.mc.displayHeight);
-				} catch (IOException ioexception) {
-					logger.warn("Failed to load shader: " + shaderResourceLocations[this.shaderIndex], ioexception);
-					this.shaderIndex = shaderCount;
-				} catch (JsonSyntaxException jsonsyntaxexception) {
-					logger.warn("Failed to load shader: " + shaderResourceLocations[this.shaderIndex], jsonsyntaxexception);
-					this.shaderIndex = shaderCount;
-				}
+                    logger.info("Selecting effect " + shaderResourceLocations[this.shaderIndex]);
+                    this.theShaderGroup = new ShaderGroup(this.mc.getTextureManager(), this.mc.getResourceManager(), buffer, shaderResourceLocations[this.shaderIndex]);
+                    this.theShaderGroup.createBindFramebuffers(this.mc.displayWidth, this.mc.displayHeight);
+                } catch (IOException | JsonSyntaxException ioexception) {
+                    logger.warn("Failed to load shader: " + shaderResourceLocations[this.shaderIndex], ioexception);
+                    this.shaderIndex = shaderCount;
+                }
 			} else {
 				this.theShaderGroup = null;
 				logger.info("No effect selected");
@@ -1043,29 +1040,28 @@ public final class DummyRenderer {
 
 						if (f1 > f2) {
 							f1 = f2;
-						}
-					}
-				}
+                        }
+                    }
+                }
 
-				GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
+                GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
 
-				if (par1 < 0) {
-					GL11.glFogf(GL11.GL_FOG_START, 0.0F);
-					GL11.glFogf(GL11.GL_FOG_END, f1);
-				} else {
-					GL11.glFogf(GL11.GL_FOG_START, f1 * 0.75F);
-					GL11.glFogf(GL11.GL_FOG_END, f1);
-				}
+                if (par1 < 0) {
+                    GL11.glFogf(GL11.GL_FOG_START, 0.0F);
+                } else {
+                    GL11.glFogf(GL11.GL_FOG_START, f1 * 0.75F);
+                }
+                GL11.glFogf(GL11.GL_FOG_END, f1);
 
-				if (GLContext.getCapabilities().GL_NV_fog_distance) {
-					GL11.glFogi(34138, 34139);
-				}
+                if (GLContext.getCapabilities().GL_NV_fog_distance) {
+                    GL11.glFogi(34138, 34139);
+                }
 
-				if (this.mc.theWorld.provider.doesXZShowFog((int) entity.posX, (int) entity.posZ)) {
-					GL11.glFogf(GL11.GL_FOG_START, f1 * 0.05F);
-					GL11.glFogf(GL11.GL_FOG_END, Math.min(f1, 192.0F) * 0.5F);
-				}
-			}
+                if (this.mc.theWorld.provider.doesXZShowFog((int) entity.posX, (int) entity.posZ)) {
+                    GL11.glFogf(GL11.GL_FOG_START, f1 * 0.05F);
+                    GL11.glFogf(GL11.GL_FOG_END, Math.min(f1, 192.0F) * 0.5F);
+                }
+            }
 
 			GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 			GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT);

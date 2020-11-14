@@ -48,11 +48,6 @@ public class FileType {
 	}
 
 	public static FileType getType(String fileName) {
-		for (FileType type : TYPES) {
-			if (type.match(fileName)) {
-				return type;
-			}
-		}
-		return null;
+		return TYPES.stream().filter(type -> type.match(fileName)).findFirst().orElse(null);
 	}
 }

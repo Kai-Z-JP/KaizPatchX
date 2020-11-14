@@ -35,10 +35,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiCreatePictorialWorld extends GuiScreenCustom {
-	protected static Map<String, ItemStack> biomeIconMap = new TreeMap<String, ItemStack>();
+	protected static Map<String, ItemStack> biomeIconMap = new TreeMap<>();
 
 	private final GuiCreateWorld createWorldGui;
 	private WorldData worldData;
@@ -164,19 +166,17 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		for (int i = 0; i < this.thumbnail.length; ++i) {
-			if (this.thumbnail[i] != null) {
-				double d1 = i0 * i;
-				this.thumbnail[i].bindTexture();
-				Tessellator tessellator = Tessellator.instance;
-				tessellator.startDrawingQuads();
-				tessellator.addVertexWithUV(i0, (double) i0 + d1, this.zLevel, 1.0D, 1.0D);
-				tessellator.addVertexWithUV(i0, 0.0D + d1, this.zLevel, 1.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, 0.0D + d1, this.zLevel, 0.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, (double) i0 + d1, this.zLevel, 0.0D, 1.0D);
-				tessellator.draw();
-			}
-		}
+		IntStream.range(0, this.thumbnail.length).filter(i -> this.thumbnail[i] != null).forEach(i -> {
+			double d1 = i0 * i;
+			this.thumbnail[i].bindTexture();
+			Tessellator tessellator = Tessellator.instance;
+			tessellator.startDrawingQuads();
+			tessellator.addVertexWithUV(i0, (double) i0 + d1, this.zLevel, 1.0D, 1.0D);
+			tessellator.addVertexWithUV(i0, 0.0D + d1, this.zLevel, 1.0D, 0.0D);
+			tessellator.addVertexWithUV(0.0D, 0.0D + d1, this.zLevel, 0.0D, 0.0D);
+			tessellator.addVertexWithUV(0.0D, (double) i0 + d1, this.zLevel, 0.0D, 1.0D);
+			tessellator.draw();
+		});
 	}
 
 	private void selectBlock() {
@@ -191,22 +191,22 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 		}
 
 		List<ItemStack> list1 = new ArrayList<>();
-		for (ItemStack stack : list0) {
+		list0.forEach(stack -> {
 			Block block = Block.getBlockFromItem(stack.getItem());
 			if (stack.getItemDamage() == 0 && block != null && !block.hasTileEntity(stack.getItemDamage())) {
 				list1.add(stack);
 			}
-		}
+		});
 
 		ISelector selector = par1 -> GuiCreatePictorialWorld.this.worldData.baseBlock = (Block) par1;
 
 		SlotElementItem[] slots = new SlotElementItem[list1.size()];
-		for (int i = 0; i < slots.length; ++i) {
+		IntStream.range(0, slots.length).forEach(i -> {
 			ItemStack stack = list1.get(i);
 			Block block = Block.getBlockFromItem(stack.getItem());
 			String s = stack.getDisplayName();
 			slots[i] = new SlotElementItem<>(selector, block, s, stack);
-		}
+		});
 
 		this.mc.displayGuiScreen(new GuiSelect(this, slots));
 	}
@@ -329,23 +329,18 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 		@Override
 		public void onClicked(int par1, boolean par2) {
 			if (par2) {
-				List<BiomeGenBase> list = new ArrayList<BiomeGenBase>();
-				for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; ++i) {
-					if (BiomeGenBase.getBiomeGenArray()[i] != null) {
-						list.add(BiomeGenBase.getBiomeGenArray()[i]);
-					}
-				}
+				List<BiomeGenBase> list = IntStream.range(0, BiomeGenBase.getBiomeGenArray().length).filter(i -> BiomeGenBase.getBiomeGenArray()[i] != null).mapToObj(i -> BiomeGenBase.getBiomeGenArray()[i]).collect(Collectors.toList());
 
 				SlotElementItem[] slots = new SlotElementItem[list.size()];
-				for (int i = 0; i < slots.length; ++i) {
+				IntStream.range(0, slots.length).forEach(i -> {
 					BiomeGenBase b0 = list.get(i);
 					if (biomeIconMap.containsKey(b0.biomeName)) {
 						ItemStack stack = biomeIconMap.get(b0.biomeName);
-						slots[i] = new SlotElementItem<BiomeGenBase>(this, b0, b0.biomeName, stack);
+						slots[i] = new SlotElementItem<>(this, b0, b0.biomeName, stack);
 					} else {
-						slots[i] = new SlotElementItem<BiomeGenBase>(this, b0, b0.biomeName, new ItemStack(b0.topBlock, 1, 0));
+						slots[i] = new SlotElementItem<>(this, b0, b0.biomeName, new ItemStack(b0.topBlock, 1, 0));
 					}
-				}
+				});
 
 				GuiCreatePictorialWorld.this.mc.displayGuiScreen(new GuiSelect(GuiCreatePictorialWorld.this, slots));
 			}

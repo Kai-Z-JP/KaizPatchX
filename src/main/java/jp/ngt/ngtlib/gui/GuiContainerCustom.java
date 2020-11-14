@@ -18,7 +18,7 @@ public abstract class GuiContainerCustom extends GuiContainer {
 		super(par1);
 	}
 
-	protected List<GuiTextField> textFields = new ArrayList<GuiTextField>();
+	protected List<GuiTextField> textFields = new ArrayList<>();
 	protected GuiTextField currentTextField;
 
 	@Override
@@ -71,9 +71,7 @@ public abstract class GuiContainerCustom extends GuiContainer {
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
 		if (this.drawTextBox) {
-			for (GuiTextField field : this.textFields) {
-				field.drawTextBox();
-			}
+			this.textFields.forEach(GuiTextField::drawTextBox);
 		}
 
 		super.drawScreen(par1, par2, par3);

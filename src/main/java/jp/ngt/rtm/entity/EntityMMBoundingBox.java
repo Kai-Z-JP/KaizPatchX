@@ -10,7 +10,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class EntityMMBoundingBox extends Entity {
 	private TileEntityMovingMachine movingMachine;
@@ -30,13 +32,13 @@ public class EntityMMBoundingBox extends Entity {
 
 	@Override
 	protected void entityInit() {
-		this.dataWatcher.addObject(10, Float.valueOf(-1.0F));
-		this.dataWatcher.addObject(11, Float.valueOf(0.0F));
-		this.dataWatcher.addObject(12, Float.valueOf(0.0F));
-		this.dataWatcher.addObject(13, Float.valueOf(0.0F));
-		this.dataWatcher.addObject(14, Float.valueOf(0.0F));
-		this.dataWatcher.addObject(15, Float.valueOf(0.0F));
-	}
+        this.dataWatcher.addObject(10, -1.0F);
+        this.dataWatcher.addObject(11, 0.0F);
+        this.dataWatcher.addObject(12, 0.0F);
+        this.dataWatcher.addObject(13, 0.0F);
+        this.dataWatcher.addObject(14, 0.0F);
+        this.dataWatcher.addObject(15, 0.0F);
+    }
 
 	@Override
 	public AxisAlignedBB getCollisionBox(Entity par1) {
@@ -102,19 +104,19 @@ public class EntityMMBoundingBox extends Entity {
 	}
 
 	private void applyCollisionToEntities(double dx, double dy, double dz) {
-		this.setBoundsToAABB(this.aabb);
-		this.aabb.maxY += 0.41999998688697815D;
-		this.aabb.maxY += dy < 0.0D ? -dy : 0.0D;
-		this.aabb.offset(this.posX, this.posY, this.posZ);
+        this.setBoundsToAABB(this.aabb);
+        this.aabb.maxY += 0.41999998688697815D;
+        this.aabb.maxY += dy < 0.0D ? -dy : 0.0D;
+        this.aabb.offset(this.posX, this.posY, this.posZ);
 
-		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.aabb);
-		for (int i = 0; i < list.size(); ++i) {
-			Entity entity = (Entity) list.get(i);
-			if (!(entity instanceof EntityMMBoundingBox)) {
-				this.moveEntity(entity, dx, dy, dz);
-			}
-		}
-	}
+        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.aabb);
+        for (Object o : list) {
+            Entity entity = (Entity) o;
+            if (!(entity instanceof EntityMMBoundingBox)) {
+                this.moveEntity(entity, dx, dy, dz);
+            }
+        }
+    }
 
 	private void moveEntity(Entity entity, double dx, double dy, double dz) {
 		AxisAlignedBB entityBB = entity.boundingBox;//getBBはnull
@@ -257,18 +259,14 @@ public class EntityMMBoundingBox extends Entity {
 			entity.moveMM(moveX, moveY, moveZ);
 		}*/
 
-		for (int pass = 0; pass < 2; ++pass) {
-			for (int i = 0; i < ids.length; ++i) {
-				EntityMMBoundingBox entity = (EntityMMBoundingBox) world.getEntityByID(ids[i]);
-				switch (pass) {
-					case 0:
-						entity.setPosition(entity.posX + moveX, entity.posY + moveY, entity.posZ + moveZ);
-						break;
-					case 1:
-						entity.moveMM(moveX, moveY, moveZ);
-						break;
-				}
-			}
-		}
-	}
+        IntStream.range(0, 2).forEach(pass -> {
+            Arrays.stream(ids).mapToObj(id -> (EntityMMBoundingBox) world.getEntityByID(id)).forEach(entity -> {
+                if (pass == 0) {
+                    entity.setPosition(entity.posX + moveX, entity.posY + moveY, entity.posZ + moveZ);
+                } else if (pass == 1) {
+                    entity.moveMM(moveX, moveY, moveZ);
+                }
+            });
+        });
+    }
 }

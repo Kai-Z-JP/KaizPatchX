@@ -15,6 +15,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 
+import java.util.stream.IntStream;
+
 /**
  * 架線柱or鉄骨の描画
  */
@@ -72,8 +74,8 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 			ba[4] = BlockLinePole.isConnected(world, x, y + 1, z, false);
 			ba[5] = BlockLinePole.isConnected(world, x, y - 1, z, false);
 			int flagI = 0;
-			for (int i = 0; i < ba.length; ++i) {
-				if (ba[i]) {
+			for (boolean b : ba) {
+				if (b) {
 					++flagI;
 				}
 			}
@@ -163,7 +165,7 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 
 			boolean flag0 = (flagI == 0);//どことも繋がっていない
 			boolean flag1 = block == RTMBlock.linePole
-					? (ba[0] && ba[1] && ba[2]) || (ba[1] && ba[2] && ba[3]) || (ba[2] && ba[3] && ba[0]) || (ba[3] && ba[0] && ba[1])
+					? (IntStream.of(0, 1, 2).allMatch(i -> ba[i])) || (IntStream.of(1, 2, 3).allMatch(v -> ba[v])) || (IntStream.of(2, 3, 0).allMatch(k -> ba[k])) || (IntStream.of(3, 0, 1).allMatch(j -> ba[j]))
 					: (ba[0] && ba[2]) || (ba[2] && ba[1]) || (ba[1] && ba[3]) || (ba[3] && ba[0]);
 			//boolean flag1 = !((b0 && b1 && !b2 && !b3) || (!b0 && !b1 && b2 && b3));
 			//if(!b4 && (BlockLinePole.isConnected(world, x, y + 1, z, true) || BlockLinePole.isConnected(world, x, y - 1, z, true)))
@@ -226,13 +228,13 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 	private void renderFrameParts(RenderBlocks renderer, IIcon icon, float angle, double x, double y, double z) {
 		Tessellator tessellator = Tessellator.instance;
 		float angle2 = NGTMath.toRadians(angle);
-		for (int i = 0; i < framePos.length; ++i) {
+		IntStream.range(0, framePos.length).forEach(i -> {
 			Vec3 vec3 = Vec3.createVectorHelper(framePos[i][0], framePos[i][1], framePos[i][2]);
 			vec3.rotateAroundY(angle2);
 			int i0 = i % 4;
 			float u = i0 <= 1 ? icon.getMaxU() : icon.getMinU();
 			float v = (i0 == 0 || i0 == 3) ? icon.getMinV() : icon.getMaxV();
 			tessellator.addVertexWithUV(x + vec3.xCoord, y + vec3.yCoord, z + vec3.zCoord, u, v);
-		}
+		});
 	}
 }

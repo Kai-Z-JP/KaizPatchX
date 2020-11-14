@@ -19,6 +19,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import java.util.stream.IntStream;
+
 public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> implements IInventory {
 	private final ItemStack[] containerSlots = new ItemStack[54];
 
@@ -46,14 +48,12 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
 			NBTTagCompound itemNBT = this.itemCargo.getTagCompound();
 
 			NBTTagList tagList = itemNBT.getTagList("Items", 10);
-			for (int i = 0; i < tagList.tagCount(); ++i) {
-				NBTTagCompound nbt2 = tagList.getCompoundTagAt(i);
+			IntStream.range(0, tagList.tagCount()).mapToObj(tagList::getCompoundTagAt).forEach(nbt2 -> {
 				byte b0 = nbt2.getByte("Slot");
-
 				if (b0 >= 0 && b0 < this.containerSlots.length) {
 					this.containerSlots[b0] = ItemUtil.readFromNBT(nbt2);
 				}
-			}
+			});
 
 			this.setModelName(itemNBT.getString("ModelName"));
 		}
@@ -63,14 +63,12 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
 	protected void writeCargoToNBT(NBTTagCompound nbt) {
 		if (this.itemCargo != null) {
 			NBTTagList tagList = new NBTTagList();
-			for (int i = 0; i < this.containerSlots.length; ++i) {
-				if (this.containerSlots[i] != null) {
-					NBTTagCompound nbt1 = new NBTTagCompound();
-					nbt1.setByte("Slot", (byte) i);
-					ItemUtil.writeToNBT(nbt1, this.containerSlots[i]);
-					tagList.appendTag(nbt1);
-				}
-			}
+			IntStream.range(0, this.containerSlots.length).filter(i -> this.containerSlots[i] != null).forEach(i -> {
+				NBTTagCompound nbt1 = new NBTTagCompound();
+				nbt1.setByte("Slot", (byte) i);
+				ItemUtil.writeToNBT(nbt1, this.containerSlots[i]);
+				tagList.appendTag(nbt1);
+			});
 
 			NBTTagCompound itemNBT = this.itemCargo.hasTagCompound() ? this.itemCargo.getTagCompound() : new NBTTagCompound();
 			itemNBT.setTag("Items", tagList);
@@ -167,14 +165,13 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
 			if (this.containerSlots[par1].stackSize <= par2) {
 				itemstack = this.containerSlots[par1];
 				this.containerSlots[par1] = null;
-				return itemstack;
 			} else {
 				itemstack = this.containerSlots[par1].splitStack(par2);
 				if (this.containerSlots[par1].stackSize == 0) {
 					this.containerSlots[par1] = null;
 				}
-				return itemstack;
 			}
+			return itemstack;
 		} else {
 			return null;
 		}

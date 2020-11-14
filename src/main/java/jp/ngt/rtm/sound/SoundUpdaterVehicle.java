@@ -28,7 +28,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
 	protected ResourceLocation prevSoundResource;
 	protected ISound prevSound;
 
-	protected List<MovingSoundVehicle> playingSounds = new ArrayList<MovingSoundVehicle>();
+	protected List<MovingSoundVehicle> playingSounds = new ArrayList<>();
 	protected Map<Integer, Object> dataMap;
 
 	public SoundUpdaterVehicle(SoundHandler par1, EntityVehicleBase par2) {
@@ -52,7 +52,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
 			}
 
 			ResourceLocation newSound = this.getSound(modelset);
-			if (this.prevSoundResource == null || newSound == null || !newSound.equals(this.prevSoundResource)) {
+			if (newSound == null || !newSound.equals(this.prevSoundResource)) {
 				if (this.prevSound != null) {
 					((MovingSoundVehicle) this.prevSound).stop();
 				}
@@ -137,9 +137,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
 	}
 
 	public void stopAllSounds() {
-		for (int i = 0; i < this.playingSounds.size(); ++i) {
-			this.playingSounds.get(i).stop();
-		}
+		this.playingSounds.forEach(MovingSoundEntity::stop);
 
 		if (this.prevSound != null) {
 			((MovingSoundVehicle) this.prevSound).stop();
@@ -147,8 +145,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
 	}
 
 	private MovingSoundVehicle getPlayingSound(String domain, String path) {
-		for (int i = 0; i < this.playingSounds.size(); ++i) {
-			MovingSoundVehicle sound = this.playingSounds.get(i);
+		for (MovingSoundVehicle sound : this.playingSounds) {
 			ResourceLocation resource = sound.getPositionedSoundLocation();
 			if (resource.getResourceDomain().equals(domain) && resource.getResourcePath().equals(path)) {
 				return sound;
@@ -164,7 +161,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
 
 	public Object getData(int id) {
 		if (this.dataMap == null) {
-			this.dataMap = new HashMap<Integer, Object>();
+			this.dataMap = new HashMap<>();
 		}
 
 		if (this.dataMap.containsKey(id)) {
@@ -175,7 +172,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
 
 	public void setData(int id, Object value) {
 		if (this.dataMap == null) {
-			this.dataMap = new HashMap<Integer, Object>();
+			this.dataMap = new HashMap<>();
 		}
 		this.dataMap.put(id, value);
 	}

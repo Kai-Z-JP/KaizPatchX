@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class PacketMarker extends PacketCustom implements IMessageHandler<PacketMarker, IMessage> {
 	private List<int[]> list;
@@ -26,29 +27,29 @@ public class PacketMarker extends PacketCustom implements IMessageHandler<Packet
 
 	@Override
 	public void toBytes(ByteBuf buffer) {
-		super.toBytes(buffer);
+        super.toBytes(buffer);
 
-		buffer.writeInt(this.list.size());
-		for (int[] ia : this.list) {
-			buffer.writeInt(ia[0]);
-			buffer.writeInt(ia[1]);
-			buffer.writeInt(ia[2]);
-		}
-	}
+        buffer.writeInt(this.list.size());
+        this.list.forEach(ia -> {
+            buffer.writeInt(ia[0]);
+            buffer.writeInt(ia[1]);
+            buffer.writeInt(ia[2]);
+        });
+    }
 
 	@Override
 	public void fromBytes(ByteBuf buffer) {
-		super.fromBytes(buffer);
+        super.fromBytes(buffer);
 
-		int size = buffer.readInt();
-		this.list = new ArrayList<>();
-		for (int i = 0; i < size; ++i) {
-			int i0 = buffer.readInt();
-			int i1 = buffer.readInt();
-			int i2 = buffer.readInt();
-			this.list.add(new int[]{i0, i1, i2});
-		}
-	}
+        int size = buffer.readInt();
+        this.list = new ArrayList<>();
+        IntStream.range(0, size).forEach(i -> {
+            int i0 = buffer.readInt();
+            int i1 = buffer.readInt();
+            int i2 = buffer.readInt();
+            this.list.add(new int[]{i0, i1, i2});
+        });
+    }
 
 	@Override
 	public IMessage onMessage(PacketMarker message, MessageContext ctx) {

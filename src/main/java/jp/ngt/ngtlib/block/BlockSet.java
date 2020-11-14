@@ -54,8 +54,7 @@ public class BlockSet implements Comparable<BlockSet> {
 	 * Mapのキーとして使用可能な形に変換(Y<0)
 	 */
 	public BlockSet asKey() {
-		BlockSet set = new BlockSet(0, -1, 0, this.block, this.metadata, this.nbt);
-		return set;
+        return new BlockSet(0, -1, 0, this.block, this.metadata, this.nbt);
 	}
 
 	@Override
@@ -102,22 +101,22 @@ public class BlockSet implements Comparable<BlockSet> {
 	 * 座標保存しない
 	 */
 	public static BlockSet readFromNBT(NBTTagCompound nbt) {
-		Block block = Block.getBlockFromName(nbt.getString("Block"));
-		if (block == null) {
-			return AIR;
-		}
+        Block block = Block.getBlockFromName(nbt.getString("Block"));
+        if (block == null) {
+            return AIR;
+        }
 
-		int meta = 0;
-		if (nbt.hasKey("Meta", 3)) {
-			meta = nbt.getInteger("Meta");//データ互換性
-		} else {
-			meta = nbt.getByte("Meta");
-		}
+        int meta;
+        if (nbt.hasKey("Meta", 3)) {
+            meta = nbt.getInteger("Meta");//データ互換性
+        } else {
+            meta = nbt.getByte("Meta");
+        }
 
-		if (nbt.hasKey("TagData")) {
-			NBTTagCompound tagCompound = nbt.getCompoundTag("TagData");
-			return new BlockSet(block, meta, tagCompound);
-		} else {
+        if (nbt.hasKey("TagData")) {
+            NBTTagCompound tagCompound = nbt.getCompoundTag("TagData");
+            return new BlockSet(block, meta, tagCompound);
+        } else {
 			return new BlockSet(block, meta);
 		}
 	}

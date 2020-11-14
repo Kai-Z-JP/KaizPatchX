@@ -15,6 +15,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ItemNPC extends Item {
 	@SideOnly(Side.CLIENT)
@@ -50,10 +51,8 @@ public class ItemNPC extends Item {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item par1, CreativeTabs tabs, List list) {
-		for (int j = 0; j < 2; ++j) {
-			list.add(new ItemStack(par1, 1, j));
-		}
-	}
+        IntStream.range(0, 2).mapToObj(j -> new ItemStack(par1, 1, j)).forEach(list::add);
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)

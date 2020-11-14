@@ -9,15 +9,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.Arrays;
+
 /**
  * 鉱石辞書対応
  */
 public class ShapedRecipes55 implements IRecipe {
-	public final int recipeWidth;
-	public final int recipeHeight;
-	public final ItemStack[] recipeItems;
-	private final ItemStack recipeOutput;
-	private boolean hasNBT;
+    public final int recipeWidth;
+    public final int recipeHeight;
+    public final ItemStack[] recipeItems;
+    private final ItemStack recipeOutput;
+    private boolean hasNBT;
 
 	public ShapedRecipes55(int w, int h, ItemStack[] stacks, ItemStack output) {
 		this.recipeWidth = w;
@@ -146,16 +148,9 @@ public class ShapedRecipes55 implements IRecipe {
 		int[] ids0 = OreDictionary.getOreIDs(target);
 		int[] ids1 = OreDictionary.getOreIDs(inInventory);
 		if (ids0.length > 0 && ids1.length > 0) {
-			for (int i = 0; i < ids0.length; ++i) {
-				for (int j = 0; j < ids1.length; ++j) {
-					if (ids0[i] == ids1[j]) {
-						return true;
-					}
-				}
-			}
-		} else {
+            return Arrays.stream(ids0).anyMatch(j -> Arrays.stream(ids1).anyMatch(k -> j == k));
+        } else {
 			return ItemUtil.isItemEqual(target, inInventory);
 		}
-		return false;
 	}
 }

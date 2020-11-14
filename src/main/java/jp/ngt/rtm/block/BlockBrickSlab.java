@@ -44,13 +44,11 @@ public class BlockBrickSlab extends BlockSlab//ItemSlab.class
 			if (world.getBlock(x, y, z) == RTMBlock.brickSlab) {
 				ItemStack itemstack = player.inventory.getCurrentItem();
 				if (itemstack != null && Block.getBlockFromItem(itemstack.getItem()) == RTMBlock.brickSlab) {
-					if (world.isRemote) {
-						return true;
-					} else {
-						world.setBlock(x, y, z, RTMBlock.brickDoubleSlab, 0, 2);
-						return true;
-					}
-				}
+                    if (!world.isRemote) {
+                        world.setBlock(x, y, z, RTMBlock.brickDoubleSlab, 0, 2);
+                    }
+                    return true;
+                }
 			}
 		}
 		return false;

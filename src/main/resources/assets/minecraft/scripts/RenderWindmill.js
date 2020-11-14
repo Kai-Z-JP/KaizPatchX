@@ -10,7 +10,7 @@ function init(par1, par2) {
 function render(entity, pass, par3) {
     GL11.glPushMatrix();
 
-    if (pass == 0) {
+    if (pass === 0) {
         lod.render(renderer);
 
         var tick = (renderer.getTick(entity) % 12);

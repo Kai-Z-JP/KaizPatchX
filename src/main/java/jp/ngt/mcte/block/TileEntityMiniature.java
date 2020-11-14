@@ -140,17 +140,15 @@ public class TileEntityMiniature extends TileEntityPlaceable {
 		if (this.collisionBoxes == null) {
 			if (this.state == null) {
 				List<AxisAlignedBB> list = (new MiniatureBlockState()).getCollisionBoxes();
-				for (AxisAlignedBB aabb : list) {
-					aabb.offset((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D);
-				}
+				list.forEach(aabb -> aabb.offset((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D));
 				return list;
 			}
 
 			List<AxisAlignedBB> list = this.state.getCollisionBoxes();
-			for (AxisAlignedBB aabb : list) {
+			list.forEach(aabb -> {
 				this.rotateAABB(aabb);
 				aabb.offset((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D);
-			}
+			});
 			this.collisionBoxes = list;
 		}
 		return this.collisionBoxes;
@@ -163,18 +161,11 @@ public class TileEntityMiniature extends TileEntityPlaceable {
 		float f0 = this.getRotation();
 		switch (this.attachSide) {
 			case 0:
-				break;
 			case 1:
 				break;
 			case 2:
-				f0 *= -1.0F;
-				break;
 			case 3:
-				f0 *= -1.0F;
-				break;
 			case 4:
-				f0 *= -1.0F;
-				break;
 			case 5:
 				f0 *= -1.0F;
 				break;
@@ -213,12 +204,12 @@ public class TileEntityMiniature extends TileEntityPlaceable {
 				vecMax.rotateAroundZ(ro);
 				break;
 		}
-		double minX = vecMin.xCoord < vecMax.xCoord ? vecMin.xCoord : vecMax.xCoord;
-		double minY = vecMin.yCoord < vecMax.yCoord ? vecMin.yCoord : vecMax.yCoord;
-		double minZ = vecMin.zCoord < vecMax.zCoord ? vecMin.zCoord : vecMax.zCoord;
-		double maxX = vecMin.xCoord > vecMax.xCoord ? vecMin.xCoord : vecMax.xCoord;
-		double maxY = vecMin.yCoord > vecMax.yCoord ? vecMin.yCoord : vecMax.yCoord;
-		double maxZ = vecMin.zCoord > vecMax.zCoord ? vecMin.zCoord : vecMax.zCoord;
+		double minX = Math.min(vecMin.xCoord, vecMax.xCoord);
+		double minY = Math.min(vecMin.yCoord, vecMax.yCoord);
+		double minZ = Math.min(vecMin.zCoord, vecMax.zCoord);
+		double maxX = Math.max(vecMin.xCoord, vecMax.xCoord);
+		double maxY = Math.max(vecMin.yCoord, vecMax.yCoord);
+		double maxZ = Math.max(vecMin.zCoord, vecMax.zCoord);
 		aabb.setBounds(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 

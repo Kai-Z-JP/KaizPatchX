@@ -10,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 public class SpeakerSounds {
     private static final SpeakerSounds INSTANCE_CLIENT = new SpeakerSounds(false);
@@ -47,9 +48,7 @@ public class SpeakerSounds {
     }
 
     public void syncSoundList() {
-        for (int i = 0; i < this.sounds.length; i++) {
-            setSound(i + 1, this.sounds[i], true);
-        }
+        IntStream.range(0, this.sounds.length).forEach(i -> setSound(i + 1, this.sounds[i], true));
     }
 
     private void saveSoundList() {

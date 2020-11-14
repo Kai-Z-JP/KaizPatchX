@@ -6,7 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class ContainerTicketVendor extends Container {
 	private final TileEntityTicketVendor vendor;
@@ -56,13 +58,7 @@ public class ContainerTicketVendor extends Container {
 		super.onContainerClosed(player);
 
 		if (!player.worldObj.isRemote) {
-			for (int i = 0; i < this.invVendor.getSizeInventory(); ++i) {
-				ItemStack itemstack = this.invVendor.getStackInSlotOnClosing(i);
-
-				if (itemstack != null) {
-					player.dropPlayerItemWithRandomChoice(itemstack, false);
-				}
-			}
+			IntStream.range(0, this.invVendor.getSizeInventory()).mapToObj(this.invVendor::getStackInSlotOnClosing).filter(Objects::nonNull).forEach(itemstack -> player.dropPlayerItemWithRandomChoice(itemstack, false));
 		}
 	}
 }

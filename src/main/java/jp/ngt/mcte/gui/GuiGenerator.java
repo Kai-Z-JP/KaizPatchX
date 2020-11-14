@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiGenerator extends GuiScreenCustom {
@@ -136,7 +137,7 @@ public class GuiGenerator extends GuiScreenCustom {
 					this.terrainData.blocksFile = file;
 					break;
 			}
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 		}
 	}
 
@@ -149,7 +150,7 @@ public class GuiGenerator extends GuiScreenCustom {
 			return;
 		}
 
-		Map<Integer, BlockSet> map = new TreeMap<Integer, BlockSet>();
+		Map<Integer, BlockSet> map = new TreeMap<>();
 		int[] ia = new int[4];//{RGBA}
 		for (int i = 0; i < image.getWidth(); ++i) {
 			for (int j = 0; j < image.getHeight(); ++j) {
@@ -192,19 +193,17 @@ public class GuiGenerator extends GuiScreenCustom {
 		super.drawScreen(par1, par2, par3);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		for (int i = 0; i < this.thumbnail.length; ++i) {
-			if (this.thumbnail[i] != null) {
-				double d1 = i0 * i;
-				this.thumbnail[i].bindTexture();
-				Tessellator tessellator = Tessellator.instance;
-				tessellator.startDrawingQuads();
-				tessellator.addVertexWithUV(i0, (double) i0 + d1, this.zLevel, 1.0D, 1.0D);
-				tessellator.addVertexWithUV(i0, 0.0D + d1, this.zLevel, 1.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, 0.0D + d1, this.zLevel, 0.0D, 0.0D);
-				tessellator.addVertexWithUV(0.0D, (double) i0 + d1, this.zLevel, 0.0D, 1.0D);
-				tessellator.draw();
-			}
-		}
+		IntStream.range(0, this.thumbnail.length).filter(i -> this.thumbnail[i] != null).forEach(i -> {
+			double d1 = i0 * i;
+			this.thumbnail[i].bindTexture();
+			Tessellator tessellator = Tessellator.instance;
+			tessellator.startDrawingQuads();
+			tessellator.addVertexWithUV(i0, (double) i0 + d1, this.zLevel, 1.0D, 1.0D);
+			tessellator.addVertexWithUV(i0, 0.0D + d1, this.zLevel, 1.0D, 0.0D);
+			tessellator.addVertexWithUV(0.0D, 0.0D + d1, this.zLevel, 0.0D, 0.0D);
+			tessellator.addVertexWithUV(0.0D, (double) i0 + d1, this.zLevel, 0.0D, 1.0D);
+			tessellator.draw();
+		});
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -237,10 +236,10 @@ public class GuiGenerator extends GuiScreenCustom {
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.startDrawingQuads();
 			tessellator.setColorOpaque_I(color);
-			tessellator.addVertex(par1 + 0, par2 + par4, par5);
+			tessellator.addVertex(par1, par2 + par4, par5);
 			tessellator.addVertex(par1 + par3, par2 + par4, par5);
-			tessellator.addVertex(par1 + par3, par2 + 0, par5);
-			tessellator.addVertex(par1 + 0, par2 + 0, par5);
+			tessellator.addVertex(par1 + par3, par2, par5);
+			tessellator.addVertex(par1, par2, par5);
 			tessellator.draw();
 		}
 
@@ -253,7 +252,7 @@ public class GuiGenerator extends GuiScreenCustom {
 
 		private void selectBlock() {
 			Iterator<Block> iterator = Block.blockRegistry.iterator();
-			List<ItemStack> list = new ArrayList<ItemStack>();
+			List<ItemStack> list = new ArrayList<>();
 			while (iterator.hasNext()) {
 				Block block = iterator.next();
 				Item item = Item.getItemFromBlock(block);
@@ -263,11 +262,11 @@ public class GuiGenerator extends GuiScreenCustom {
 			}
 
 			SlotElementItem[] slots = new SlotElementItem[list.size()];
-			for (int i = 0; i < slots.length; ++i) {
+			IntStream.range(0, slots.length).forEach(i -> {
 				ItemStack stack = list.get(i);
 				String s = stack.getDisplayName();
-				slots[i] = new SlotElementItem<ItemStack>(this, stack, s, stack);
-			}
+				slots[i] = new SlotElementItem<>(this, stack, s, stack);
+			});
 
 			GuiGenerator.this.mc.displayGuiScreen(new GuiSelect(GuiGenerator.this, slots));
 		}

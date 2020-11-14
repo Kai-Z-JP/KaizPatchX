@@ -31,11 +31,11 @@ public class RenderLargeRail extends TileEntitySpecialRenderer {
 		GL11.glEnable(GL11.GL_CULL_FACE);
 
 		try {
-			ModelSetRailClient modelSet = (ModelSetRailClient) tileEntity.getProperty().getModelSet();
-			RailPartsRenderer renderer = (RailPartsRenderer) modelSet.model.renderer;
-			renderer.renderRail(tileEntity, par2, par4, par6, par8);
-		} catch (ClassCastException e) {
-		}
+            ModelSetRailClient modelSet = (ModelSetRailClient) tileEntity.getProperty().getModelSet();
+            RailPartsRenderer renderer = (RailPartsRenderer) modelSet.model.renderer;
+            renderer.renderRail(tileEntity, par2, par4, par6, par8);
+        } catch (ClassCastException ignored) {
+        }
 
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();

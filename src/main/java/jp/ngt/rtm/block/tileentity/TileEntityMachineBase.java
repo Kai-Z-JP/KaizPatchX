@@ -127,8 +127,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
-		return bb;
+        return AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
 	}
 
 	public ModelSetMachine getModelSet() {

@@ -21,21 +21,18 @@ public class EditFilterRandom extends EditFilterBase {
 	public boolean edit(final Editor editor) {
 		AABBInt box = editor.getSelectBox();
 		if (box != null) {
-			final int n = this.getCfg().getInt("Denominator");
-			editor.record(box);
-			editor.repeat(box, new Repeatable() {
-				@Override
-				public void processing(AABBInt box, int index, int x, int y, int z) {
-					World world = editor.getWorld();
-					Block fillBlock = editor.getEntity().getSlotBlock(0);
-					int meta = editor.getEntity().getSlotBlockMetadata(0);
-					if (world.rand.nextInt(n) == 0) {
-						editor.setBlock(x, y, z, fillBlock, meta);
-					}
-				}
-			});
-			return true;
-		}
+            final int n = this.getCfg().getInt("Denominator");
+            editor.record(box);
+            editor.repeat(box, (box1, index, x, y, z) -> {
+                World world = editor.getWorld();
+                Block fillBlock = editor.getEntity().getSlotBlock(0);
+                int meta = editor.getEntity().getSlotBlockMetadata(0);
+                if (world.rand.nextInt(n) == 0) {
+                    editor.setBlock(x, y, z, fillBlock, meta);
+                }
+            });
+            return true;
+        }
 		return false;
 	}
 }

@@ -36,17 +36,17 @@ function render(entity, pass, par3) {
 
     var state = renderer.getLightState(entity);
 
-    if (pass == 0) {
+    if (pass === 0) {
         base.render(renderer);
 
         renderer.rotate(90.0 + pitch, 'X', 0.0, 0.6, 0.0);
         body.render(renderer);
 
-        if (state == -1) {
+        if (state === -1) {
             body_L.render(renderer);
         }
-    } else if (pass == 2) {
-        if (state == 1) {
+    } else if (pass === 2) {
+        if (state === 1) {
             renderer.rotate(90.0 + pitch, 'X', 0.0, 0.6, 0.0);
             body_L.render(renderer);
 

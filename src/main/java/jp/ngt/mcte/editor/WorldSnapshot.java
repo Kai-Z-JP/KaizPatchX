@@ -20,9 +20,9 @@ public class WorldSnapshot {
 	public static final String IGNORE_AIR = "IgnoreAir";
 	public static final String IGNORE_WATER = "IgnoreWater";
 
-	private final List<BlockSet> blockList = new ArrayList<BlockSet>();
+	private final List<BlockSet> blockList = new ArrayList<>();
 	//Entityを回転に対応させてない
-	private final List<Entity> entityList = new ArrayList<Entity>();
+	private final List<Entity> entityList = new ArrayList<>();
 	private final AABBInt origBox;
 	/**
 	 * インポートデータはfalse
@@ -49,17 +49,14 @@ public class WorldSnapshot {
 	}
 
 	private void save(final Editor editor, AABBInt box, final String options) {
-		this.repeat(box, new Repeatable() {
-			@Override
-			public void processing(AABBInt box, int index, int x, int y, int z) {
-				BlockSet blockSet = editor.getBlockSet(x, y, z);
-				if (options.contains(IGNORE_WATER)) {
-					if (blockSet.block.getMaterial().isLiquid()) {
-						blockSet = BlockSet.AIR;
-					}
+		this.repeat(box, (box1, index, x, y, z) -> {
+			BlockSet blockSet = editor.getBlockSet(x, y, z);
+			if (options.contains(IGNORE_WATER)) {
+				if (blockSet.block.getMaterial().isLiquid()) {
+					blockSet = BlockSet.AIR;
 				}
-				WorldSnapshot.this.blockList.add(blockSet);
 			}
+			WorldSnapshot.this.blockList.add(blockSet);
 		});
 
 		List list = editor.getWorld().getEntitiesWithinAABBExcludingEntity(
@@ -74,24 +71,19 @@ public class WorldSnapshot {
 	 */
 	public void restore(Editor editor) {
 		if (this.hasOrigPos) {
-			for (BlockSet blockSet : this.blockList) {
-				editor.setBlock(blockSet.x, blockSet.y, blockSet.z, blockSet);
-			}
+			this.blockList.forEach(blockSet -> editor.setBlock(blockSet.x, blockSet.y, blockSet.z, blockSet));
 		}
 	}
 
 	public void setBlocks(final Editor editor, int x, int y, int z, final String options) {
-		Repeatable repeater = new Repeatable() {
-			@Override
-			public void processing(AABBInt box, int index, int x, int y, int z) {
-				BlockSet blockSet = WorldSnapshot.this.blockList.get(index);
-				if (options.contains(IGNORE_AIR)) {
-					if (blockSet.block == Blocks.air) {
-						return;
-					}
+		Repeatable repeater = (box, index, x1, y1, z1) -> {
+			BlockSet blockSet = WorldSnapshot.this.blockList.get(index);
+			if (options.contains(IGNORE_AIR)) {
+				if (blockSet.block == Blocks.air) {
+					return;
 				}
-				editor.setBlock(x, y, z, blockSet);
 			}
+			editor.setBlock(x1, y1, z1, blockSet);
 		};
 		AABBInt box = new AABBInt(x, y, z,
 				x + this.origBox.sizeX(), y + this.origBox.sizeY(), z + this.origBox.sizeZ());

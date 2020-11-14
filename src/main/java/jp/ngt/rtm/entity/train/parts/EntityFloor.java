@@ -13,7 +13,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class EntityFloor extends EntityVehiclePart {
@@ -83,7 +82,6 @@ public class EntityFloor extends EntityVehiclePart {
 				this.riddenByEntity.mountEntity(null);
 				return true;
 			}
-			return true;
 		} else {
 			int seatType = this.getSeatType();
 			if (!this.worldObj.isRemote && seatType != 0) {
@@ -91,9 +89,8 @@ public class EntityFloor extends EntityVehiclePart {
 					double d0 = 7.0D;
 					List list = this.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY - d0, this.posZ - d0, this.posX + d0, this.posY + d0, this.posZ + d0));
 					if (list != null) {
-						Iterator iterator = list.iterator();
-						while (iterator.hasNext()) {
-							EntityLiving entity = (EntityLiving) iterator.next();
+						for (Object o : list) {
+							EntityLiving entity = (EntityLiving) o;
 							if (entity.getLeashed() && entity.getLeashedToEntity() == player) {
 								entity.clearLeashed(true, true);
 								entity.mountEntity(this);
@@ -107,12 +104,12 @@ public class EntityFloor extends EntityVehiclePart {
 					player.mountEntity(this);
 				}
 			}
-			return true;
 		}
+		return true;
 	}
 
 	public void setSeatType(byte par1) {
-		this.dataWatcher.updateObject(24, Byte.valueOf(par1));
+		this.dataWatcher.updateObject(24, par1);
 	}
 
 	public byte getSeatType() {

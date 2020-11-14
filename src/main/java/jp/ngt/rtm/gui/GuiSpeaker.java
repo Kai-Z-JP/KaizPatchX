@@ -30,7 +30,7 @@ public class GuiSpeaker extends GuiScreenCustom {
 
     private int chooseSoundId;
 
-    private TileEntitySpeaker tile;
+    private final TileEntitySpeaker tile;
 
     public GuiSpeaker(TileEntitySpeaker par1) {
         this.tile = par1;

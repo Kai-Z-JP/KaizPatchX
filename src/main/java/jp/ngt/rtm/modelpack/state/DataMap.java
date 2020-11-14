@@ -13,11 +13,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public final class DataMap {
 	public static final byte SYNC_FLAG = 1;
@@ -40,30 +42,27 @@ public final class DataMap {
 
 	public void readFromNBT(NBTTagCompound nbt) {
 		NBTTagList list = nbt.getTagList("DataList", 10);
-		for (int i = 0; i < list.tagCount(); ++i) {
-			NBTTagCompound entry = list.getCompoundTagAt(i);
+		IntStream.range(0, list.tagCount()).mapToObj(list::getCompoundTagAt).forEach(entry -> {
 			String type = entry.getString("Type");
 			String name = entry.getString("Name");
 			int flag = entry.getInteger("Flag");
 			DataEntry de = DataEntry.getEntry(type, "", flag);
 			de.readFromNBT(entry);
 			this.set(name, de, flag);
-		}
+		});
 	}
 
 	public NBTTagCompound writeToNBT() {
 		NBTTagCompound nbt = new NBTTagCompound();
 
 		NBTTagList list = new NBTTagList();
-		for (Entry<String, DataEntry> entry : this.map.entrySet()) {
-			if ((entry.getValue().flag & SAVE_FLAG) != 0) {
-				NBTTagCompound nbt2 = new NBTTagCompound();
-				nbt2.setString("Name", entry.getKey());
-				nbt2.setInteger("Flag", entry.getValue().flag);
-				entry.getValue().writeToNBT(nbt2);
-				list.appendTag(nbt2);
-			}
-		}
+		this.map.entrySet().stream().filter(entry -> (entry.getValue().flag & SAVE_FLAG) != 0).forEach(entry -> {
+			NBTTagCompound nbt2 = new NBTTagCompound();
+			nbt2.setString("Name", entry.getKey());
+			nbt2.setInteger("Flag", entry.getValue().flag);
+			entry.getValue().writeToNBT(nbt2);
+			list.appendTag(nbt2);
+		});
 		nbt.setTag("DataList", list);
 		return nbt;
 	}
@@ -217,11 +216,7 @@ public final class DataMap {
 
 	public void setArg(String par1, boolean overwrite) {
 		String[][] array = convertArg(par1);
-		for (String[] sa : array) {
-			if (!this.map.containsKey(sa[0]) || overwrite) {
-				this.set(sa[0], String.format("(%s)%s", sa[1], sa[2]), DataMap.SYNC_FLAG | DataMap.SAVE_FLAG);
-			}
-		}
+		Arrays.stream(array).filter(sa -> !this.map.containsKey(sa[0]) || overwrite).forEach(sa -> this.set(sa[0], String.format("(%s)%s", sa[1], sa[2]), DataMap.SYNC_FLAG | DataMap.SAVE_FLAG));
 	}
 
 	/**

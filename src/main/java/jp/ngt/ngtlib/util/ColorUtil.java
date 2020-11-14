@@ -76,6 +76,6 @@ public final class ColorUtil {
 	}
 
 	private static int correct(int p) {
-		return p > 0xFF ? 0xFF : p;
-	}
+        return Math.min(p, 0xFF);
+    }
 }

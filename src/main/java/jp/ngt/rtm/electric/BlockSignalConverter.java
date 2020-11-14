@@ -44,16 +44,14 @@ public class BlockSignalConverter extends BlockContainer implements IBlockConnec
 
 	@Override
 	public boolean onBlockActivated(World world, int par2, int par3, int par4, EntityPlayer player, int par6, float par7, float par8, float par9) {
-		int meta = world.getBlockMetadata(par2, par3, par4);
-		if (meta == SignalConverterType.Increment.id || meta == SignalConverterType.Decrement.id) {
-			return true;
-		} else {
-			if (world.isRemote) {
-				player.openGui(RTMCore.instance, RTMCore.guiIdSignalConverter, player.worldObj, par2, par3, par4);
-			}
-			return true;
-		}
-	}
+        int meta = world.getBlockMetadata(par2, par3, par4);
+        if (meta != SignalConverterType.Increment.id && meta != SignalConverterType.Decrement.id) {
+            if (world.isRemote) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdSignalConverter, player.worldObj, par2, par3, par4);
+            }
+        }
+        return true;
+    }
 
 	@Override
 	public boolean canProvidePower() {

@@ -21,14 +21,16 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.util.Arrays;
+
 @SideOnly(Side.CLIENT)
 public class RenderMarkerBlock1710 extends RenderMarkerBlockBase {
-	private static final double FIT_RANGE_SQ = 2.0D * 2.0D;
+    private static final double FIT_RANGE_SQ = 2.0D * 2.0D;
 
-	public void renderTileEntityMarker(TileEntityMarker tileEntity, double par2, double par4, double par6, float par8) {
-		if (!tileEntity.displayDistance) {
-			return;
-		}
+    public void renderTileEntityMarker(TileEntityMarker tileEntity, double par2, double par4, double par6, float par8) {
+        if (!tileEntity.displayDistance) {
+            return;
+        }
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -123,13 +125,8 @@ public class RenderMarkerBlock1710 extends RenderMarkerBlockBase {
 
 	private void checkKey(TileEntityMarker tileEntity) {
 		if (Minecraft.getMinecraft().inGameHasFocus) {
-			for (MarkerElement element : MarkerElement.values()) {
-				if (Keyboard.isKeyDown(element.key)) {
-					tileEntity.editMode = element.ordinal();
-					return;
-				}
-			}
-		}
+            Arrays.stream(MarkerElement.values()).filter(element -> Keyboard.isKeyDown(element.key)).findFirst().ifPresent(element -> tileEntity.editMode = element.ordinal());
+        }
 	}
 
 	private void changeAnchor(TileEntityMarker tileEntity)//Minecraft.1518-this.objectMouseOver.hitVec

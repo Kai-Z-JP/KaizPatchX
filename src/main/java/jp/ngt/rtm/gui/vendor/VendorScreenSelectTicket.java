@@ -21,9 +21,9 @@ public class VendorScreenSelectTicket extends VendorScreen {
 	@Override
 	public void onClickButton(GuiButton button) {
 		if (button.id == 10) {
-			this.vendor.setVendorScreen(new VendorScreenSelectPrice(this.vendor, "Ticket"));
-		} else if (button.id == 10) {
-			this.vendor.setVendorScreen(new VendorScreenSelectPrice(this.vendor, "TicketBook"));
-		}
+            this.vendor.setVendorScreen(new VendorScreenSelectPrice(this.vendor, "Ticket"));
+        } else if (button.id == 11) {
+            this.vendor.setVendorScreen(new VendorScreenSelectPrice(this.vendor, "TicketBook"));
+        }
 	}
 }

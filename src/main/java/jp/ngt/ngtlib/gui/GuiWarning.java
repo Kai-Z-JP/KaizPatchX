@@ -56,14 +56,14 @@ public class GuiWarning extends GuiScreen {
 
 	@Override
 	public void drawTexturedModalRect(int p_73729_1_, int p_73729_2_, int p_73729_3_, int p_73729_4_, int p_73729_5_, int p_73729_6_) {
-		float f = 0.001953125F;
-		float f1 = 0.001953125F;
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(p_73729_1_ + 0, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + 0) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
-		tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
-		tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + 0, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + 0) * f1);
-		tessellator.addVertexWithUV(p_73729_1_ + 0, p_73729_2_ + 0, this.zLevel, (float) (p_73729_3_ + 0) * f, (float) (p_73729_4_ + 0) * f1);
-		tessellator.draw();
-	}
+        float f = 0.001953125F;
+        float f1 = 0.001953125F;
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_, this.zLevel, (float) (p_73729_3_) * f, (float) (p_73729_4_) * f1);
+        tessellator.draw();
+    }
 }

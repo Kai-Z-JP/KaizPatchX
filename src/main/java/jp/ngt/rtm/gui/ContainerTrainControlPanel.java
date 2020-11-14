@@ -7,6 +7,7 @@ import net.minecraft.inventory.Slot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ContainerTrainControlPanel extends ContainerPlayer {
 	public final EntityTrainBase train;
@@ -30,12 +31,11 @@ public class ContainerTrainControlPanel extends ContainerPlayer {
 		if (tabIndex == TabTrainControlPanel.TAB_Inventory.getTabIndex()) {
 			this.inventorySlots = this.slotsList;
 		} else {
-			this.inventorySlots = new ArrayList();
-			for (int i = 0; i < 9; ++i) {
-				Slot slot = new Slot(this.player.inventory, i, 8 + i * 18, 142);
-				slot.slotNumber = this.inventorySlots.size();
-				this.inventorySlots.add(slot);
-			}
-		}
+            this.inventorySlots = new ArrayList();
+            IntStream.range(0, 9).mapToObj(i -> new Slot(this.player.inventory, i, 8 + i * 18, 142)).forEach(slot -> {
+                slot.slotNumber = this.inventorySlots.size();
+                this.inventorySlots.add(slot);
+            });
+        }
 	}
 }

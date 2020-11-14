@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.stream.IntStream;
+
 @SideOnly(Side.CLIENT)
 public class GuiSlotCustom {
 	protected final GuiScreenCustom parentScreen;
@@ -311,7 +313,7 @@ public class GuiSlotCustom {
 					if (j1 != 0) {
 						if (j1 > 0) {
 							j1 = -1;
-						} else if (j1 < 0) {
+						} else {
 							j1 = 1;
 						}
 
@@ -422,10 +424,9 @@ public class GuiSlotCustom {
 		int i1 = this.getSize();
 		Tessellator tessellator = Tessellator.instance;
 
-		for (int j1 = 0; j1 < i1; ++j1) {
+		IntStream.range(0, i1).forEach(j1 -> {
 			int k1 = p_148120_2_ + j1 * this.slotHeight + this.headerPadding;
 			int l1 = this.slotHeight - 4;
-
 			if (k1 <= this.bottom && k1 + l1 >= this.top) {
 				if (this.showSelectionBox && this.isSelected(j1)) {
 					int i2 = this.left + (this.width / 2 - this.slotWidth / 2);
@@ -449,7 +450,7 @@ public class GuiSlotCustom {
 
 				this.drawSlot(j1, p_148120_1_, k1, l1, tessellator, p_148120_3_, p_148120_4_);
 			}
-		}
+		});
 	}
 
 	private void overlayBackground(int p_148136_1_, int p_148136_2_, int p_148136_3_, int p_148136_4_) {

@@ -18,6 +18,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.Arrays;
+
 public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 	protected boolean isCollidedTrain = false;
 	public boolean colliding = false;
@@ -283,9 +285,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 		int difX = x - prevX;
 		int difY = y - prevY;
 		int difZ = z - prevZ;
-		for (RailPosition rp : this.railPositions) {
-			rp.movePos(difX, difY, difZ);
-		}
+		Arrays.stream(this.railPositions).forEach(rp -> rp.movePos(difX, difY, difZ));
 		super.setPos(x, y, z, prevX, prevY, prevZ);
 	}
 }

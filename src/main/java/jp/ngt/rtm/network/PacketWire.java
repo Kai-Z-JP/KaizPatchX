@@ -69,11 +69,11 @@ public class PacketWire implements IMessage, IMessageHandler<PacketWire, IMessag
 				tile = (TileEntityElectricalWiring) tile1;
 			}
 		} else {
-			Entity entity = world.getEntityByID(message.x);
-			if (entity != null && entity instanceof EntityElectricalWiring) {
-				tile = ((EntityElectricalWiring) entity).tileEW;
-			}
-		}
+            Entity entity = world.getEntityByID(message.x);
+            if (entity instanceof EntityElectricalWiring) {
+                tile = ((EntityElectricalWiring) entity).tileEW;
+            }
+        }
 
 		if (tile != null) {
 			tile.isActivated = message.isActivated;

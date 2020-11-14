@@ -8,7 +8,6 @@ import jp.ngt.ngtlib.math.AABBInt;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class EditFilterDeleteEntity extends EditFilterBase {
@@ -29,13 +28,7 @@ public class EditFilterDeleteEntity extends EditFilterBase {
 			//editor.record(box);
 			WorldSnapshot snapshot = editor.copy(box, "");
 			List<Entity> list2 = snapshot.getEntities();
-			Iterator iterator = list2.iterator();
-			while (iterator.hasNext()) {
-				Object obj = iterator.next();
-				if (!(obj instanceof EntityEditor) && !(obj instanceof EntityPlayer)) {
-					((Entity) obj).setDead();
-				}
-			}
+			list2.stream().filter(obj -> !(obj instanceof EntityEditor) && !(obj instanceof EntityPlayer)).forEach(Entity::setDead);
 			NGTLog.sendChatMessage(editor.getEntity().getPlayer(), "Delete Entities : " + list2.size());
 			return true;
 		}

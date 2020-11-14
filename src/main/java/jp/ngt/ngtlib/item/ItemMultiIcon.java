@@ -51,13 +51,13 @@ public class ItemMultiIcon extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {
-		this.iconMap = new HashMap<Integer, IIcon>();
-		for (Entry<Integer, String> entry : this.iconNameMap.entrySet()) {
-			this.iconMap.put(entry.getKey(), register.registerIcon(entry.getValue()));
-		}
+        this.iconMap = new HashMap<>();
+        for (Entry<Integer, String> entry : this.iconNameMap.entrySet()) {
+            this.iconMap.put(entry.getKey(), register.registerIcon(entry.getValue()));
+        }
 
-		if (MISSING_ICON == null) {
-			MISSING_ICON = register.registerIcon("ngtlib:missing");
-		}
-	}
+        if (MISSING_ICON == null) {
+            MISSING_ICON = register.registerIcon("ngtlib:missing");
+        }
+    }
 }

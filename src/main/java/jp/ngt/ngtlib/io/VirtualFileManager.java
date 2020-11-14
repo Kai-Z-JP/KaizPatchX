@@ -11,17 +11,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VirtualFileManager extends ForwardingJavaFileManager<JavaFileManager> {
-	protected final Map<String, ByteCodeObject> map = new HashMap<String, ByteCodeObject>();
-	protected ClassLoader loader = null;
+    protected final Map<String, ByteCodeObject> map = new HashMap<>();
+    protected ClassLoader loader = null;
 
-	public VirtualFileManager(JavaCompiler compiler, DiagnosticListener<? super JavaFileObject> listener) {
-		super(compiler.getStandardFileManager(listener, null, null));
-	}
+    public VirtualFileManager(JavaCompiler compiler, DiagnosticListener<? super JavaFileObject> listener) {
+        super(compiler.getStandardFileManager(listener, null, null));
+    }
 
-	@Override
-	public JavaFileObject getJavaFileForOutput(Location location, String className, Kind kind, FileObject sibling) throws IOException {
-		ByteCodeObject co = new ByteCodeObject(className, kind);
-		this.map.put(className, co);
+    @Override
+    public JavaFileObject getJavaFileForOutput(Location location, String className, Kind kind, FileObject sibling) throws IOException {
+        ByteCodeObject co = new ByteCodeObject(className, kind);
+        this.map.put(className, co);
 		return co;
 	}
 

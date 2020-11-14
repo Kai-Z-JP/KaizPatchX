@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class BlockLinePole extends Block {
 	@SideOnly(Side.CLIENT)
@@ -95,10 +96,8 @@ public class BlockLinePole extends Block {
 	public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
 		if (this == RTMBlock.linePole) {
 		} else {
-			for (int i = 0; i < 16; ++i) {
-				list.add(new ItemStack(par1, 1, i));
-			}
-		}
+            IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(list::add);
+        }
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -6,6 +6,10 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CommandPermit extends CommandBase {
 	@Override
 	public int getRequiredPermissionLevel() {
@@ -49,5 +53,19 @@ public class CommandPermit extends CommandBase {
 		NGTLog.sendChatMessage(sender, "/permit remove <player> <category>");
 		NGTLog.sendChatMessage(sender, "/permit list");
 		NGTLog.sendChatMessage(sender, "/permit myname");
+	}
+
+	private static final List<String> commandList = Arrays.asList("add", "remove", "list", "myname");
+
+	@Override
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
+		if (args.length == 1) {
+			//入力されている文字列と先頭一致
+			if (args[0].length() == 0) {
+				return commandList;
+			}
+			return commandList.stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
+		}
+		return null;
 	}
 }

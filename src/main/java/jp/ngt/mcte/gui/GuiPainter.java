@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiPainter extends GuiScreenCustom {
@@ -119,7 +120,7 @@ public class GuiPainter extends GuiScreenCustom {
 
 	private void selectBlock(final GuiButtonItem button) {
 		Iterator<Block> iterator0 = Block.blockRegistry.iterator();
-		List<ItemStack> list0 = new ArrayList<ItemStack>();
+		List<ItemStack> list0 = new ArrayList<>();
 		while (iterator0.hasNext()) {
 			Block block = iterator0.next();
 			Item item = Item.getItemFromBlock(block);
@@ -128,20 +129,14 @@ public class GuiPainter extends GuiScreenCustom {
 			}
 		}
 
-		ISelector selector = new ISelector() {
-			@Override
-			public void select(Object par1) {
-				button.setItem((ItemStack) par1);
-			}
-
-		};
+		ISelector selector = par1 -> button.setItem((ItemStack) par1);
 
 		SlotElementItem[] slots = new SlotElementItem[list0.size()];
-		for (int i = 0; i < slots.length; ++i) {
+		IntStream.range(0, slots.length).forEach(i -> {
 			ItemStack stack = list0.get(i);
 			String s = stack.getDisplayName();
-			slots[i] = new SlotElementItem<ItemStack>(selector, stack, s, stack);
-		}
+			slots[i] = new SlotElementItem<>(selector, stack, s, stack);
+		});
 
 		this.mc.displayGuiScreen(new GuiSelect(this, slots));
 	}

@@ -20,6 +20,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemBucketLiquid extends Item {
@@ -123,15 +124,15 @@ public class ItemBucketLiquid extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item par1, CreativeTabs tab, List list) {
-		for (Block block : blockList) {
-			ItemStack itemstack = new ItemStack(RTMItem.bucketLiquid, 1, 15);
-			NBTTagCompound nbt = new NBTTagCompound();
-			ItemStack itemBlock = new ItemStack(block);
-			itemBlock.writeToNBT(nbt);
-			itemstack.setTagCompound(nbt);
-			list.add(itemstack);
-		}
-	}
+        Arrays.stream(blockList).forEach(block -> {
+            ItemStack itemstack = new ItemStack(RTMItem.bucketLiquid, 1, 15);
+            NBTTagCompound nbt = new NBTTagCompound();
+            ItemStack itemBlock = new ItemStack(block);
+            itemBlock.writeToNBT(nbt);
+            itemstack.setTagCompound(nbt);
+            list.add(itemstack);
+        });
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)

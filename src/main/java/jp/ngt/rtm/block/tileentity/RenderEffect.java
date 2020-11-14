@@ -154,26 +154,26 @@ public class RenderEffect extends TileEntitySpecialRenderer {
 			this.model.renderPart(RTMCore.smoothing, "objA");
 			GL11.glPopMatrix();
 
-			this.bindTexture(tex_R);
-			GL11.glMatrixMode(GL11.GL_TEXTURE);
-			GL11.glLoadIdentity();
-			GL11.glTranslatef(0.0F, -f1 * 0.01F, 0.0F);
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            this.bindTexture(tex_R);
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glTranslatef(0.0F, -f1 * 0.01F, 0.0F);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-			GL11.glPushMatrix();
-			f3 = (float) (par1.getLinear(f0) * 0.1D);
-			GL11.glScalef(f3, f3 * 0.75F, f3);
-			GL11.glTranslatef(0.0F, 0.5F, 0.0F);
-			for (int i = 0; i < partNames.length; ++i) {
-				GL11.glColor4f(color, color, color, color2);
-				this.ring.renderPart(RTMCore.smoothing, partNames[i]);
-				color2 *= 0.75F;
-			}
-			GL11.glPopMatrix();
+            GL11.glPushMatrix();
+            f3 = (float) (par1.getLinear(f0) * 0.1D);
+            GL11.glScalef(f3, f3 * 0.75F, f3);
+            GL11.glTranslatef(0.0F, 0.5F, 0.0F);
+            for (String partName : partNames) {
+                GL11.glColor4f(color, color, color, color2);
+                this.ring.renderPart(RTMCore.smoothing, partName);
+                color2 *= 0.75F;
+            }
+            GL11.glPopMatrix();
 
-			GL11.glMatrixMode(GL11.GL_TEXTURE);
-			GL11.glLoadIdentity();
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
 			GL11.glDisable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);

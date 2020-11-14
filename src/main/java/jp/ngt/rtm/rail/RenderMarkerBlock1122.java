@@ -25,15 +25,17 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.util.stream.IntStream;
+
 @SideOnly(Side.CLIENT)
 public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
 
-	private boolean clicking;
+    private boolean clicking;
 
-	private static final double FIT_RANGE_SQ = 4.0D;
+    private static final double FIT_RANGE_SQ = 4.0D;
 
-	public boolean isGlobalRenderer(TileEntityMarker tileEntity) {
-		return true;
+    public boolean isGlobalRenderer(TileEntityMarker tileEntity) {
+        return true;
 	}
 
 	public void renderTileEntityMarker(TileEntityMarker tileEntity, double par2, double par4, double par6, float par8) {
@@ -83,20 +85,18 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
 			marker.gui = (new InternalGUI(startX, startY, buttonWidth + 0.2F, guiHeight)).setColor(65535);
 			marker.buttons = new InternalButton[5];
 			startX += 0.1F;
-			startY += 0.1F;
-			marker.buttons[0] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.ANCHOR21));
-			startY += buttonHeight + 0.1F;
-			marker.buttons[1] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE2));
-			startY += buttonHeight + 0.1F;
-			marker.buttons[2] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE1));
-			startY += buttonHeight + 0.1F;
-			marker.buttons[3] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.GRID));
-			startY += buttonHeight + 0.1F;
-			marker.buttons[4] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.DISTANCE));
-			for (int i = 0; i < marker.buttons.length; i++) {
-				marker.gui.addButton(marker.buttons[i]);
-			}
-		}
+            startY += 0.1F;
+            marker.buttons[0] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.ANCHOR21));
+            startY += buttonHeight + 0.1F;
+            marker.buttons[1] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE2));
+            startY += buttonHeight + 0.1F;
+            marker.buttons[2] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE1));
+            startY += buttonHeight + 0.1F;
+            marker.buttons[3] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.GRID));
+            startY += buttonHeight + 0.1F;
+            marker.buttons[4] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.DISTANCE));
+            IntStream.range(0, marker.buttons.length).forEach(i -> marker.gui.addButton(marker.buttons[i]));
+        }
 		marker.buttons[0].setText(marker.getStateString(MarkerState.ANCHOR21), 16777215, 0.05F);
 		marker.buttons[1].setText(marker.getStateString(MarkerState.LINE2), 16777215, 0.05F);
 		marker.buttons[2].setText(marker.getStateString(MarkerState.LINE1), 16777215, 0.05F);

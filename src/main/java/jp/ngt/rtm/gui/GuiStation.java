@@ -52,11 +52,11 @@ public class GuiStation extends GuiScreenCustom {
 	private void sendPacket() {
 		this.tileEntity.setName(this.stationName.getText());
 		try {
-			this.tileEntity.width = Integer.valueOf(this.stationSize[0].getText());
-			this.tileEntity.height = Integer.valueOf(this.stationSize[1].getText());
-			this.tileEntity.depth = Integer.valueOf(this.stationSize[2].getText());
-		} catch (NumberFormatException e) {
-		}
+            this.tileEntity.width = Integer.parseInt(this.stationSize[0].getText());
+            this.tileEntity.height = Integer.parseInt(this.stationSize[1].getText());
+            this.tileEntity.depth = Integer.parseInt(this.stationSize[2].getText());
+        } catch (NumberFormatException ignored) {
+        }
 		RTMCore.NETWORK_WRAPPER.sendToServer(new PacketStationData(this.tileEntity));
 	}
 

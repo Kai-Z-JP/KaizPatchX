@@ -47,9 +47,7 @@ public abstract class GuiScreenCustom extends GuiScreen {
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
-		for (GuiSlotCustom slot : this.slotList) {
-			slot.actionPerformed(button);
-		}
+		this.slotList.forEach(slot -> slot.actionPerformed(button));
 	}
 
 	@Override
@@ -95,13 +93,9 @@ public abstract class GuiScreenCustom extends GuiScreen {
 	public void drawScreen(int par1, int par2, float par3) {
 		this.drawGuiContainerBackgroundLayer(par3, par1, par2);
 
-		for (GuiSlotCustom slot : this.slotList) {
-			slot.drawScreen(par1, par2, par3);
-		}
+		this.slotList.forEach(slot -> slot.drawScreen(par1, par2, par3));
 
-		for (GuiTextField field : this.textFields) {
-			field.drawTextBox();
-		}
+		this.textFields.forEach(GuiTextField::drawTextBox);
 
 		this.drawGuiContainerForegroundLayer(par1, par2);
 

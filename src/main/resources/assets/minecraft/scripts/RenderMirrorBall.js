@@ -54,15 +54,15 @@ function render(entity, pass, par3) {
     var tick = renderer.getTick(entity);
     var rotation = (tick % 360) * 1.0;
 
-    if (pass == 0) {
-        if (state == 1) {
+    if (pass === 0) {
+        if (state === 1) {
             GL11.glRotatef(rotation, 0.0, 1.0, 0.0);
             ball.render(renderer);
-        } else if (state == -1) {
+        } else if (state === -1) {
             ball.render(renderer);
         }
-    } else if (pass == 2) {
-        if (state == 1) {
+    } else if (pass === 2) {
+        if (state === 1) {
             for (var i = 0; i < rotationArray.length; ++i) {
                 GL11.glPushMatrix();
 

@@ -160,8 +160,8 @@ public class TileEntityEffect extends TileEntity {
 		double time = (double) (Phase3 - this.tickCount) / (double) (Phase3 - Phase1);//0.0~1.0
 		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, this.getAABB(tileX, tileY, tileZ, blastSize));
 		//List list = this.worldObj.loadedEntityList;//ConcurrentModificationException
-		for (int i = 0; i < list.size(); i++) {
-			Entity entity = (Entity) list.get(i);
+		for (Object o : list) {
+			Entity entity = (Entity) o;
 			double distanceSq = entity.getDistanceSq(tileX, tileY, tileZ);
 			if (distanceSq < d1) {
 				double dx = entity.posX - tileX;

@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 
+import java.util.stream.IntStream;
+
 public final class RTMRecipe {
 	public static void init() {
 		RecipeSorter.register("rtm:shaped55", ShapedRecipes55.class, Category.SHAPED, "after:minecraft:shapeless");
@@ -32,23 +34,23 @@ public final class RTMRecipe {
 		ItemStack motor = new ItemStack(RTMItem.material, 1, 3);
 		ItemStack gunpowder = new ItemStack(RTMItem.material, 1, 4);
 
-		for (int i = 0; i < 16; ++i) {
+		//鉄骨
+		//足場
+		//階段
+		IntStream.range(0, 16).forEach(i -> {
 			ItemStack dye = new ItemStack(Items.dye, 1, i);
 			int color = BlockColored.func_150031_c(i);
-			//鉄骨
 			RecipeManager.addRecipe(new ItemStack(RTMBlock.framework, 6, color), "III", "DI ", "III",
 					'I', ingotSteel,
 					'D', dye);
-			//足場
 			RecipeManager.addRecipe(new ItemStack(RTMBlock.scaffold, 6, color), "I I", "IDI", "SSS",
 					'I', shaft,
 					'S', sheetSteel,
 					'D', dye);
-			//階段
 			RecipeManager.addRecipe(new ItemStack(RTMBlock.scaffoldStairs, 6, color), "S  ", "SSD", "SSS",
 					'S', sheetSteel,
 					'D', dye);
-		}
+		});
 
 		//鉄柱
 		RecipeManager.addRecipe(new ItemStack(RTMBlock.ironPillar, 25, 0), "IIIII", "II II", "I I I", "II II", "IIIII",
@@ -376,10 +378,7 @@ public final class RTMRecipe {
 				'S', sheetSteel);
 
 		//弾薬
-		for (int i = 0; i < ItemAmmunition.num; ++i) {
-			if (i == 2) {
-				continue;
-			}
+		IntStream.range(0, ItemAmmunition.num).filter(i -> i != 2).forEach(i -> {
 			int i0 = i * 4;
 			if (i == 0) {
 				RecipeManager.addRecipe(new ItemStack(RTMItem.bullet, 1, i0), " B   ", " T   ", " C   ", "     ", "     ",
@@ -403,7 +402,7 @@ public final class RTMRecipe {
 						'C', new ItemStack(RTMItem.bullet, 1, i0 + 2),
 						'P', gunpowder);
 			}
-		}
+		});
 
 		//弾倉
 		RecipeManager.addRecipe(new ItemStack(RTMItem.magazine_handgun, 3, GunType.handgun.maxSize), "S S  ", "S S  ", "SIS  ", "     ", "     ",

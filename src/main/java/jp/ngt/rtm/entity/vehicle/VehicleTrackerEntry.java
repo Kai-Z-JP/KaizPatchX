@@ -20,7 +20,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -122,9 +121,8 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
 
     @Override
     public void informAllAssociatedPlayersOfItemDestruction() {
-        Iterator iterator = this.trackingPlayers.iterator();
-        while (iterator.hasNext()) {
-            EntityPlayerMP player = (EntityPlayerMP) iterator.next();
+        for (Object trackingPlayer : this.trackingPlayers) {
+            EntityPlayerMP player = (EntityPlayerMP) trackingPlayer;
             player.func_152339_d(this.myEntity);
         }
     }
@@ -190,8 +188,8 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
 
     @Override
     public void sendEventsToPlayers(List list) {
-        for (int i = 0; i < list.size(); ++i) {
-            this.tryStartWachingThis((EntityPlayerMP) list.get(i));
+        for (Object o : list) {
+            this.tryStartWachingThis((EntityPlayerMP) o);
         }
     }
 
@@ -216,9 +214,8 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
             Set trackedEntities = getTrackedEntities(tracker);
             if (trackedEntities != null) {
                 EntityTrackerEntry trackerEntry = null;
-                Iterator iterator = trackedEntities.iterator();
-                while (iterator.hasNext()) {
-                    EntityTrackerEntry entry = (EntityTrackerEntry) iterator.next();
+                for (Object trackedEntity : trackedEntities) {
+                    EntityTrackerEntry entry = (EntityTrackerEntry) trackedEntity;
                     if (entry != null && entry.myEntity == par1) {
                         if (!(entry instanceof VehicleTrackerEntry)) {
                             trackerEntry = entry;

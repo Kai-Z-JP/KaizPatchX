@@ -25,13 +25,7 @@ public class EditorManager {
 	}
 
 	public void remove(EntityEditor entity) {
-		String key = "";
-		for (Entry<String, Editor> entry : this.editorMap.entrySet()) {
-			if (entry.getValue().getEntity().equals(entity)) {
-				key = entry.getKey();
-				break;
-			}
-		}
+		String key = this.editorMap.entrySet().stream().filter(entry -> entry.getValue().getEntity().equals(entity)).findFirst().map(Entry::getKey).orElse("");
 
 		if (!key.isEmpty()) {
 			this.editorMap.remove(key);
@@ -40,9 +34,7 @@ public class EditorManager {
 
 	public void removeAll() {
 		NGTLog.sendChatMessageToAll("Clear %s Editors", this.editorMap.size());
-		for (Entry<String, Editor> entry : this.editorMap.entrySet()) {
-			entry.getValue().getEntity().setDead();
-		}
+		this.editorMap.forEach((key, value) -> value.getEntity().setDead());
 		this.editorMap.clear();
 	}
 
@@ -55,11 +47,6 @@ public class EditorManager {
 	}
 
 	public Editor getEditor(String par1) {
-		for (Entry<String, Editor> entry : this.editorMap.entrySet()) {
-			if (entry.getKey().equals(par1)) {
-				return entry.getValue();
-			}
-		}
-		return null;
+		return this.editorMap.entrySet().stream().filter(entry -> entry.getKey().equals(par1)).findFirst().map(Entry::getValue).orElse(null);
 	}
 }

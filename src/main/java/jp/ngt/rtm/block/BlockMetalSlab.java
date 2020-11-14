@@ -51,8 +51,7 @@ public class BlockMetalSlab extends Block {
 	public int colorMultiplier(IBlockAccess world, int x, int y, int z) {
 		int meta = world.getBlockMetadata(x, y, z);
 		int c0 = (meta << 4) & 255;
-		int c1 = 0xffffff - (c0 << 8) - c0;
-		return c1;
+        return 0xffffff - (c0 << 8) - c0;
 	}
 
 	@Override

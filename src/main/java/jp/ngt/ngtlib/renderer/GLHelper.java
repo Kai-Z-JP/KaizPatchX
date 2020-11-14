@@ -31,13 +31,9 @@ public final class GLHelper {
         LOCKER.lock();
         //if(INSTANCE.deleteGLLists.size() > 16)
         {
-            for (DisplayList dl : INSTANCE.deleteGLLists) {
-                if (GL11.glIsList(dl.value))//RuntimeException防止
-                {
-                    //GLAllocation.deleteDisplayLists(glList);
-                    GL11.glDeleteLists(dl.value, 1);
-                }
-            }
+            //RuntimeException防止
+            //GLAllocation.deleteDisplayLists(glList);
+            INSTANCE.deleteGLLists.stream().filter(dl -> GL11.glIsList(dl.value)).forEach(dl -> GL11.glDeleteLists(dl.value, 1));
             NGTLog.debug("Clear " + INSTANCE.deleteGLLists.size() + " GL Lists");
             INSTANCE.deleteGLLists.clear();
         }
@@ -52,12 +48,10 @@ public final class GLHelper {
 
         LOCKER.lock();
         if (!INSTANCE.activeGLLists.isEmpty()) {
-            for (DisplayList dl : INSTANCE.activeGLLists) {
-                if (GL11.glIsList(dl.value)) {
-                    GL11.glDeleteLists(dl.value, 1);
-                    dl.value = 0;
-                }
-            }
+            INSTANCE.activeGLLists.stream().filter(dl -> GL11.glIsList(dl.value)).forEach(dl -> {
+                GL11.glDeleteLists(dl.value, 1);
+                dl.value = 0;
+            });
             INSTANCE.activeGLLists.clear();
 
         }

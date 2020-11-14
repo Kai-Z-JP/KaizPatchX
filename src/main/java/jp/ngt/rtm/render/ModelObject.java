@@ -17,10 +17,11 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * モデルデータとテクスチャを管理
@@ -57,9 +58,7 @@ public class ModelObject {
 			//独自定義のライト用テクスチャ名を使ってる場合
 			String[] lightTextureNames = new String[sa.length >= 4 ? sa.length - 3 : 0];
 			if (lightTextureNames.length > 0) {
-				for (int j = 0; j < lightTextureNames.length; ++j) {
-					lightTextureNames[j] = sa[j + 3];
-				}
+				System.arraycopy(sa, 3, lightTextureNames, 0, lightTextureNames.length);
 				texSize = lightTextureNames.length;
 			}
 
@@ -159,26 +158,25 @@ public class ModelObject {
 	 * スムージング、アルファブレンド等行わず
 	 */
 	public void renderWithTexture(Object entity, int pass, float par3) {
-		for (int i = 0; i < this.textures.length; ++i) {
+		Arrays.stream(this.textures).forEach(texture -> {
 			if (this.useTexture) {
 				if (pass == 0) {
-					NGTUtilClient.bindTexture(this.textures[i].material.texture);
+					NGTUtilClient.bindTexture(texture.material.texture);
 				} else if (pass == 1) {
-					if (!this.textures[i].doAlphaBlend) {
-						continue;
+					if (!texture.doAlphaBlend) {
+						return;
 					}
-					NGTUtilClient.bindTexture(this.textures[i].material.texture);
+					NGTUtilClient.bindTexture(texture.material.texture);
 				} else {
-					if (this.textures[i].subTextures == null) {
-						continue;
+					if (texture.subTextures == null) {
+						return;
 					}
-					NGTUtilClient.bindTexture(this.textures[i].subTextures[pass - 2]);
+					NGTUtilClient.bindTexture(texture.subTextures[pass - 2]);
 				}
 			}
-
-			this.renderer.currentMatId = this.textures[i].material.id;
+			this.renderer.currentMatId = texture.material.id;
 			this.renderer.render(entity, pass, par3);
-		}
+		});
 	}
 
 	public Material[] getMaterials(Map<String, String> map) {
@@ -202,10 +200,6 @@ public class ModelObject {
 	}
 
 	protected Map<String, String> getTextureMap(String[][] par1) {
-		Map<String, String> map = new HashMap<String, String>();
-		for (String[] sa : par1) {
-			map.put(sa[0], sa[1]);
-		}
-		return map;
+		return Arrays.stream(par1).collect(Collectors.toMap(sa -> sa[0], sa -> sa[1], (a, b) -> b));
 	}
 }

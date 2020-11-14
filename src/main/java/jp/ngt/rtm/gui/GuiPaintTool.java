@@ -113,27 +113,25 @@ public class GuiPaintTool extends GuiScreenCustom {
 		if (this.currentTextField != null) {
 			try {
 				if (this.currentTextField == this.colorR) {
-					int r = Integer.valueOf(this.colorR.getText());
-					int c = ColorUtil.encode(r, ColorUtil.getG(this.color), ColorUtil.getB(this.color));
-					this.setColor(c, 2 + 4 + 8);
-				} else if (this.currentTextField == this.colorG) {
-					int g = Integer.valueOf(this.colorG.getText());
-					int c = ColorUtil.encode(ColorUtil.getR(this.color), g, ColorUtil.getB(this.color));
-					this.setColor(c, 1 + 4 + 8);
-				} else if (this.currentTextField == this.colorB) {
-					int b = Integer.valueOf(this.colorB.getText());
-					int c = ColorUtil.encode(ColorUtil.getR(this.color), ColorUtil.getG(this.color), b);
-					this.setColor(c, 1 + 2 + 8);
-				} else if (this.currentTextField == this.colorHex) {
+                    int r = Integer.parseInt(this.colorR.getText());
+                    int c = ColorUtil.encode(r, ColorUtil.getG(this.color), ColorUtil.getB(this.color));
+                    this.setColor(c, 2 + 4 + 8);
+                } else if (this.currentTextField == this.colorG) {
+                    int g = Integer.parseInt(this.colorG.getText());
+                    int c = ColorUtil.encode(ColorUtil.getR(this.color), g, ColorUtil.getB(this.color));
+                    this.setColor(c, 1 + 4 + 8);
+                } else if (this.currentTextField == this.colorB) {
+                    int b = Integer.parseInt(this.colorB.getText());
+                    int c = ColorUtil.encode(ColorUtil.getR(this.color), ColorUtil.getG(this.color), b);
+                    this.setColor(c, 1 + 2 + 8);
+                } else if (this.currentTextField == this.colorHex) {
 					int c = ColorUtil.toInteger(this.colorHex.getText());
 					this.setColor(c, 1 + 2 + 4);
 				} else if (this.currentTextField == this.alpha) {
-					int a = Integer.valueOf(this.alpha.getText());
-					this.prop.alpha = a;
-				} else if (this.currentTextField == this.radius) {
-					int r = Integer.valueOf(this.radius.getText());
-					this.prop.radius = r;
-				}
+                    this.prop.alpha = Integer.parseInt(this.alpha.getText());
+                } else if (this.currentTextField == this.radius) {
+                    this.prop.radius = Integer.parseInt(this.radius.getText());
+                }
 			} catch (NumberFormatException e) {
 				//NGTLog.debug("GuiPaintTool_NFE");
 			}

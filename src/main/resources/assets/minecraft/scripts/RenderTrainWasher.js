@@ -10,11 +10,11 @@ function init(par1, par2) {
 function render(entity, pass, par3) {
     GL11.glPushMatrix();
 
-    if (pass == 0) {
+    if (pass === 0) {
         body.render(renderer);
 
         var state = renderer.getMovingCount(entity);
-        if (state == 1.0) {
+        if (state === 1.0) {
             var tick = renderer.getTick(entity);
             var rotation = (tick % 15) * 24.0;
             renderer.rotate(rotation, 'Y', 0.0, 0.0, 0.15);

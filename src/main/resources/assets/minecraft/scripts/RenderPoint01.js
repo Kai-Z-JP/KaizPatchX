@@ -16,7 +16,7 @@ function init(par1, par2) {
 function render(entity, pass, par3) {
     GL11.glPushMatrix();
 
-    if (pass == 0) {
+    if (pass === 0) {
         main.render(renderer);
 
         GL11.glPushMatrix();

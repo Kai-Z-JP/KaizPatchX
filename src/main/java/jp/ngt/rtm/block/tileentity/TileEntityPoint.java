@@ -55,8 +55,7 @@ public class TileEntityPoint extends TileEntityMachineBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(this.xCoord - 1, this.yCoord, this.zCoord - 1, this.xCoord + 2, this.yCoord + 1, this.zCoord + 2);
-		return bb;
+        return AxisAlignedBB.getBoundingBox(this.xCoord - 1, this.yCoord, this.zCoord - 1, this.xCoord + 2, this.yCoord + 1, this.zCoord + 2);
 	}
 
 	@Override

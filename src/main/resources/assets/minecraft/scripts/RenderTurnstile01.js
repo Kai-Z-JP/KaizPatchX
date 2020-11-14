@@ -12,7 +12,7 @@ function init(par1, par2) {
 function render(entity, pass, par3) {
     GL11.glPushMatrix();
 
-    if (pass == 0) {
+    if (pass === 0) {
         main.render(renderer);
 
         var state = renderer.getMovingCount(entity);
@@ -30,7 +30,7 @@ function render(entity, pass, par3) {
             doorL.render(renderer);
             doorR.render(renderer);
         }
-    } else if (pass == 2) {
+    } else if (pass === 2) {
         sign.render(renderer);
     }
 

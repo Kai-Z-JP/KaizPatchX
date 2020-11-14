@@ -64,13 +64,8 @@ public class TileEntityConnector extends TileEntityConnectorBase {
 	 * 接続タイプ3(TileEntity直付)のを返す
 	 */
 	private Connection getBlockConnection() {
-		for (Connection connection : this.connections) {
-			if (connection.type == ConnectionType.DIRECT) {
-				return connection;
-			}
-		}
-		return null;
-	}
+        return this.connections.stream().filter(connection -> connection.type == ConnectionType.DIRECT).findFirst().orElse(null);
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)

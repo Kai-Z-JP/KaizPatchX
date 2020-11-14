@@ -20,6 +20,7 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiEditor extends GuiContainerCustom {
@@ -113,9 +114,9 @@ public class GuiEditor extends GuiContainerCustom {
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if (button.id >= 100 && button.id <= 117) {
-			int i0 = 0;
-			int i1 = 0;
-			int i2 = 0;
+			int i0;
+			int i1;
+			int i2;
 			GuiTextField field;
 
 			if (button.id <= 105) {
@@ -235,18 +236,15 @@ public class GuiEditor extends GuiContainerCustom {
 		this.xSize = this.width;
 		this.ySize = this.height;
 
-		for (int i = 0; i < this.inventorySlots.inventorySlots.size(); ++i) {
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get(i);
-			if (slot.inventory instanceof InventoryPlayer) {
-				int x0 = (this.width / 2) - 88 + slot.getSlotIndex() * 20;
-				int y0 = this.height - 19;
-				if (slot.xDisplayPosition != x0 && slot.yDisplayPosition != y0) {
-					slot.xDisplayPosition = x0;
-					slot.yDisplayPosition = y0;
-					MCTE.NETWORK_WRAPPER.sendToServer(new PacketResetSlot(this.editor, slot));
-				}
+		IntStream.range(0, this.inventorySlots.inventorySlots.size()).mapToObj(i -> (Slot) this.inventorySlots.inventorySlots.get(i)).filter(slot -> slot.inventory instanceof InventoryPlayer).forEach(slot -> {
+			int x0 = (this.width / 2) - 88 + slot.getSlotIndex() * 20;
+			int y0 = this.height - 19;
+			if (slot.xDisplayPosition != x0 && slot.yDisplayPosition != y0) {
+				slot.xDisplayPosition = x0;
+				slot.yDisplayPosition = y0;
+				MCTE.NETWORK_WRAPPER.sendToServer(new PacketResetSlot(this.editor, slot));
 			}
-		}
+		});
 	}
 
 	@Override

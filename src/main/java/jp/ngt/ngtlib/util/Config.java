@@ -5,10 +5,9 @@ import jp.ngt.ngtlib.io.NGTText;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class Config {
-	private final Map<String, Map<String, String>> itemMap = new HashMap<String, Map<String, String>>();
+	private final Map<String, Map<String, String>> itemMap = new HashMap<>();
 
 	public void load(File file) {
 		String[] sa = NGTText.readText(file);
@@ -30,17 +29,10 @@ public class Config {
 
 	public boolean save(File file) {
 		StringBuilder sb = new StringBuilder("#NGT_Configuration_File").append("\n");
-		for (Entry<String, Map<String, String>> set0 : this.itemMap.entrySet()) {
-			String category = set0.getKey();
-			Map<String, String> value0 = set0.getValue();
+		this.itemMap.forEach((category, value0) -> {
 			sb.append("\n").append("@").append(category).append("\n");
-
-			for (Entry<String, String> set1 : value0.entrySet()) {
-				String key = set1.getKey();
-				String value1 = set1.getValue();
-				sb.append(key).append("=").append(value1).append("\n");
-			}
-		}
+			value0.forEach((key, value1) -> sb.append(key).append("=").append(value1).append("\n"));
+		});
 
 		return NGTText.writeToText(file, sb.toString());
 	}
@@ -59,11 +51,11 @@ public class Config {
 	}
 
 	public void setProperty(String category, String key, String value) {
-		Map<String, String> map = null;
+		Map<String, String> map;
 		if (this.itemMap.containsKey(category)) {
 			map = this.itemMap.get(category);
 		} else {
-			map = new HashMap<String, String>();
+			map = new HashMap<>();
 		}
 		map.put(key, value);
 		this.itemMap.put(category, map);

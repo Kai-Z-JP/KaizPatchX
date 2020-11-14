@@ -4,7 +4,6 @@ import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTLog;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -61,12 +60,10 @@ public class ModelPackWriter {
 			FileChannel channel = new FileOutputStream(new File(this.modsDir, "Temp#" + par1)).getChannel();
 			channel.write(par3);
 			channel.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+    }
 
 	/**
 	 * モデルパックが存在する場合は消去
@@ -82,11 +79,11 @@ public class ModelPackWriter {
 
 	public synchronized void startWriting(String par1Name) {
 		while (this.thread.writingStatus == 1 || this.thread.writingStatus == 2) {
-			try {
-				NGTLog.debug("wait (start writing)");
-				this.wait();
-			} catch (InterruptedException e) {
-			}
+            try {
+                NGTLog.debug("wait (start writing)");
+                this.wait();
+            } catch (InterruptedException ignored) {
+            }
 		}
 
 		NGTLog.debug("start writing");
@@ -95,31 +92,30 @@ public class ModelPackWriter {
 	}
 
 	public synchronized void writeBytes(long par2, ByteBuffer par3) {
-		while (this.thread.writingStatus == 0 || this.thread.writingStatus == 1) {
-			try {
-				NGTLog.debug("wait (write bytes)");
-				this.wait();
-			} catch (InterruptedException e) {
-			}
-		}
+        while (this.thread.writingStatus == 0 || this.thread.writingStatus == 1) {
+            try {
+                NGTLog.debug("wait (write bytes)");
+                this.wait();
+            } catch (InterruptedException ignored) {
+            }
+        }
 
-		ByteBuffer buffer = par3;
-		buffer.position(0);
+        par3.position(0);
 
-		try {
-			this.thread.channel.write(buffer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            this.thread.channel.write(par3);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	public synchronized void endWriting() {
 		while (this.thread.writingStatus == 0 || this.thread.writingStatus == 1) {
-			try {
-				NGTLog.debug("wait (end writing)");
-				this.wait();
-			} catch (InterruptedException e) {
-			}
+            try {
+                NGTLog.debug("wait (end writing)");
+                this.wait();
+            } catch (InterruptedException ignored) {
+            }
 		}
 
 		NGTLog.debug("end writing");
@@ -128,10 +124,10 @@ public class ModelPackWriter {
 
 	public synchronized void finishWriting() {
 		while (this.thread.writingStatus == 1 || this.thread.writingStatus == 2) {
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-			}
+            try {
+                this.wait();
+            } catch (InterruptedException ignored) {
+            }
 		}
 
 		NGTLog.debug("finish writing");

@@ -4,7 +4,6 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.entity.EntityInstalledObject;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
-import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,9 +12,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 public class EntityTie extends EntityCargo {
 	public EntityTie(World world) {
@@ -42,14 +41,9 @@ public class EntityTie extends EntityCargo {
 			long l0 = nbt.getLong("riderUUID_Most");
 			long l1 = nbt.getLong("riderUUID_Least");
 			if (l0 != 0L && l1 != 0L) {
-				UUID uuid = new UUID(l0, l1);
-				for (int j = 0; j < this.worldObj.loadedEntityList.size(); ++j) {
-					Entity entity = (Entity) this.worldObj.loadedEntityList.get(j);
-					if (uuid.equals(entity.getUniqueID())) {
-						entity.mountEntity(this);
-					}
-				}
-			}
+                UUID uuid = new UUID(l0, l1);
+                IntStream.range(0, this.worldObj.loadedEntityList.size()).mapToObj(j -> (Entity) this.worldObj.loadedEntityList.get(j)).filter(entity -> uuid.equals(entity.getUniqueID())).forEach(entity -> entity.mountEntity(this));
+            }
 		}
 	}
 
@@ -91,29 +85,25 @@ public class EntityTie extends EntityCargo {
 			} else {
 				double d0 = 1.5D;
 				List list = this.worldObj.selectEntitiesWithinAABB(Entity.class,
-						AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY - 0.5D, this.posZ - d0, this.posX + d0, this.posY + 4.5D, this.posZ + d0),
-						new IEntitySelector() {
-							@Override
-							public boolean isEntityApplicable(Entity entity) {
-								if (entity instanceof EntityVehiclePart || entity instanceof EntityBogie || entity instanceof EntityInstalledObject) {
-									return false;
-								} else if (entity instanceof EntityVehicleBase) {
-									return EntityTie.this.getVehicle() != entity;
-								}
-								return true;
-							}
-						}
-				);
+                        AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY - 0.5D, this.posZ - d0, this.posX + d0, this.posY + 4.5D, this.posZ + d0),
+                        entity -> {
+                            if (entity instanceof EntityVehiclePart || entity instanceof EntityBogie || entity instanceof EntityInstalledObject) {
+                                return false;
+                            } else if (entity instanceof EntityVehicleBase) {
+                                return EntityTie.this.getVehicle() != entity;
+                            }
+                            return true;
+                        }
+                );
 
 				if (!list.isEmpty()) {
-					Iterator iterator = list.iterator();
-					while (iterator.hasNext()) {
-						Entity entity = (Entity) iterator.next();
-						entity.mountEntity(this);
-						NGTLog.sendChatMessage(player, entity.toString() + " was fixed.");
-						return true;
-					}
-				}
+                    for (Object o : list) {
+                        Entity entity = (Entity) o;
+                        entity.mountEntity(this);
+                        NGTLog.sendChatMessage(player, entity.toString() + " was fixed.");
+                        return true;
+                    }
+                }
 				NGTLog.sendChatMessage(player, "Fixable entity not found.");
 				return false;
 			}

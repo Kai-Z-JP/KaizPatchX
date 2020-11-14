@@ -4,17 +4,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Stack<E> {
-	private final List<E> list = new LinkedList<E>();
-	private final int maxSize;
+    private final List<E> list = new LinkedList<>();
+    private final int maxSize;
 
-	public Stack(int size) {
-		this.maxSize = size;
-	}
+    public Stack(int size) {
+        this.maxSize = size;
+    }
 
-	public void push(E element) {
-		while (this.list.size() > this.maxSize) {
-			this.list.remove(this.list.size() - 1);
-		}
+    public void push(E element) {
+        while (this.list.size() > this.maxSize) {
+            this.list.remove(this.list.size() - 1);
+        }
 		this.list.add(0, element);
 	}
 

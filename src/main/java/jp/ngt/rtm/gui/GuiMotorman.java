@@ -11,19 +11,16 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiMotorman extends GuiSelect {
 	public static GuiMotorman getGui(final EntityMotorman entity) {
 		File macroFolder = MacroRecorder.INSTANCE.getMacroFolder();
-		List<File> list = new ArrayList<File>();
-		for (File child : macroFolder.listFiles()) {
-			if (child.isFile() && child.getName().endsWith(".txt")) {
-				list.add(child);
-			}
-		}
+		List<File> list = Arrays.stream(macroFolder.listFiles()).filter(child -> child.isFile() && child.getName().endsWith(".txt")).collect(Collectors.toList());
 
 		if (list.isEmpty()) {
 			return null;
@@ -31,15 +28,10 @@ public class GuiMotorman extends GuiSelect {
 
 		ItemStack icon = new ItemStack(Items.book);
 		SlotElement[] elements = new SlotElement[list.size()];
-		for (int i = 0; i < elements.length; ++i) {
+		IntStream.range(0, elements.length).forEach(i -> {
 			File file = list.get(i);
-			elements[i] = new SlotElementItem<File>(new ISelector() {
-				@Override
-				public void select(Object par1) {
-					entity.setMacro((File) par1);
-				}
-			}, file, file.getName(), icon);
-		}
+			elements[i] = new SlotElementItem<>(par1 -> entity.setMacro((File) par1), file, file.getName(), icon);
+		});
 		return new GuiMotorman(entity, elements);
 	}
 

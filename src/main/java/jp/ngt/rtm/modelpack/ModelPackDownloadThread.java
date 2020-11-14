@@ -4,7 +4,6 @@ import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTLog;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -36,20 +35,16 @@ public class ModelPackDownloadThread extends Thread {
 				NGTLog.debug("[RTM](DownloadThread) Start writing " + this.fileName);
 
 				try {
-					this.channel = new FileOutputStream(new File(modsDir, this.fileName)).getChannel();
-					this.setState(2);
-					while (this.writingStatus == 2) {
-						sleep(50);
-					}
-					this.channel.close();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+                    this.channel = new FileOutputStream(new File(modsDir, this.fileName)).getChannel();
+                    this.setState(2);
+                    while (this.writingStatus == 2) {
+                        sleep(50);
+                    }
+                    this.channel.close();
+                } catch (InterruptedException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
 			try {
 				sleep(50);

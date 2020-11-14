@@ -50,16 +50,14 @@ public abstract class PacketCustom implements IMessage {
 	//鯖側NBT読み出し時などではClientで
 	public Entity getEntity(World world) {
 		int id = this.targetData.getInteger("EntityId");
-		Entity entity = world.getEntityByID(id);
-		return entity;
+        return world.getEntityByID(id);
 	}
 
 	public TileEntity getTileEntity(World world) {
 		int x = this.targetData.getInteger("PosX");
 		int y = this.targetData.getInteger("PosY");
 		int z = this.targetData.getInteger("PosZ");
-		TileEntity entity = world.getTileEntity(x, y, z);
-		return entity;
+        return world.getTileEntity(x, y, z);
 	}
 
 	public boolean forEntity() {

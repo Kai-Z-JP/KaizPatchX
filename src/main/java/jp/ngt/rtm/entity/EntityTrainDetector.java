@@ -7,8 +7,9 @@ import jp.ngt.rtm.item.ItemInstalledObject.IstlObjType;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import java.util.stream.IntStream;
 
 public class EntityTrainDetector extends EntityElectricalWiring {
 	private boolean findTrain;
@@ -37,14 +38,11 @@ public class EntityTrainDetector extends EntityElectricalWiring {
 	@Override
 	public void onUpdate() {
 		if (!this.worldObj.isRemote) {
-			this.findTrain = false;
-			for (int i = 0; i < 8; ++i) {
-				TileEntity tile = this.worldObj.getTileEntity(this.tileEW.xCoord, this.tileEW.yCoord - i, this.tileEW.zCoord);
-				if (tile != null && tile instanceof TileEntityLargeRailBase) {
-					this.findTrain = ((TileEntityLargeRailBase) tile).isTrainOnRail();
-					break;
-				}
-			}
+			findTrain = IntStream.range(0, 8)
+					.mapToObj(i -> this.worldObj.getTileEntity(this.tileEW.xCoord, this.tileEW.yCoord - i, this.tileEW.zCoord))
+					.filter(TileEntityLargeRailBase.class::isInstance)
+					.findFirst()
+					.filter(tile -> ((TileEntityLargeRailBase) tile).isTrainOnRail()).isPresent();
 		}
 
 		super.onUpdate();

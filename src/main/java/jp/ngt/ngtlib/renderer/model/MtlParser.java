@@ -13,32 +13,31 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class MtlParser {
-	private final Map<String, Material> materials = new HashMap<String, Material>();
-	private Material currentMaterial;
+    private final Map<String, Material> materials = new HashMap<>();
+    private Material currentMaterial;
 
-	public MtlParser(InputStream is) {
-		this.loadMaterial(is);
-	}
+    public MtlParser(InputStream is) {
+        this.loadMaterial(is);
+    }
 
-	private void loadMaterial(InputStream inputStream) throws ModelFormatException {
-		if (inputStream == null) {
-			return;
-		}
+    private void loadMaterial(InputStream inputStream) throws ModelFormatException {
+        if (inputStream == null) {
+            return;
+        }
 
-		BufferedReader reader = null;
-		String currentLine = null;
-		int lineCount = 0;
-		this.materials.clear();
+        BufferedReader reader = null;
+        String currentLine;
+        int lineCount = 0;
+        this.materials.clear();
 
-		try {
-			reader = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            reader = new BufferedReader(new InputStreamReader(inputStream));
 
-			while ((currentLine = reader.readLine()) != null) {
-				lineCount++;
-				currentLine = currentLine.replaceAll("\\s+", " ").trim();
+            while ((currentLine = reader.readLine()) != null) {
+                lineCount++;
+                currentLine = currentLine.replaceAll("\\s+", " ").trim();
 
 				if (currentLine.length() == 0 || currentLine.startsWith("#")) {
-					continue;
 				} else if (currentLine.startsWith("newmtl ")) {
 					String[] sa = currentLine.split(" ");
 					this.currentMaterial = new Material((byte) this.materials.size(), null);
@@ -50,14 +49,14 @@ public class MtlParser {
 		} catch (IOException e) {
 			throw new ModelFormatException("IO Exception reading model format", e);
 		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-			}
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-			}
+            try {
+                reader.close();
+            } catch (IOException ignored) {
+            }
+            try {
+                inputStream.close();
+            } catch (IOException ignored) {
+            }
 		}
 	}
 

@@ -58,47 +58,47 @@ public abstract class ModelConfig {
 		}
 	}
 
-	/**
-	 * 他のConfigと重複しない名前
-	 */
-	public abstract String getName();
+    /**
+     * 他のConfigと重複しない名前
+     */
+    public abstract String getName();
 
-	/**
-	 * ModelSetのタイプ
-	 */
-	public abstract String getModelType();
+    /**
+     * ModelSetのタイプ
+     */
+    public abstract String getModelType();
 
-	public class Parts {
-		/**
-		 * パーツを構成するオブジェクトの名前
-		 */
-		public String[] objects;
-		/**
-		 * 中心座標
-		 */
-		public float[] pos;
+    public static class Parts {
+        /**
+         * パーツを構成するオブジェクトの名前
+         */
+        public String[] objects;
+        /**
+         * 中心座標
+         */
+        public float[] pos;
 
-		public void initParts() {
-			if (this.objects == null) {
-				this.objects = new String[0];
-			}
+        public void initParts() {
+            if (this.objects == null) {
+                this.objects = new String[0];
+            }
 
-			if (this.pos == null || this.pos.length != 3) {
-				this.pos = new float[3];
-			}
-		}
-	}
+            if (this.pos == null || this.pos.length != 3) {
+                this.pos = new float[3];
+            }
+        }
+    }
 
-	public class ModelSource {
-		/**
-		 * モデルファイルのパス(拡張子つきで)
-		 */
-		public String modelFile;
+    public static class ModelSource {
+        /**
+         * モデルファイルのパス(拡張子つきで)
+         */
+        public String modelFile;
 
-		/**
-		 * マテリアル名と、それに対応するテクスチャファイルのパス<br>
-		 * {マテリアル名, テクスチャパス, ("Light", "AlphaBlend")}<br>
-		 * xxx_light0.png(消灯), xxx_light1.png(前照灯), xxx_light2.png（尾灯）
+        /**
+         * マテリアル名と、それに対応するテクスチャファイルのパス<br>
+         * {マテリアル名, テクスチャパス, ("Light", "AlphaBlend")}<br>
+         * xxx_light0.png(消灯), xxx_light1.png(前照灯), xxx_light2.png（尾灯）
 		 */
 		public String[][] textures;
 

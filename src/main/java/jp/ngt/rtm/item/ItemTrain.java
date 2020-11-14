@@ -36,28 +36,28 @@ public class ItemTrain extends ItemWithModel {
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
 		if (world.isRemote || !PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_VEHICLE)) {
-			return true;
-		}
+            return true;
+        }
 
-		RailMap rm0 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, player, x, y, z);
-		if (rm0 == null) {
-			return true;
-		}
+        RailMap rm0 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, player, x, y, z);
+        if (rm0 == null) {
+            return true;
+        }
 
-		int r = 16;
-		List list = world.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(x - r, y - 4, z - r, x + r + 1, y + 8, z + r + 1));
-		for (int i = 0; i < list.size(); ++i) {
-			Entity entity = (Entity) list.get(i);
-			if (entity instanceof EntityTrainBase || entity instanceof EntityBogie || entity instanceof EntityVehiclePart) {
-				double distanceSq = entity.getDistanceSq(x, y, z);
-				ModelSetVehicleBase<TrainConfig> modelSet = ModelPackManager.INSTANCE.getModelSet(TrainConfig.TYPE, this.getModelName(itemStack));
-				float f0 = modelSet.getConfig().trainDistance + 4.0F;
-				RailMap rm1 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, player, entity.posX, entity.posY, entity.posZ);
-				if (distanceSq < f0 * f0 && rm0.equals(rm1)) {
-					NGTLog.sendChatMessage(player, "message.train.obstacle", entity.toString());
-					return true;
-				}
-			}
+        int r = 16;
+        List list = world.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(x - r, y - 4, z - r, x + r + 1, y + 8, z + r + 1));
+        for (Object o : list) {
+            Entity entity = (Entity) o;
+            if (entity instanceof EntityTrainBase || entity instanceof EntityBogie || entity instanceof EntityVehiclePart) {
+                double distanceSq = entity.getDistanceSq(x, y, z);
+                ModelSetVehicleBase<TrainConfig> modelSet = ModelPackManager.INSTANCE.getModelSet(TrainConfig.TYPE, this.getModelName(itemStack));
+                float f0 = modelSet.getConfig().trainDistance + 4.0F;
+                RailMap rm1 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, player, entity.posX, entity.posY, entity.posZ);
+                if (distanceSq < f0 * f0 && rm0.equals(rm1)) {
+                    NGTLog.sendChatMessage(player, "message.train.obstacle", entity.toString());
+                    return true;
+                }
+            }
 		}
 
 		int i0 = rm0.getNearlestPoint(128, (double) x + 0.5D, (double) z + 0.5D);
@@ -70,17 +70,11 @@ public class ItemTrain extends ItemWithModel {
 
 		EntityTrainBase train;
 		switch (itemStack.getItemDamage()) {
-			case 1:
-				train = new EntityTrain(world, "");
-				break;
 			case 2:
 				train = new EntityFreightCar(world, "");
 				break;
 			case 3:
 				train = new EntityTanker(world, "");
-				break;
-			case 127:
-				train = new EntityTrain(world, "");
 				break;
 			default:
 				train = new EntityTrain(world, "");

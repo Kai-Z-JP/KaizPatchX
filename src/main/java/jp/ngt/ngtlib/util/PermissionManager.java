@@ -9,11 +9,9 @@ import net.minecraft.server.MinecraftServer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public final class PermissionManager {
 	public static final PermissionManager INSTANCE = new PermissionManager();
@@ -37,12 +35,7 @@ public final class PermissionManager {
 		String[] sa = new String[this.permissionMap.size()];
 		int i = 0;
 		for (Entry<String, List<String>> entry : this.permissionMap.entrySet()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(entry.getKey()).append(":");
-			for (String s : entry.getValue()) {
-				sb.append(s).append(",");
-			}
-			sa[i] = sb.toString();
+			sa[i] = entry.getValue().stream().map(s -> s + ",").collect(Collectors.joining("", entry.getKey() + ":", ""));
 			++i;
 		}
 		NGTText.writeToText(this.saveFile, sa);
@@ -52,16 +45,11 @@ public final class PermissionManager {
 		this.initFile();
 
 		List<String> slist = NGTText.readText(this.saveFile, "");
-		for (String s : slist) {
-			String[] sa2 = s.split(":");
-			if (sa2.length == 2) {
-				List<String> list = this.getPlayerList(sa2[0]);
-				String[] sa3 = sa2[1].split(",");
-				for (String s2 : sa3) {
-					list.add(s2);
-				}
-			}
-		}
+		slist.stream().map(s -> s.split(":")).filter(sa2 -> sa2.length == 2).forEach(sa2 -> {
+			List<String> list = this.getPlayerList(sa2[0]);
+			String[] sa3 = sa2[1].split(",");
+			list.addAll(Arrays.asList(sa3));
+		});
 	}
 
 	private void initFile() {
@@ -80,20 +68,13 @@ public final class PermissionManager {
 
 	public List<String> getPlayerList(String par1) {
 		if (!this.permissionMap.containsKey(par1)) {
-			this.permissionMap.put(par1, new ArrayList<String>());
+			this.permissionMap.put(par1, new ArrayList<>());
 		}
 		return this.permissionMap.get(par1);
 	}
 
 	public void showPermissionList(ICommandSender player) {
-		for (Entry<String, List<String>> entry : this.permissionMap.entrySet()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(entry.getKey()).append(":");
-			for (String s : entry.getValue()) {
-				sb.append(s).append(",");
-			}
-			NGTLog.sendChatMessage(player, sb.toString());
-		}
+		this.permissionMap.entrySet().stream().map(entry -> entry.getValue().stream().map(s -> s + ",").collect(Collectors.joining("", entry.getKey() + ":", ""))).forEach(sb -> NGTLog.sendChatMessage(player, sb));
 	}
 
 	public void addPermission(ICommandSender player, String targetPlayerName, String category) {
@@ -134,12 +115,7 @@ public final class PermissionManager {
 			return true;//シングルでは常に使用可
 		} else if (player instanceof EntityPlayerMP) {
 			String[] names = ((EntityPlayerMP) player).mcServer.getConfigurationManager().func_152606_n();
-			for (String name : names) {
-				if (player.getCommandSenderName().equals(name)) {
-					return true;
-				}
-			}
+			return Arrays.stream(names).anyMatch(name -> player.getCommandSenderName().equals(name));
 		} else return player instanceof MinecraftServer;
-		return false;
 	}
 }

@@ -106,8 +106,7 @@ public class PathFinderCustom extends PathFinder {
 		int i2 = j + l;
 		int j2 = k + l;
 		ChunkCache chunkcache = new ChunkCache(entity.worldObj, i1, j1, k1, l1, i2, j2, 0);
-		PathEntity pathentity = (new PathFinderCustom(chunkcache, par4, par5, par6, par7)).createEntityPathTo(entity, target, par3);
-		return pathentity;
+        return (new PathFinderCustom(chunkcache, par4, par5, par6, par7)).createEntityPathTo(entity, target, par3);
 	}
 
 	public static PathEntity getEntityPathToXYZ(Entity entity, int x, int y, int z, float par5, boolean par6, boolean par7, boolean par8, boolean par9) {
@@ -122,7 +121,6 @@ public class PathFinderCustom extends PathFinder {
 		int l2 = i1 + k1;
 		int i3 = j1 + k1;
 		ChunkCache chunkcache = new ChunkCache(entity.worldObj, l1, i2, j2, k2, l2, i3, 0);
-		PathEntity pathentity = (new PathFinderCustom(chunkcache, par6, par7, par8, par9)).createEntityPathTo(entity, x, y, z, par5);
-		return pathentity;
+        return (new PathFinderCustom(chunkcache, par6, par7, par8, par9)).createEntityPathTo(entity, x, y, z, par5);
 	}
 }

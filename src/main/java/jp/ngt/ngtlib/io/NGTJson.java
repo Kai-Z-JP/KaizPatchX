@@ -5,55 +5,51 @@ import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 public final class NGTJson {
-	public static String readFromJson(File file) {
-		StringBuilder sb = new StringBuilder();
+    public static String readFromJson(File file) {
+        String sb = "";
 
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(NGTFileLoader.getInputStreamFromFile(file)));
-			String string;
-			while ((string = br.readLine()) != null) {
-				sb.append(string);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(NGTFileLoader.getInputStreamFromFile(file)))) {
+            sb = br.lines().collect(Collectors.joining());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-		return sb.toString();
-	}
+        return sb;
+    }
 
-	public static void writeToJson(String json, File file) {
-		try {
-			//PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)));
-			pw.println(json);
-			pw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void writeToJson(String json, File file) {
+        try {
+            //PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)));
+            pw.println(json);
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * jsonからオブジェクトを生成
-	 *
-	 * @throws NGTFileLoadException jsonの書式が不正な場合にスロー
-	 */
-	public static Object getObjectFromJson(String json, Class<?> clazz) throws NGTFileLoadException {
-		try {
-			return getGson().fromJson(json, clazz);
-		} catch (Exception e) {
-			String message = "Can't load json : " + json + " (" + e.getMessage() + ")";
-			throw new NGTFileLoadException(message, e);
-		}
-	}
+    /**
+     * jsonからオブジェクトを生成
+     *
+     * @throws NGTFileLoadException jsonの書式が不正な場合にスロー
+     */
+    public static Object getObjectFromJson(String json, Class<?> clazz) throws NGTFileLoadException {
+        try {
+            return getGson().fromJson(json, clazz);
+        } catch (Exception e) {
+            String message = "Can't load json : " + json + " (" + e.getMessage() + ")";
+            throw new NGTFileLoadException(message, e);
+        }
+    }
 
-	public static String getJsonFromObject(Object object) {
-		return getGson().toJson(object);
-	}
+    public static String getJsonFromObject(Object object) {
+        return getGson().toJson(object);
+    }
 
-	private static Gson getGson() {
-		return new GsonBuilder().setPrettyPrinting().create();
-	}
+    private static Gson getGson() {
+        return new GsonBuilder().setPrettyPrinting().create();
+    }
 }

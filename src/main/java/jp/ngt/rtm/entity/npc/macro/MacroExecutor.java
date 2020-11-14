@@ -10,20 +10,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class MacroExecutor {
-	private final List<TrainCommand> commands = new ArrayList<TrainCommand>();
+	private final List<TrainCommand> commands = new ArrayList<>();
 	private boolean executing;
 	private long startTime;
 
 	public MacroExecutor(String[] args) {
-		for (String s : args) {
-			TrainCommand command = TrainCommand.parse(s);
-			if (command != null) {
-				this.commands.add(command);
-			}
-		}
+		Arrays.stream(args).map(TrainCommand::parse).filter(Objects::nonNull).forEach(this.commands::add);
 		this.executing = false;
 	}
 
@@ -64,7 +61,7 @@ public class MacroExecutor {
 		try {
 			switch (type) {
 				case Notch:
-					this.execNotch(train, Integer.valueOf(param.toString()));
+					this.execNotch(train, Integer.parseInt(param.toString()));
 					return;
 				case Horn:
 					this.execHorn(train);
@@ -74,7 +71,6 @@ public class MacroExecutor {
 					return;
 				case Door:
 					this.execDoor(train, TrainState.valueOf(param.toString()));
-					return;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

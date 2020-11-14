@@ -116,17 +116,17 @@ public class ContainerRecipe extends Container {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public class SlotSample extends Slot {
-		private final ContainerRecipe myContainer;
+    public static class SlotSample extends Slot {
+        private final ContainerRecipe myContainer;
 
-		public SlotSample(IInventory iinv, ContainerRecipe container, int index, int xPos, int yPos) {
-			super(iinv, index, xPos, yPos);
-			this.myContainer = container;
-		}
+        public SlotSample(IInventory iinv, ContainerRecipe container, int index, int xPos, int yPos) {
+            super(iinv, index, xPos, yPos);
+            this.myContainer = container;
+        }
 
-		@Override
-		public boolean isItemValid(ItemStack p_75214_1_) {
-			return false;
+        @Override
+        public boolean isItemValid(ItemStack p_75214_1_) {
+            return false;
 		}
 	}
 }

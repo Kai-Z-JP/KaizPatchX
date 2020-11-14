@@ -22,26 +22,26 @@ import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class RenderBullet extends Render {
-	private final PolygonModel model = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Cannonball.obj"), VecAccuracy.MEDIUM);
-	private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/cannonball.png");
-	private static final ResourceLocation tex_flash = new ResourceLocation("rtm", "textures/effect/muzzleFlash.png");
+    private final PolygonModel model = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Cannonball.obj"), VecAccuracy.MEDIUM);
+    private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/cannonball.png");
+    private static final ResourceLocation tex_flash = new ResourceLocation("rtm", "textures/effect/muzzleFlash.png");
 
-	public static RenderBullet INSTANCE = new RenderBullet();
+    public static RenderBullet INSTANCE = new RenderBullet();
 
-	private RenderBullet() {
-	}
+    private RenderBullet() {
+    }
 
-	private final void renderBullet(EntityBullet entity, double par2, double par4, double par6, float par8, float par9) {
-		GL11.glPushMatrix();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glTranslatef((float) par2, (float) par4, (float) par6);
+    private void renderBullet(EntityBullet entity, double par2, double par4, double par6, float par8, float par9) {
+        GL11.glPushMatrix();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 
-		GL11.glRotatef(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * par9 - 90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * par9, 0.0F, 0.0F, 1.0F);
-		GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * par9 - 90.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * par9, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
 
-		BulletType type = entity.getBulletType();
-		boolean brightBullet = ((type == BulletType.rifle_5_56mm || type == BulletType.rifle_7_62mm || type == BulletType.rifle_12_7mm) && entity.getCanBreakBlock());
+        BulletType type = entity.getBulletType();
+        boolean brightBullet = ((type == BulletType.rifle_5_56mm || type == BulletType.rifle_7_62mm || type == BulletType.rifle_12_7mm) && entity.getCanBreakBlock());
 
 		if (brightBullet) {
 			GL11.glDisable(GL11.GL_TEXTURE_2D);

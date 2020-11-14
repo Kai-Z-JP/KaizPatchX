@@ -64,19 +64,19 @@ public final class RTMEventHandlerClient {
 	{
 		if (event.pass == 0)//1はたまにしか呼ばれない
 		{
-			List list = NGTUtilClient.getMinecraft().renderGlobal.tileEntities;
-			for (int i = 0; i < list.size(); ++i) {
-				TileEntity tile = (TileEntity) list.get(i);
-				if (tile instanceof TileEntityLargeRailCore) {
-					TileEntityLargeRailCore rail = ((TileEntityLargeRailCore) tile);
-					if (!rail.isLoaded()) {
-						continue;
-					}
-					int[] size = rail.getRailSize();
-					boolean flag1 = size[0] < event.renderer.posX + 16 && size[3] >= event.renderer.posX;
-					boolean flag2 = size[1] < event.renderer.posY + 16 && size[4] >= event.renderer.posY;
-					boolean flag3 = size[2] < event.renderer.posZ + 16 && size[5] >= event.renderer.posZ;
-					if (flag1 && flag2 && flag3) {
+            List list = NGTUtilClient.getMinecraft().renderGlobal.tileEntities;
+            for (Object o : list) {
+                TileEntity tile = (TileEntity) o;
+                if (tile instanceof TileEntityLargeRailCore) {
+                    TileEntityLargeRailCore rail = ((TileEntityLargeRailCore) tile);
+                    if (!rail.isLoaded()) {
+                        continue;
+                    }
+                    int[] size = rail.getRailSize();
+                    boolean flag1 = size[0] < event.renderer.posX + 16 && size[3] >= event.renderer.posX;
+                    boolean flag2 = size[1] < event.renderer.posY + 16 && size[4] >= event.renderer.posY;
+                    boolean flag3 = size[2] < event.renderer.posZ + 16 && size[5] >= event.renderer.posZ;
+                    if (flag1 && flag2 && flag3) {
 						if (GLHelper.isValid(rail.glList)) {
 							rail.shouldRerenderRail = true;
 						}

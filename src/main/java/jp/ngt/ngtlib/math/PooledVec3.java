@@ -3,6 +3,8 @@ package jp.ngt.ngtlib.math;
 import jp.ngt.ngtlib.util.ObjectPool;
 import net.minecraft.util.MathHelper;
 
+import java.util.stream.IntStream;
+
 /**
  * メモリ使用削減
  */
@@ -13,10 +15,10 @@ public final class PooledVec3 extends Vec3 {
 		final int size = 32;
 		PooledVec3[] array1 = new PooledVec3[size];
 		PooledVec3[] array2 = new PooledVec3[size];
-		for (int i = 0; i < size; ++i) {
+		IntStream.range(0, size).forEach(i -> {
 			array1[i] = new PooledVec3(0.0D, 0.0D, 0.0D);
 			array2[i] = new PooledVec3(0.0D, 0.0D, 0.0D);
-		}
+		});
 		POOL = new ObjectPool<>(new PooledVec3[][]{array1, array2});
 	}
 

@@ -275,14 +275,12 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
             return true;
         }
 
-        if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != player) {
-            return true;
-        } else {
+        if (this.riddenByEntity == null || !(this.riddenByEntity instanceof EntityPlayer) || this.riddenByEntity == player) {
             if (!this.worldObj.isRemote) {
                 player.mountEntity(this);
             }
-            return true;
         }
+        return true;
     }
 
     @Override

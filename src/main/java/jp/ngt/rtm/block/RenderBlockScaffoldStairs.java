@@ -95,24 +95,24 @@ public class RenderBlockScaffoldStairs extends TileEntitySpecialRenderer impleme
 
 		this.renderModel(0);
 
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glPopMatrix();
-	}
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glPopMatrix();
+    }
 
-	@Override
-	public void renderTileEntityAt(TileEntity tile, double par2, double par4, double par6, float par8) {
-		this.renderScaffoldStairsAt((TileEntityScaffoldStairs) tile, par2, par4, par6, par8);
-	}
+    @Override
+    public void renderTileEntityAt(TileEntity tile, double par2, double par4, double par6, float par8) {
+        this.renderScaffoldStairsAt((TileEntityScaffoldStairs) tile, par2, par4, par6, par8);
+    }
 
-	private final void renderModel(int par1) {
-		if (!GLHelper.isValid(this.displayLists[par1])) {
-			this.displayLists[par1] = GLHelper.generateGLList();
-			GLHelper.startCompile(this.displayLists[par1]);
-			IModelNGT model = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ScaffoldStairs.mqo"), VecAccuracy.LOW, GL11.GL_QUADS);
-			NGTRenderHelper.renderCustomModelEveryParts(model, (byte) 0, false, false, GL11.GL_QUADS, "part" + par1);
-			GLHelper.endCompile();
-		} else {
-			GLHelper.callList(this.displayLists[par1]);
-		}
-	}
+    private void renderModel(int par1) {
+        if (!GLHelper.isValid(this.displayLists[par1])) {
+            this.displayLists[par1] = GLHelper.generateGLList();
+            GLHelper.startCompile(this.displayLists[par1]);
+            IModelNGT model = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_ScaffoldStairs.mqo"), VecAccuracy.LOW, GL11.GL_QUADS);
+            NGTRenderHelper.renderCustomModelEveryParts(model, (byte) 0, false, false, GL11.GL_QUADS, "part" + par1);
+            GLHelper.endCompile();
+        } else {
+            GLHelper.callList(this.displayLists[par1]);
+        }
+    }
 }

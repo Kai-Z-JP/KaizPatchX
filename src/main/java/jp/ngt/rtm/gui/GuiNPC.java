@@ -82,26 +82,26 @@ public class GuiNPC extends GuiContainer {
 		RTMCore.NETWORK_WRAPPER.sendToServer(new PacketSelectModel(this.npc, s));
 	}
 
-	@Override
-	public void drawScreen(int par1, int par2, float par3) {
-		this.drawDefaultBackground();
-		super.drawScreen(par1, par2, par3);
+    @Override
+    public void drawScreen(int par1, int par2, float par3) {
+        this.drawDefaultBackground();
+        super.drawScreen(par1, par2, par3);
 
-		this.fontRendererObj.drawString(this.npc.getModelName(), this.guiLeft + 90, this.guiTop + 8, 0x000000);
-		this.fontRendererObj.drawString("HP:" + this.npc.getHealth(), this.guiLeft + 90, this.guiTop + 16, 0x000000);
-	}
+        this.fontRendererObj.drawString(this.npc.getModelName(), this.guiLeft + 90, this.guiTop + 8, 0x000000);
+        this.fontRendererObj.drawString("HP:" + this.npc.getHealth(), this.guiLeft + 90, this.guiTop + 16, 0x000000);
+    }
 
-	private class GuiButtonNPC extends GuiButton {
-		private final int type;
+    private static class GuiButtonNPC extends GuiButton {
+        private final int type;
 
-		public GuiButtonNPC(int id, int x, int y, int t) {
-			super(id, x, y, 10, 15, "");
-			this.type = t;
-		}
+        public GuiButtonNPC(int id, int x, int y, int t) {
+            super(id, x, y, 10, 15, "");
+            this.type = t;
+        }
 
-		@Override
-		public void drawButton(Minecraft mc, int x, int y) {
-			if (this.visible) {
+        @Override
+        public void drawButton(Minecraft mc, int x, int y) {
+            if (this.visible) {
 				mc.getTextureManager().bindTexture(texture);
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;

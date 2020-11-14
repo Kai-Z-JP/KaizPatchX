@@ -19,6 +19,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ItemCargo extends ItemWithModel {
 	@SideOnly(Side.CLIENT)
@@ -84,8 +85,6 @@ public class ItemCargo extends ItemWithModel {
 
 	public EntityCargo createCargoEntity(World world, ItemStack itemstack, int x, int y, int z, int damage) {
 		switch (damage) {
-			case 0:
-				return new EntityContainer(world, itemstack, x, y, z);
 			case 1:
 				return new EntityArtillery(world, itemstack, x, y, z);
 			case 2:
@@ -111,10 +110,8 @@ public class ItemCargo extends ItemWithModel {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item par1, CreativeTabs tabs, List list) {
-		for (int j = 0; j < ICON_COUNT; ++j) {
-			list.add(new ItemStack(par1, 1, j));
-		}
-	}
+        IntStream.range(0, ICON_COUNT).mapToObj(j -> new ItemStack(par1, 1, j)).forEach(list::add);
+    }
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -132,8 +129,6 @@ public class ItemCargo extends ItemWithModel {
 				return ContainerConfig.TYPE;
 			case 1:
 				return FirearmConfig.TYPE;
-			case 2:
-				return "";
 			default:
 				return "";
 		}
@@ -146,8 +141,6 @@ public class ItemCargo extends ItemWithModel {
 				return "19g_JRF_0";
 			case 1:
 				return "40cmArtillery";
-			case 2:
-				return "";
 			default:
 				return "";
 		}

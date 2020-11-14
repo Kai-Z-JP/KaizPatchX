@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public final class SubRenderGlobal {
 	private final MirrorObject mirror;
-	private final List<WorldRenderer> watchableRenderers = new LinkedList<WorldRenderer>();
+	private final List<WorldRenderer> watchableRenderers = new LinkedList<>();
 	/*private int posX;
 	private int posY;
 	private int posZ;*/
@@ -38,10 +39,7 @@ public final class SubRenderGlobal {
 		mc.entityRenderer.enableLightmap(pass);
 
 		WorldRenderer[] array = getRenderers(mc.renderGlobal);
-		for (int i = 0; i < array.length; ++i) {
-			WorldRenderer renderer = array[i];
-			this.callWorldRenderer(renderer, pass);
-		}
+		Arrays.stream(array).forEach(renderer -> this.callWorldRenderer(renderer, pass));
 
 		mc.entityRenderer.disableLightmap(pass);
 

@@ -6,13 +6,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Station {
 	protected World worldObj;
 	protected String name;
-	protected List<AABBInt> partsList = new ArrayList<AABBInt>();
+	protected List<AABBInt> partsList = new ArrayList<>();
 
 	public Station() {
 		this.name = "";
@@ -26,8 +26,7 @@ public class Station {
 	public void readFromNBT(NBTTagCompound nbt) {
 		this.name = nbt.getString("Name");
 		NBTTagList nbttaglist = nbt.getTagList("Parts", 10);
-		for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-			NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(i);
+		IntStream.range(0, nbttaglist.tagCount()).mapToObj(nbttaglist::getCompoundTagAt).forEach(nbt1 -> {
 			int x0 = nbt1.getInteger("MinX");
 			int y0 = nbt1.getInteger("MinY");
 			int z0 = nbt1.getInteger("MinZ");
@@ -35,15 +34,13 @@ public class Station {
 			int y1 = nbt1.getInteger("MaxY");
 			int z1 = nbt1.getInteger("MaxZ");
 			this.partsList.add(new AABBInt(x0, y0, z0, x1, y1, z1));
-		}
+		});
 	}
 
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setString("Name", this.name);
 		NBTTagList nbttaglist = new NBTTagList();
-		Iterator iterator = this.partsList.iterator();
-		while (iterator.hasNext()) {
-			AABBInt chunk = (AABBInt) iterator.next();
+		this.partsList.forEach(chunk -> {
 			NBTTagCompound nbt1 = new NBTTagCompound();
 			nbt1.setInteger("MinX", chunk.minX);
 			nbt1.setInteger("MinY", chunk.minY);
@@ -52,7 +49,7 @@ public class Station {
 			nbt1.setInteger("MaxY", chunk.maxY);
 			nbt1.setInteger("MaxZ", chunk.maxZ);
 			nbttaglist.appendTag(nbt1);
-		}
+		});
 		nbt.setTag("Parts", nbttaglist);
 	}
 

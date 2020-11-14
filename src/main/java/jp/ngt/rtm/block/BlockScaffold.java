@@ -22,6 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class BlockScaffold extends BlockContainer {
 	public BlockScaffold() {
@@ -61,9 +62,7 @@ public class BlockScaffold extends BlockContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-		for (int i = 0; i < 16; ++i) {
-			list.add(new ItemStack(par1, 1, i));
-		}
+		IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(list::add);
 	}
 
 	@Override

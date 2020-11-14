@@ -44,14 +44,14 @@ function init(par1, par2) {
 
     //モデル名によって描画切替
     var name = par1.getConfig().getName();
-    hasPantograph = (name == "ohmi220") || (name == "ohmi800m");
+    hasPantograph = (name === "ohmi220") || (name === "ohmi800m");
     hasOneCab = name.indexOf("ohmi800") >= 0;
 }
 
 function render(entity, pass, par3) {
     GL11.glPushMatrix();
 
-    if (pass == RenderPass.NORMAL.id) {
+    if (pass === RenderPass.NORMAL.id) {
         head_F.render(renderer);
         body.render(renderer);
         renderController(entity, pass, par3); //通常描画用
@@ -68,7 +68,7 @@ function render(entity, pass, par3) {
         if (hasPantograph) {
             renderPantograph(entity, pass, par3);
         }
-    } else if (pass == RenderPass.TRANSPARENT.id) {
+    } else if (pass === RenderPass.TRANSPARENT.id) {
         window.render(renderer);
         renderDoor(entity, pass, par3);
 
@@ -78,7 +78,7 @@ function render(entity, pass, par3) {
             window_tc.render(renderer);
         }
     } else if (pass >= RenderPass.LIGHT.id && pass <= RenderPass.LIGHT_BACK.id) {
-        if (pass == RenderPass.LIGHT.id) {
+        if (pass === RenderPass.LIGHT.id) {
             light.render(renderer);
             if (hasOneCab) {
                 light_oc.render(renderer);
@@ -91,7 +91,7 @@ function render(entity, pass, par3) {
         }
         renderController(entity, pass, par3); //輪郭線描画用
         renderConSw(entity, pass, par3);
-    } else if (pass == RenderPass.PICK.id) {
+    } else if (pass === RenderPass.PICK.id) {
         renderController(entity, pass, par3); //右クリック操作判定用
         renderConSw(entity, pass, par3);
     }
@@ -114,7 +114,7 @@ function onRightClick(entity, parts) {
 function onRightDrag(entity, parts, move) {
     var notch = entity.getNotch();
     var dataMap = entity.getResourceState().getDataMap();
-    if (move == 0) {
+    if (move === 0) {
         dataMap.setInt("start_notch", notch, 0);
         return;
     }
@@ -134,7 +134,7 @@ function renderController(entity, pass, par3) {
     var rotationBF = 0.0;
     var rotationBB = 0.0;
     if (entity != null) {
-        var dirForward = (entity.getTrainDirection() == 0);
+        var dirForward = (entity.getTrainDirection() === 0);
         var notch = entity.getNotch();
         var notchM = (notch < 0 ? 0 : notch) / 5;
         var notchB = ((notch > 0 ? 0 : notch) + 8) / 8;
@@ -182,9 +182,9 @@ function renderConSw(entity, pass, par3) {
     var stateLB = 0;
     if (entity != null) {
         var doorState = entity.getTrainStateData(TrainState.TrainStateType.State_Door.id);
-        var dirForward = (entity.getTrainDirection() == 0);
-        var doorROpen = (doorState & 1) == 1;
-        var doorLOpen = (doorState & 2) == 2;
+        var dirForward = (entity.getTrainDirection() === 0);
+        var doorROpen = (doorState & 1) === 1;
+        var doorLOpen = (doorState & 2) === 2;
         stateRF = (dirForward && doorROpen) ? 1 : 0;
         stateLF = (dirForward && doorLOpen) ? 1 : 0;
         stateRB = (!dirForward && doorROpen) ? 1 : 0;

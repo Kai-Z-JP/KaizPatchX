@@ -1,7 +1,6 @@
 package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
-import jp.ngt.rtm.GuiCamera;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.TileEntityMovingMachine;
 import jp.ngt.rtm.block.tileentity.TileEntityStation;

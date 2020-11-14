@@ -106,16 +106,16 @@ public class GuiSelect extends GuiScreenCustom {
 		}
 
 		public static void func_148171_c(Minecraft par1, int par2, int par3, int par4, int par5, float par6) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			par1.getTextureManager().bindTexture(Gui.statIcons);
-			Tessellator tessellator = Tessellator.instance;
-			tessellator.startDrawingQuads();
-			tessellator.addVertexWithUV(par2 + 0, par3 + 18, par6, (float) (par4 + 0) * 0.0078125F, (float) (par5 + 18) * 0.0078125F);
-			tessellator.addVertexWithUV(par2 + 18, par3 + 18, par6, (float) (par4 + 18) * 0.0078125F, (float) (par5 + 18) * 0.0078125F);
-			tessellator.addVertexWithUV(par2 + 18, par3 + 0, par6, (float) (par4 + 18) * 0.0078125F, (float) (par5 + 0) * 0.0078125F);
-			tessellator.addVertexWithUV(par2 + 0, par3 + 0, par6, (float) (par4 + 0) * 0.0078125F, (float) (par5 + 0) * 0.0078125F);
-			tessellator.draw();
-		}
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            par1.getTextureManager().bindTexture(Gui.statIcons);
+            Tessellator tessellator = Tessellator.instance;
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV(par2, par3 + 18, par6, (float) (par4) * 0.0078125F, (float) (par5 + 18) * 0.0078125F);
+            tessellator.addVertexWithUV(par2 + 18, par3 + 18, par6, (float) (par4 + 18) * 0.0078125F, (float) (par5 + 18) * 0.0078125F);
+            tessellator.addVertexWithUV(par2 + 18, par3, par6, (float) (par4 + 18) * 0.0078125F, (float) (par5) * 0.0078125F);
+            tessellator.addVertexWithUV(par2, par3, par6, (float) (par4) * 0.0078125F, (float) (par5) * 0.0078125F);
+            tessellator.draw();
+        }
 
 		@Override
 		public void onClicked(int par1, boolean par2) {

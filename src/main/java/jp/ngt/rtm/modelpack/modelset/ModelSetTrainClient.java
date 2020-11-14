@@ -12,6 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.util.stream.IntStream;
+
 @SideOnly(Side.CLIENT)
 public class ModelSetTrainClient extends ModelSetVehicleBaseClient {
 	public final ModelObject[] bogieModels;
@@ -38,11 +40,7 @@ public class ModelSetTrainClient extends ModelSetVehicleBaseClient {
 	}
 
 	private ModelObject[] registerBogieModel() {
-		ModelObject[] modelBogies = new ModelObject[2];
-		for (int i = 0; i < 2; ++i) {
-			modelBogies[i] = new ModelObject(((TrainConfig) this.getConfig()).getBogieModel(i), this, null, "isBogie");
-		}
-		return modelBogies;
+		return IntStream.range(0, 2).mapToObj(i -> new ModelObject(((TrainConfig) this.getConfig()).getBogieModel(i), this, null, "isBogie")).toArray(ModelObject[]::new);
 	}
 
 	@Override

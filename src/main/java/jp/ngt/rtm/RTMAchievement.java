@@ -11,18 +11,18 @@ import java.util.List;
  * 実績処理はServerのみでOK
  */
 public class RTMAchievement {
-	public static final String ACHIEVEMENT_PAGE_NAME = "Real Train Mod";
-	public static List<Achievement> achievementList = new ArrayList<Achievement>();
+    public static final String ACHIEVEMENT_PAGE_NAME = "Real Train Mod";
+    public static List<Achievement> achievementList = new ArrayList<>();
 
-	/**
-	 * 耐火レンガの設置
-	 */
-	public static Achievement startIronMaking;
-	/**
-	 * 金鋸使用
-	 */
-	public static Achievement getSteel;
-	/**
+    /**
+     * 耐火レンガの設置
+     */
+    public static Achievement startIronMaking;
+    /**
+     * 金鋸使用
+     */
+    public static Achievement getSteel;
+    /**
 	 * 熱風炉煉瓦の設置
 	 */
 	public static Achievement startIronMaking2;

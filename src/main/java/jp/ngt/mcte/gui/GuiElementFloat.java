@@ -29,10 +29,10 @@ public class GuiElementFloat extends GuiTextField implements IGuiElement {
 
 	private void updateValue() {
 		try {
-			float value = Float.valueOf(this.getText());
-			this.cfg.setFloat(this.paramName, value);
-			this.setText(String.valueOf(this.cfg.getFloat(this.paramName)));
-		} catch (NumberFormatException e) {
+            float value = Float.parseFloat(this.getText());
+            this.cfg.setFloat(this.paramName, value);
+            this.setText(String.valueOf(this.cfg.getFloat(this.paramName)));
+        } catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 	}

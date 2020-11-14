@@ -13,20 +13,20 @@ import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class RenderSeat extends Render {
-	private final ModelCrossSeat model = new ModelCrossSeat();
-	private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/train/seat.png");
+    private final ModelCrossSeat model = new ModelCrossSeat();
+    private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/train/seat.png");
 
-	private final void renderSeat(EntityFloor entity, double par2, double par4, double par6, float par8, float par9) {
-		GL11.glPushMatrix();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glTranslatef((float) par2, (float) par4, (float) par6);
+    private void renderSeat(EntityFloor entity, double par2, double par4, double par6, float par8, float par9) {
+        GL11.glPushMatrix();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 
-		RenderUtil.enableCustomLighting(0, 0.0F, 2.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-		this.renderSeat(entity);
-		RenderUtil.disableCustomLighting(0);
+        RenderUtil.enableCustomLighting(0, 0.0F, 2.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+        this.renderSeat(entity);
+        RenderUtil.disableCustomLighting(0);
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
 	private void renderSeat(EntityFloor entity) {
 		byte seatType = entity.getSeatType();

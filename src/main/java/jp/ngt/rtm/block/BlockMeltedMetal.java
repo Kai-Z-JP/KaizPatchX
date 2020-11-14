@@ -15,6 +15,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class BlockMeltedMetal extends BlockLiquidBase {
 	public BlockMeltedMetal() {
@@ -75,7 +76,7 @@ public class BlockMeltedMetal extends BlockLiquidBase {
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block p_149695_5_) {
 		if (!world.isRemote) {
-			for (int i = 0; i < BlockUtil.facing.length; ++i) {
+			IntStream.range(0, BlockUtil.facing.length).forEach(i -> {
 				int x0 = x + BlockUtil.facing[i][0];
 				int y0 = y + BlockUtil.facing[i][1];
 				int z0 = z + BlockUtil.facing[i][2];
@@ -84,7 +85,7 @@ public class BlockMeltedMetal extends BlockLiquidBase {
 					world.setBlock(x, y, z, Blocks.air);
 					world.createExplosion(null, (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, 8.0F, true);
 				}
-			}
+			});
 		}
 
 		super.onNeighborBlockChange(world, x, y, z, p_149695_5_);

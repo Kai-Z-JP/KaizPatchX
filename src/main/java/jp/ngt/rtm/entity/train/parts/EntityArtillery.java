@@ -40,9 +40,9 @@ public class EntityArtillery extends EntityCargoWithModel<ModelSetFirearm> {
 
 	@Override
 	protected void entityInit() {
-		super.entityInit();
-		this.dataWatcher.addObject(28, Integer.valueOf(-1));
-	}
+        super.entityInit();
+        this.dataWatcher.addObject(28, -1);
+    }
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound nbt) {
@@ -149,41 +149,39 @@ public class EntityArtillery extends EntityCargoWithModel<ModelSetFirearm> {
 
 	@Override
 	public boolean interactFirst(EntityPlayer player) {
-		if (super.interactFirst(player)) {
-			return true;
-		}
+        if (super.interactFirst(player)) {
+            return true;
+        }
 
-		if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.riddenByEntity != player) {
-			return true;
-		} else {
-			ItemStack itemstack = player.inventory.getCurrentItem();
-			if (itemstack != null) {
-				int type = this.getAmmoType(itemstack.getItemDamage());
-				if (itemstack.getItem() instanceof ItemAmmunition && type >= 0) {
-					if (!this.worldObj.isRemote) {
-						if (this.hasAmmo() < 0) {
-							this.setAmmo(type);
-							this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, Blocks.tnt.stepSound.func_150496_b(), (Blocks.tnt.stepSound.getVolume() + 1.0F) / 2.0F, Blocks.tnt.stepSound.getPitch() * 0.8F);
-							--itemstack.stackSize;
-						}
+        if (this.riddenByEntity == null || !(this.riddenByEntity instanceof EntityPlayer) || this.riddenByEntity == player) {
+            ItemStack itemstack = player.inventory.getCurrentItem();
+            if (itemstack != null) {
+                int type = this.getAmmoType(itemstack.getItemDamage());
+                if (itemstack.getItem() instanceof ItemAmmunition && type >= 0) {
+                    if (!this.worldObj.isRemote) {
+                        if (this.hasAmmo() < 0) {
+                            this.setAmmo(type);
+                            this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, Blocks.tnt.stepSound.func_150496_b(), (Blocks.tnt.stepSound.getVolume() + 1.0F) / 2.0F, Blocks.tnt.stepSound.getPitch() * 0.8F);
+                            --itemstack.stackSize;
+                        }
 					}
 					return true;
 				} else if (itemstack.getItem() == RTMItem.paddle) {
 					if (!this.worldObj.isRemote) {
 						if (this.hasAmmo() >= 0) {
-							this.fire(player);
-						}
-					}
-					return true;
-				}
-			}
+                            this.fire(player);
+                        }
+                    }
+                    return true;
+                }
+            }
 
-			if (!this.worldObj.isRemote) {
-				player.mountEntity(this);
-			}
-			return true;
-		}
-	}
+            if (!this.worldObj.isRemote) {
+                player.mountEntity(this);
+            }
+        }
+        return true;
+    }
 
 	public void onFireKeyDown(EntityPlayer player) {
 		for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
@@ -287,8 +285,8 @@ public class EntityArtillery extends EntityCargoWithModel<ModelSetFirearm> {
 	}
 
 	public void setAmmo(int par1) {
-		this.dataWatcher.updateObject(28, Integer.valueOf(par1));
-	}
+        this.dataWatcher.updateObject(28, par1);
+    }
 
 	public int hasAmmo() {
 		return this.dataWatcher.getWatchableObjectInt(28);

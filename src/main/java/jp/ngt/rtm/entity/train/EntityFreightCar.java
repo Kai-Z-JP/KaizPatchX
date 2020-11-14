@@ -3,6 +3,7 @@ package jp.ngt.rtm.entity.train;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.parts.*;
 import jp.ngt.rtm.item.ItemCargo;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,15 +12,19 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class EntityFreightCar extends EntityTrainBase implements IInventory {
-	private static final float[][] CARGO_POS = new float[][]{
-			{0.0F, 0.0F, 8.0F},
-			{0.0F, 0.0F, 4.0F},
-			{0.0F, 0.0F, 0.0F},
-			{0.0F, 0.0F, -4.0F},
-			{0.0F, 0.0F, -8.0F}};
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
-	private final ItemStack[] cargoSlots = new ItemStack[5];
+public class EntityFreightCar extends EntityTrainBase implements IInventory {
+    private static final float[][] CARGO_POS = new float[][]{
+            {0.0F, 0.0F, 8.0F},
+            {0.0F, 0.0F, 4.0F},
+            {0.0F, 0.0F, 0.0F},
+            {0.0F, 0.0F, -4.0F},
+            {0.0F, 0.0F, -8.0F}};
+
+    private final ItemStack[] cargoSlots = new ItemStack[5];
 	public EntityCargo[] cargoEntities = new EntityCargo[5];
 
 	public EntityFreightCar(World world) {
@@ -37,79 +42,66 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound nbt) {
-		super.readEntityFromNBT(nbt);
+        super.readEntityFromNBT(nbt);
 
-		NBTTagList list = nbt.getTagList("Items", 10);
-		for (int i = 0; i < list.tagCount(); ++i) {
-			NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-			if (nbt1.hasKey("Slot", 1)) {
-				byte b0 = nbt1.getByte("Slot");
-				if (b0 >= 0 && b0 < this.cargoSlots.length) {
-					this.cargoSlots[b0] = ItemStack.loadItemStackFromNBT(nbt1);
-				}
-			}
-		}
-	}
+        NBTTagList list = nbt.getTagList("Items", 10);
+        IntStream.range(0, list.tagCount()).mapToObj(list::getCompoundTagAt).filter(nbt1 -> nbt1.hasKey("Slot", 1)).forEach(nbt1 -> {
+            byte b0 = nbt1.getByte("Slot");
+            if (b0 >= 0 && b0 < this.cargoSlots.length) {
+                this.cargoSlots[b0] = ItemStack.loadItemStackFromNBT(nbt1);
+            }
+        });
+    }
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbt) {
-		super.writeEntityToNBT(nbt);
-		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < this.cargoSlots.length; ++i) {
-			if (this.cargoSlots[i] != null && this.cargoEntities[i] != null) {
-				this.cargoEntities[i].writeCargoToItem();
-				NBTTagCompound nbt0 = new NBTTagCompound();
-				nbt0.setByte("Slot", (byte) i);
-				this.cargoSlots[i].writeToNBT(nbt0);
-				list.appendTag(nbt0);
-			}
-		}
-		nbt.setTag("Items", list);
-	}
+        super.writeEntityToNBT(nbt);
+        NBTTagList list = new NBTTagList();
+        IntStream.range(0, this.cargoSlots.length).filter(i -> this.cargoSlots[i] != null && this.cargoEntities[i] != null).forEach(i -> {
+            this.cargoEntities[i].writeCargoToItem();
+            NBTTagCompound nbt0 = new NBTTagCompound();
+            nbt0.setByte("Slot", (byte) i);
+            this.cargoSlots[i].writeToNBT(nbt0);
+            list.appendTag(nbt0);
+        });
+        nbt.setTag("Items", list);
+    }
 
 	@Override
 	public void setDead() {
-		super.setDead();
+        super.setDead();
 
-		for (int i = 0; i < this.cargoEntities.length; ++i) {
-			if (this.cargoEntities[i] != null) {
-				this.cargoEntities[i].setDead();
-			}
-		}
-	}
+        Arrays.stream(this.cargoEntities).filter(Objects::nonNull).forEach(Entity::setDead);
+    }
 
 	@Override
 	public void onVehicleUpdate() {
 		super.onVehicleUpdate();
 
 		if (!this.worldObj.isRemote) {
-			for (int i = 0; i < this.cargoSlots.length; ++i) {
-				if (this.hasCargo(i)) {
-					if (this.cargoEntities[i] == null) {
-						EntityCargo entity = this.createCargoEntity((byte) i);
-						entity.updatePartPos(this);
-						this.worldObj.spawnEntityInWorld(entity);
-						this.cargoEntities[i] = entity;
-					}
-				} else {
-					if (this.cargoEntities[i] != null) {
-						this.cargoEntities[i].setDead();
-						this.cargoEntities[i] = null;
-					}
-				}
-			}
+            IntStream.range(0, this.cargoSlots.length).forEach(i -> {
+                if (this.hasCargo(i)) {
+                    if (this.cargoEntities[i] == null) {
+                        EntityCargo entity = this.createCargoEntity((byte) i);
+                        entity.updatePartPos(this);
+                        this.worldObj.spawnEntityInWorld(entity);
+                        this.cargoEntities[i] = entity;
+                    }
+                } else {
+                    if (this.cargoEntities[i] != null) {
+                        this.cargoEntities[i].setDead();
+                        this.cargoEntities[i] = null;
+                    }
+                }
+            });
 		}
 	}
 
 	@Override
 	public boolean attackEntityFrom(DamageSource par1, float par2) {
 		if (!this.worldObj.isRemote) {
-			for (int i = 0; i < this.cargoSlots.length; ++i) {
-				if (this.cargoSlots[i] != null) {
-					this.entityDropItem(this.cargoSlots[i], 1.0F);
-				}
-			}
-		}
+            Arrays.stream(this.cargoSlots).filter(Objects::nonNull).forEach(cargoSlot -> this.entityDropItem(cargoSlot, 1.0F));
+        }
 		return super.attackEntityFrom(par1, par2);
 	}
 
@@ -134,9 +126,6 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 		EntityCargo cargo;
 		int damage = this.cargoSlots[slot].getItemDamage();
 		switch (damage) {
-			case 0:
-				cargo = new EntityContainer(this.worldObj, this, this.cargoSlots[slot], CARGO_POS[slot], slot);
-				break;
 			case 1:
 				cargo = new EntityArtillery(this.worldObj, this, this.cargoSlots[slot], CARGO_POS[slot], slot);
 				break;
@@ -173,19 +162,18 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 	@Override
 	public ItemStack decrStackSize(int par1, int par2) {
 		if (this.cargoSlots[par1] != null) {
-			ItemStack itemstack;
-			if (this.cargoSlots[par1].stackSize <= par2) {
-				itemstack = this.cargoSlots[par1];
-				this.cargoSlots[par1] = null;
-				return itemstack;
-			} else {
-				itemstack = this.cargoSlots[par1].splitStack(par2);
-				if (this.cargoSlots[par1].stackSize == 0) {
-					this.cargoSlots[par1] = null;
-				}
-				return itemstack;
-			}
-		} else {
+            ItemStack itemstack;
+            if (this.cargoSlots[par1].stackSize <= par2) {
+                itemstack = this.cargoSlots[par1];
+                this.cargoSlots[par1] = null;
+            } else {
+                itemstack = this.cargoSlots[par1].splitStack(par2);
+                if (this.cargoSlots[par1].stackSize == 0) {
+                    this.cargoSlots[par1] = null;
+                }
+            }
+            return itemstack;
+        } else {
 			return null;
 		}
 	}

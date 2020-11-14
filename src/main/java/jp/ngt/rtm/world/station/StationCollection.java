@@ -9,48 +9,43 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class StationCollection extends WorldSavedData {
-	protected World worldObj;
-	protected Map<String, Station> stations = new HashMap<String, Station>();
+    protected World worldObj;
+    protected Map<String, Station> stations = new HashMap<>();
 
-	public StationCollection(String par1) {
-		super(par1);
-		this.markDirty();
-	}
+    public StationCollection(String par1) {
+        super(par1);
+        this.markDirty();
+    }
 
-	public void setWorld(World par1) {
-		this.worldObj = par1;
-		for (Station station : this.stations.values()) {
-			station.worldObj = par1;
-		}
-	}
+    public void setWorld(World par1) {
+        this.worldObj = par1;
+        this.stations.values().forEach(station -> station.worldObj = par1);
+    }
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		NBTTagList nbttaglist = nbt.getTagList("Stations", 10);
-		for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-			NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(i);
-			Station station = new Station();
-			station.readFromNBT(nbt1);
-			this.stations.put(station.name, station);
-		}
-	}
+        NBTTagList nbttaglist = nbt.getTagList("Stations", 10);
+        IntStream.range(0, nbttaglist.tagCount()).mapToObj(nbttaglist::getCompoundTagAt).forEach(nbt1 -> {
+            Station station = new Station();
+            station.readFromNBT(nbt1);
+            this.stations.put(station.name, station);
+        });
+    }
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
-		NBTTagList nbttaglist = new NBTTagList();
-		Iterator iterator = this.stations.values().iterator();
-		while (iterator.hasNext()) {
-			Station station = (Station) iterator.next();
-			NBTTagCompound nbt1 = new NBTTagCompound();
-			station.writeToNBT(nbt1);
-			nbttaglist.appendTag(nbt1);
-		}
-		nbt.setTag("Stations", nbttaglist);
-	}
+        NBTTagList nbttaglist = new NBTTagList();
+        this.stations.values().forEach(station -> {
+            NBTTagCompound nbt1 = new NBTTagCompound();
+            station.writeToNBT(nbt1);
+            nbttaglist.appendTag(nbt1);
+        });
+        nbt.setTag("Stations", nbttaglist);
+    }
 
 	public boolean add(int x, int y, int z) {
 		if (this.getStation(x, y, z) == null) {

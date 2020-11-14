@@ -14,6 +14,7 @@ import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,24 +41,24 @@ public class DynamicRailPartsRenderer extends RailPartsRenderer {
 
 	@Override
 	public void init(ModelSetRailClient par1, ModelObject par2) {
-		this.leftParts = this.registerParts(new Parts("railL", "sideL"));
-		this.rightParts = this.registerParts(new Parts("railR", "sideR"));
-		this.tongFL = this.registerParts(new Parts("L0"));
-		this.tongBL = this.registerParts(new Parts("L1"));
-		this.tongFR = this.registerParts(new Parts("R0"));
-		this.tongBR = this.registerParts(new Parts("R1"));
+        this.leftParts = this.registerParts(new Parts("railL", "sideL"));
+        this.rightParts = this.registerParts(new Parts("railR", "sideR"));
+        this.tongFL = this.registerParts(new Parts("L0"));
+        this.tongBL = this.registerParts(new Parts("L1"));
+        this.tongFR = this.registerParts(new Parts("R0"));
+        this.tongBR = this.registerParts(new Parts("R1"));
 
-		this.dynamicPartNames = new ArrayList<String>();
-		NGTUtil.addArray(this.dynamicPartNames, this.leftParts.objNames);
-		NGTUtil.addArray(this.dynamicPartNames, this.rightParts.objNames);
-		NGTUtil.addArray(this.dynamicPartNames, this.tongFL.objNames);
-		NGTUtil.addArray(this.dynamicPartNames, this.tongBL.objNames);
-		NGTUtil.addArray(this.dynamicPartNames, this.tongFR.objNames);
-		NGTUtil.addArray(this.dynamicPartNames, this.tongBR.objNames);
+        this.dynamicPartNames = new ArrayList<>();
+        NGTUtil.addArray(this.dynamicPartNames, this.leftParts.objNames);
+        NGTUtil.addArray(this.dynamicPartNames, this.rightParts.objNames);
+        NGTUtil.addArray(this.dynamicPartNames, this.tongFL.objNames);
+        NGTUtil.addArray(this.dynamicPartNames, this.tongBL.objNames);
+        NGTUtil.addArray(this.dynamicPartNames, this.tongFR.objNames);
+        NGTUtil.addArray(this.dynamicPartNames, this.tongBR.objNames);
 
-		//ここでパーツの初期するから最後に
-		super.init(par1, par2);
-	}
+        //ここでパーツの初期するから最後に
+        super.init(par1, par2);
+    }
 
 	@Override
 	protected void renderRailStatic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
@@ -87,22 +88,20 @@ public class DynamicRailPartsRenderer extends RailPartsRenderer {
 			return;
 		}
 
-		GL11.glPushMatrix();
-		RailPosition rp = tileEntity.getRailPositions()[0];
-		double x = rp.posX - (double) rp.blockX;
-		//double y = rp.posY - (double)rp.blockY;
-		double z = rp.posZ - (double) rp.blockZ;
-		GL11.glTranslatef((float) (par2 + x), (float) (par4), (float) (par6 + z));
+        GL11.glPushMatrix();
+        RailPosition rp = tileEntity.getRailPositions()[0];
+        double x = rp.posX - (double) rp.blockX;
+        //double y = rp.posY - (double)rp.blockY;
+        double z = rp.posZ - (double) rp.blockZ;
+        GL11.glTranslatef((float) (par2 + x), (float) (par4), (float) (par6 + z));
 
-		this.bindTexture(this.getModelObject().textures[0].material.texture);
+        this.bindTexture(this.getModelObject().textures[0].material.texture);
 
-		//分岐レールの各頂点-中間点までを描画
-		for (Point point : tileEntity.getSwitch().getPoints()) {
-			this.renderPoint(tileEntity, point);
-		}
+        //分岐レールの各頂点-中間点までを描画
+        Arrays.stream(tileEntity.getSwitch().getPoints()).forEach(point -> this.renderPoint(tileEntity, point));
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
 	private void renderPoint(TileEntityLargeRailSwitchCore tileEntity, Point point) {
 		if (point.branchDir == RailDir.NONE)//分岐なし部分

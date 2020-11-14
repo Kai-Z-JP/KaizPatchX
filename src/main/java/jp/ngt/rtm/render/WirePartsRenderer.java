@@ -12,15 +12,17 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetWireClient;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
+import java.util.stream.IntStream;
+
 @SideOnly(Side.CLIENT)
 public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClient> {
-	private final boolean useScript;
+    private final boolean useScript;
 
-	public WirePartsRenderer(String... par1) {
-		super(par1);
+    public WirePartsRenderer(String... par1) {
+        super(par1);
 
-		this.useScript = true;
-	}
+        this.useScript = true;
+    }
 
 	public WirePartsRenderer(boolean par1, String... par2) {
 		super(par2);
@@ -57,23 +59,23 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
 	}
 
 	protected void renderWireStraight(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
-		GL11.glPushMatrix();
-		GL11.glRotatef(target.getYaw() + 180.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(target.getPitch() - 90.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glPushMatrix();
+        GL11.glRotatef(target.getYaw() + 180.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(target.getPitch() - 90.0F, 1.0F, 0.0F, 0.0F);
 
-		ModelSetWireClient modelSet = (ModelSetWireClient) connection.getModelSet();
-		WireConfig cfg = modelSet.getConfig();
-		double length = target.lengthVector();
-		int split = MathHelper.floor_double(length / cfg.sectionLength);
-		float scaleY = (float) ((length / (double) split) / cfg.sectionLength);
-		GL11.glScalef(1.0F, scaleY, 1.0F);
-		for (int i = 0; i < split; ++i) {
-			modelSet.modelObj.model.renderAll(cfg.smoothing);
-			GL11.glTranslatef(0.0F, cfg.sectionLength, 0.0F);
-		}
+        ModelSetWireClient modelSet = (ModelSetWireClient) connection.getModelSet();
+        WireConfig cfg = modelSet.getConfig();
+        double length = target.lengthVector();
+        int split = MathHelper.floor_double(length / cfg.sectionLength);
+        float scaleY = (float) ((length / (double) split) / cfg.sectionLength);
+        GL11.glScalef(1.0F, scaleY, 1.0F);
+        IntStream.range(0, split).forEach(i -> {
+            modelSet.modelObj.model.renderAll(cfg.smoothing);
+            GL11.glTranslatef(0.0F, cfg.sectionLength, 0.0F);
+        });
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
 	@Deprecated
 	protected void renderWireDeflection2(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {

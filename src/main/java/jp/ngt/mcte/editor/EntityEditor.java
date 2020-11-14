@@ -61,23 +61,23 @@ public class EntityEditor extends Entity implements IInventory {
 	@Override
 	protected void entityInit()//max:31
 	{
-		this.dataWatcher.addObject(10, "");//player
-		this.dataWatcher.addObject(11, Integer.valueOf(0));//x
-		this.dataWatcher.addObject(12, Integer.valueOf(0));//y
-		this.dataWatcher.addObject(13, Integer.valueOf(0));//z
-		this.dataWatcher.addObject(14, Integer.valueOf(0));//x
-		this.dataWatcher.addObject(15, Integer.valueOf(0));//y
-		this.dataWatcher.addObject(16, Integer.valueOf(0));//z
-		this.dataWatcher.addObject(17, Byte.valueOf((byte) 0));//selectEnd
-		this.dataWatcher.addObject(18, Integer.valueOf(0));
-		this.dataWatcher.addObject(19, Integer.valueOf(0));
-		this.dataWatcher.addObject(20, Integer.valueOf(0));//paste
-		this.dataWatcher.addObject(21, Byte.valueOf((byte) 0));//mode
-		this.dataWatcher.addObject(22, Integer.valueOf(0));
-		this.dataWatcher.addObject(23, Integer.valueOf(0));
-		this.dataWatcher.addObject(24, Integer.valueOf(0));
-		this.dataWatcher.addObject(25, Integer.valueOf(0));//clone
-	}
+        this.dataWatcher.addObject(10, "");//player
+        this.dataWatcher.addObject(11, 0);//x
+        this.dataWatcher.addObject(12, 0);//y
+        this.dataWatcher.addObject(13, 0);//z
+        this.dataWatcher.addObject(14, 0);//x
+        this.dataWatcher.addObject(15, 0);//y
+        this.dataWatcher.addObject(16, 0);//z
+        this.dataWatcher.addObject(17, (byte) 0);//selectEnd
+        this.dataWatcher.addObject(18, 0);
+        this.dataWatcher.addObject(19, 0);
+        this.dataWatcher.addObject(20, 0);//paste
+        this.dataWatcher.addObject(21, (byte) 0);//mode
+        this.dataWatcher.addObject(22, 0);
+        this.dataWatcher.addObject(23, 0);
+        this.dataWatcher.addObject(24, 0);
+        this.dataWatcher.addObject(25, 0);//clone
+    }
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound nbt) {
@@ -208,12 +208,12 @@ public class EntityEditor extends Entity implements IInventory {
 	}
 
 	public void setPos(boolean isStart, int x, int y, int z) {
-		this.setSelectEnd(!isStart);
-		int i = isStart ? 0 : 3;
-		this.dataWatcher.updateObject(11 + i, Integer.valueOf(x));
-		this.dataWatcher.updateObject(12 + i, Integer.valueOf(y));
-		this.dataWatcher.updateObject(13 + i, Integer.valueOf(z));
-	}
+        this.setSelectEnd(!isStart);
+        int i = isStart ? 0 : 3;
+        this.dataWatcher.updateObject(11 + i, x);
+        this.dataWatcher.updateObject(12 + i, y);
+        this.dataWatcher.updateObject(13 + i, z);
+    }
 
 	public boolean isSelectEnd() {
 		return this.dataWatcher.getWatchableObjectByte(17) == 1
@@ -222,8 +222,8 @@ public class EntityEditor extends Entity implements IInventory {
 	}
 
 	public void setSelectEnd(boolean par1) {
-		this.dataWatcher.updateObject(17, Byte.valueOf((byte) (par1 ? 1 : 0)));
-	}
+        this.dataWatcher.updateObject(17, (byte) (par1 ? 1 : 0));
+    }
 
 	/**
 	 * @return {x, y, z}
@@ -236,10 +236,10 @@ public class EntityEditor extends Entity implements IInventory {
 	}
 
 	public void setPasteBox(int x, int y, int z) {
-		this.dataWatcher.updateObject(18, Integer.valueOf(x));
-		this.dataWatcher.updateObject(19, Integer.valueOf(y));
-		this.dataWatcher.updateObject(20, Integer.valueOf(z));
-	}
+        this.dataWatcher.updateObject(18, x);
+        this.dataWatcher.updateObject(19, y);
+        this.dataWatcher.updateObject(20, z);
+    }
 
 	/**
 	 * @return {x, y, z, repeat} 相対座標
@@ -253,11 +253,11 @@ public class EntityEditor extends Entity implements IInventory {
 	}
 
 	public void setCloneBox(int x, int y, int z, int r) {
-		this.dataWatcher.updateObject(22, Integer.valueOf(x));
-		this.dataWatcher.updateObject(23, Integer.valueOf(y));
-		this.dataWatcher.updateObject(24, Integer.valueOf(z));
-		this.dataWatcher.updateObject(25, Integer.valueOf(r));
-	}
+        this.dataWatcher.updateObject(22, x);
+        this.dataWatcher.updateObject(23, y);
+        this.dataWatcher.updateObject(24, z);
+        this.dataWatcher.updateObject(25, r);
+    }
 
 	public boolean hasCloneBox() {
 		return this.dataWatcher.getWatchableObjectInt(25) > 0;
@@ -268,8 +268,8 @@ public class EntityEditor extends Entity implements IInventory {
 	}
 
 	public void setEditMode(byte par1) {
-		this.dataWatcher.updateObject(21, Byte.valueOf(par1));
-	}
+        this.dataWatcher.updateObject(21, par1);
+    }
 
 	/**
 	 * @param index 0 or 1
@@ -338,19 +338,18 @@ public class EntityEditor extends Entity implements IInventory {
 	@Override
 	public ItemStack decrStackSize(int par1, int par2) {
 		if (this.slots[par1] != null) {
-			ItemStack itemstack;
-			if (this.slots[par1].stackSize <= par2) {
-				itemstack = this.slots[par1];
-				this.slots[par1] = null;
-				return itemstack;
-			} else {
-				itemstack = this.slots[par1].splitStack(par2);
-				if (this.slots[par1].stackSize == 0) {
-					this.slots[par1] = null;
-				}
-				return itemstack;
-			}
-		}
+            ItemStack itemstack;
+            if (this.slots[par1].stackSize <= par2) {
+                itemstack = this.slots[par1];
+                this.slots[par1] = null;
+            } else {
+                itemstack = this.slots[par1].splitStack(par2);
+                if (this.slots[par1].stackSize == 0) {
+                    this.slots[par1] = null;
+                }
+            }
+            return itemstack;
+        }
 		return null;
 	}
 

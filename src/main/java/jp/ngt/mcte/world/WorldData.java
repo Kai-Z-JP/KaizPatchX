@@ -12,16 +12,18 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class WorldData {
 	//private Properties prop = new Properties();
 	private final Config cfg = new Config();
 	private WorldGenerator generator;
-	public Map<Integer, BiomeGenBase> biomeMap = new TreeMap<Integer, BiomeGenBase>();//getが早い
+	public Map<Integer, BiomeGenBase> biomeMap = new TreeMap<>();//getが早い
 	public Block baseBlock = Blocks.stone;
 	public String terrainImagePath;
 	public String biomesImagePath;
@@ -37,7 +39,7 @@ public class WorldData {
 		File file = new File(par1);
 		try {
 			this.loadWorldData(file);
-		} catch (IOException e) {
+		} catch (IOException ignored) {
 		}
 	}
 
@@ -91,27 +93,20 @@ public class WorldData {
 		}
 
 		String[] sa0 = par2.split(",");
-		for (String s : sa0) {
-			String[] sa1 = s.split(":");
-			if (sa1.length == 2) {
-				try {
-					int color = Integer.decode(sa1[0]);
-					BiomeGenBase biome = getBiomeFromName(sa1[1]);
-					par1.put(color, biome);
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				}
+		Arrays.stream(sa0).map(s -> s.split(":")).filter(sa1 -> sa1.length == 2).forEach(sa1 -> {
+			try {
+				int color = Integer.decode(sa1[0]);
+				BiomeGenBase biome = getBiomeFromName(sa1[1]);
+				par1.put(color, biome);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
 			}
-		}
+		});
 	}
 
 	public static String getStringFromBiomeColorMap(Map<Integer, BiomeGenBase> par1) {
-		StringBuilder sb = new StringBuilder();
 		Set<Entry<Integer, BiomeGenBase>> set = par1.entrySet();
-		for (Entry<Integer, BiomeGenBase> entry : set) {
-			sb.append(String.format("0x%06x", entry.getKey())).append(":").append(entry.getValue().biomeName).append(",");
-		}
-		return sb.toString();
+		return set.stream().map(entry -> String.format("0x%06x", entry.getKey()) + ":" + entry.getValue().biomeName + ",").collect(Collectors.joining());
 	}
 
 	/**
@@ -119,12 +114,7 @@ public class WorldData {
 	 */
 	public static BiomeGenBase getBiomeFromName(String par1) {
 		BiomeGenBase[] ba = BiomeGenBase.getBiomeGenArray();
-		for (BiomeGenBase biome : ba) {
-			if (biome != null && biome.biomeName.equals(par1)) {
-				return biome;
-			}
-		}
-		return BiomeGenBase.plains;
+		return Arrays.stream(ba).filter(biome -> biome != null && biome.biomeName.equals(par1)).findFirst().orElse(BiomeGenBase.plains);
 	}
 
 	public static WorldData getWorldData(World world, String cfgPath) {
@@ -215,18 +205,14 @@ public class WorldData {
 			try {
 				this.terrain = ImageIO.read(par1);
 				this.genTerrain = true;
-			} catch (IOException e) {
-				this.genTerrain = false;
-			} catch (IllegalArgumentException e) {
+			} catch (IOException | IllegalArgumentException e) {
 				this.genTerrain = false;
 			}
 
 			try {
 				this.biomes = ImageIO.read(par2);
 				this.genBiomes = true;
-			} catch (IOException e) {
-				this.genBiomes = false;
-			} catch (IllegalArgumentException e) {
+			} catch (IOException | IllegalArgumentException e) {
 				this.genBiomes = false;
 			}
 		}
@@ -242,10 +228,7 @@ public class WorldData {
 		public int getHeight(int x, int z) {
 			int height = this.getColor(this.terrain, x, z, 0xff);
 			height = (int) ((float) height * WorldData.this.yScale) + WorldData.this.minY;
-			if (height > 255) {
-				return 255;
-			}
-			return height;
+			return Math.min(height, 255);
 		}
 
 		public BiomeGenBase getBiome(int x, int z) {

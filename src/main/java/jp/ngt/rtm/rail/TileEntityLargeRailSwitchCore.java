@@ -12,6 +12,7 @@ import net.minecraft.util.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 	private SwitchType switchObj;
@@ -30,13 +31,11 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 	@Override
 	protected void readRailData(NBTTagCompound nbt) {
 		if (nbt.hasKey("Size")) {
-			byte size = nbt.getByte("Size");
-			this.railPositions = new RailPosition[size];
+            byte size = nbt.getByte("Size");
+            this.railPositions = new RailPosition[size];
 
-			for (int i = 0; i < size; ++i) {
-				this.railPositions[i] = RailPosition.readFromNBT(nbt.getCompoundTag("RP" + i));
-			}
-		} else//1.7.10.19互換
+            IntStream.range(0, size).forEach(i -> this.railPositions[i] = RailPosition.readFromNBT(nbt.getCompoundTag("RP" + i)));
+        } else//1.7.10.19互換
 		{
 			byte b0 = nbt.getByte("startDir");
 			byte[] ba1 = nbt.getByteArray("endDir");
@@ -76,12 +75,10 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 
 	@Override
 	protected void writeRailData(NBTTagCompound nbt) {
-		nbt.setByte("Size", (byte) this.railPositions.length);
+        nbt.setByte("Size", (byte) this.railPositions.length);
 
-		for (int i = 0; i < this.railPositions.length; ++i) {
-			nbt.setTag("RP" + i, this.railPositions[i].writeToNBT());
-		}
-	}
+        IntStream.range(0, this.railPositions.length).forEach(i -> nbt.setTag("RP" + i, this.railPositions[i].writeToNBT()));
+    }
 
 	@Override
 	public void setRailPositions(RailPosition[] par1) {

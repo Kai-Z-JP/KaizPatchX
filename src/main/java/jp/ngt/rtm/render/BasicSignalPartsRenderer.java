@@ -11,23 +11,24 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetSignalClient;
 import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class BasicSignalPartsRenderer extends SignalPartsRenderer {
-	public final LightParts[] lightParts;
-	private final List<String> lightList = new LinkedList<String>();
+    public final LightParts[] lightParts;
+    private final List<String> lightList = new LinkedList<>();
 
-	public BasicSignalPartsRenderer(SignalConfig cfg, String... args) {
-		super(args);
-		this.lightParts = ModelSetSignal.parseLightParts(cfg.lights);
-	}
+    public BasicSignalPartsRenderer(SignalConfig cfg, String... args) {
+        super(args);
+        this.lightParts = ModelSetSignal.parseLightParts(cfg.lights);
+    }
 
-	@Override
-	public void init(ModelSetSignalClient par1, ModelObject par2) {
-		super.init(par1, par2);
-	}
+    @Override
+    public void init(ModelSetSignalClient par1, ModelObject par2) {
+        super.init(par1, par2);
+    }
 
 	@Override
 	public void render(TileEntity entity, int pass, float par3) {
@@ -63,37 +64,33 @@ public class BasicSignalPartsRenderer extends SignalPartsRenderer {
 			boolean finish = false;
 			int i0 = -1;
 			for (int j = 0; j < 2; ++j) {
-				if (j == 1) {
-					float f0 = 0.0625F;
-					GL11.glColor4f(f0, f0, f0, 1.0F);
-				}
+                if (j == 1) {
+                    float f0 = 0.0625F;
+                    GL11.glColor4f(f0, f0, f0, 1.0F);
+                }
 
-				for (int i = 0; i < this.lightParts.length; ++i) {
-					if (j == 0) {
-						boolean render = false;
-						if (!finish && signal > 0 && signal <= this.lightParts[i].signalLevel) {
-							finish = true;
-							render = true;
-							int itv = this.lightParts[i].interval;
-							if (itv > 0) {
-								render = ((this.getTick(entity) / itv) % 2) == 0;//ライト被ってるせい
-							}
-						}
+                for (LightParts lightPart : this.lightParts) {
+                    if (j == 0) {
+                        boolean render = false;
+                        if (!finish && signal > 0 && signal <= lightPart.signalLevel) {
+                            finish = true;
+                            render = true;
+                            int itv = lightPart.interval;
+                            if (itv > 0) {
+                                render = ((this.getTick(entity) / itv) % 2) == 0;//ライト被ってるせい
+                            }
+                        }
 
-						if (render) {
-							i0 = i;
-							for (String s : this.lightParts[i].parts) {
-								model.renderPart(smoothing, s);//点灯してるライト
-								this.lightList.add(s);
-							}
-						}
+                        if (render) {
+                            Arrays.stream(lightPart.parts).forEach(s -> {
+                                model.renderPart(smoothing, s);//点灯してるライト
+                                this.lightList.add(s);
+                            });
+                        }
 					} else {
-						for (String s : this.lightParts[i].parts) {
-							if (!this.lightList.contains(s)) {
-								model.renderPart(smoothing, s);//点灯してないライト
-							}
-						}
-					}
+                        //点灯してないライト
+                        Arrays.stream(lightPart.parts).filter(s -> !this.lightList.contains(s)).forEach(s -> model.renderPart(smoothing, s));
+                    }
 				}
 			}
 		}

@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class BlockRSWire extends Block {
 	@SideOnly(Side.CLIENT)
@@ -116,33 +117,32 @@ public class BlockRSWire extends Block {
 	}
 
 	private void notifyRSWireChanged(World world, int x, int y, int z, boolean powered) {
-		for (int i = 0; i < 6; ++i) {
-			ForgeDirection direction = ForgeDirection.getOrientation(i);
-			int x0 = x + direction.offsetX;
-			int y0 = y + direction.offsetY;
-			int z0 = z + direction.offsetZ;
-			Block block = world.getBlock(x0, y0, z0);
-			if (block == this) {
-				int meta0 = world.getBlockMetadata(x0, y0, z0);
-				boolean b0 = this.isPowered(meta0);
-				if (powered && !b0) {
-					world.setBlockMetadataWithNotify(x0, y0, z0, meta0 + 6, 2);
-					this.notifyRSWireChanged(world, x0, y0, z0, true);
+        IntStream.range(0, 6).mapToObj(ForgeDirection::getOrientation).forEach(direction -> {
+            int x0 = x + direction.offsetX;
+            int y0 = y + direction.offsetY;
+            int z0 = z + direction.offsetZ;
+            Block block = world.getBlock(x0, y0, z0);
+            if (block == this) {
+                int meta0 = world.getBlockMetadata(x0, y0, z0);
+                boolean b0 = this.isPowered(meta0);
+                if (powered && !b0) {
+                    world.setBlockMetadataWithNotify(x0, y0, z0, meta0 + 6, 2);
+                    this.notifyRSWireChanged(world, x0, y0, z0, true);
 				} else if (!powered && b0) {
 					world.setBlockMetadataWithNotify(x0, y0, z0, meta0 - 6, 2);
 					this.notifyRSWireChanged(world, x0, y0, z0, false);
 				}
-			} else if (block == Blocks.redstone_wire) {
-				boolean b0 = world.getBlockMetadata(x0, y0, z0) == 0;
-				if (b0 && powered) {
-					world.notifyBlockOfNeighborChange(x0, y0, z0, this);
-				} else if (!b0 && !powered) {
-					world.notifyBlockOfNeighborChange(x0, y0, z0, this);
-				}
-			} else {
-				world.notifyBlockOfNeighborChange(x0, y0, z0, this);//Block1つのみ
-			}
-		}
+            } else if (block == Blocks.redstone_wire) {
+                boolean b0 = world.getBlockMetadata(x0, y0, z0) == 0;
+                if (b0 && powered) {
+                    world.notifyBlockOfNeighborChange(x0, y0, z0, this);
+                } else if (!b0 && !powered) {
+                    world.notifyBlockOfNeighborChange(x0, y0, z0, this);
+                }
+            } else {
+                world.notifyBlockOfNeighborChange(x0, y0, z0, this);//Block1つのみ
+            }
+        });
 	}
 
 	@Override

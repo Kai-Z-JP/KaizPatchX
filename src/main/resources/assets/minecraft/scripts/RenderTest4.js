@@ -18,7 +18,7 @@ function init(par1, par2) {
 }
 
 function render(entity, pass, par3) {
-    if (pass != 0) {
+    if (pass !== 0) {
         return;
     }
 

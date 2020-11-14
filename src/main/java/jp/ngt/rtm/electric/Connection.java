@@ -9,8 +9,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Connection {
 	public final boolean isRoot;
@@ -33,14 +35,8 @@ public class Connection {
 	}
 
 	public static List<Connection> readListFromNBT(NBTTagCompound nbt) {
-		List<Connection> list = new ArrayList<Connection>();
 		NBTTagList tagList = nbt.getTagList("connections", 10);
-		for (int i = 0; i < tagList.tagCount(); ++i) {
-			NBTTagCompound nbt0 = tagList.getCompoundTagAt(i);
-			Connection connection = readFromNBT(nbt0);
-			list.add(connection);
-		}
-		return list;
+		return IntStream.range(0, tagList.tagCount()).mapToObj(tagList::getCompoundTagAt).map(Connection::readFromNBT).collect(Collectors.toList());
 	}
 
 	public static Connection readFromNBT(NBTTagCompound nbt) {
@@ -58,14 +54,12 @@ public class Connection {
 			//v34互換
 			switch (type) {
 				case 1:
+				case 50:
 					name = "BasicWireBlack";
 					break;
 				case 2:
 					name = "SimpleCatenary";
 					type = 1;
-					break;
-				case 50:
-					name = "BasicWireBlack";
 					break;
 				case 51:
 					name = "SimpleCatenary";
@@ -87,11 +81,11 @@ public class Connection {
 
 	public static void writeListToNBT(NBTTagCompound nbt, List<Connection> list) {
 		NBTTagList tagList = new NBTTagList();
-		for (Connection connection : list) {
+		list.forEach(connection -> {
 			NBTTagCompound nbt0 = new NBTTagCompound();
 			connection.writeToNBT(nbt0);
 			tagList.appendTag(nbt0);
-		}
+		});
 		nbt.setTag("connections", tagList);
 	}
 
@@ -219,12 +213,7 @@ public class Connection {
 		}
 
 		public static ConnectionType getType(int par1) {
-			for (ConnectionType type : ConnectionType.values()) {
-				if (type.id == par1) {
-					return type;
-				}
-			}
-			return NONE;
+			return Arrays.stream(ConnectionType.values()).filter(type -> type.id == par1).findFirst().orElse(NONE);
 		}
 	}
 }

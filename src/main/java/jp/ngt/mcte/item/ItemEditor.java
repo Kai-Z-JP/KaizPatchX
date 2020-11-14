@@ -15,6 +15,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ItemEditor extends Item {
 	public ItemEditor() {
@@ -24,9 +25,7 @@ public class ItemEditor extends Item {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
-		if (world.isRemote) {
-			return itemstack;
-		} else {
+		if (!world.isRemote) {
 			if (EditorManager.INSTANCE.canPlayerUseEditor(player)) {
 				Editor editor = EditorManager.INSTANCE.getEditor(player);
 				if (editor != null) {
@@ -39,8 +38,8 @@ public class ItemEditor extends Item {
 			} else {
 				NGTLog.sendChatMessage(player, "You don't have permission to use Editor.");
 			}
-			return itemstack;
 		}
+		return itemstack;
 	}
 
 	@Override
@@ -66,8 +65,6 @@ public class ItemEditor extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean par4) {
-		for (int i = 0; i < 8; ++i) {
-			list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("usage.editor." + i));
-		}
+		IntStream.range(0, 8).mapToObj(i -> EnumChatFormatting.GRAY + StatCollector.translateToLocal("usage.editor." + i)).forEach(list::add);
 	}
 }

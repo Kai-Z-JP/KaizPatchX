@@ -22,10 +22,7 @@ public class BasicPartsRenderer<T, MS extends ModelSetBase> extends PartsRendere
 	@Override
 	public void init(MS par1, ModelObject par2) {
 		List<GroupObject> goList = par2.model.getGroupObjects();
-		String[] array = new String[goList.size()];
-		for (int i = 0; i < array.length; ++i) {
-			array[i] = goList.get(i).name;
-		}
+		String[] array = goList.stream().map(groupObject -> groupObject.name).toArray(String[]::new);
 		this.main = this.registerParts(new Parts(array));
 
 		super.init(par1, par2);

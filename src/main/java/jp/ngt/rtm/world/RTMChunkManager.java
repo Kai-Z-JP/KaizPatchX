@@ -53,24 +53,19 @@ public class RTMChunkManager implements LoadingCallback, OrderedLoadingCallback,
 
 	@Override
 	public List<Ticket> ticketsLoaded(List<Ticket> tickets, World world, int maxTicketCount) {
-		Set set = new HashSet();
-		for (Ticket ticket : tickets) {
-			if (ticket.getEntity() instanceof IChunkLoader) {
-				set.add(ticket);
-				continue;
-			}
-
-			NBTTagCompound nbt = ticket.getModData();
-
-			if (nbt.hasKey("TYPE")) {
-				set.add(ticket);
-				continue;
-			}
-		}
-		List ticketList = new LinkedList();
-		ticketList.addAll(set);
-		return ticketList;
-	}
+        Set<Ticket> set = new HashSet<>();
+        tickets.forEach(ticket -> {
+            if (ticket.getEntity() instanceof IChunkLoader) {
+                set.add(ticket);
+                return;
+            }
+            NBTTagCompound nbt = ticket.getModData();
+            if (nbt.hasKey("TYPE")) {
+                set.add(ticket);
+            }
+        });
+        return new LinkedList<>(set);
+    }
 
 	@Override
 	public void ticketsLoaded(List<Ticket> tickets, World world) {

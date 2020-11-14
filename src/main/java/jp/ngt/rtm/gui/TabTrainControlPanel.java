@@ -31,10 +31,8 @@ public class TabTrainControlPanel {
 
 		if (this.tabIndex >= tabArray.length) {
 			TabTrainControlPanel[] a0 = new TabTrainControlPanel[this.tabIndex + 1];
-			for (int i = 0; i < tabArray.length; ++i) {
-				a0[i] = tabArray[i];
-			}
-			tabArray = a0;
+            System.arraycopy(tabArray, 0, a0, 0, tabArray.length);
+            tabArray = a0;
 		}
 
 		tabArray[this.tabIndex] = this;

@@ -29,10 +29,10 @@ public class GuiElementBoolean extends GuiButton implements IGuiElement {
 	}
 
 	private void updateValue() {
-		boolean value = Boolean.valueOf(this.displayString) ^ true;
-		this.cfg.setBoolean(this.paramName, value);
-		this.displayString = String.valueOf(this.cfg.getBoolean(this.paramName));
-	}
+        boolean value = !Boolean.parseBoolean(this.displayString);
+        this.cfg.setBoolean(this.paramName, value);
+        this.displayString = String.valueOf(this.cfg.getBoolean(this.paramName));
+    }
 
 	@Override
 	public void init(GuiScreenCustom gui) {

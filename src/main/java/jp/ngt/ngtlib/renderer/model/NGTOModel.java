@@ -25,24 +25,24 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public final class NGTOModel implements IModelNGT {
-	public static final String GROUP_NAME = "default";
+    public static final String GROUP_NAME = "default";
 
-	private final NGTObject ngto;
-	private final float scale;
-	private DisplayList[] glLists;
-	private NGTWorld world;
+    private final NGTObject ngto;
+    private final float scale;
+    private DisplayList[] glLists;
+    private NGTWorld world;
 
-	private final ArrayList<GroupObject> parts = new ArrayList<GroupObject>();
-	private final Map<String, Material> materials = new HashMap<String, Material>();
+    private final ArrayList<GroupObject> parts = new ArrayList<>();
+    private final Map<String, Material> materials = new HashMap<>();
 
-	public NGTOModel(ResourceLocation par1, float par2) {
-		this.ngto = this.loadModel(par1);
-		if (this.ngto == null) {
-			throw new ModelFormatException("Can't load NGTO");
-		}
-		this.materials.put(GROUP_NAME, new Material((byte) 0, TextureMap.locationBlocksTexture));
-		this.scale = par2;
-	}
+    public NGTOModel(ResourceLocation par1, float par2) {
+        this.ngto = this.loadModel(par1);
+        if (this.ngto == null) {
+            throw new ModelFormatException("Can't load NGTO");
+        }
+        this.materials.put(GROUP_NAME, new Material((byte) 0, TextureMap.locationBlocksTexture));
+        this.scale = par2;
+    }
 
 	private NGTObject loadModel(ResourceLocation par1) {
 		try {

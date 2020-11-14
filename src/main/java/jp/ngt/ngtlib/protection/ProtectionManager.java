@@ -12,9 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 public class ProtectionManager {
@@ -189,11 +187,7 @@ public class ProtectionManager {
 	public void sendDataToClient() {
 		Map<String, NBTTagCompound> map = this.getLockObj().getDatas();
 
-		Iterator iterator = map.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, NBTTagCompound> entry = (Entry<String, NBTTagCompound>) iterator.next();
-			NGTCore.NETWORK_WRAPPER.sendToAll(new PacketProtection(entry.getKey(), entry.getValue()));
-		}
+		map.forEach((key, value) -> NGTCore.NETWORK_WRAPPER.sendToAll(new PacketProtection(key, value)));
 	}
 
 	public void receivePacket(String name, NBTTagCompound data) {

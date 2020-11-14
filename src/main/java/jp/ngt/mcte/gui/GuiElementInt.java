@@ -29,10 +29,10 @@ public class GuiElementInt extends GuiTextField implements IGuiElement {
 
 	private void updateValue() {
 		try {
-			int value = Integer.valueOf(this.getText());
-			this.cfg.setInt(this.paramName, value);
-			this.setText(String.valueOf(this.cfg.getInt(this.paramName)));
-		} catch (NumberFormatException e) {
+            int value = Integer.parseInt(this.getText());
+            this.cfg.setInt(this.paramName, value);
+            this.setText(String.valueOf(this.cfg.getInt(this.paramName)));
+        } catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 	}

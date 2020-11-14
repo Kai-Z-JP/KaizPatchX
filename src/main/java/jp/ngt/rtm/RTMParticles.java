@@ -7,15 +7,17 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
-public class RTMParticles {
-	private static RTMParticles instance;
-	private static final String[] iconNames = {"rtm:meltedMetal"};
-	private IIcon[] icons;
+import java.util.stream.IntStream;
 
-	public static RTMParticles getInstance() {
-		if (instance == null) {
-			instance = new RTMParticles();
-		}
+public class RTMParticles {
+    private static RTMParticles instance;
+    private static final String[] iconNames = {"rtm:meltedMetal"};
+    private IIcon[] icons;
+
+    public static RTMParticles getInstance() {
+        if (instance == null) {
+            instance = new RTMParticles();
+        }
 		return instance;
 	}
 
@@ -29,11 +31,9 @@ public class RTMParticles {
 
 	@SideOnly(Side.CLIENT)
 	public void registerIIcons(IIconRegister register) {
-		this.icons = new IIcon[iconNames.length];
-		for (int i = 0; i < this.icons.length; ++i) {
-			this.icons[i] = register.registerIcon(iconNames[i]);
-		}
-	}
+        this.icons = new IIcon[iconNames.length];
+        IntStream.range(0, this.icons.length).forEach(i -> this.icons[i] = register.registerIcon(iconNames[i]));
+    }
 
 	@SideOnly(Side.CLIENT)
 	public IIcon getIIcon(int par1) {

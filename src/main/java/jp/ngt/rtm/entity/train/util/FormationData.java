@@ -21,12 +21,12 @@ public class FormationData extends WorldSavedData {
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
-		NBTTagList tagList = new NBTTagList();
-		for (Formation formation : FormationManager.getInstance().getFormations().values()) {
-			NBTTagCompound tag = new NBTTagCompound();
-			formation.writeToNBT(tag, false);
-			tagList.appendTag(tag);
-		}
-		nbt.setTag("Formations", tagList);
-	}
+        NBTTagList tagList = new NBTTagList();
+        FormationManager.getInstance().getFormations().values().forEach(formation -> {
+            NBTTagCompound tag = new NBTTagCompound();
+            formation.writeToNBT(tag, false);
+            tagList.appendTag(tag);
+        });
+        nbt.setTag("Formations", tagList);
+    }
 }

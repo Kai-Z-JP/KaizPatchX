@@ -77,8 +77,7 @@ public class BlockFireBrick extends Block {
 		if (this == RTMBlock.hotStoveBrick) {
 			int meta = world.getBlockMetadata(x, y, z);
 			int c0 = (meta << 4) & 255;
-			int c1 = 0xffffff - (c0 << 8) - c0;
-			return c1;
+            return 0xffffff - (c0 << 8) - c0;
 		}
 		return super.colorMultiplier(world, x, y, z);
 	}

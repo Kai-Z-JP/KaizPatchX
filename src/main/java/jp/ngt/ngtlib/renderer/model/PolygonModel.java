@@ -11,71 +11,68 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 @SideOnly(Side.CLIENT)
 public abstract class PolygonModel implements IModelNGT {
-	protected String fileName;
-	protected int drawMode;
-	protected VecAccuracy accuracy;
-	protected float[] sizeBox = new float[6];
+    protected String fileName;
+    protected int drawMode;
+    protected VecAccuracy accuracy;
+    protected float[] sizeBox = new float[6];
 
-	/**
-	 * 全ての頂点
-	 */
-	public final List<Vertex> vertices = new ArrayList<>(1024);
-	public final List<GroupObject> groupObjects = new ArrayList<>(16);
-	protected GroupObject currentGroupObject;
+    /**
+     * 全ての頂点
+     */
+    public final List<Vertex> vertices = new ArrayList<>(1024);
+    public final List<GroupObject> groupObjects = new ArrayList<>(16);
+    protected GroupObject currentGroupObject;
 
-	protected PolygonModel() {
-	}
+    protected PolygonModel() {
+    }
 
-	protected PolygonModel(String name, int mode, VecAccuracy par3) {
-		this.fileName = name;
-		this.drawMode = mode;
-		this.accuracy = par3;
-	}
+    protected PolygonModel(String name, int mode, VecAccuracy par3) {
+        this.fileName = name;
+        this.drawMode = mode;
+        this.accuracy = par3;
+    }
 
-	public PolygonModel(InputStream[] is, String name, int mode, VecAccuracy par3) throws ModelFormatException {
-		this.fileName = name;
-		this.drawMode = mode;
-		this.accuracy = par3;
-		//NGTLog.startTimer();
-		this.init(is);
-		//NGTLog.stopTimer(name + ",init");
-		//NGTLog.startTimer();
-		this.calcVertexNormals();
-		//NGTLog.stopTimer(name + ",calc");
-		this.vertices.clear();
-	}
+    public PolygonModel(InputStream[] is, String name, int mode, VecAccuracy par3) throws ModelFormatException {
+        this.fileName = name;
+        this.drawMode = mode;
+        this.accuracy = par3;
+        //NGTLog.startTimer();
+        this.init(is);
+        //NGTLog.stopTimer(name + ",init");
+        //NGTLog.startTimer();
+        this.calcVertexNormals();
+        //NGTLog.stopTimer(name + ",calc");
+        this.vertices.clear();
+    }
 
-	/**
-	 * @param is [0]:モデル本体, [1]:設定ファイル等(objで使用)
-	 */
-	protected void init(InputStream[] is) throws ModelFormatException {
-		this.loadModel(is[0]);
-	}
+    /**
+     * @param is [0]:モデル本体, [1]:設定ファイル等(objで使用)
+     */
+    protected void init(InputStream[] is) throws ModelFormatException {
+        this.loadModel(is[0]);
+    }
 
-	int lineCount;//スコープの関係でここに置く
-	static Pattern repS = Pattern.compile("\\s+");//s.replaceAll()とやってること同じ
+    int lineCount;//スコープの関係でここに置く
+    static Pattern repS = Pattern.compile("\\s+");//s.replaceAll()とやってること同じ
 
-	//https://qiita.com/penguinshunya/items/353bb1c555f337b0cf6d
-	private void loadModel(InputStream inputStream) {
-		//readLine()より若干早い
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		Stream<String> stream = reader.lines();
-		stream.forEachOrdered(line -> {
-			line = repS.matcher(line).replaceAll(" ").trim();//空白文字を置換
-			this.parseLine(line, ++lineCount);
-		});
-		stream.close();
-		this.postInit();
-		//String s = Files.lines(Paths.get(path), Charset.forName("UTF-8")).collect(Collectors.joining(System.getProperty("line.separator")));
-	}
+    //https://qiita.com/penguinshunya/items/353bb1c555f337b0cf6d
+    private void loadModel(InputStream inputStream) {
+        //readLine()より若干早い
+        try (Stream<String> stream = new BufferedReader(new InputStreamReader(inputStream)).lines()) {
+            stream.forEach(this::preParse);
+        }
+        this.postInit();
+        //String s = Files.lines(Paths.get(path), Charset.forName("UTF-8")).collect(Collectors.joining(System.getProperty("line.separator")));
+    }
 
-	//https://kujirahand.com/blog/index.php?Java%E3%81%A7%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E6%96%B9%E6%B3%95%E3%81%A7%E3%81%A9%E3%82%8C%E3%81%8C%E4%B8%80%E7%95%AA%E9%80%9F%E3%81%84
+    //https://kujirahand.com/blog/index.php?Java%E3%81%A7%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E6%96%B9%E6%B3%95%E3%81%A7%E3%81%A9%E3%82%8C%E3%81%8C%E4%B8%80%E7%95%AA%E9%80%9F%E3%81%84
     /*private void loadModel2(InputStream inputStream)
     {
     	//stream使用より若干遅い
@@ -102,173 +99,168 @@ public abstract class PolygonModel implements IModelNGT {
     	//String s = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
     }*/
 
-	protected abstract void parseLine(String currentLine, int lineCount);
+    protected abstract void parseLine(String currentLine, int lineCount);
 
-	/**
-	 * 全ての行を読み込んだ後に呼ばれる
-	 */
-	protected abstract void postInit();
+    /**
+     * 全ての行を読み込んだ後に呼ばれる
+     */
+    protected abstract void postInit();
 
-	/**
-	 * 頂点法線ベクトルの設定
-	 */
-	private final void calcVertexNormals() {
-		for (GroupObject obj : this.groupObjects) {
-			obj.calcVertexNormals(this.accuracy);
-		}
-	}
+    /**
+     * 頂点法線ベクトルの設定
+     */
+    private void calcVertexNormals() {
+        this.groupObjects.forEach(obj -> obj.calcVertexNormals(this.accuracy));
+    }
 
-	/**
-	 * サイズBox更新
-	 */
-	protected final void calcSizeBox(Vertex vtx) {
-		if (vtx.getX() < this.sizeBox[0]) {
-			this.sizeBox[0] = vtx.getX();
-		} else if (vtx.getX() > this.sizeBox[3]) {
-			this.sizeBox[3] = vtx.getX();
-		}
+    /**
+     * サイズBox更新
+     */
+    protected final void calcSizeBox(Vertex vtx) {
+        if (vtx.getX() < this.sizeBox[0]) {
+            this.sizeBox[0] = vtx.getX();
+        } else if (vtx.getX() > this.sizeBox[3]) {
+            this.sizeBox[3] = vtx.getX();
+        }
 
-		if (vtx.getY() < this.sizeBox[1]) {
-			this.sizeBox[1] = vtx.getY();
-		} else if (vtx.getY() > this.sizeBox[4]) {
-			this.sizeBox[4] = vtx.getY();
-		}
+        if (vtx.getY() < this.sizeBox[1]) {
+            this.sizeBox[1] = vtx.getY();
+        } else if (vtx.getY() > this.sizeBox[4]) {
+            this.sizeBox[4] = vtx.getY();
+        }
 
-		if (vtx.getZ() < this.sizeBox[2]) {
-			this.sizeBox[2] = vtx.getZ();
-		} else if (vtx.getZ() > this.sizeBox[5]) {
-			this.sizeBox[5] = vtx.getZ();
-		}
-	}
+        if (vtx.getZ() < this.sizeBox[2]) {
+            this.sizeBox[2] = vtx.getZ();
+        } else if (vtx.getZ() > this.sizeBox[5]) {
+            this.sizeBox[5] = vtx.getZ();
+        }
+    }
 
-	//1.12
+    //1.12
     /*@Override
     public final float[] getSize()
     {
     	return this.sizeBox;
     }*/
 
-	@Override
-	public void renderAll(boolean smoothing) {
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_SMOOTH);
-		}
+    @Override
+    public void renderAll(boolean smoothing) {
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
 
-		NGTTessellator tessellator = NGTTessellator.instance;
-		tessellator.startDrawing(this.drawMode);
-		this.tessellateAll(tessellator, smoothing);
-		tessellator.draw();
+        NGTTessellator tessellator = NGTTessellator.instance;
+        tessellator.startDrawing(this.drawMode);
+        this.tessellateAll(tessellator, smoothing);
+        tessellator.draw();
 
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_FLAT);
-		}
-	}
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_FLAT);
+        }
+    }
 
-	public void tessellateAll(IRenderer tessellator, boolean smoothing) {
-		for (GroupObject groupObject : this.groupObjects) {
-			groupObject.render(tessellator, smoothing);
-		}
-	}
+    public void tessellateAll(IRenderer tessellator, boolean smoothing) {
+        this.groupObjects.forEach(groupObject -> groupObject.render(tessellator, smoothing));
+    }
 
-	@Override
-	public void renderOnly(boolean smoothing, String... groupNames) {
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_SMOOTH);
-		}
+    @Override
+    public void renderOnly(boolean smoothing, String... groupNames) {
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
 
-		for (GroupObject groupObject : this.groupObjects) {
-			for (String groupName : groupNames) {
-				if (groupName.equalsIgnoreCase(groupObject.name)) {
-					groupObject.render(smoothing);
-				}
-			}
-		}
+        this.groupObjects.forEach(groupObject -> Arrays.stream(groupNames).filter(groupName -> groupName.equalsIgnoreCase(groupObject.name)).forEach(groupName -> groupObject.render(smoothing)));
 
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_FLAT);
-		}
-	}
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_FLAT);
+        }
+    }
 
-	@Override
-	public void renderPart(boolean smoothing, String partName) {
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_SMOOTH);
-		}
+    @Override
+    public void renderPart(boolean smoothing, String partName) {
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
 
-		for (GroupObject groupObject : this.groupObjects) {
-			if (partName.equalsIgnoreCase(groupObject.name)) {
-				groupObject.render(smoothing);
-				return;
-			}
-		}
+        for (GroupObject groupObject : this.groupObjects) {
+            if (partName.equalsIgnoreCase(groupObject.name)) {
+                groupObject.render(smoothing);
+                return;
+            }
+        }
 
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_FLAT);
-		}
-	}
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_FLAT);
+        }
+    }
 
-	@Override
-	public int getDrawMode() {
-		return this.drawMode;
-	}
+    @Override
+    public int getDrawMode() {
+        return this.drawMode;
+    }
 
-	@Override
-	public List<GroupObject> getGroupObjects() {
-		return this.groupObjects;
-	}
+    @Override
+    public List<GroupObject> getGroupObjects() {
+        return this.groupObjects;
+    }
 
-	/////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
 
-	protected final float getFloat(String s) {
-		try {
-			return Float.parseFloat(s);
-		} catch (NumberFormatException e)//MQ3で"-NAN"が含まれる対策
-		{
-			return 0.0F;
-		}
-	}
+    protected final float getFloat(String s) {
+        try {
+            return Float.parseFloat(s);
+        } catch (NumberFormatException e)//MQ3で"-NAN"が含まれる対策
+        {
+            return 0.0F;
+        }
+    }
 
-	private final List<String> tempList = new ArrayList<>();
+    private final List<String> tempList = new ArrayList<>();
 
-	//速さ変わらない?
+    //速さ変わらない?
 
-	/**
-	 * 正規表現を使わないsplit
-	 */
-	protected final String[] split(String target, char regex) {
-		this.tempList.clear();
-		int index = 0;
-		while (index >= 0) {
-			int nextHit = target.indexOf(regex, index);
-			if (nextHit < 0)//次のマッチ箇所なし
-			{
-				this.tempList.add(target.substring(index));
-				break;
-			} else if (index < nextHit) {
-				this.tempList.add(target.substring(index, nextHit));
-			}
-			index = nextHit + 1;
-		}
-		return this.tempList.toArray(new String[this.tempList.size()]);
-	}
+    /**
+     * 正規表現を使わないsplit
+     */
+    protected final String[] split(String target, char regex) {
+        this.tempList.clear();
+        int index = 0;
+        while (index >= 0) {
+            int nextHit = target.indexOf(regex, index);
+            if (nextHit < 0)//次のマッチ箇所なし
+            {
+                this.tempList.add(target.substring(index));
+                break;
+            } else if (index < nextHit) {
+                this.tempList.add(target.substring(index, nextHit));
+            }
+            index = nextHit + 1;
+        }
+        return this.tempList.toArray(new String[0]);
+    }
 
-	/**
-	 * 正規表現を使わないsplit
-	 */
-	protected final String[] split(String target, String regex) {
-		this.tempList.clear();
-		int index = 0;
-		while (index >= 0) {
-			int nextHit = target.indexOf(regex, index);
-			if (nextHit < 0)//次のマッチ箇所なし
-			{
-				this.tempList.add(target.substring(index));
-				break;
-			} else if (index < nextHit) {
-				this.tempList.add(target.substring(index, nextHit));
-			}
-			index = nextHit + regex.length();
-		}
-		return this.tempList.toArray(new String[this.tempList.size()]);
-	}
+    /**
+     * 正規表現を使わないsplit
+     */
+    protected final String[] split(String target, String regex) {
+        this.tempList.clear();
+        int index = 0;
+        while (index >= 0) {
+            int nextHit = target.indexOf(regex, index);
+            if (nextHit < 0)//次のマッチ箇所なし
+            {
+                this.tempList.add(target.substring(index));
+                break;
+            } else if (index < nextHit) {
+                this.tempList.add(target.substring(index, nextHit));
+            }
+            index = nextHit + regex.length();
+        }
+        return this.tempList.toArray(new String[0]);
+    }
+
+    private void preParse(String line) {
+        line = repS.matcher(line).replaceAll(" ").trim();//空白文字を置換
+        this.parseLine(line, ++lineCount);
+    }
 }

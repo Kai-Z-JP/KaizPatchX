@@ -27,7 +27,11 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.logging.log4j.Level;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 public class NGTWorld extends World implements IBlockAccessNGT {
 	public final World world;
@@ -36,8 +40,8 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 	 * 明るさの取得に使用
 	 */
 	public final int posX, posY, posZ;
-	private final List<TileEntity> renderTileEntities = new ArrayList<TileEntity>();
-	private final Map<Integer, Entity> entityIdMap = new HashMap<Integer, Entity>();
+	private final List<TileEntity> renderTileEntities = new ArrayList<>();
+	private final Map<Integer, Entity> entityIdMap = new HashMap<>();
 	public boolean tileEntityLoaded;
 
 	private int nextEntityId;
@@ -95,21 +99,21 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 			}
 		}
 
-		for (int pass = 0; pass < 2; ++pass)//EntityBogieの関連付けタイミング
-		{
-			for (int j = 0; j < this.loadedEntityList.size(); ++j) {
-				Entity entity = (Entity) this.loadedEntityList.get(j);
+		//EntityBogieの関連付けタイミング
+		IntStream.range(0, 2).forEach(pass -> {
+			for (Object o : this.loadedEntityList) {
+				Entity entity = (Entity) o;
 				double x = entity.posX;
 				double y = entity.posY - entity.yOffset;
 				double z = entity.posZ;
 				try {
 					entity.onUpdate();
-				} catch (Exception e)//etc. cast WorldServer
+				} catch (Exception ignored)//etc. cast WorldServer
 				{
 				}
 				entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
 			}
-		}
+		});
 	}
 
 	private Entity getEntityFromNBT(NBTTagCompound nbt) {
@@ -132,9 +136,8 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 	//AnvilChunkLoader
 	public static NBTTagList writeEntitiesToNBT(List list) {
 		NBTTagList tagList = new NBTTagList();
-		Iterator iterator = list.iterator();
-		while (iterator.hasNext()) {
-			Entity entity = (Entity) iterator.next();
+		for (Object o : list) {
+			Entity entity = (Entity) o;
 			//if(entity instanceof EntityPlayer){continue;}
 			NBTTagCompound nbt = new NBTTagCompound();
 
@@ -285,7 +288,7 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 			skyLight = blockLight = 15;
 		}
 
-		return blend ? (skyLight << 20 | blockLight << 4) : (skyLight > blockLight ? skyLight : blockLight);
+		return blend ? (skyLight << 20 | blockLight << 4) : (Math.max(skyLight, blockLight));
 	}
 
 	@Override

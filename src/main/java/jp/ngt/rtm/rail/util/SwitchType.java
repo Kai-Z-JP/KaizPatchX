@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class SwitchType {
@@ -11,8 +12,8 @@ public abstract class SwitchType {
 	protected RailMapSwitch[] railMaps;
 	protected Point[] points;
 
-	@Deprecated
-	protected List<RailMapSwitch> activeRails = new ArrayList<RailMapSwitch>();
+    @Deprecated
+    protected List<RailMapSwitch> activeRails = new ArrayList<>();
 
 	protected SwitchType(int par1) {
 		this.id = (byte) par1;
@@ -33,10 +34,8 @@ public abstract class SwitchType {
 	 * TileEntity.updateEntity()のタイミングで呼ばれる
 	 */
 	public void onUpdate(World world) {
-		for (int i = 0; i < this.points.length; ++i) {
-			this.points[i].onUpdate(world);
-		}
-	}
+        Arrays.stream(this.points).forEach(point -> point.onUpdate(world));
+    }
 
 	public abstract RailMap getRailMap(Entity entity);
 
@@ -372,17 +371,17 @@ public abstract class SwitchType {
 
 		@Override
 		public boolean init(List<RailPosition> switchList, List<RailPosition> normalList) {
-			List<RailPosition> rpList = new ArrayList<RailPosition>();
-			rpList.addAll(switchList);
-			rpList.addAll(normalList);
+            List<RailPosition> rpList = new ArrayList<>();
+            rpList.addAll(switchList);
+            rpList.addAll(normalList);
 
-			RailMapSwitch[] rails = new RailMapSwitch[2];
-			int k = 0;
-			for (int i = 0; i < 4; ++i) {
-				for (int j = 0; j < 4; ++j) {
-					if (i < j && Math.abs(rpList.get(i).direction - rpList.get(j).direction) == 4) {
-						rails[k] = new RailMapSwitch(rpList.get(i), rpList.get(j), RailDir.NONE, RailDir.NONE);
-						++k;
+            RailMapSwitch[] rails = new RailMapSwitch[2];
+            int k = 0;
+            for (int i = 0; i < 4; ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    if (i < j && Math.abs(rpList.get(i).direction - rpList.get(j).direction) == 4) {
+                        rails[k] = new RailMapSwitch(rpList.get(i), rpList.get(j), RailDir.NONE, RailDir.NONE);
+                        ++k;
 
 						if (k >= 2) {
 							this.railMaps = rails;

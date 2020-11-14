@@ -15,16 +15,16 @@ function render(entity, pass, par3) {
     var tick = renderer.getTick(entity);
     var rotation = (tick % 60) * 6.0;
 
-    if (pass == 0) {
-        if (state == 1) {
+    if (pass === 0) {
+        if (state === 1) {
             GL11.glRotatef(rotation, 0.0, 1.0, 0.0);
-        } else if (state == -1) {
+        } else if (state === -1) {
             light.render(renderer);
         }
 
         base.render(renderer);
-    } else if (pass == 2) {
-        if (state == 1)//light ON
+    } else if (pass === 2) {
+        if (state === 1)//light ON
         {
             GL11.glRotatef(rotation, 0.0, 1.0, 0.0);
             light.render(renderer);
@@ -33,7 +33,7 @@ function render(entity, pass, par3) {
 
             for (var i = 0; i < 2; i++) {
                 GL11.glPushMatrix();
-                if (i == 1) {
+                if (i === 1) {
                     GL11.glRotatef(180.0, 0.0, 1.0, 0.0);
                 }
 

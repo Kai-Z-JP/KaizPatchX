@@ -63,7 +63,7 @@ function renderRailDynamic2(tileEntity, par2, par4, par6) {
 }
 
 function renderPoint(tileEntity, point) {
-    if (point.branchDir == RailDir.NONE)//分岐なし部分
+    if (point.branchDir === RailDir.NONE)//分岐なし部分
     {
         var rm = point.rmMain;
         var max = Math.floor(rm.getLength() * 2.0);
@@ -103,7 +103,7 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
     var moveX = origPos[1] - coreX;
     var moveZ = origPos[0] - coreZ;
     //向きによって移動量を反転させる
-    var dirFixture = ((par3 && dir == RailDir.LEFT) || (!par3 && dir == RailDir.RIGHT)) ? -1.0 : 1.0;
+    var dirFixture = ((par3 && dir === RailDir.LEFT) || (!par3 && dir === RailDir.RIGHT)) ? -1.0 : 1.0;
 
     //頂点-中間点
     for (var i = startIndex; i <= endIndex; ++i) {
@@ -122,7 +122,7 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
 
         //分岐してない側のレール
         //開始位置が逆の場合は左右反対側のパーツを描画
-        if ((par3 && dir == RailDir.LEFT) || (!par3 && dir == RailDir.RIGHT)) {
+        if ((par3 && dir === RailDir.LEFT) || (!par3 && dir === RailDir.RIGHT)) {
             rightParts.render(renderer);
         } else {
             leftParts.render(renderer);
@@ -138,17 +138,17 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
         GL11.glTranslatef(halfGaugeMove, 0.0, 0.0);
 
         //分岐してる側のレール
-        if (dir == RailDir.LEFT) {
+        if (dir === RailDir.LEFT) {
             if (par3)//始点を共有
             {
-                if (i == tongIndex) {
+                if (i === tongIndex) {
                     tongBL.render(renderer);//トングレール
                 } else if (i > tongIndex) {
                     leftParts.render(renderer);//リードレール
                 }
             } else//終点を共有
             {
-                if (i == max - tongIndex) {
+                if (i === max - tongIndex) {
                     tongFR.render(renderer);//トングレール
                 } else if (i < max - tongIndex) {
                     rightParts.render(renderer);//リードレール
@@ -158,14 +158,14 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
         {
             if (par3)//始点を共有
             {
-                if (i == tongIndex) {
+                if (i === tongIndex) {
                     tongBR.render(renderer);//トングレール
                 } else if (i > tongIndex) {
                     rightParts.render(renderer);//リードレール
                 }
             } else//終点を共有
             {
-                if (i == max - tongIndex) {
+                if (i === max - tongIndex) {
                     tongFL.render(renderer);//トングレール
                 } else if (i < max - tongIndex) {
                     leftParts.render(renderer);//リードレール

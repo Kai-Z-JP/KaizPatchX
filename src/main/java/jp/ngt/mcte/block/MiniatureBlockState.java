@@ -8,7 +8,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MiniatureBlockState {
 	public float hardness = 2.0F;
@@ -70,20 +73,17 @@ public class MiniatureBlockState {
 	 * ブロックの座標を加えたAABBを取得
 	 */
 	public List<AxisAlignedBB> getCollisionBoxes() {
-		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
+		List<AxisAlignedBB> list = new ArrayList<>();
 		if (this.hasCustomAABB()) {
-			for (int i = 0; i < this.mbb.collisionBoxes.length; ++i) {
-				list.add(this.getAABB(this.mbb.collisionBoxes[i]));
-			}
+			list = Arrays.stream(this.mbb.collisionBoxes).map(this::getAABB).collect(Collectors.toList());
 		}
 		return list;
 	}
 
 	private AxisAlignedBB getAABB(float[] fa) {
-		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
+		return AxisAlignedBB.getBoundingBox(
 				fa[0], fa[1], fa[2],
 				fa[3], fa[4], fa[5]);
-		return aabb;
 	}
 
 	public void setAABB(String par1) {
@@ -137,9 +137,7 @@ public class MiniatureBlockState {
 			MiniatureBB mbb = new MiniatureBB();
 			mbb.selectBox = new float[6];
 			int[] ia = nbt.getIntArray("SelectBox");
-			for (int j = 0; j < 6; ++j) {
-				mbb.selectBox[j] = Float.intBitsToFloat(ia[j]);
-			}
+			IntStream.range(0, 6).forEach(j -> mbb.selectBox[j] = Float.intBitsToFloat(ia[j]));
 
 			NBTTagList tagList = nbt.getTagList("CollisionBoxes", 11);
 			mbb.collisionBoxes = new float[tagList.tagCount()][6];
@@ -155,20 +153,11 @@ public class MiniatureBlockState {
 
 		public NBTTagCompound writeToNBT() {
 			NBTTagCompound nbt = new NBTTagCompound();
-			int[] ia = new int[6];
-			for (int j = 0; j < 6; ++j) {
-				ia[j] = Float.floatToIntBits(this.selectBox[j]);
-			}
+			int[] ia = IntStream.range(0, 6).map(j -> Float.floatToIntBits(this.selectBox[j])).toArray();
 			nbt.setIntArray("SelectBox", ia);
 
 			NBTTagList tagList = new NBTTagList();
-			for (int i = 0; i < this.collisionBoxes.length; ++i) {
-				int[] ia2 = new int[6];
-				for (int j = 0; j < 6; ++j) {
-					ia2[j] = Float.floatToIntBits(this.collisionBoxes[i][j]);
-				}
-				tagList.appendTag(new NBTTagIntArray(ia2));
-			}
+			Arrays.stream(this.collisionBoxes).map(collisionBox -> IntStream.range(0, 6).map(j -> Float.floatToIntBits(collisionBox[j])).toArray()).map(NBTTagIntArray::new).forEach(tagList::appendTag);
 			nbt.setTag("CollisionBoxes", tagList);
 			return nbt;
 		}

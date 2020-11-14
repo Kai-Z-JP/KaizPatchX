@@ -47,25 +47,19 @@ public class ItemAmmunition extends Item {
 		int i1 = i0 / 4;
 		int i2 = 0;
 		switch (i1) {
-			case 0:
-				i2 = 0;
-				break;
-			case 1:
-				i2 = 1;
-				break;
-			case 2:
-				i2 = 2;
-				break;
-			case 3:
-				i2 = 2;
-				break;
-			case 4:
-				i2 = 2;
-				break;
-			case 5:
-				i2 = 0;
-				break;
-		}
+            case 0:
+            case 5:
+                i2 = 0;
+                break;
+            case 1:
+                i2 = 1;
+                break;
+            case 2:
+            case 4:
+            case 3:
+                i2 = 2;
+                break;
+        }
 		int i3 = i0 % 4;
 		return this.iconarray[(i2 * 4) + i3];
 	}
@@ -124,8 +118,6 @@ public class ItemAmmunition extends Item {
 			switch (id) {
 				case 0:
 					return cannon_40cm;
-				case 1:
-					return handgun_9mm;
 				case 2:
 					return rifle_5_56mm;
 				case 3:

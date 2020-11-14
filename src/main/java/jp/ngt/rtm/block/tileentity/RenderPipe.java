@@ -47,26 +47,26 @@ public class RenderPipe extends TileEntitySpecialRenderer {
 					break;
 			}
 		} else {
-			meta = meta / 2;
-			float size = (meta == 0 ? 0.5F : (meta == 1 ? 0.4375F : (meta == 2 ? 0.375F : 0.3125F)));
+            meta = meta / 2;
+            float size = (meta == 0 ? 0.5F : (meta == 1 ? 0.4375F : (meta == 2 ? 0.375F : 0.3125F)));
 
-			byte[] con0 = tileEntity.connection;
-			int con2 = 0;
-			byte flag0 = 0;
-			byte flag1 = 0;
-			byte flag2 = 0;
-			for (int i = 0; i < con0.length; ++i) {
-				con2 += (con0[i] == 2 || con0[i] == 3) ? 1 : 0;
-			}
+            byte[] con0 = tileEntity.connection;
+            int con2 = 0;
+            byte flag0 = 0;
+            byte flag1 = 0;
+            byte flag2 = 0;
+            for (byte b : con0) {
+                con2 += (b == 2 || b == 3) ? 1 : 0;
+            }
 
-			if (con0[0] == 2 || con0[0] == 3)//-y
-			{
-				this.render_A(180.0F, 1.0F, 0.0F, 0.0F, size);
-				if (con2 == 1) {
-					this.render_A(0.0F, 0.0F, 0.0F, 0.0F, size);
-				} else {
-					flag0 += 1;
-				}
+            if (con0[0] == 2 || con0[0] == 3)//-y
+            {
+                this.render_A(180.0F, 1.0F, 0.0F, 0.0F, size);
+                if (con2 == 1) {
+                    this.render_A(0.0F, 0.0F, 0.0F, 0.0F, size);
+                } else {
+                    flag0 += 1;
+                }
 			} else if (con0[0] == 1) {
 				this.render_C(180.0F, 1.0F, 0.0F, 0.0F, size);
 			}
@@ -164,37 +164,37 @@ public class RenderPipe extends TileEntitySpecialRenderer {
 		GL11.glPopMatrix();
 	}
 
-	private void render_C(float rotation, float x, float y, float z, float size) {
-		GL11.glPushMatrix();
-		GL11.glRotatef(rotation, x, y, z);
-		GL11.glTranslatef(0.0F, size - 0.125F, 0.0F);
-		float sc = size * 2.0F;
-		GL11.glScalef(size, 1.25F - sc, size);
-		this.renderPipeModel();
-		GL11.glPopMatrix();
-	}
+    private void render_C(float rotation, float x, float y, float z, float size) {
+        GL11.glPushMatrix();
+        GL11.glRotatef(rotation, x, y, z);
+        GL11.glTranslatef(0.0F, size - 0.125F, 0.0F);
+        float sc = size * 2.0F;
+        GL11.glScalef(size, 1.25F - sc, size);
+        this.renderPipeModel();
+        GL11.glPopMatrix();
+    }
 
-	private final void renderPipeModel() {
-		if (!GLHelper.isValid(this.displayListPipe)) {
-			this.displayListPipe = GLHelper.generateGLList();
-			GLHelper.startCompile(this.displayListPipe);
-			IModelNGT model_pipe = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Pipe.mqo"), VecAccuracy.LOW, GL11.GL_QUADS);
-			model_pipe.renderAll(RTMCore.smoothing);
-			GLHelper.endCompile();
-		} else {
-			GLHelper.callList(this.displayListPipe);
-		}
-	}
+    private void renderPipeModel() {
+        if (!GLHelper.isValid(this.displayListPipe)) {
+            this.displayListPipe = GLHelper.generateGLList();
+            GLHelper.startCompile(this.displayListPipe);
+            IModelNGT model_pipe = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Pipe.mqo"), VecAccuracy.LOW, GL11.GL_QUADS);
+            model_pipe.renderAll(RTMCore.smoothing);
+            GLHelper.endCompile();
+        } else {
+            GLHelper.callList(this.displayListPipe);
+        }
+    }
 
-	private final void renderSphereModel() {
-		if (!GLHelper.isValid(this.displayListSphere)) {
-			this.displayListSphere = GLHelper.generateGLList();
-			GLHelper.startCompile(this.displayListSphere);
-			IModelNGT model_sphere = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Sphere.obj"), VecAccuracy.LOW);
-			model_sphere.renderAll(RTMCore.smoothing);
-			GLHelper.endCompile();
-		} else {
-			GLHelper.callList(this.displayListSphere);
-		}
-	}
+    private void renderSphereModel() {
+        if (!GLHelper.isValid(this.displayListSphere)) {
+            this.displayListSphere = GLHelper.generateGLList();
+            GLHelper.startCompile(this.displayListSphere);
+            IModelNGT model_sphere = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Sphere.obj"), VecAccuracy.LOW);
+            model_sphere.renderAll(RTMCore.smoothing);
+            GLHelper.endCompile();
+        } else {
+            GLHelper.callList(this.displayListSphere);
+        }
+    }
 }

@@ -6,6 +6,8 @@ import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.util.EnumNotch;
 import net.minecraft.entity.ai.EntityAIBase;
 
+import java.util.Arrays;
+
 public class EntityAIDrivingWithSignal extends EntityAIBase {
 	protected final EntityMotorman motorman;
 	protected EntityTrainBase train;
@@ -47,11 +49,7 @@ public class EntityAIDrivingWithSignal extends EntityAIBase {
 	private EnumNotch getSuitableNotch(float par1, float par2) {
 		float gap = par1 - par2;
 		if (gap > 0.0F) {
-			for (EnumNotch notch : EnumNotch.values()) {
-				if (notch.max_speed >= par1) {
-					return notch;
-				}
-			}
+			return Arrays.stream(EnumNotch.values()).filter(notch -> notch.max_speed >= par1).findFirst().orElse(EnumNotch.inertia);
 		} else if (gap == 0.0F) {
 			return EnumNotch.inertia;
 		} else {
@@ -63,6 +61,5 @@ public class EntityAIDrivingWithSignal extends EntityAIBase {
 			return EnumNotch.getNotch(i0);*/
 			return EnumNotch.brake_4;
 		}
-		return EnumNotch.inertia;
 	}
 }

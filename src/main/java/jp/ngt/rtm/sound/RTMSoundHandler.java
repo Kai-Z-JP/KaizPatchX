@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,18 +59,16 @@ public class RTMSoundHandler {
             return;
         }
 
-        for (String domain : domainList) {
+        domainList.forEach(domain -> {
             try {
                 List list = mcResourceManager.getAllResources(new ResourceLocation(domain, "sounds.json"));
-                Iterator iterator1 = list.iterator();
-                while (iterator1.hasNext()) {
-                    IResource iresource = (IResource) iterator1.next();
+                for (Object value : list) {
+                    IResource iresource = (IResource) value;
                     try {
                         Map map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), parmType);
-                        Iterator iterator2 = map.entrySet().iterator();
 
-                        while (iterator2.hasNext()) {
-                            Entry entry = (Entry) iterator2.next();
+                        for (Object o : map.entrySet()) {
+                            Entry entry = (Entry) o;
                             ALL_OGG_FILES.add(domain + ":" + entry.getKey());
                             this.registerSound(event.manager.sndHandler, new ResourceLocation(domain, (String) entry.getKey()), (SoundList) entry.getValue());
                         }
@@ -82,14 +79,14 @@ public class RTMSoundHandler {
             } catch (IOException e) {
                 throw new SoundLoadException(e);
             }
-        }
+        });
     }
 
     private void registerSound(SoundHandler par1, ResourceLocation par2, SoundList par3) {
         NGTUtil.getMethod(SoundHandler.class, par1, new String[]{"loadSoundResource", "func_147693_a"}, new Class[]{ResourceLocation.class, SoundList.class}, par2, par3);
     }
 
-    private class SoundLoadException extends RuntimeException {
+    private static class SoundLoadException extends RuntimeException {
         public SoundLoadException(Throwable arg) {
             super(arg);
         }

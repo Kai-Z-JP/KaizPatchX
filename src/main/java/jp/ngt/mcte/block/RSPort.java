@@ -8,6 +8,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.stream.IntStream;
+
 /**
  * ミニチュアブロックのRS入出力を担う
  */
@@ -38,11 +40,7 @@ public class RSPort {
 				}
 			}
 
-			for (int i = 0; i < 4; ++i) {
-				if (this.ports[i] == null) {
-					this.ports[i] = new PortObj(PortType.NONE, -1, -1, -1);
-				}
-			}
+			IntStream.range(0, 4).filter(i -> this.ports[i] == null).forEach(i -> this.ports[i] = new PortObj(PortType.NONE, -1, -1, -1));
 		}
 		return this.ports[index];
 	}
@@ -57,9 +55,7 @@ public class RSPort {
 		}
 		//5:なんか90度ずれてるので補正
 		int dir = (MathHelper.floor_float(-(miniature.getRotation() + 45.0F) / 90.0F) + 5) % 4;
-		for (int i = 0; i < 4; ++i) {
-			this.checkInput(miniature, i, dir);
-		}
+		IntStream.range(0, 4).forEach(i -> this.checkInput(miniature, i, dir));
 	}
 
 	private void checkInput(TileEntityMiniature miniature, int index, int dir) {
@@ -94,7 +90,7 @@ public class RSPort {
 		return 0;
 	}
 
-	private class PortObj {
+	private static class PortObj {
 		public final PortType type;
 		public final int x, y, z;
 

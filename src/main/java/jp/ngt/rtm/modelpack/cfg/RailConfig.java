@@ -56,19 +56,19 @@ public class RailConfig extends ModelConfig {
 
 	@Override
 	public String getModelType() {
-		return TYPE;
-	}
+        return TYPE;
+    }
 
-	public static RailConfig getDummy() {
-		RailConfig cfg = new RailConfig();
-		cfg.railName = "dummy";
-		cfg.railModel = "1067mm_Wood";
-		return cfg;
-	}
+    public static RailConfig getDummy() {
+        RailConfig cfg = new RailConfig();
+        cfg.railName = "dummy";
+        cfg.railModel = "1067mm_Wood";
+        return cfg;
+    }
 
-	public class BallastSet {
-		public String blockName;
-		public int blockMetadata;
-		public float height;
-	}
+    public static class BallastSet {
+        public String blockName;
+        public int blockMetadata;
+        public float height;
+    }
 }

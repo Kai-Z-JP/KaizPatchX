@@ -20,12 +20,10 @@ public class ScanResult {
 	}
 
 	public List<File> asList() {
-		List<File> list = new ArrayList<>();
-		for (MatchResult mr : this.result.values()) {
-			list.addAll(mr.asList());
-		}
-		return list;
-	}
+        List<File> list = new ArrayList<>();
+        this.result.values().stream().map(MatchResult::asList).forEach(list::addAll);
+        return list;
+    }
 
 	public void add(String key1, FileMatcher key2, File file) {
 		this.getMatchResult(key1).add(key2, file);
@@ -42,12 +40,10 @@ public class ScanResult {
 		}
 
 		public List<File> asList() {
-			List<File> list = new ArrayList<>();
-			for (List<File> files : this.result.values()) {
-				list.addAll(files);
-			}
-			return list;
-		}
+            List<File> list = new ArrayList<>();
+            this.result.values().forEach(list::addAll);
+            return list;
+        }
 
 		public void add(FileMatcher key, File file) {
 			this.getList(key).add(file);

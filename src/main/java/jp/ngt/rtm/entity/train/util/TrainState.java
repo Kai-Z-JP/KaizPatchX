@@ -1,5 +1,7 @@
 package jp.ngt.rtm.entity.train.util;
 
+import java.util.Arrays;
+
 public enum TrainState {
 	Door_Close(TrainStateType.State_Door.id, 0, "close"),
 	Door_OpenRight(TrainStateType.State_Door.id, 1, "open_right"),
@@ -33,21 +35,11 @@ public enum TrainState {
 	}
 
 	public static TrainState getState(int par1Id, byte par2Data) {
-		for (TrainState state : TrainState.values()) {
-			if (state.id == par1Id && state.data == par2Data) {
-				return state;
-			}
-		}
-		return Door_Close;
+		return Arrays.stream(TrainState.values()).filter(state -> state.id == par1Id && state.data == par2Data).findFirst().orElse(Door_Close);
 	}
 
 	public static TrainStateType getStateType(int par1Id) {
-		for (TrainStateType state : TrainStateType.values()) {
-			if (state.id == par1Id) {
-				return state;
-			}
-		}
-		return TrainStateType.State_Door;
+		return Arrays.stream(TrainStateType.values()).filter(state -> state.id == par1Id).findFirst().orElse(TrainStateType.State_Door);
 	}
 
 	public enum TrainStateType {

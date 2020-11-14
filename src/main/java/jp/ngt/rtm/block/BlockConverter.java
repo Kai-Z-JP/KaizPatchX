@@ -16,6 +16,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 public class BlockConverter extends BlockContainer {
 	private static final int[][] pos_iron = {{-3, 0, -1}, {-3, 0, 0}, {-3, 0, 1}, {3, 0, -1}, {3, 0, 0}, {3, 0, 1},
 			{-3, 1, -1}, {-3, 1, 0}, {-3, 1, 1}, {-1, 1, -1}, {-1, 1, 0}, {-1, 1, 1}, {0, 1, -1}, {0, 1, 0}, {0, 1, 1}, {1, 1, -1}, {1, 1, 0}, {1, 1, 1}, {3, 1, -1}, {3, 1, 0}, {3, 1, 1},
@@ -105,8 +108,8 @@ public class BlockConverter extends BlockContainer {
 
 		for (int i = 2; i < 7; ++i)//check:Brick
 		{
-			for (int j = 0; j < pos_brick.length; ++j) {
-				if (world.getBlock(x + pos_brick[j][0], y + i, z + pos_brick[j][2]) != RTMBlock.fireBrick) {
+			for (int[] anInt : pos_brick) {
+				if (world.getBlock(x + anInt[0], y + i, z + anInt[2]) != RTMBlock.fireBrick) {
 					return -1;
 				}
 			}
@@ -116,8 +119,8 @@ public class BlockConverter extends BlockContainer {
 		for (int i = 0; i < 4; ++i)//check:Iron
 		{
 			flag = true;
-			for (int j = 0; j < pos_iron.length; ++j) {
-				int[] p0 = BlockUtil.rotateBlockPos((byte) i, pos_iron[j][0], pos_iron[j][1], pos_iron[j][2]);
+			for (int[] anInt : pos_iron) {
+				int[] p0 = BlockUtil.rotateBlockPos((byte) i, anInt[0], anInt[1], anInt[2]);
 				if (world.getBlock(x + p0[0], y + p0[1], z + p0[2]) != RTMBlock.steelMaterial) {
 					flag = false;
 				}
@@ -143,24 +146,21 @@ public class BlockConverter extends BlockContainer {
 			setConverterBlock(world, x, y + 2, z, x, y + 4, z);
 		}
 
-		for (int i = 2; i < 7; ++i) {
-			for (int j = 0; j < pos_brick.length; ++j) {
-				if (setAir) {
-					world.setBlock(x + pos_brick[j][0], y + i, z + pos_brick[j][2], Blocks.air, 0, 2);
-				} else {
-					setConverterBlock(world, x + pos_brick[j][0], y + i, z + pos_brick[j][2], x, y + 4, z);
-				}
+		IntStream.range(2, 7).forEach(i -> Arrays.stream(pos_brick).forEach(anInt -> {
+			if (setAir) {
+				world.setBlock(x + anInt[0], y + i, z + anInt[2], Blocks.air, 0, 2);
+			} else {
+				setConverterBlock(world, x + anInt[0], y + i, z + anInt[2], x, y + 4, z);
 			}
-		}
+		}));
 
-		for (int j = 0; j < pos_iron.length; ++j) {
-			int[] p0 = BlockUtil.rotateBlockPos(dir, pos_iron[j][0], pos_iron[j][1], pos_iron[j][2]);
+		Arrays.stream(pos_iron).map(anInt -> BlockUtil.rotateBlockPos(dir, anInt[0], anInt[1], anInt[2])).forEach(p0 -> {
 			if (setAir) {
 				world.setBlock(x + p0[0], y + p0[1], z + p0[2], Blocks.air, 0, 2);
 			} else {
 				setConverterBlock(world, x + p0[0], y + p0[1], z + p0[2], x, y + 4, z);
 			}
-		}
+		});
 	}
 
 	private static void setConverterBlock(World world, int x, int y, int z, int coreX, int coreY, int coreZ) {

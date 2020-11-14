@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.stream.IntStream;
 
 public final class Camera {
     public static final Camera INSTANCE = new Camera();
@@ -45,7 +46,7 @@ public final class Camera {
     private final int[] mcScreenTex = new int[]{-1, -1};
 
     @Deprecated
-    private int mcDepthTex = -1;
+    private final int mcDepthTex;
 
     private int dofShader = -1;
 
@@ -156,10 +157,10 @@ public final class Camera {
         this.depthBuffer.clear();
         GL11.glReadPixels(0, 0, w, h, 6402, 5126, this.depthBuffer);
         this.depthColorBuffer.clear();
-        for (int i = 0; i < this.depthBuffer.capacity(); i++) {
+        IntStream.range(0, this.depthBuffer.capacity()).forEach(i -> {
             float depth = this.depthBuffer.get(i);
             this.depthColorBuffer.put(depth2Color(depth));
-        }
+        });
         this.depthColorBuffer.flip();
         GL11.glBindTexture(3553, this.gaussianTex[2]);
         GL11.glTexSubImage2D(3553, 0, 0, 0, w, h, 6408, 5121, this.depthColorBuffer);
@@ -245,7 +246,7 @@ public final class Camera {
                     ARBShaderObjects.glGetUniformLocationARB(this.dofShader, "threshold"), blurThreshold);
             ARBShaderObjects.glUniform1ARB(
                     ARBShaderObjects.glGetUniformLocationARB(this.dofShader, "weight"), this.gaussianWeightsBuf);
-            for (int pass = 0; pass < 2; pass++) {
+            IntStream.range(0, 2).forEach(pass -> {
                 ARBShaderObjects.glUniform1iARB(ARBShaderObjects.glGetUniformLocationARB(this.dofShader, "pass"), pass);
                 GL30.glBindFramebuffer(36160, this.gaussianFBO[pass]);
                 switch (pass) {
@@ -260,7 +261,7 @@ public final class Camera {
                 }
                 renderBuffer(guiW, guiH, -1, false);
                 GL30.glBindFramebuffer(36160, 0);
-            }
+            });
         }
         mc.getFramebuffer().bindFramebuffer(false);
         ARBShaderObjects.glUseProgramObjectARB(0);
@@ -313,14 +314,12 @@ public final class Camera {
         tessellator.startDrawingQuads();
         if (alpha > 0)
             tessellator.setColorRGBA_I(16777215, alpha);
-        float fx = w;
-        float fy = h;
         float fz = -90.0F;
         float minV = flip ? this.frameBufV : 0.0F;
         float maxV = flip ? 0.0F : this.frameBufV;
-        tessellator.addVertexWithUV(0.0F, fy, fz, 0.0F, maxV);
-        tessellator.addVertexWithUV(fx, fy, fz, this.frameBufU, maxV);
-        tessellator.addVertexWithUV(fx, 0.0F, fz, this.frameBufU, minV);
+        tessellator.addVertexWithUV(0.0F, (float) h, fz, 0.0F, maxV);
+        tessellator.addVertexWithUV((float) w, (float) h, fz, this.frameBufU, maxV);
+        tessellator.addVertexWithUV((float) w, 0.0F, fz, this.frameBufU, minV);
         tessellator.addVertexWithUV(0.0F, 0.0F, fz, 0.0F, minV);
         tessellator.draw();
         GL11.glDepthMask(true);
@@ -398,28 +397,28 @@ public final class Camera {
         GL11.glBindTexture(3553, (Minecraft.getMinecraft().getFramebuffer()).framebufferTexture);
         GL11.glGetTexImage(3553, 0, 32993, 33639, buf);
         BufferedImage image = new BufferedImage(w, h, 1);
-        for (int i = 0; i < buf.capacity(); i++) {
+        IntStream.range(0, buf.capacity()).forEach(i -> {
             int color = buf.get(i);
             image.getRaster().getDataBuffer().setElem(i, color);
-        }
+        });
         return image;
     }
 
     private BufferedImage getDepthBufF(int w, int h) {
         BufferedImage image = new BufferedImage(w, h, 1);
-        for (int i = 0; i < this.depthBuffer.capacity(); i++) {
+        IntStream.range(0, this.depthBuffer.capacity()).forEach(i -> {
             float depth = this.depthBuffer.get(i);
             image.getRaster().getDataBuffer().setElem(i, depth2Color(depth));
-        }
+        });
         return image;
     }
 
     private BufferedImage getDepthBufI(int w, int h) {
         BufferedImage image = new BufferedImage(w, h, 1);
-        for (int i = 0; i < this.depthColorBuffer.capacity(); i++) {
+        IntStream.range(0, this.depthColorBuffer.capacity()).forEach(i -> {
             int color = this.depthColorBuffer.get(i);
             image.getRaster().getDataBuffer().setElem(i, color);
-        }
+        });
         return image;
     }
 
@@ -428,10 +427,10 @@ public final class Camera {
         GL11.glBindTexture(3553, this.gaussianTex[2]);
         GL11.glGetTexImage(3553, 0, 6408, 5121, buf);
         BufferedImage image = new BufferedImage(w, h, 1);
-        for (int i = 0; i < buf.capacity(); i++) {
+        IntStream.range(0, buf.capacity()).forEach(i -> {
             int color = buf.get(i);
             image.getRaster().getDataBuffer().setElem(i, color);
-        }
+        });
         return image;
     }
 }

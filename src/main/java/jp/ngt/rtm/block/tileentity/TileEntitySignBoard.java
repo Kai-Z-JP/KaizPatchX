@@ -122,11 +122,10 @@ public class TileEntitySignBoard extends TileEntity implements ITextureHolder<Si
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
-		double height = this.property.height / 2.0F;
-		double width = this.property.width / 2.0F;
-		double depth = this.property.depth / 2.0F;
-		double d0 = width >= depth ? width : depth;
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox((double) this.xCoord - d0, (double) this.yCoord - height, (double) this.zCoord - d0, (double) this.xCoord + d0 + 1.0D, (double) this.yCoord + height + 1.0D, (double) this.zCoord + d0 + 1.0D);
-		return bb;
-	}
+        double height = this.property.height / 2.0F;
+        double width = this.property.width / 2.0F;
+        double depth = this.property.depth / 2.0F;
+        double d0 = Math.max(width, depth);
+        return AxisAlignedBB.getBoundingBox((double) this.xCoord - d0, (double) this.yCoord - height, (double) this.zCoord - d0, (double) this.xCoord + d0 + 1.0D, (double) this.yCoord + height + 1.0D, (double) this.zCoord + d0 + 1.0D);
+    }
 }

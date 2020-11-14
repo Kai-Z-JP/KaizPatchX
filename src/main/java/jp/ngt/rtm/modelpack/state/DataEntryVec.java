@@ -30,7 +30,7 @@ public final class DataEntryVec extends DataEntry<Vec3> {
 	}
 
 	public static Vec3 fromString(String par1) {
-		String[] sa = par1.split(" ");
-		return new Vec3(Double.valueOf(sa[0]), Double.valueOf(sa[1]), Double.valueOf(sa[2]));
-	}
+        String[] sa = par1.split(" ");
+        return new Vec3(Double.parseDouble(sa[0]), Double.parseDouble(sa[1]), Double.parseDouble(sa[2]));
+    }
 }

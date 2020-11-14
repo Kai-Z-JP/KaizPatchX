@@ -8,6 +8,9 @@ import jp.ngt.rtm.block.BlockMirror.MirrorType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 public class TileEntityMirror extends TileEntity {
 	public MirrorType mirrorType;
 	@SideOnly(Side.CLIENT)
@@ -24,11 +27,11 @@ public class TileEntityMirror extends TileEntity {
 	private void setupMirror() {
 		boolean b = this.mirrorType == MirrorType.Mono_Panel;
 		this.mirrors = new MirrorComponent[b ? 1 : 6];
-		for (int i = 0; i < this.mirrors.length; ++i) {
+		IntStream.range(0, this.mirrors.length).forEach(i -> {
 			EnumFace face = b ? EnumFace.get(this.getBlockMetadata()) : EnumFace.get(i);
 			this.mirrors[i] = new MirrorComponent(this.xCoord, this.yCoord, this.zCoord, this.mirrorType, face);
 			MirrorObject.add(this.worldObj, this.mirrors[i], face, this.mirrorType);
-		}
+		});
 	}
 
 	@Override
@@ -45,9 +48,7 @@ public class TileEntityMirror extends TileEntity {
 
 	private void removeMirror() {
 		if (this.worldObj.isRemote && this.mirrors != null) {
-			for (int i = 0; i < this.mirrors.length; ++i) {
-				MirrorObject.remove(this.mirrors[i]);
-			}
+			Arrays.stream(this.mirrors).forEach(MirrorObject::remove);
 			this.mirrors = null;
 		}
 	}

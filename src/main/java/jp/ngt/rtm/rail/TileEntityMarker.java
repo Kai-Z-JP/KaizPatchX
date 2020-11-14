@@ -349,15 +349,9 @@ public class TileEntityMarker extends TileEntity {
 				this.markerState = state.set(this.markerState, data);
 			}
 		} else {
-			this.markerState = state.set(this.markerState, data);
-			for (int[] pos : this.markerPosList) {
-				TileEntity tile = this.getWorldObj().getTileEntity(pos[0], pos[1], pos[2]);
-				if (tile instanceof TileEntityMarker) {
-					TileEntityMarker marker = (TileEntityMarker) tile;
-					marker.markerState = this.markerState;
-				}
-			}
-		}
+            this.markerState = state.set(this.markerState, data);
+            this.markerPosList.stream().map(pos -> this.getWorldObj().getTileEntity(pos[0], pos[1], pos[2])).filter(TileEntityMarker.class::isInstance).map(TileEntityMarker.class::cast).forEach(marker -> marker.markerState = this.markerState);
+        }
 	}
 
 	public String getStateString(MarkerState state) {

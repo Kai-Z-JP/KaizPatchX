@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Editor {
 	//public static final byte EditType_Delete = 0;
@@ -54,7 +55,7 @@ public class Editor {
 	private final EntityEditor editorEntity;
 
 	private WorldSnapshot clipboard;
-	private final Stack<WorldSnapshot> history = new Stack<WorldSnapshot>(MCTE.numberOfUndo);
+	private final Stack<WorldSnapshot> history = new Stack<>(MCTE.numberOfUndo);
 
 	public Editor(EntityEditor par1) {
 		this.editorEntity = par1;
@@ -83,7 +84,7 @@ public class Editor {
 
 		int[] start = this.getEntity().getPos(true);
 		int[] end = this.getEntity().getPos(false);
-		if ((start[0] == 0 && start[1] == 0 && start[2] == 0) || (end[0] == 0 && end[1] == 0 && end[2] == 0)) {
+		if ((IntStream.of(0, 1, 2).allMatch(j -> start[j] == 0)) || (IntStream.of(0, 1, 2).allMatch(i -> end[i] == 0))) {
 			return null;//0バグ回避
 		}
 
@@ -106,7 +107,7 @@ public class Editor {
 	}
 
 	public AABBInt getPasteBox() {
-		int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
+		int minX, minY, minZ, maxX, maxY, maxZ;
 
 		byte b = this.getEntity().getEditMode();
 		if (!(b == EditMode_VisibleBox_0 || b == EditMode_VisibleBox_1)) {
@@ -171,7 +172,7 @@ public class Editor {
 			this.record(box);
 		}
 
-		List<BlockSet> list = new ArrayList<BlockSet>();//コピー用
+		List<BlockSet> list = new ArrayList<>();//コピー用
 
 		int index = 0;
 		for (int i = box.minX; i < box.maxX; ++i) {
@@ -402,17 +403,14 @@ public class Editor {
 	}
 
 	public void fill(AABBInt box, final BlockSet blockSet, final String options) {
-		this.repeat(box, new Repeatable() {
-			@Override
-			public void processing(AABBInt box, int index, int x, int y, int z) {
-				if (options.contains(WorldSnapshot.IGNORE_WATER)) {
-					Block block = Editor.this.getWorld().getBlock(x, y, z);
-					if (block.getMaterial().isLiquid()) {
-						return;
-					}
+		this.repeat(box, (box1, index, x, y, z) -> {
+			if (options.contains(WorldSnapshot.IGNORE_WATER)) {
+				Block block = Editor.this.getWorld().getBlock(x, y, z);
+				if (block.getMaterial().isLiquid()) {
+					return;
 				}
-				Editor.this.setBlock(x, y, z, blockSet);
 			}
+			Editor.this.setBlock(x, y, z, blockSet);
 		});
 	}
 

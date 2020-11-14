@@ -19,7 +19,7 @@ public class TerrainData {
 
 	public File terrainFile;
 	public File blocksFile;
-	public Map<Integer, BlockSet> blockMap = new TreeMap<Integer, BlockSet>();
+	public Map<Integer, BlockSet> blockMap = new TreeMap<>();
 	public float yScale = 1.0F;
 
 	{
@@ -31,7 +31,7 @@ public class TerrainData {
 		if (this.terrainFile != null) {
 			try {
 				terrain = ImageIO.read(this.terrainFile);
-			} catch (IOException e) {
+			} catch (IOException ignored) {
 			}
 		}
 
@@ -39,7 +39,7 @@ public class TerrainData {
 		if (this.blocksFile != null) {
 			try {
 				blocks = ImageIO.read(this.blocksFile);
-			} catch (IOException e) {
+			} catch (IOException ignored) {
 			}
 		}
 
@@ -55,7 +55,7 @@ public class TerrainData {
 
 		for (int i = 0; i < height; ++i) {
 			for (int j = 0; j < width; ++j) {
-				int color0 = 0;
+				int color0;
 				int value = 1;
 				if (terrain != null) {
 					color0 = terrain.getRGB(j, i) & 0xFFFFFF;
@@ -162,7 +162,7 @@ public class TerrainData {
 				try {
 					int color = Integer.decode(sa0[0]);
 					Block block = Block.getBlockFromName(sa1[0]);
-					int meta = Integer.valueOf(sa1[1]);
+					int meta = Integer.parseInt(sa1[1]);
 					return new BlockSet(color, 0, 0, block, meta);
 				} catch (NumberFormatException e) {
 					e.printStackTrace();

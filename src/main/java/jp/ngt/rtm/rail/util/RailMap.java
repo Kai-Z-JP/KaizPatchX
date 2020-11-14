@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class RailMap {
 	/**
@@ -113,34 +114,34 @@ public class RailMap {
 	 * レールの生成時と破壊時に呼ばれる
 	 */
 	protected void createRailList(RailProperty prop) {
-		ModelSetRail modelSet = prop.getModelSet();
-		int width = modelSet.getConfig().ballastWidth >> 1;
+        ModelSetRail modelSet = prop.getModelSet();
+        int width = modelSet.getConfig().ballastWidth >> 1;
 
-		this.rails.clear();
-		int split = (int) (this.lineHorizontal.getLength() * 4.0D);
-		for (int j = 0; j < split; ++j) {
-			double[] point = this.lineHorizontal.getPoint(split, j);
-			double x = point[1];
-			double z = point[0];
-			double slope = this.lineHorizontal.getSlope(split, j);
-			double height = this.getRailHeight(split, j);
-			int y = (int) height;
-			/*if(height < 0.0625)
+        this.rails.clear();
+        int split = (int) (this.lineHorizontal.getLength() * 4.0D);
+		/*if(height < 0.0625)
 			{
 				y -= 1;
 			}*/
-			int x0 = MathHelper.floor_double(x);
-			int z0 = MathHelper.floor_double(z);
-			for (int i = 1; i <= width; ++i) {
-				int x1 = MathHelper.floor_double(x + Math.sin(slope + Math.PI * 0.5D) * (double) i);
-				int z1 = MathHelper.floor_double(z + Math.cos(slope + Math.PI * 0.5D) * (double) i);
-				int x2 = MathHelper.floor_double(x + Math.sin(slope - Math.PI * 0.5D) * (double) i);
-				int z2 = MathHelper.floor_double(z + Math.cos(slope - Math.PI * 0.5D) * (double) i);
-				this.addRailBlock(x1, y, z1);
-				this.addRailBlock(x2, y, z2);
-			}
-			this.addRailBlock(x0, y, z0);
-		}
+        IntStream.range(0, split).forEach(j -> {
+            double[] point = this.lineHorizontal.getPoint(split, j);
+            double x = point[1];
+            double z = point[0];
+            double slope = this.lineHorizontal.getSlope(split, j);
+            double height = this.getRailHeight(split, j);
+            int y = (int) height;
+            int x0 = MathHelper.floor_double(x);
+            int z0 = MathHelper.floor_double(z);
+            IntStream.rangeClosed(1, width).forEach(i -> {
+                int x1 = MathHelper.floor_double(x + Math.sin(slope + Math.PI * 0.5D) * (double) i);
+                int z1 = MathHelper.floor_double(z + Math.cos(slope + Math.PI * 0.5D) * (double) i);
+                int x2 = MathHelper.floor_double(x + Math.sin(slope - Math.PI * 0.5D) * (double) i);
+                int z2 = MathHelper.floor_double(z + Math.cos(slope - Math.PI * 0.5D) * (double) i);
+                this.addRailBlock(x1, y, z1);
+                this.addRailBlock(x2, y, z2);
+            });
+            this.addRailBlock(x0, y, z0);
+        });
 	}
 
 	private void addRailBlock(int x, int y, int z) {
@@ -165,23 +166,23 @@ public class RailMap {
 	 * ブロックの設置
 	 */
 	public void setRail(World world, Block block, int x0, int y0, int z0, RailProperty prop) {
-		this.createRailList(prop);
+        this.createRailList(prop);
 //		setBaseBlock(world, x0, y0, z0);
-		for (int[] rail : this.rails) {
-			int x = rail[0];
-			int y = rail[1];
-			int z = rail[2];
-			Block block2 = world.getBlock(x, y, z);
-			if (!(block2 instanceof BlockLargeRailBase) || block2 == block)//異なる種類のレールを上書きしない
-			{
-				world.setBlock(x, y, z, block, 0, 2);
-				TileEntityLargeRailBase tile = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
-				if (tile != null) {
-					tile.setStartPoint(x0, y0, z0);
-				}
-			}
-		}
-		this.rails.clear();
+        this.rails.forEach(rail -> {
+            int x = rail[0];
+            int y = rail[1];
+            int z = rail[2];
+            Block block2 = world.getBlock(x, y, z);
+            if (!(block2 instanceof BlockLargeRailBase) || block2 == block)//異なる種類のレールを上書きしない
+            {
+                world.setBlock(x, y, z, block, 0, 2);
+                TileEntityLargeRailBase tile = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
+                if (tile != null) {
+                    tile.setStartPoint(x0, y0, z0);
+                }
+            }
+        });
+        this.rails.clear();
 	}
 
 	private void setBaseBlock(World world, int x0, int y0, int z0) {
@@ -228,46 +229,46 @@ public class RailMap {
 	 * ブロックの破壊
 	 */
 	public void breakRail(World world, RailProperty prop, TileEntityLargeRailCore core) {
-		this.createRailList(prop);
-		for (int i = 0; i < this.rails.size(); ++i) {
-			int x = this.rails.get(i)[0];
-			int y = this.rails.get(i)[1];
-			int z = this.rails.get(i)[2];
-			if (world.getBlock(x, y, z) instanceof BlockLargeRailBase) {
-				TileEntityLargeRailBase rail = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
-				if (rail == core) {
-					continue;//coreの破壊は最後に行う
-				}
+        this.createRailList(prop);
+        this.rails.forEach(pos -> {
+            int x = pos[0];
+            int y = pos[1];
+            int z = pos[2];
+            if (world.getBlock(x, y, z) instanceof BlockLargeRailBase) {
+                TileEntityLargeRailBase rail = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
+                if (rail == core) {
+                    return;//coreの破壊は最後に行う
+                }
 
-				//重なっている他レールを破壊しないように
-				//coreが既に破壊さている場合は続行
-				TileEntityLargeRailCore core2 = rail.getRailCore();
-				if (core2 == null || core2 == core) {
-					world.setBlockToAir(x, y, z);
-				}
-			}
-		}
-		world.setBlockToAir(core.xCoord, core.yCoord, core.zCoord);
+                //重なっている他レールを破壊しないように
+                //coreが既に破壊さている場合は続行
+                TileEntityLargeRailCore core2 = rail.getRailCore();
+                if (core2 == null || core2 == core) {
+                    world.setBlockToAir(x, y, z);
+                }
+            }
+        });
+        world.setBlockToAir(core.xCoord, core.yCoord, core.zCoord);
 		this.rails.clear();
 	}
 
 	public boolean canPlaceRail(World world, boolean isCreative, RailProperty prop) {
-		this.createRailList(prop);
-		boolean flag = true;
-		for (int i = 0; i < this.rails.size(); ++i) {
-			int x = this.rails.get(i)[0];
-			int y = this.rails.get(i)[1];
-			int z = this.rails.get(i)[2];
-			Block block = world.getBlock(x, y, z);
-			boolean b0 = world.isAirBlock(x, y, z) || block == RTMBlock.marker || block == RTMBlock.markerSwitch || /*block == RTMBlock.markerSlope ||*/ (block instanceof BlockLargeRailBase && !((BlockLargeRailBase) block).isCore());
-			if (!isCreative && !b0) {
-				NGTLog.sendChatMessageToAll("message.rail.obstacle", ":" + x + "," + y + "," + z);
-				return false;
-			}
-			flag = b0 && flag;
-		}
-		return isCreative || flag;
-	}
+        this.createRailList(prop);
+        boolean flag = true;
+        for (int[] rail : this.rails) {
+            int x = rail[0];
+            int y = rail[1];
+            int z = rail[2];
+            Block block = world.getBlock(x, y, z);
+            boolean b0 = world.isAirBlock(x, y, z) || block == RTMBlock.marker || block == RTMBlock.markerSwitch || /*block == RTMBlock.markerSlope ||*/ (block instanceof BlockLargeRailBase && !((BlockLargeRailBase) block).isCore());
+            if (!isCreative && !b0) {
+                NGTLog.sendChatMessageToAll("message.rail.obstacle", ":" + x + "," + y + "," + z);
+                return false;
+            }
+            flag = b0 && flag;
+        }
+        return true;
+    }
 
 	public List<int[]> getRailBlockList(RailProperty prop) {
 		this.createRailList(prop);

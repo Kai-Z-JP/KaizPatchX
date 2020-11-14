@@ -2,6 +2,7 @@ package jp.ngt.rtm.modelpack.modelset;
 
 import jp.ngt.rtm.modelpack.cfg.SignalConfig;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,14 +24,9 @@ public class ModelSetSignal extends ModelSetBase<SignalConfig> {
 	public ModelSetSignal(SignalConfig par1) {
 		super(par1);
 
-		int i = 0;
+		int i;
 		if (par1.lights != null) {
-			LightParts[] parts = parseLightParts(par1.lights);
-			for (LightParts light : parts) {
-				if (light.signalLevel > i) {
-					i = light.signalLevel;
-				}
-			}
+			i = Arrays.stream(parseLightParts(par1.lights)).mapToInt(light -> light.signalLevel).filter(light -> light >= 0).max().orElse(0);
 		} else {
 			i = 6;
 		}
@@ -43,18 +39,18 @@ public class ModelSetSignal extends ModelSetBase<SignalConfig> {
 	}
 
 	public static LightParts[] parseLightParts(String[] par1) {
-		List<LightParts> list = new LinkedList<LightParts>();
-		for (int i = 0; i < par1.length; ++i) {
-			String s0 = getMatchedString(par1[i], signalPattern);
+		List<LightParts> list = new LinkedList<>();
+		Arrays.stream(par1).forEach(s -> {
+			String s0 = getMatchedString(s, signalPattern);
 			int i0 = Integer.parseInt(s0);
-			String s1 = getMatchedString(par1[i], intervalPattern);
+			String s1 = getMatchedString(s, intervalPattern);
 			int i1 = Integer.parseInt(s1);
-			String s2 = getMatchedString(par1[i], partsPattern);
+			String s2 = getMatchedString(s, partsPattern);
 			String[] sa = s2.split(" ");
 			list.add(new LightParts(i0, i1, sa));
-		}
+		});
 		Collections.sort(list);//番号順にソート
-		return list.toArray(new LightParts[list.size()]);
+		return list.toArray(new LightParts[0]);
 	}
 
 	private static String getMatchedString(String par1, Pattern par2) {

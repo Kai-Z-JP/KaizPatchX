@@ -13,20 +13,20 @@ import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class RenderFluorescent extends TileEntitySpecialRenderer {
-	private final ModelFluorescent model = new ModelFluorescent();
-	private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/fluorescent.png");
+    private final ModelFluorescent model = new ModelFluorescent();
+    private static final ResourceLocation texture = new ResourceLocation("rtm", "textures/fluorescent.png");
 
-	private final void render(TileEntityFluorescent tileEntity, double par2, double par4, double par6, float par8) {
-		int meta = tileEntity.getBlockMetadata();
-		float move = meta == 4 ? 0.375F : 0.4375F;
-		GL11.glPushMatrix();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 0.5F, (float) par6 + 0.5F);
+    private void render(TileEntityFluorescent tileEntity, double par2, double par4, double par6, float par8) {
+        int meta = tileEntity.getBlockMetadata();
+        float move = meta == 4 ? 0.375F : 0.4375F;
+        GL11.glPushMatrix();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 0.5F, (float) par6 + 0.5F);
 
-		switch (tileEntity.getDir()) {
-			case 0:
-				GL11.glTranslatef(0.0f, move, 0.0f);
-				break;
+        switch (tileEntity.getDir()) {
+            case 0:
+                GL11.glTranslatef(0.0f, move, 0.0f);
+                break;
 			case 1:
 				GL11.glTranslatef(0.0f, 0.0f, move);
 				break;

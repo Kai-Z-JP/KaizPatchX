@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Entity implements IModelSelectorWithType {
     public static final int MAX_SEAT_ROTATION = 45;
@@ -36,7 +37,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
      * 直接参照は非推奨
      */
     private ModelSetVehicleBase<T> myModelSet;
-    protected List<EntityFloor> vehicleFloors = new ArrayList<EntityFloor>();
+    protected List<EntityFloor> vehicleFloors = new ArrayList<>();
     protected final IUpdateVehicle soundUpdater;
     private final ScriptExecuter executer = new ScriptExecuter();
 
@@ -161,11 +162,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         super.setDead();
 
         if (!this.worldObj.isRemote) {
-            for (EntityFloor floor : this.vehicleFloors) {
-                if (floor != null) {
-                    floor.setDead();
-                }
-            }
+            this.vehicleFloors.stream().filter(Objects::nonNull).forEach(Entity::setDead);
 
             //ワールドリロード後にVehicleを消そうとするとWeatherEffectとして残る問題対応
             RTMCore.NETWORK_WRAPPER.sendToAll(new PacketVehicleMovement(this, true));
@@ -369,11 +366,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
      */
     private void setupFloors(ModelSetVehicleBase<T> par1)//getModelSetでループしないように
     {
-        for (EntityFloor entity : this.vehicleFloors) {
-            if (entity != null) {
-                entity.setDead();
-            }
-        }
+        this.vehicleFloors.stream().filter(Objects::nonNull).forEach(Entity::setDead);
 
         this.vehicleFloors.clear();
 

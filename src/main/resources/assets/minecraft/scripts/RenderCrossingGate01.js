@@ -18,7 +18,7 @@ function render(entity, pass, par3) {
 
     var light = renderer.getLightState(entity);
 
-    if (pass == 0) {
+    if (pass === 0) {
         main.render(renderer);
 
         GL11.glPushMatrix();
@@ -35,7 +35,7 @@ function render(entity, pass, par3) {
                 lightR.render(renderer);
                 break;
         }
-    } else if (pass == 2)//発光
+    } else if (pass === 2)//発光
     {
         switch (light) {
             case 0:

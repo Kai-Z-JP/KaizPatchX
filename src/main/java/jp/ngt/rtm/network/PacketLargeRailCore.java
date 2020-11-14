@@ -17,6 +17,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLargeRailCore, IMessage> {
 	public static final byte TYPE_NORMAL = 0;
 	public static final byte TYPE_SLOPE = 1;
@@ -74,9 +77,7 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
 		buffer.writeByte(this.type);
 
 		buffer.writeByte(this.railPositions.length);
-		for (RailPosition rp : this.railPositions) {
-			ByteBufUtils.writeTag(buffer, rp.writeToNBT());
-		}
+		Arrays.stream(this.railPositions).forEach(rp -> ByteBufUtils.writeTag(buffer, rp.writeToNBT()));
 	}
 
 	@Override
@@ -95,10 +96,10 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
 		byte size = buffer.readByte();
 		if (size > 0) {
 			this.railPositions = new RailPosition[size];
-			for (int i = 0; i < size; ++i) {
+			IntStream.range(0, size).forEach(i -> {
 				NBTTagCompound nbt = ByteBufUtils.readTag(buffer);
 				this.railPositions[i] = RailPosition.readFromNBT(nbt);
-			}
+			});
 		}
 	}
 
@@ -120,9 +121,7 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
 				//tile1.setSwitchType(message.type);
 			}
 			//tile0.createRailMap();
-			for (int[] pos : tile0.getRailMap(null).getRailBlockList(RailProperty.readFromNBT(message.property))) {
-				world.markBlockForUpdate(pos[0], pos[1], pos[2]);
-			}
+			tile0.getRailMap(null).getRailBlockList(RailProperty.readFromNBT(message.property)).forEach(pos -> world.markBlockForUpdate(pos[0], pos[1], pos[2]));
 		}
 		return null;
 	}

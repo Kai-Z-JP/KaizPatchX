@@ -124,22 +124,22 @@ public class GuiItemMiniature extends GuiScreenCustom {
 		super.keyTyped(par1, par2);
 
 		try {
-			this.scale = this.getFloat(this.fieldScale.getText());
-			this.offsetX = this.getFloat(this.fieldOffsetX.getText());
-			this.offsetY = this.getFloat(this.fieldOffsetY.getText());
-			this.offsetZ = this.getFloat(this.fieldOffsetZ.getText());
-			this.state.lightValue = this.getByte(this.fieldLightValue.getText());
-		} catch (NumberFormatException e) {
-		}
+            this.scale = this.getFloat(this.fieldScale.getText());
+            this.offsetX = this.getFloat(this.fieldOffsetX.getText());
+            this.offsetY = this.getFloat(this.fieldOffsetY.getText());
+            this.offsetZ = this.getFloat(this.fieldOffsetZ.getText());
+            this.state.lightValue = this.getByte(this.fieldLightValue.getText());
+        } catch (NumberFormatException ignored) {
+        }
 	}
 
 	private float getFloat(String s) {
-		float f = Float.parseFloat(s);
-		if (f == Float.NaN) {
-			throw new NumberFormatException();
-		}
-		return f;
-	}
+        float f = Float.parseFloat(s);
+        if (Float.isNaN(f)) {
+            throw new NumberFormatException();
+        }
+        return f;
+    }
 
 	private byte getByte(String s) {
 		byte b = Byte.parseByte(s);
@@ -152,10 +152,9 @@ public class GuiItemMiniature extends GuiScreenCustom {
 	private void selectFile() {
 		File file = NGTFileLoader.selectFile(new String[][]{{"NGTObject_File", "ngto"}});
 		if (file != null) {
-			NGTObject obj = NGTObject.importFromFile(file);
-			this.ngto = obj;
-			this.buttonDone.enabled = true;
-		}
+            this.ngto = NGTObject.importFromFile(file);
+            this.buttonDone.enabled = true;
+        }
 	}
 
 	private void exportFile() {

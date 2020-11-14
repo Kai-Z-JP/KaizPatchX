@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class FilterManager {
 	public static final FilterManager INSTANCE = new FilterManager();
@@ -24,7 +25,7 @@ public final class FilterManager {
 	private Map<String, EditFilterBase> filters;
 
 	private FilterManager() {
-		this.filterClasses = new HashMap<String, Class<? extends EditFilterBase>>();
+		this.filterClasses = new HashMap<>();
 		this.filterClasses.put("Copy", EditFilterCopy.class);
 		this.filterClasses.put("Cut", EditFilterCut.class);
 		this.filterClasses.put("Delete", EditFilterDelete.class);
@@ -52,7 +53,7 @@ public final class FilterManager {
 
 	@SideOnly(Side.CLIENT)
 	public void loadFilters() {
-		this.filters = new LinkedHashMap<String, EditFilterBase>();
+		this.filters = new LinkedHashMap<>();
 		this.initFilter(new EditFilterCopy());
 		this.initFilter(new EditFilterCut());
 		this.initFilter(new EditFilterDelete());
@@ -64,16 +65,8 @@ public final class FilterManager {
 		this.initFilter(new EditFilterRandom());
 
 		File filterFolder = new File(NGTFileLoader.getModsDir().get(0), FILTER_PATH);
-		try {
-			List<File> list = NGTFileLoader.findFileInDirectory(filterFolder, (file) -> {
-				return file.getName().endsWith(".js");
-			});
-			for (File file : list) {
-				this.initFilter(new EditFilterCustom(NGTText.readText(file, false)));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		List<File> list = NGTFileLoader.findFileInDirectory(filterFolder, (file) -> file.getName().endsWith(".js"));
+		list.stream().map(file -> new EditFilterCustom(NGTText.readText(file, false))).forEach(this::initFilter);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -109,16 +102,13 @@ public final class FilterManager {
 	public void execFilter(EntityPlayer player, String name) {
 		EditFilterBase filter = this.filters.get(name);
 		String[] sa = filter.getCfg().export();
-		StringBuilder builder = new StringBuilder();
-		for (String s : sa) {
-			builder.append(s).append(",");
-		}
+		String builder = Arrays.stream(sa).map(s -> s + ",").collect(Collectors.joining());
 
 		String script = "";
 		if (filter instanceof EditFilterCustom) {
 			script = ((EditFilterCustom) filter).getScriptText();
 		}
-		MCTE.NETWORK_WRAPPER.sendToServer(new PacketFilter(player, name, builder.toString(), script));
+		MCTE.NETWORK_WRAPPER.sendToServer(new PacketFilter(player, name, builder, script));
 	}
 
 	/**

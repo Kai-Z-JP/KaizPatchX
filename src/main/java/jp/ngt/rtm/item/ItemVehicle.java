@@ -143,9 +143,7 @@ public class ItemVehicle extends ItemWithModel {
 	@Override
 	protected String getDefaultModelName(ItemStack itemStack) {
 		switch (itemStack.getItemDamage()) {
-			case 0:
-				return "CV33";
-			case 1:
+            case 1:
 				return "WoodBoat";
 			case 2:
 				return "NGT-1";

@@ -14,19 +14,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VersionChecker {
 	private static final VersionChecker checker = new VersionChecker();
 
-	private final List<PackInfo> checkList = new ArrayList<PackInfo>();
+	private final List<PackInfo> checkList = new ArrayList<>();
 	/**
 	 * {name, version, homepage}
 	 */
-	private final List<String[]> updateList = new ArrayList<String[]>();
+	private final List<String[]> updateList = new ArrayList<>();
 
 	private boolean finished;
 
@@ -38,13 +35,13 @@ public class VersionChecker {
 	}
 
 	public static void checkVersion() {
-		Thread thread = checker.new VersionCheckThread();
+		Thread thread = new VersionCheckThread();
 		thread.start();
 	}
 
 	public static void sendUpdateMessage(ClientConnectedToServerEvent event) {
 		if (checker.finished) {
-			for (String[] sa : checker.updateList) {
+			checker.updateList.forEach(sa -> {
 				IChatComponent component = new ChatComponentTranslation("message.version", EnumChatFormatting.AQUA + sa[0]);
 				component.appendText(" : " + EnumChatFormatting.GREEN + sa[1]);
 				if (sa[2] != null && sa[2].length() > 0) {
@@ -54,19 +51,19 @@ public class VersionChecker {
 					//component.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2]));
 				}
 				event.handler.handleChat(new S02PacketChat(component));
-			}
+			});
 		}
 	}
 
-	public class VersionCheckThread extends Thread {
+	public static class VersionCheckThread extends Thread {
 		public VersionCheckThread() {
 			super("NGT Version Check");
 		}
 
 		@Override
 		public void run() {
-			List<String> strings = new ArrayList<String>();
-			Map<String, String> latestVerMap = new HashMap<String, String>();//<name, ver>
+			List<String> strings = new ArrayList<>();
+			Map<String, String> latestVerMap = new HashMap<>();//<name, ver>
 			for (PackInfo info : checker.checkList) {
 				if (latestVerMap.containsKey(info.name)) {
 					String ver = latestVerMap.get(info.name);
@@ -116,18 +113,15 @@ public class VersionChecker {
 					e.printStackTrace();
 				}
 
-				String[] sa1 = strings.toArray(new String[strings.size()]);
+				String[] sa1 = strings.toArray(new String[0]);
 				strings.clear();
 
-				for (String s : sa1) {
-					String[] sa2 = s.split(":");
-					if (sa2.length == 2) {
-						latestVerMap.put(sa2[0], sa2[1]);
-						if (info.name.equals(sa2[0]) && !info.version.equals(sa2[1])) {
-							checker.updateList.add(new String[]{info.name, sa2[1], info.homepage});
-						}
+				Arrays.stream(sa1).map(s -> s.split(":")).filter(sa2 -> sa2.length == 2).forEach(sa2 -> {
+					latestVerMap.put(sa2[0], sa2[1]);
+					if (info.name.equals(sa2[0]) && !info.version.equals(sa2[1])) {
+						checker.updateList.add(new String[]{info.name, sa2[1], info.homepage});
 					}
-				}
+				});
 			}
 			checker.finished = true;
 		}

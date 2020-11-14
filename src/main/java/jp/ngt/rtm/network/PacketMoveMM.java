@@ -8,14 +8,17 @@ import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.entity.EntityMMBoundingBox;
 import net.minecraft.world.World;
 
-public class PacketMoveMM implements IMessage, IMessageHandler<PacketMoveMM, IMessage> {
-	private int[] entityIds;
-	private double moveX;
-	private double moveY;
-	private double moveZ;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
-	public PacketMoveMM() {
-	}
+public class PacketMoveMM implements IMessage, IMessageHandler<PacketMoveMM, IMessage> {
+    private int[] entityIds;
+    private double moveX;
+    private double moveY;
+    private double moveZ;
+
+    public PacketMoveMM() {
+    }
 
 	public PacketMoveMM(int[] p1, double p2, double p3, double p4) {
 		this.entityIds = p1;
@@ -26,26 +29,22 @@ public class PacketMoveMM implements IMessage, IMessageHandler<PacketMoveMM, IMe
 
 	@Override
 	public void toBytes(ByteBuf buffer) {
-		buffer.writeInt(this.entityIds.length);
-		for (int i : this.entityIds) {
-			buffer.writeInt(i);
-		}
-		buffer.writeDouble(this.moveX);
-		buffer.writeDouble(this.moveY);
-		buffer.writeDouble(this.moveZ);
-	}
+        buffer.writeInt(this.entityIds.length);
+        Arrays.stream(this.entityIds).forEach(buffer::writeInt);
+        buffer.writeDouble(this.moveX);
+        buffer.writeDouble(this.moveY);
+        buffer.writeDouble(this.moveZ);
+    }
 
 	@Override
 	public void fromBytes(ByteBuf buffer) {
-		int size = buffer.readInt();
-		this.entityIds = new int[size];
-		for (int i = 0; i < size; ++i) {
-			this.entityIds[i] = buffer.readInt();
-		}
-		this.moveX = buffer.readDouble();
-		this.moveY = buffer.readDouble();
-		this.moveZ = buffer.readDouble();
-	}
+        int size = buffer.readInt();
+        this.entityIds = new int[size];
+        IntStream.range(0, size).forEach(i -> this.entityIds[i] = buffer.readInt());
+        this.moveX = buffer.readDouble();
+        this.moveY = buffer.readDouble();
+        this.moveZ = buffer.readDouble();
+    }
 
 	@Override
 	public IMessage onMessage(PacketMoveMM message, MessageContext ctx) {

@@ -12,30 +12,29 @@ import java.util.List;
 
 public final class NGTOUtil {
 	public static NGTObject copyBlocks(World world, int x, int y, int z, int width, int height, int depth) {
-		List<BlockSet> list = new ArrayList<BlockSet>();
-		for (int i = 0; i < width; ++i) {
-			for (int j = 0; j < height; ++j) {
-				for (int k = 0; k < depth; ++k) {
-					int x0 = x + i;
-					int y0 = y + j;
-					int z0 = z + k;
-					Block block = world.getBlock(x0, y0, z0);
-					int meta = world.getBlockMetadata(x0, y0, z0);
-					NBTTagCompound nbt = null;
-					if (block.hasTileEntity(meta)) {
-						TileEntity tile = world.getTileEntity(x0, y0, z0);
-						if (tile != null) {
-							nbt = new NBTTagCompound();
-							tile.writeToNBT(nbt);
-						}
-					}
-					list.add(new BlockSet(block, meta, nbt));
-				}
-			}
-		}
-		NGTObject object = NGTObject.createNGTO(list, width, height, depth, x, y, z);
-		return object;
-	}
+        List<BlockSet> list = new ArrayList<>();
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                for (int k = 0; k < depth; ++k) {
+                    int x0 = x + i;
+                    int y0 = y + j;
+                    int z0 = z + k;
+                    Block block = world.getBlock(x0, y0, z0);
+                    int meta = world.getBlockMetadata(x0, y0, z0);
+                    NBTTagCompound nbt = null;
+                    if (block.hasTileEntity(meta)) {
+                        TileEntity tile = world.getTileEntity(x0, y0, z0);
+                        if (tile != null) {
+                            nbt = new NBTTagCompound();
+                            tile.writeToNBT(nbt);
+                        }
+                    }
+                    list.add(new BlockSet(block, meta, nbt));
+                }
+            }
+        }
+        return NGTObject.createNGTO(list, width, height, depth, x, y, z);
+    }
 
 	public static void deleteBlocks(World world, int x, int y, int z, int width, int height, int depth, int flag) {
 		for (int i = 0; i < width; ++i) {

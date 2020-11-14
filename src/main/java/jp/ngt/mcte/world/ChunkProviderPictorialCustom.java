@@ -29,6 +29,7 @@ import net.minecraftforge.event.terraingen.TerrainGen;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import static net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.*;
 import static net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate.EventType.*;
@@ -175,7 +176,7 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
 		for (int i = 255; i >= 0; --i) {
 			int i2 = (z0 * 16 + x0) * k1 + i;
 
-			if (i <= 0 + random.nextInt(5)) {
+			if (i <= random.nextInt(5)) {
 				blocks[i2] = Blocks.bedrock;
 			} else {
 				Block block2 = blocks[i2];
@@ -265,9 +266,7 @@ public class ChunkProviderPictorialCustom implements IChunkProvider {
 		Chunk chunk = new Chunk(this.worldObj, ablock, abyte, par1, par2);
 		byte[] abyte1 = chunk.getBiomeArray();
 
-		for (int k = 0; k < abyte1.length; ++k) {
-			abyte1[k] = (byte) this.biomesForGeneration[k].biomeID;
-		}
+		IntStream.range(0, abyte1.length).forEach(k -> abyte1[k] = (byte) this.biomesForGeneration[k].biomeID);
 
 		chunk.generateSkylightMap();
 		return chunk;

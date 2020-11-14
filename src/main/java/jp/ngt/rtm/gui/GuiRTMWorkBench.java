@@ -209,7 +209,6 @@ public class GuiRTMWorkBench extends GuiContainerCustom implements IModelSelecto
 				super.handleMouseClick(slot, par2, par3, par4);
 			} else if (this.pageIndex == 1 || this.pageIndex == 2) {
 				if (slot != null) {
-					par2 = slot.slotNumber;
 					this.containerRecipe.onSlotClicked(slot);
 				}
 			}

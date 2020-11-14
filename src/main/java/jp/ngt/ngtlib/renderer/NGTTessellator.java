@@ -145,16 +145,14 @@ public final class NGTTessellator implements IRenderer {
 		byte b0 = 32;
 
 		for (int i = 0; i < this.rawBufferIndex; i += b0) {
-			priorityqueue.add(Integer.valueOf(i));
-		}
+            priorityqueue.add(i);
+        }
 
 		for (int i = 0; !priorityqueue.isEmpty(); i += b0) {
-			int j = ((Integer) priorityqueue.remove()).intValue();
+            int j = (Integer) priorityqueue.remove();
 
-			for (int k = 0; k < b0; ++k) {
-				aint[i + k] = this.rawBuffer[j + k];
-			}
-		}
+            System.arraycopy(this.rawBuffer, j, aint, i, b0);
+        }
 
 		System.arraycopy(aint, 0, this.rawBuffer, 0, aint.length);
 		return new TesselatorVertexState(aint, this.rawBufferIndex, this.vertexCount, this.hasTexture, this.hasBrightness, this.hasNormals, this.hasColor);
@@ -304,22 +302,22 @@ public final class NGTTessellator implements IRenderer {
 
 		if (this.hasBrightness) {
 			this.rawBuffer[this.rawBufferIndex + 7] = this.brightness;
-		}
+        }
 
-		if (this.hasColor) {
-			this.rawBuffer[this.rawBufferIndex + 5] = this.color;
-		}
+        if (this.hasColor) {
+            this.rawBuffer[this.rawBufferIndex + 5] = this.color;
+        }
 
-		if (this.hasNormals) {
-			this.rawBuffer[this.rawBufferIndex + 6] = this.normal;
-		}
+        if (this.hasNormals) {
+            this.rawBuffer[this.rawBufferIndex + 6] = this.normal;
+        }
 
-		this.rawBuffer[this.rawBufferIndex + 0] = Float.floatToRawIntBits(par1 + this.xOffset);
-		this.rawBuffer[this.rawBufferIndex + 1] = Float.floatToRawIntBits(par3 + this.yOffset);
-		this.rawBuffer[this.rawBufferIndex + 2] = Float.floatToRawIntBits(par5 + this.zOffset);
-		this.rawBufferIndex += 8;
-		++this.vertexCount;
-	}
+        this.rawBuffer[this.rawBufferIndex] = Float.floatToRawIntBits(par1 + this.xOffset);
+        this.rawBuffer[this.rawBufferIndex + 1] = Float.floatToRawIntBits(par3 + this.yOffset);
+        this.rawBuffer[this.rawBufferIndex + 2] = Float.floatToRawIntBits(par5 + this.zOffset);
+        this.rawBufferIndex += 8;
+        ++this.vertexCount;
+    }
 
 	/**
 	 * Sets the color to the given opaque value (stored as byte values packed in an integer).

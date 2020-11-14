@@ -30,9 +30,9 @@ public final class ModelLoader {
 				ResourceLocation mtlFile = new ResourceLocation(resource.getResourceDomain(), mtlFileName);
 				InputStream is2 = null;
 				try {
-					is2 = NGTFileLoader.getInputStream(mtlFile);
-				} catch (IOException e) {
-				}
+                    is2 = NGTFileLoader.getInputStream(mtlFile);
+                } catch (IOException ignored) {
+                }
 				return loadModel(new InputStream[]{is, is2}, fileName, par1, args);
 			} else {
 				return loadModel(new InputStream[]{is}, fileName, par1, args);
@@ -50,10 +50,10 @@ public final class ModelLoader {
 				String mtlFileName = file.getName().replaceAll(".obj", ".mtl");
 				File mtlFile = new File(file.getParentFile(), mtlFileName);
 				InputStream is2 = null;
-				try {
-					is2 = new BufferedInputStream(new FileInputStream(mtlFile));
-				} catch (IOException e) {
-				}
+                try {
+                    is2 = new BufferedInputStream(new FileInputStream(mtlFile));
+                } catch (IOException ignored) {
+                }
 				return loadModel(new InputStream[]{is, is2}, file.getName(), par1, args);
 			} else {
 				return loadModel(new InputStream[]{is}, file.getName(), par1, args);

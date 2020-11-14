@@ -11,11 +11,11 @@ public class MCTEGuiHandler implements IGuiHandler {
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (ID == MCTE.guiIdEditor) {
-			Entity entity = world.getEntityByID(x);
-			if (entity != null && entity instanceof EntityEditor) {
-				return new ContainerEditor((EntityEditor) entity);
-			}
-		}
+            Entity entity = world.getEntityByID(x);
+            if (entity instanceof EntityEditor) {
+                return new ContainerEditor((EntityEditor) entity);
+            }
+        }
 
 		return null;
 	}
@@ -23,11 +23,11 @@ public class MCTEGuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (ID == MCTE.guiIdEditor) {
-			Entity entity = world.getEntityByID(x);
-			if (entity != null && entity instanceof EntityEditor) {
-				return new GuiEditor((EntityEditor) entity);
-			}
-		} else if (ID == MCTE.guiIdGenerator) {
+            Entity entity = world.getEntityByID(x);
+            if (entity instanceof EntityEditor) {
+                return new GuiEditor((EntityEditor) entity);
+            }
+        } else if (ID == MCTE.guiIdGenerator) {
 			return new GuiGenerator(world, x, y, z);
 		} else if (ID == MCTE.guiIdPainter) {
 			return new GuiPainter(player);

@@ -28,15 +28,15 @@ public class TrainCommand {
 			if (matcher.find()) {
 				int count = matcher.groupCount();
 				if (count == 2) {
-					long t1 = Long.valueOf(matcher.group(1));
-					CommandType type = CommandType.valueOf(matcher.group(2));
-					return new TrainCommand(t1, type, "");
-				} else if (count == 3) {
-					long t1 = Long.valueOf(matcher.group(1));
-					CommandType type = CommandType.valueOf(matcher.group(2));
-					String param = matcher.group(3).replace(" ", "");//コメントあり時のスペース除去
-					return new TrainCommand(t1, type, param);
-				}
+                    long t1 = Long.parseLong(matcher.group(1));
+                    CommandType type = CommandType.valueOf(matcher.group(2));
+                    return new TrainCommand(t1, type, "");
+                } else if (count == 3) {
+                    long t1 = Long.parseLong(matcher.group(1));
+                    CommandType type = CommandType.valueOf(matcher.group(2));
+                    String param = matcher.group(3).replace(" ", "");//コメントあり時のスペース除去
+                    return new TrainCommand(t1, type, param);
+                }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

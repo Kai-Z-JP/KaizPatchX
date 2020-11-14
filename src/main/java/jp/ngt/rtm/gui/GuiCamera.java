@@ -1,4 +1,4 @@
-package jp.ngt.rtm;
+package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

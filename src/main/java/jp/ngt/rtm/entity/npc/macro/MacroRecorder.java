@@ -16,23 +16,24 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class MacroRecorder {
-	private static final String MACRO_FOLDER = "rtm/train_macro";
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
-	public static final MacroRecorder INSTANCE = new MacroRecorder();
+    private static final String MACRO_FOLDER = "rtm/train_macro";
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+    public static final MacroRecorder INSTANCE = new MacroRecorder();
 
-	private final List<TrainCommand> commands = new ArrayList<TrainCommand>();
-	private boolean recording;
-	private long startTime;
+    private final List<TrainCommand> commands = new ArrayList<>();
+    private boolean recording;
+    private long startTime;
 
-	private MacroRecorder() {
-	}
+    private MacroRecorder() {
+    }
 
-	public boolean start(World world) {
-		if (this.recording) {
-			return false;
-		} else {
+    public boolean start(World world) {
+        if (this.recording) {
+            return false;
+        } else {
 			this.recording = true;
 			this.startTime = world.getWorldTime();
 			this.commands.clear();
@@ -63,18 +64,18 @@ public class MacroRecorder {
 		File saveFile = null;
 
 		try {
-			File macroFolder = this.getMacroFolder();
-			String fileName = DATE_FORMAT.format(new Date());
-			saveFile = new File(macroFolder, fileName + ".txt");
-			saveFile.createNewFile();
-			String[] texts = new String[this.commands.size()];
-			for (int i = 0; i < texts.length; ++i) {
-				TrainCommand command = this.commands.get(i);
-				texts[i] = command.toString();
-			}
-			NGTText.writeToText(saveFile, texts);
-			NGTLog.sendChatMessage(player, "Save macro : " + saveFile.getName());
-		} catch (IOException e) {
+            File macroFolder = this.getMacroFolder();
+            String fileName = DATE_FORMAT.format(new Date());
+            saveFile = new File(macroFolder, fileName + ".txt");
+            saveFile.createNewFile();
+            String[] texts = new String[this.commands.size()];
+            IntStream.range(0, texts.length).forEach(i -> {
+                TrainCommand command = this.commands.get(i);
+                texts[i] = command.toString();
+            });
+            NGTText.writeToText(saveFile, texts);
+            NGTLog.sendChatMessage(player, "Save macro : " + saveFile.getName());
+        } catch (IOException e) {
 			if (saveFile != null) {
 				NGTLog.sendChatMessage(player, "Failed to save file : " + saveFile.getAbsolutePath());
 			}

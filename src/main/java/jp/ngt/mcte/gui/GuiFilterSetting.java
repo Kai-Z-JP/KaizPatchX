@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiFilterSetting extends GuiScreenCustom {
@@ -29,7 +30,7 @@ public class GuiFilterSetting extends GuiScreenCustom {
 	protected static final int SEPARATION_POS = 10 + FILTER_BUTTON_W + SETTING_BUTTON_W + 10;
 
 	private final GuiEditor parentGui;
-	private final List<EditFilterBase> filters = new ArrayList<EditFilterBase>();
+	private final List<EditFilterBase> filters = new ArrayList<>();
 
 	private final List<GuiButton> filterButtons;
 	private final List<GuiButton> filterSettingButtons;
@@ -43,17 +44,12 @@ public class GuiFilterSetting extends GuiScreenCustom {
 		this.parentGui = gui;
 		this.filters.addAll(FilterManager.INSTANCE.getFilters());
 
-		this.filterButtons = new ArrayList<GuiButton>();
-		this.filterSettingButtons = new ArrayList<GuiButton>();
-		this.guiElementNames = new ArrayList<GuiTextField>();
-		this.guiElements = new ArrayList<IGuiElement>();
+		this.filterButtons = new ArrayList<>();
+		this.filterSettingButtons = new ArrayList<>();
+		this.guiElementNames = new ArrayList<>();
+		this.guiElements = new ArrayList<>();
 
-		for (int i = 0; i < this.filters.size(); ++i) {
-			if (this.filters.get(i).getFilterName().equals(selectedFilterName)) {
-				this.selectedFilterId = i;
-				break;
-			}
-		}
+		selectedFilterId = IntStream.range(0, this.filters.size()).filter(i -> this.filters.get(i).getFilterName().equals(selectedFilterName)).findFirst().orElse(this.selectedFilterId);
 	}
 
 	@Override
@@ -95,10 +91,7 @@ public class GuiFilterSetting extends GuiScreenCustom {
 		this.currentScrollR = 0;
 
 		//選択した設定ボタンのみ無効化
-		for (int i = 0; i < this.filterSettingButtons.size(); ++i) {
-			GuiButton button1 = this.filterSettingButtons.get(i);
-			button1.enabled = true;
-		}
+		this.filterSettingButtons.forEach(button1 -> button1.enabled = true);
 		this.filterSettingButtons.get(index).enabled = false;
 
 		this.guiElementNames.clear();
@@ -145,13 +138,9 @@ public class GuiFilterSetting extends GuiScreenCustom {
 
 	protected void save() {
 		//フィールド内の値更新
-		for (GuiTextField field : this.getTextFields()) {
-			field.setFocused(false);
-		}
+		this.getTextFields().forEach(field -> field.setFocused(false));
 
-		for (EditFilterBase filter : this.filters) {
-			filter.save();
-		}
+		this.filters.forEach(EditFilterBase::save);
 	}
 
 	@Override
@@ -242,18 +231,18 @@ public class GuiFilterSetting extends GuiScreenCustom {
 	}
 
 	private void updateElementsPos() {
-		for (int i = 0; i < this.filterButtons.size(); ++i) {
+		IntStream.range(0, this.filterButtons.size()).forEach(i -> {
 			int yPos = (i - this.currentScrollL) * (20 + BUTTON_GAP_Y) + BUTTON_GAP_Y;
 			this.filterButtons.get(i).yPosition = yPos;
 			this.filterSettingButtons.get(i).yPosition = yPos;
-		}
+		});
 
-		for (int i = 0; i < this.guiElements.size(); ++i) {
+		IntStream.range(0, this.guiElements.size()).forEach(i -> {
 			int yPos = (i - this.currentScrollR) * (20 + BUTTON_GAP_Y) + BUTTON_GAP_Y;
 			GuiTextField field = this.guiElementNames.get(i);
 			field.yPosition = yPos;
 			IGuiElement element = this.guiElements.get(i);
 			element.setYPos(yPos);
-		}
+		});
 	}
 }

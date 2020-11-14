@@ -19,15 +19,11 @@ public class BlockMovingMachine extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		switch (meta) {
-			case 0:
-				return new TileEntityMovingMachine();
-			case 1:
-				return new TileEntityTurnplate();
-			default:
-				return new TileEntityMovingMachine();
-		}
-	}
+        if (meta == 1) {
+            return new TileEntityTurnplate();
+        }
+        return new TileEntityMovingMachine();
+    }
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {

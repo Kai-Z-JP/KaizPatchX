@@ -14,6 +14,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.util.stream.IntStream;
+
 @SideOnly(Side.CLIENT)
 public class RenderEditor extends Render {
 	private static final ResourceLocation texture = new ResourceLocation("mcte", "textures/atc.png");
@@ -118,11 +120,11 @@ public class RenderEditor extends Render {
 		if (editor.hasCloneBox()) {
 			GL11.glPushMatrix();
 			int[] box = editor.getCloneBox();
-			for (int i = 0; i < box[3]; ++i) {
+			IntStream.range(0, box[3]).forEach(i -> {
 				GL11.glTranslatef((float) box[0], (float) box[1], (float) box[2]);
 				this.renderBox(-0.05D, -0.05D, -0.05D, 1.1D + difX, 1.1D + difY, 1.1D + difZ, 0x303000, 64);
 				this.renderFrame(-0.05D, -0.05D, -0.05D, 1.1D + difX, 1.1D + difY, 1.1D + difZ, 0x000000, 255);
-			}
+			});
 			GL11.glPopMatrix();
 		}
 
@@ -161,7 +163,7 @@ public class RenderEditor extends Render {
 		return texture;
 	}
 
-	private final void renderBox(double minX, double minY, double minZ, double width, double height, double depth, int color, int alpha) {
+	private void renderBox(double minX, double minY, double minZ, double width, double height, double depth, int color, int alpha) {
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);//加算
@@ -217,7 +219,7 @@ public class RenderEditor extends Render {
 		GL11.glDepthMask(true);
 	}
 
-	private final void renderFrame(double minX, double minY, double minZ, double width, double height, double depth, int color, int alpha) {
+	private void renderFrame(double minX, double minY, double minZ, double width, double height, double depth, int color, int alpha) {
 		double maxX = minX + width;
 		double maxY = minY + height;
 		double maxZ = minZ + depth;

@@ -8,22 +8,20 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class PartsWithChildren extends Parts {
-	public final List<Parts> childParts = new ArrayList<Parts>();
+    public final List<Parts> childParts = new ArrayList<>();
 
-	public PartsWithChildren(String... par1) {
-		super(par1);
-	}
+    public PartsWithChildren(String... par1) {
+        super(par1);
+    }
 
-	public void addParts(Parts par1) {
-		this.childParts.add(par1);
-	}
+    public void addParts(Parts par1) {
+        this.childParts.add(par1);
+    }
 
-	@Override
+    @Override
 	public void init(PartsRenderer renderer) {
-		super.init(renderer);
+        super.init(renderer);
 
-		for (Parts parts : this.childParts) {
-			parts.init(renderer);
-		}
-	}
+        this.childParts.forEach(parts -> parts.init(renderer));
+    }
 }

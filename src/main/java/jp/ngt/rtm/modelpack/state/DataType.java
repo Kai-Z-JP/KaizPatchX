@@ -1,5 +1,7 @@
 package jp.ngt.rtm.modelpack.state;
 
+import java.util.Arrays;
+
 public enum DataType {
 	BOOLEAN("Boolean"),
 	DOUBLE("Double"),
@@ -16,12 +18,7 @@ public enum DataType {
 	}
 
 	public static DataType getType(String s) {
-		for (DataType type : DataType.values()) {
-			if (type.key.equals(s)) {
-				return type;
-			}
-		}
-		return null;
+		return Arrays.stream(DataType.values()).filter(type -> type.key.equals(s)).findFirst().orElse(null);
 	}
 
 	/*public interface DataEntryConverter

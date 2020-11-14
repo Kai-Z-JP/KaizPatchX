@@ -6,6 +6,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import java.util.Objects;
+import java.util.stream.IntStream;
+
 public class ContainerEditor extends Container {
 	private final EntityEditor editor;
 
@@ -16,9 +19,7 @@ public class ContainerEditor extends Container {
 		this.addSlotToContainer(new Slot(this.editor, 0, 72, 152));
 		this.addSlotToContainer(new Slot(this.editor, 1, 72, 172));
 
-		for (int i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(this.editor.getPlayer().inventory, i, 8 + i * 20, 142));
-		}
+		IntStream.range(0, 9).mapToObj(i -> new Slot(this.editor.getPlayer().inventory, i, 8 + i * 20, 142)).forEach(this::addSlotToContainer);
 	}
 
 	@Override
@@ -56,12 +57,7 @@ public class ContainerEditor extends Container {
 		super.onContainerClosed(par1EntityPlayer);
 
 		if (!par1EntityPlayer.worldObj.isRemote) {
-			for (int i = 0; i < this.editor.getSizeInventory(); ++i) {
-				ItemStack itemstack = this.editor.getStackInSlotOnClosing(i);
-				if (itemstack != null) {
-					par1EntityPlayer.dropPlayerItemWithRandomChoice(itemstack, false);
-				}
-			}
+			IntStream.range(0, this.editor.getSizeInventory()).mapToObj(this.editor::getStackInSlotOnClosing).filter(Objects::nonNull).forEach(itemstack -> par1EntityPlayer.dropPlayerItemWithRandomChoice(itemstack, false));
 			this.editor.setCloneBox(0, 0, 0, 0);
 		}
 	}

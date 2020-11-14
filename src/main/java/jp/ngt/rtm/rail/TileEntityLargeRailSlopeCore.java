@@ -69,17 +69,17 @@ public class TileEntityLargeRailSlopeCore extends TileEntityLargeRailCore {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int[] getRailSize() {
-		int startX = this.railPositions[0].blockX;
-		int endX = this.railPositions[1].blockX;
-		int startZ = this.railPositions[0].blockZ;
-		int endZ = this.railPositions[1].blockZ;
+        int startX = this.railPositions[0].blockX;
+        int endX = this.railPositions[1].blockX;
+        int startZ = this.railPositions[0].blockZ;
+        int endZ = this.railPositions[1].blockZ;
 
-		int minX = startX <= endX ? startX : endX;
-		int maxX = startX >= endX ? startX : endX;
-		int minY = this.yCoord;
-		int maxY = this.yCoord;
-		int minZ = startZ <= endZ ? startZ : endZ;
-		int maxZ = startZ >= endZ ? startZ : endZ;
-		return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
-	}
+        int minX = Math.min(startX, endX);
+        int maxX = Math.max(startX, endX);
+        int minY = this.yCoord;
+        int maxY = this.yCoord;
+        int minZ = Math.min(startZ, endZ);
+        int maxZ = Math.max(startZ, endZ);
+        return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
+    }
 }

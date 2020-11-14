@@ -109,19 +109,19 @@ public class BlockFurnaceFire extends BlockLiquidBase {
 				if (!world.isRemote) {
 					List list = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x, y, z, (double) x + 1.0D, (double) y + 1.0D, (double) z + 1.0D));
 					if (list != null && !list.isEmpty()) {
-						int i2 = 0;
-						for (int i = 0; i < list.size(); ++i) {
-							EntityItem entityItem = (EntityItem) list.get(i);
-							ItemStack itemstack1 = entityItem.getEntityItem();
-							if (itemstack1.getItem() == RTMItem.coke) {
-								i2 = itemstack1.stackSize / 2;
-							} else if (itemstack1.getItem() == Items.coal && itemstack1.getItemDamage() == 1) {
-								i2 = itemstack1.stackSize / 8;
-							} else {
-								i2 = 0;
-							}
+                        int i2;
+                        for (Object o : list) {
+                            EntityItem entityItem = (EntityItem) o;
+                            ItemStack itemstack1 = entityItem.getEntityItem();
+                            if (itemstack1.getItem() == RTMItem.coke) {
+                                i2 = itemstack1.stackSize / 2;
+                            } else if (itemstack1.getItem() == Items.coal && itemstack1.getItemDamage() == 1) {
+                                i2 = itemstack1.stackSize / 8;
+                            } else {
+                                i2 = 0;
+                            }
 
-							if (i2 > 0) {
+                            if (i2 > 0) {
 								if (sizeCoke + i2 > sizeIron) {
 									itemstack1.stackSize = sizeCoke + i2 - sizeIron;
 									entityItem.setEntityItemStack(itemstack1);
@@ -150,7 +150,6 @@ public class BlockFurnaceFire extends BlockLiquidBase {
 						} else if (sizeCoke > sizeIron) {
 							itemstack0.stackSize -= sizeIron;
 							((EntityItem) entity).setEntityItemStack(itemstack0);
-							sizeCoke = sizeIron;
 						} else {
 							entity.setDead();
 						}

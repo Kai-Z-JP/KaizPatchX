@@ -14,16 +14,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class NGTZ {
-	private final Map<String, NGTObject> objects = new HashMap<String, NGTObject>();
+    private final Map<String, NGTObject> objects = new HashMap<>();
 
-	public NGTZ(ResourceLocation par1) {
-		try {
-			IResource res = Minecraft.getMinecraft().getResourceManager().getResource(par1);
-			this.load(res.getInputStream());
-		} catch (IOException e) {
-			throw new ModelFormatException("IO Exception reading model", e);
-		}
-	}
+    public NGTZ(ResourceLocation par1) {
+        try {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(par1);
+            this.load(res.getInputStream());
+        } catch (IOException e) {
+            throw new ModelFormatException("IO Exception reading model", e);
+        }
+    }
 
 	public void load(InputStream is) throws IOException {
 		ZipInputStream zip = new ZipInputStream(is);

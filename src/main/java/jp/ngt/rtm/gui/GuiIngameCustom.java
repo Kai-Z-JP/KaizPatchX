@@ -20,15 +20,17 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.lwjgl.opengl.GL11;
 
+import java.util.stream.IntStream;
+
 @SideOnly(Side.CLIENT)
 public class GuiIngameCustom extends GuiScreen {
-	private static final ResourceLocation tex_cab = new ResourceLocation("rtm", "textures/gui/cab.png");
-	private static final ResourceLocation tex_scope = new ResourceLocation("rtm", "textures/gui/scope.png");
-	private static final ResourceLocation tex_nvd = new ResourceLocation("rtm", "textures/gui/nvd.png");
+    private static final ResourceLocation tex_cab = new ResourceLocation("rtm", "textures/gui/cab.png");
+    private static final ResourceLocation tex_scope = new ResourceLocation("rtm", "textures/gui/scope.png");
+    private static final ResourceLocation tex_nvd = new ResourceLocation("rtm", "textures/gui/nvd.png");
 
-	public GuiIngameCustom(Minecraft par1) {
-		super();
-		this.mc = par1;
+    public GuiIngameCustom(Minecraft par1) {
+        super();
+        this.mc = par1;
 	}
 
 	public void onRenderGui(RenderGameOverlayEvent.Pre event) {
@@ -57,7 +59,7 @@ public class GuiIngameCustom extends GuiScreen {
                 event.setCanceled(true);
             }
             if (viewMode == 4) {
-                Camera.INSTANCE.render(this.mc, (RenderGameOverlayEvent) event, event
+                Camera.INSTANCE.render(this.mc, event, event
                         .resolution.getScaledWidth(), event.resolution.getScaledHeight());
             } else {
                 Camera.INSTANCE.off();
@@ -112,12 +114,12 @@ public class GuiIngameCustom extends GuiScreen {
 		fontrenderer.drawStringWithShadow("Time : " + this.getTime(), 2, this.height - 10, 0xFFFFFF);
 
 		if (RTMUtil.MESSAGELIST.size() > 0) {
-			for (int i = 0; i < RTMUtil.MESSAGELIST.size(); ++i) {
-				String s = RTMUtil.MESSAGELIST.get(i);
-				fontrenderer.drawStringWithShadow(s, this.width - s.length() * 10, this.height - 20 * (i + 1), 0xFFFFFF);
-			}
-			RTMUtil.MESSAGELIST.clear();
-		}
+            IntStream.range(0, RTMUtil.MESSAGELIST.size()).forEach(i -> {
+                String s = RTMUtil.MESSAGELIST.get(i);
+                fontrenderer.drawStringWithShadow(s, this.width - s.length() * 10, this.height - 20 * (i + 1), 0xFFFFFF);
+            });
+            RTMUtil.MESSAGELIST.clear();
+        }
 	}
 
 	/**
@@ -142,14 +144,13 @@ public class GuiIngameCustom extends GuiScreen {
 	 * @return 0:00~23:59
 	 */
 	private String getTime() {
-		int t0 = this.getWorldTime();
-		int hour = ((t0 / 1000) + 6) % 24;
-		int minute = (int) ((float) (t0 % 1000) * 0.06F);
-		StringBuilder sb = new StringBuilder(String.valueOf(hour));
-		sb.append(":");
-		sb.append(minute);
-		return sb.toString();
-	}
+        int t0 = this.getWorldTime();
+        int hour = ((t0 / 1000) + 6) % 24;
+        int minute = (int) ((float) (t0 % 1000) * 0.06F);
+        String sb = hour + ":" +
+                minute;
+        return sb;
+    }
 
 	private void setScale(ScaledResolution par1) {
 		this.width = par1.getScaledWidth();
@@ -258,16 +259,16 @@ public class GuiIngameCustom extends GuiScreen {
 
 	@Override
 	public void drawTexturedModalRect(int p_73729_1_, int p_73729_2_, int p_73729_3_, int p_73729_4_, int p_73729_5_, int p_73729_6_) {
-		float f = 0.001953125F;
-		float f1 = 0.001953125F;
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(p_73729_1_ + 0, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + 0) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
-		tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
-		tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + 0, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + 0) * f1);
-		tessellator.addVertexWithUV(p_73729_1_ + 0, p_73729_2_ + 0, this.zLevel, (float) (p_73729_3_ + 0) * f, (float) (p_73729_4_ + 0) * f1);
-		tessellator.draw();
-	}
+        float f = 0.001953125F;
+        float f1 = 0.001953125F;
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_ + p_73729_6_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_ + p_73729_6_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_ + p_73729_5_, p_73729_2_, this.zLevel, (float) (p_73729_3_ + p_73729_5_) * f, (float) (p_73729_4_) * f1);
+        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_, this.zLevel, (float) (p_73729_3_) * f, (float) (p_73729_4_) * f1);
+        tessellator.draw();
+    }
 
 	protected void renderScope(int w, int h) {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);

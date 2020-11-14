@@ -45,9 +45,9 @@ public class CommandMCTE extends CommandBase {
 				int difficulty = 1;
 				if (strings.length == 2) {
 					try {
-						difficulty = Integer.parseInt(strings[1]);
-					} catch (NumberFormatException e) {
-					}
+                        difficulty = Integer.parseInt(strings[1]);
+                    } catch (NumberFormatException ignored) {
+                    }
 
 					if (difficulty <= 0) {
 						NGTLog.sendChatMessage(player, "Illegal number");
@@ -55,15 +55,19 @@ public class CommandMCTE extends CommandBase {
 					}
 				} else {
 					switch (player.worldObj.difficultySetting) {
-						case PEACEFUL:
-							difficulty = 9;
-						case EASY:
-							difficulty = 8;
-						case NORMAL:
-							difficulty = 7;
-						case HARD:
-							difficulty = 6;
-					}
+                        case PEACEFUL:
+                            difficulty = 9;
+                            break;
+                        case EASY:
+                            difficulty = 8;
+                            break;
+                        case NORMAL:
+                            difficulty = 7;
+                            break;
+                        case HARD:
+                            difficulty = 6;
+                            break;
+                    }
 				}
 
 				editor.editBlocks(Editor.EditType_Minesweeper, difficulty);

@@ -21,22 +21,20 @@ public class BlockSwitch extends Block {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		if (world.isRemote) {
-			return true;
-		} else {
-			int meta = world.getBlockMetadata(x, y, z);
-			if (meta < 4) {
-				meta += 4;
-			} else {
-				meta -= 4;
-			}
-			world.setBlockMetadataWithNotify(x, y, z, meta, 3);
-			world.notifyBlockChange(x, y, z, this);
-			world.notifyBlockChange(x, y - 1, z, this);
-			world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "random.click", 0.3F, 0.6F);
-			return true;
-		}
-	}
+        if (!world.isRemote) {
+            int meta = world.getBlockMetadata(x, y, z);
+            if (meta < 4) {
+                meta += 4;
+            } else {
+                meta -= 4;
+            }
+            world.setBlockMetadataWithNotify(x, y, z, meta, 3);
+            world.notifyBlockChange(x, y, z, this);
+            world.notifyBlockChange(x, y - 1, z, this);
+            world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "random.click", 0.3F, 0.6F);
+        }
+        return true;
+    }
 
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
@@ -47,8 +45,7 @@ public class BlockSwitch extends Block {
 		switch (par1) {
 
 		}
-		int j = par1;
-		float f = (float) (1 + j) / 16.0F;
+        float f = (float) (1 + par1) / 16.0F;
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, f, 1.0F);
 	}
 

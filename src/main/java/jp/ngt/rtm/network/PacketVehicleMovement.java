@@ -11,6 +11,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVehicleMovement, IMessage> {
     private static final double SAMPLING = 32.0D;
     private static final double DIV_32 = 1.0D / SAMPLING;
@@ -83,12 +85,7 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
         if (message.trainY < 0) {
             Entity entity = world.getEntityByID(message.entityId);
             if (entity == null) {
-                for (Object entity2 : world.weatherEffects) {
-                    if (((Entity) entity2).getEntityId() == message.entityId) {
-                        entity = ((Entity) entity2);
-                        break;
-                    }
-                }
+                entity = ((List<Entity>) world.weatherEffects).stream().filter(entity2 -> entity2.getEntityId() == message.entityId).findFirst().orElse(entity);
             }
 
             if (entity != null) {

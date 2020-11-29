@@ -70,9 +70,6 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
 
     protected void renderAllWire(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
         GL11.glPushMatrix();
-        NGTVec vec = tileEntity.wirePos;
-        GL11.glTranslatef((float) par2 + 0.5F + (float) vec.xCoord, (float) par4 + 0.5F + (float) vec.yCoord, (float) par6 + 0.5F + (float) vec.zCoord);
-
         tileEntity.getConnectionList().stream()
                 .filter(connection -> connection.type.isVisible && connection.isRoot)
                 .forEach(connection -> this.renderWire(tileEntity, connection, par2, par4, par6, par8));
@@ -91,14 +88,16 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
             GL11.glDisable(GL11.GL_CULL_FACE);
         }
 
-        NGTVec vec = this.getConnectedTarget(tileEntity, connection, par8);
+        NGTVec vec = this.getConnectedTarget(tileEntity, connection, par2, par4, par6, par8);
         WirePartsRenderer renderer = (WirePartsRenderer) modelSet.modelObj.renderer;
+        GL11.glPushMatrix();
         renderer.renderWire(tileEntity, connection, vec, par8);
+        GL11.glPopMatrix();
 
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
 
-    public NGTVec getConnectedTarget(TileEntityConnectorBase tileEntity, Connection connection, float par8) {
+    public NGTVec getConnectedTarget(TileEntityConnectorBase tileEntity, Connection connection, double par2, double par4, double par6, float par8) {
         NGTVec posMain = tileEntity.wirePos;
         float x = 0.0F;
         float y = 0.0F;
@@ -106,12 +105,9 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         float thisX = (float) tileEntity.xCoord + 0.5F + (float) posMain.xCoord;
         float thisY = (float) tileEntity.yCoord + 0.5F + (float) posMain.yCoord;
         float thisZ = (float) tileEntity.zCoord + 0.5F + (float) posMain.zCoord;
-        if (connection.type == ConnectionType.TO_ENTITY) {
-            x = (float) connection.x + 0.5F - thisX;
-            y = (float) connection.y - thisY;
-            z = (float) connection.z + 0.5F - thisZ;
-        } else if (connection.type == ConnectionType.TO_PLAYER)//手に持ってる
-        {
+        if (connection.type != ConnectionType.TO_PLAYER) {
+            GL11.glTranslatef((float) par2 + 0.5F + (float) posMain.xCoord, (float) par4 + 0.5F + (float) posMain.yCoord, (float) par6 + 0.5F + (float) posMain.zCoord);
+        } else {
             EntityPlayer entity = connection.getPlayer(tileEntity.getWorldObj());
             if (entity != null) {
                 float f9 = entity.getSwingProgress(par8);
@@ -134,11 +130,19 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
                     y0 = entity.prevPosY + d6 + (entity.posY - entity.prevPosY) * (double) par8 - 0.45D;
                     z0 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) par8 - d7 * 0.35D + d9 * 0.85D;
                 }
-
-                x = (float) (x0 - thisX);
-                y = (float) (y0 - thisY);
-                z = (float) (z0 - thisZ);
+                GL11.glTranslatef((float) x0 - thisX, (float) y0 - thisY, (float) z0 - thisZ);
             }
+        }
+
+        if (connection.type == ConnectionType.TO_ENTITY) {
+            x = (float) connection.x + 0.5F - thisX;
+            y = (float) connection.y - thisY;
+            z = (float) connection.z + 0.5F - thisZ;
+        } else if (connection.type == ConnectionType.TO_PLAYER)//手に持ってる
+        {
+            x = (float) connection.x + 0.5F - thisX;
+            y = (float) connection.y - thisY;
+            z = (float) connection.z + 0.5F - thisZ;
         } else {
             TileEntity tile = tileEntity.getWorldObj().getTileEntity(connection.x, connection.y, connection.z);
             if (tile instanceof TileEntityConnectorBase) {

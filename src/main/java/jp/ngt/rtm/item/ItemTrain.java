@@ -35,7 +35,7 @@ public class ItemTrain extends ItemWithModel {
 
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
-		if (world.isRemote || !PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_VEHICLE)) {
+        if (world.isRemote || !PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_VEHICLE)) {
             return true;
         }
 
@@ -45,9 +45,8 @@ public class ItemTrain extends ItemWithModel {
         }
 
         int r = 16;
-        List list = world.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(x - r, y - 4, z - r, x + r + 1, y + 8, z + r + 1));
-        for (Object o : list) {
-            Entity entity = (Entity) o;
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(x - r, y - 4, z - r, x + r + 1, y + 8, z + r + 1));
+        for (Entity entity : list) {
             if (entity instanceof EntityTrainBase || entity instanceof EntityBogie || entity instanceof EntityVehiclePart) {
                 double distanceSq = entity.getDistanceSq(x, y, z);
                 ModelSetVehicleBase<TrainConfig> modelSet = ModelPackManager.INSTANCE.getModelSet(TrainConfig.TYPE, this.getModelName(itemStack));

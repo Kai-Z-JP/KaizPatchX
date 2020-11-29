@@ -109,13 +109,8 @@ public class EntityMMBoundingBox extends Entity {
         this.aabb.maxY += dy < 0.0D ? -dy : 0.0D;
         this.aabb.offset(this.posX, this.posY, this.posZ);
 
-        List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.aabb);
-        for (Object o : list) {
-            Entity entity = (Entity) o;
-            if (!(entity instanceof EntityMMBoundingBox)) {
-                this.moveEntity(entity, dx, dy, dz);
-            }
-        }
+        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.aabb);
+        list.stream().filter(entity -> !(entity instanceof EntityMMBoundingBox)).forEach(entity -> this.moveEntity(entity, dx, dy, dz));
     }
 
 	private void moveEntity(Entity entity, double dx, double dy, double dz) {

@@ -30,7 +30,7 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
     private boolean ridingEntity;
 
     public VehicleTrackerEntry(EntityTrackerEntry par1, Entity par2) {
-        super(par1.myEntity, par1.blocksDistanceThreshold, par1.updateFrequency, false);
+        super(par1.myEntity, par1.blocksDistanceThreshold, 2, false);
         this.trackingPlayers = par1.trackingPlayers;
     }
 

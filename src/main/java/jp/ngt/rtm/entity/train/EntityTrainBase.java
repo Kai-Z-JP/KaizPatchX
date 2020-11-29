@@ -135,9 +135,11 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }//ワールド読み込み時にformationがnull
 
         FormationEntry entry = this.formation.getEntry(this);
-        nbt.setLong("FormationId", this.formation.id);
-        nbt.setByte("EntryPos", entry.entryId);
-        nbt.setByte("EntryDir", entry.dir);
+        if (entry != null) {
+            nbt.setLong("FormationId", this.formation.id);
+            nbt.setByte("EntryPos", entry.entryId);
+            nbt.setByte("EntryDir", entry.dir);
+        }
     }
 
     @Override
@@ -753,10 +755,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     public void setSpeed(float par1) {
         if (this.worldObj.isRemote) {
             this.trainSpeed = par1;
-        } else {
-            if (this.isControlCar()) {
-                this.formation.setSpeed(par1);
-            }
+        } else if (this.isControlCar()) {
+            this.formation.setSpeed(par1);
         }
     }
 

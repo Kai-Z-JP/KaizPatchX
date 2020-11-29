@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.math.NGTVec;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.renderer.IRenderer;
 import jp.ngt.ngtlib.renderer.NGTRenderHelper;
@@ -144,30 +143,12 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 
                 for (int i = 0; i < max + 1; ++i) {
                     double[] curPoint = rm.getRailPos(max, i);
-                    double curHeight = rm.getRailHeight(max, i);
-                    float pitch;
-                    if (rm.getCant(max, i) != 0.0F) {
-                        double[] rp0, rp1;
-                        double h0, h1;
-                        rp0 = (i == 0) ? curPoint : rm.getRailPos(max, i - 1);
-                        h0 = (i == 0) ? curHeight : rm.getRailHeight(max, i - 1);
-                        rp1 = (i == max) ? curPoint : rm.getRailPos(max, i + 1);
-                        h1 = (i == max) ? curHeight : rm.getRailHeight(max, i + 1);
-                        NGTVec vec = new NGTVec(
-                                Math.abs(rp0[1] - rp1[1]),
-                                h0 - h1,
-                                Math.abs(rp0[0] - rp1[0]));
-                        pitch = vec.getPitch() * 1.5f;
-                    } else {
-                        pitch = -rm.getRailPitch(max, i);
-                    }
-
                     float[] array = {
                             moveX + (float) (curPoint[1] - stPoint[1]),
-                            (float) (curHeight - startH),//0.0F,
+                            (float) (rm.getRailHeight(max, i) - startH),//0.0F,
                             moveZ + (float) (curPoint[0] - stPoint[0]),
                             rm.getRailRotation(max, i),
-                            pitch,
+                            -rm.getRailPitch(max, i),
                             rm.getCant(max, i)
                     };
 

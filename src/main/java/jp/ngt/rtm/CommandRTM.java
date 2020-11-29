@@ -41,35 +41,31 @@ public class CommandRTM extends CommandBase {
 			int state = Integer.parseInt(s[1]);
 
 			double d0 = 16.0D;
-			List list = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - d0, player.posY - d0, player.posZ - d0, player.posX + d0, player.posY + d0, player.posZ + d0));
-			for (Object o : list) {
-				Entity entity = (Entity) o;
-				if (entity instanceof EntityTrainBase) {
-					EntityTrainBase train = (EntityTrainBase) entity;
-					if (s[0].equalsIgnoreCase("door")) {
-						train.setTrainStateData(TrainStateType.State_Door.id, (byte) state);
-					} else if (s[0].equalsIgnoreCase("pan")) {
-						train.setTrainStateData(TrainStateType.State_Pantograph.id, (byte) state);
-					} else if (s[0].equalsIgnoreCase("speed")) {
-						train.setSpeed(state / 72.0f);
-					}
+			List<Entity> list = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - d0, player.posY - d0, player.posZ - d0, player.posX + d0, player.posY + d0, player.posZ + d0));
+			list.stream().filter(EntityTrainBase.class::isInstance).map(EntityTrainBase.class::cast).forEach(train -> {
+				if (s[0].equalsIgnoreCase("door")) {
+					train.setTrainStateData(TrainStateType.State_Door.id, (byte) state);
+				} else if (s[0].equalsIgnoreCase("pan")) {
+					train.setTrainStateData(TrainStateType.State_Pantograph.id, (byte) state);
+				} else if (s[0].equalsIgnoreCase("speed")) {
+					train.setSpeed(state / 72.0f);
 				}
-			}
+			});
 		} else {
 			if (s[0].equalsIgnoreCase("delAllTrain")) {
 				int count = 0;
-				List list = player.worldObj.loadedEntityList;
-				for (Object object : list) {
-					Entity entity = null;
-					if (object instanceof EntityTrainBase) {
-						entity = (EntityTrainBase) object;
+				List<Entity> list = player.worldObj.loadedEntityList;
+				for (Entity entity0 : list) {
+					Entity entity1 = null;
+					if (entity0 instanceof EntityTrainBase) {
+						entity1 = entity0;
 						++count;
-					} else if (object instanceof EntityBogie) {
-						entity = (EntityBogie) object;
+					} else if (entity0 instanceof EntityBogie) {
+						entity1 = entity0;
 					}
 
-					if (entity != null && !entity.isDead) {
-						entity.setDead();
+					if (entity1 != null && !entity1.isDead) {
+						entity1.setDead();
 					}
 				}
 

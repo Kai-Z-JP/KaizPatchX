@@ -158,10 +158,9 @@ public class TileEntityEffect extends TileEntity {
 
 		//Entityへの爆風処理
 		double time = (double) (Phase3 - this.tickCount) / (double) (Phase3 - Phase1);//0.0~1.0
-		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, this.getAABB(tileX, tileY, tileZ, blastSize));
+		List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(null, this.getAABB(tileX, tileY, tileZ, blastSize));
 		//List list = this.worldObj.loadedEntityList;//ConcurrentModificationException
-		for (Object o : list) {
-			Entity entity = (Entity) o;
+		list.forEach(entity -> {
 			double distanceSq = entity.getDistanceSq(tileX, tileY, tileZ);
 			if (distanceSq < d1) {
 				double dx = entity.posX - tileX;
@@ -188,7 +187,7 @@ public class TileEntityEffect extends TileEntity {
 				if (acceleration > 0.0D) {
 					if (entity instanceof EntityPlayer) {
 						if (((EntityPlayer) entity).capabilities.isFlying) {
-							continue;
+							return;
 						}
 					}
 
@@ -198,7 +197,7 @@ public class TileEntityEffect extends TileEntity {
 					entity.motionZ += dz * acceleration;
 				}
 			}
-		}
+		});
 	}
 
 	public double getSigmoid(float x, float a)//(1/(1+e^-x*0.5))-0.5

@@ -100,20 +100,17 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 		}
 
 		//EntityBogieの関連付けタイミング
-		IntStream.range(0, 2).forEach(pass -> {
-			for (Object o : this.loadedEntityList) {
-				Entity entity = (Entity) o;
-				double x = entity.posX;
-				double y = entity.posY - entity.yOffset;
-				double z = entity.posZ;
-				try {
-					entity.onUpdate();
-				} catch (Exception ignored)//etc. cast WorldServer
-				{
-				}
-				entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
+		IntStream.range(0, 2).forEach(pass -> ((List<Entity>) this.loadedEntityList).forEach(entity -> {
+			double x = entity.posX;
+			double y = entity.posY - entity.yOffset;
+			double z = entity.posZ;
+			try {
+				entity.onUpdate();
+			} catch (Exception ignored)//etc. cast WorldServer
+			{
 			}
-		});
+			entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
+		}));
 	}
 
 	private Entity getEntityFromNBT(NBTTagCompound nbt) {
@@ -134,13 +131,11 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 	}
 
 	//AnvilChunkLoader
-	public static NBTTagList writeEntitiesToNBT(List list) {
+	public static NBTTagList writeEntitiesToNBT(List<Entity> list) {
 		NBTTagList tagList = new NBTTagList();
-		for (Object o : list) {
-			Entity entity = (Entity) o;
-			//if(entity instanceof EntityPlayer){continue;}
+		//if(entity instanceof EntityPlayer){continue;}
+		list.forEach(entity -> {
 			NBTTagCompound nbt = new NBTTagCompound();
-
 			try {
 				if (entity.writeToNBTOptional(nbt)) {
 					tagList.appendTag(nbt);
@@ -150,7 +145,7 @@ public class NGTWorld extends World implements IBlockAccessNGT {
 						"An Entity type %s has thrown an exception trying to write NBT.",
 						entity.getClass().getName());
 			}
-		}
+		});
 		return tagList;
 	}
 

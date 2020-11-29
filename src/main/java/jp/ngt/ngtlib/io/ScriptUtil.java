@@ -1,5 +1,7 @@
 package jp.ngt.ngtlib.io;
 
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.ResourceLocation;
 
 import javax.script.Invocable;
@@ -9,7 +11,15 @@ import javax.script.ScriptException;
 import java.io.IOException;
 
 public final class ScriptUtil {
-    //public static final PackageRegister REGISTER = new PackageRegister();
+    private static ScriptEngineManager SEM;
+
+
+    private static void init() {
+        LaunchClassLoader loader = Launch.classLoader;
+        loader.addClassLoaderExclusion("javax.");
+        loader.addClassLoaderExclusion("jdk.nashorn.");
+        SEM = new ScriptEngineManager(null);
+    }
 
     /**
      * JavaScriptの実行
@@ -24,8 +34,10 @@ public final class ScriptUtil {
     }
 
     public static ScriptEngine doScript(String s) {
-        ScriptEngine se = new ScriptEngineManager(null).getEngineByName("js");//引数にnull入れないと20でぬるぽ
-
+        if (SEM == null) {
+            init();
+        }
+        ScriptEngine se = SEM.getEngineByName("javascript");
         try {
             if (se.toString().contains("Nashorn")) {
                 //Java8ではimportPackage()が使えないので、その対策

@@ -14,6 +14,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.UUID;
 
 public abstract class EntityVehiclePart extends Entity {
@@ -86,8 +87,8 @@ public abstract class EntityVehiclePart extends Entity {
     }
 
     private boolean loadTrainFromUUID(UUID uuid) {
-        for (int j = 0; j < this.worldObj.loadedEntityList.size(); ++j) {
-            Entity entity = (Entity) this.worldObj.loadedEntityList.get(j);
+        List<Entity> list = this.worldObj.getLoadedEntityList();
+        for (Entity entity : list) {
             if (uuid.equals(entity.getUniqueID()) && entity instanceof EntityVehicleBase) {
                 this.setVehicle((EntityVehicleBase) entity);
                 this.onLoadVehicle();

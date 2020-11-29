@@ -190,22 +190,21 @@ public class EntityBullet extends EntityArrow {
 			}
 
 			Entity hitEntity = null;
-			List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 			if (list.size() > 0) {
-                Vec3 vecPos2 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-                double d0 = 0.0D;
-                for (Object o : list) {
-                    Entity entity = (Entity) o;
-                    boolean flag = true;
-                    if (entity.equals(this.shootingEntity))//撃った人には当たらないように
-                    {
-                        flag = false;
-                    }
+				Vec3 vecPos2 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+				double d0 = 0.0D;
+				for (Entity entity : list) {
+					boolean flag = true;
+					if (entity.equals(this.shootingEntity))//撃った人には当たらないように
+					{
+						flag = false;
+					}
 
-                    if (entity.canBeCollidedWith() && flag) {
-                        //double dis0 = vecPos2.distanceTo(vec3);
-                        //double dis1 = this.getDistanceToEntity(entity);
-                        //NGTLog.debug("vec:%S, entity:%S", new Object[]{dis0, dis1});
+					if (entity.canBeCollidedWith() && flag) {
+						//double dis0 = vecPos2.distanceTo(vec3);
+						//double dis1 = this.getDistanceToEntity(entity);
+						//NGTLog.debug("vec:%S, entity:%S", new Object[]{dis0, dis1});
 						AxisAlignedBB aabb = entity.boundingBox.expand(0.5D, 0.5D, 0.5D);
 						MovingObjectPosition mop1 = aabb.calculateIntercept(vecPos2, vec3);
 						if (mop1 != null) {

@@ -177,6 +177,11 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         {
             this.onVehicleUpdate();
         }
+        if (this.worldObj.isRemote) {
+            if (this.soundUpdater != null) {
+                this.soundUpdater.update();
+            }
+        }
         this.ignoreUpdate ^= true;
     }
 
@@ -186,9 +191,9 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         this.prevRotationRoll = this.rotationRoll;
 
         if (this.worldObj.isRemote) {
-            if (this.soundUpdater != null) {
-                this.soundUpdater.update();
-            }
+//            if (this.soundUpdater != null) {
+//                this.soundUpdater.update();
+//            }
 
             this.updateAnimation();
             this.updatePosAndRotationClient();

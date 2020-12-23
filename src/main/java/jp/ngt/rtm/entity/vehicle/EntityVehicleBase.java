@@ -14,7 +14,6 @@ import jp.ngt.rtm.modelpack.ScriptExecuter;
 import jp.ngt.rtm.modelpack.cfg.VehicleBaseConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.state.ResourceState;
-import jp.ngt.rtm.network.PacketVehicleMovement;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -83,12 +82,6 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         this.preventEntitySpawning = true;
         this.ignoreFrustumCheck = true;
         this.soundUpdater = world != null ? RTMCore.proxy.getSoundUpdater(this) : null;
-
-        if (world.isRemote) {
-            //チャンク外での描画を行うため、天候エフェクトとして追加
-            world.addWeatherEffect(this);
-            ignoreFrustumCheck = false;
-        }
     }
 
     @Override
@@ -163,26 +156,12 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
         if (!this.worldObj.isRemote) {
             this.vehicleFloors.stream().filter(Objects::nonNull).forEach(Entity::setDead);
-
-            //ワールドリロード後にVehicleを消そうとするとWeatherEffectとして残る問題対応
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketVehicleMovement(this, true));
         }
     }
 
-    private boolean ignoreUpdate;
-
     @Override
     public final void onUpdate() {
-        if (!this.worldObj.isRemote || this.ignoreUpdate)//WEとして更新するとガクガクする
-        {
-            this.onVehicleUpdate();
-        }
-        if (this.worldObj.isRemote) {
-            if (this.soundUpdater != null) {
-                this.soundUpdater.update();
-            }
-        }
-        this.ignoreUpdate ^= true;
+        this.onVehicleUpdate();
     }
 
     protected void onVehicleUpdate() {
@@ -191,9 +170,9 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         this.prevRotationRoll = this.rotationRoll;
 
         if (this.worldObj.isRemote) {
-//            if (this.soundUpdater != null) {
-//                this.soundUpdater.update();
-//            }
+            if (this.soundUpdater != null) {
+                this.soundUpdater.update();
+            }
 
             this.updateAnimation();
             this.updatePosAndRotationClient();

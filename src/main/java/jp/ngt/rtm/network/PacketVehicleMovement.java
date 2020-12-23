@@ -11,8 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVehicleMovement, IMessage> {
     private static final double SAMPLING = 32.0D;
     private static final double DIV_32 = 1.0D / SAMPLING;
@@ -28,7 +26,7 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
     public PacketVehicleMovement() {
     }
 
-    public PacketVehicleMovement(Entity par1, boolean onDead) {
+    public PacketVehicleMovement(Entity par1) {
         this.entityId = par1.getEntityId();
         this.type = 0;
         this.trainX = MathHelper.floor_double(par1.posX * SAMPLING);
@@ -42,10 +40,6 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
             this.trainSpeed = ((EntityVehicleBase) par1).getSpeed();
         } else {
             this.trainRoll = ((EntityBogie) par1).rotationRoll;
-        }
-
-        if (onDead) {
-            this.trainY = -1;
         }
     }
 
@@ -80,19 +74,6 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
         World world = NGTUtil.getClientWorld();
         if (world == null) {
             return null;
-        }
-
-        if (message.trainY < 0) {
-            Entity entity = world.getEntityByID(message.entityId);
-            if (entity == null) {
-                entity = ((List<Entity>) world.weatherEffects).stream().filter(entity2 -> entity2.getEntityId() == message.entityId).findFirst().orElse(entity);
-            }
-
-            if (entity != null) {
-                //Clinet側でsetDead()が呼ばれないことにより、WeatherEffectとして残り続けることの対策
-                entity.setDead();
-                return null;
-            }
         }
 
         Entity entity = world.getEntityByID(message.entityId);

@@ -16,7 +16,6 @@ import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
 import jp.ngt.rtm.entity.train.util.BogieController;
 import jp.ngt.rtm.entity.vehicle.VehicleTrackerEntry;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
-import jp.ngt.rtm.network.PacketVehicleMovement;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.rail.TileEntityLargeRailSwitchCore;
@@ -471,11 +470,6 @@ public class EntityBogie extends Entity implements Lockable {
     @Override
     public void setDead() {
         super.setDead();
-
-        if (!this.worldObj.isRemote) {
-            //ワールドリロード後にVehicleを消そうとするとWeatherEffectとして残る問題対応
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketVehicleMovement(this, true));
-        }
     }
 
     private void checkUnloadTrain() {

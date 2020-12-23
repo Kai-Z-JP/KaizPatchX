@@ -66,7 +66,7 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
         {
             if (this.myEntity.ridingEntity == null) {
                 if (this.myEntity instanceof EntityTrainBase || this.myEntity instanceof EntityBogie) {
-                    PacketVehicleMovement packet = new PacketVehicleMovement(this.myEntity, false);
+                    PacketVehicleMovement packet = new PacketVehicleMovement(this.myEntity);
                     this.lastScaledXPosition = packet.trainX;
                     this.lastScaledYPosition = packet.trainY;
                     this.lastScaledZPosition = packet.trainZ;
@@ -75,7 +75,7 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
                     this.ridingEntity = false;
                     RTMCore.NETWORK_WRAPPER.sendToAll(packet);
                 } else if (this.myEntity instanceof EntityVehicle) {
-                    PacketVehicleMovement packet = new PacketVehicleMovement(this.myEntity, false);
+                    PacketVehicleMovement packet = new PacketVehicleMovement(this.myEntity);
                     this.lastScaledXPosition = packet.trainX;
                     this.lastScaledYPosition = packet.trainY;
                     this.lastScaledZPosition = packet.trainZ;

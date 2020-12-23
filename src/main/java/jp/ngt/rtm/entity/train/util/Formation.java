@@ -334,7 +334,17 @@ public class Formation {
     }
 
     public boolean isFrontCar(EntityTrainBase train) {
-        EntityTrainBase front = (this.direction == 0) ? (this.entries[0]).train : (this.entries[this.entries.length - 1]).train;
+        EntityTrainBase front = null;
+        FormationEntry fe;
+        if (this.direction == 0) {
+            if ((fe = this.entries[0]) != null) {
+                front = fe.train;
+            }
+        } else {
+            if ((fe = this.entries[this.entries.length - 1]) != null) {
+                front = fe.train;
+            }
+        }
         return train.equals(front);
     }
 

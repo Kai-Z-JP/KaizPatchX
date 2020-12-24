@@ -88,8 +88,8 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
             startY += 0.1F;
             marker.buttons[0] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.ANCHOR21));
             startY += buttonHeight + 0.1F;
-            marker.buttons[1] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE2));
-            startY += buttonHeight + 0.1F;
+			marker.buttons[1] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor)/*.setListner(button -> marker.flipState(MarkerState.LINE2))*/;
+			startY += buttonHeight + 0.1F;
             marker.buttons[2] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE1));
             startY += buttonHeight + 0.1F;
             marker.buttons[3] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.GRID));

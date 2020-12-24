@@ -6,7 +6,8 @@
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
 ## これはなに
-KaizPatchはNGTLib、RTM、MCTEの非公式改造物です。
+KaizPatchはNGTLib・RTM・MCTEの非公式改造物です。\
+何故かPatchという名前になっていますが、本来の意味での"パッチ"ではありません。
 
 ## 注意事項
 

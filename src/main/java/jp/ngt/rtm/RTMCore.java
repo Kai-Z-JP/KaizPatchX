@@ -91,6 +91,7 @@ public final class RTMCore {
 	public static byte mirrorRenderingFrequency;
 	public static Property marker;
 	public static boolean use1122Marker;
+	public static int loadSpeed;
 	public static Configuration cfg;
 
 	public static final int PacketSize = 512;
@@ -132,7 +133,10 @@ public final class RTMCore {
 
 
 			marker = cfg.get("Marker", "Use like 1.12", false);
+			Property fastLoadProperty = cfg.get("Load", "ModelPack load speed", 2);
+			fastLoadProperty.comment = "1:Slow 2:Default 3:Fast";
 
+			loadSpeed = fastLoadProperty.getInt();
 			trainSoundVol = (float) soundPro1.getInt() / 100.0F;
 			crossingGateSoundType = (byte) soundPro2.getInt();
 			gunSoundVol = (float) soundPro3.getInt() / 100.0F;

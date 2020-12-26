@@ -151,7 +151,18 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
         this.setValue(0, 4, "Registering All Models");
         this.setMaxValue(1, fileList0.size(), "");
 
-        ExecutorService executor = Executors.newWorkStealingPool();
+        ExecutorService executor;
+        switch (RTMCore.loadSpeed) {
+            case 1:
+                executor = Executors.newSingleThreadExecutor();
+                break;
+            case 3:
+                executor = Executors.newWorkStealingPool();
+                break;
+            default:
+                executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 3);
+                break;
+        }
         List<Future<?>> list;
         try {
             list = fileList0.stream().map(file -> executor.submit(() -> {

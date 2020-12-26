@@ -1,4 +1,4 @@
-//IgorKhydyakov,ArtemiyDanilin(Trollebas)
+//IgorKhydyakov, ArtemiyDanilin(Trollebas)
 tile.rtm:ironPillar.name=Железный столб
 tile.rtm:marker.name=Маркер
 tile.rtm:markerSwitch.name=Стрелочный маркер
@@ -35,7 +35,7 @@ item.rtm:installedObject.6.name=Железнодорожные знаки
 item.rtm:installedObject.7.name=Светофор
 item.rtm:installedObject.8.name=Изолятор(Вход)
 item.rtm:installedObject.9.name=Изолятор(Выход)
-item.rtm:installedObject.10.name=АУДП
+item.rtm:installedObject.10.name=АУПС
 item.rtm:installedObject.11.name=Датчик поезда
 item.rtm:installedObject.12.name=Турникет
 item.rtm:installedObject.13.name=Путевое заграждение
@@ -46,6 +46,9 @@ item.rtm:installedObject.17.name=Вывеска
 item.rtm:installedObject.18.name=Билетный автомат
 item.rtm:installedObject.19.name=Лампа
 item.rtm:installedObject.20.name=Флаг
+item.rtm:installedObject.21.name=
+item.rtm:installedObject.22.name=
+item.rtm:installedObject.23.name=Громкоговоритель
 item.rtm:material.0.name=Вал
 item.rtm:material.1.name=Колесо
 item.rtm:material.2.name=Бензиновый двигатель
@@ -110,6 +113,7 @@ item.rtm:money.5.name=500 руб
 item.rtm:money.6.name=1000 руб
 item.rtm:money.7.name=5000 руб
 item.rtm:money.8.name=10000 руб
+item.rtm:camera.name=Камера
 
 item.rtm:handgun.name=Пистолет
 item.rtm:rifle.name=Винтовка

@@ -37,11 +37,11 @@ public final class NGTUtil {
      * マルチプレイかどうか
      */
     public static boolean isSMP() {
-        return isServer() ? !MinecraftServer.getServer().isSinglePlayer() : !NGTUtilClient.getMinecraft().isSingleplayer();
+        return isServer() ? !NGTUtil.getServer().isSinglePlayer() : !NGTUtilClient.getMinecraft().isSingleplayer();
     }
 
     public static boolean openedLANWorld() {
-        return !isServer() && !NGTUtilClient.getMinecraft().isSingleplayer() && NGTUtilClient.getMinecraft().getIntegratedServer().getPublic();
+        return isServer() && NGTUtilClient.getMinecraft().isSingleplayer() && NGTUtilClient.getMinecraft().getIntegratedServer().getPublic();
     }
 
     @SideOnly(Side.CLIENT)

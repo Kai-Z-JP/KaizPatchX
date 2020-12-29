@@ -216,6 +216,9 @@ rtm.key=RealTrainMod
 rtm.horn=경적
 rtm.chime=차내방송
 rtm.ats=ATS확인
+rtm.chime_next=다음 차내방송
+rtm.chime_prev=이전 차내방송
+rtm.eb=비상제동
 
 gui.npc.buy=구입
 gui.npc.register=등록

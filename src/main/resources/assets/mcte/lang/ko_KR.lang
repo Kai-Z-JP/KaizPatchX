@@ -1,0 +1,51 @@
+//PC28K, Myebyeol_NOTE
+tile.mcte:port_in.name=입력 포트
+tile.mcte:port_out.name=출력 포트
+
+item.mcte:editor.name=에디터
+item.mcte:generator.name=제네레이터
+item.mcte:painter.name=페인터
+item.mcte:itemMiniature.name=미니어처 블록
+
+usage.editor.0=삭제 : Z key
+usage.editor.1=잘라내기 : X key
+usage.editor.2=복사 : C key
+usage.editor.3=붙여넣기 : V key
+usage.editor.4=채우기 : B key
+usage.editor.5=취소 : N key
+usage.editor.6=모드 : M key
+usage.editor.7=메뉴 : K key
+usage.painter=메뉴 : K key
+
+editor.fill.0=입방체
+editor.fill.1=타원체
+editor.fill.2=원주(X)
+editor.fill.3=원주(Y)
+editor.fill.4=원주(Z)
+
+gui.mcte.select=선택
+gui.mcte.terrainImage=지형 이미지
+gui.mcte.biomesImage=바이옴 이미지
+gui.mcte.blocksImage=블록 이미지
+gui.mcte.baseBlock=구성 블록
+gui.mcte.minY=Y의 최소값
+gui.mcte.yScale=Y의 배율
+gui.mcte.seaLevel=해수면의 높이
+gui.mcte.generate=생성
+gui.mcte.miniature.select=파일 선택
+gui.mcte.miniature.export=파일로 내보내기
+gui.mcte.miniature.miniature=미니어처
+gui.mcte.miniature.sculpture=조각
+
+generator.pictorial=픽토리얼
+
+mcte.key=MCTE
+mcte.editor.menu=메뉴(MCTE)
+mcte.editor.mode=모드(MCTE)
+mcte.editor.delete=삭제(MCTE)
+mcte.editor.cut=잘라내기(MCTE)
+mcte.editor.copy=복사하기(MCTE)
+mcte.editor.paste=붙여넣기(MCTE)
+mcte.editor.fill=채우기(MCTE)
+mcte.editor.clear=선택 영역 초기화(MCTE)
+mcte.editor.undo=실행취소(MCTE)

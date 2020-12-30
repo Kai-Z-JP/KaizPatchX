@@ -1,0 +1,18 @@
+//PC28K, Myebyeol_NOTE
+item.protection_key.name=보호 키
+
+message.version=%s의 새로운 버전이 있습니다.
+message.regKey.0=잘못된 URL입니다.
+message.regKey.1=인증 사이트에 접속할 수 없습니다.
+message.regKey.2=인증은 허가되어 있지 않습니다.
+message.regKey.3=인증은 허가되어 있습니다.
+message.regKey.4=인증되었습니다.
+message.regKey.5=잘못된 키입니다.
+
+commands.ngt.usage=/ngt <인증키>
+commands.ngt.invalid_command=잘못된 명령어입니다.
+commands.permit.usage=/permit : 사용법 표시
+commands.protect.usage=/protect <임의의 암호화 코드> : 보호 키 획득
+commands.usage.usage=/usage : 손에 들고 있는 아이템이나 타고 있는 탈것의 사용법을 알려줍니다.
+
+gui.warning=인증 키를 입력하세요!

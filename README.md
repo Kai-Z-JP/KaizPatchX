@@ -1,19 +1,26 @@
 # KaizPatch
 
+[English](README.md) | [日本語](README.ja.md) | [Русский](README.ru.md)
+
+The translation was done using DeepL.\
+If there are any incorrect translations, I would appreciate it if you could point them out.
+
+DeepLを使用して翻訳しました。\
+正しくない翻訳などあれば、指摘していただけると幸いです。
+
 [![MCVer](https://img.shields.io/badge/Minecraft-1.7.10-brightgreen)](https://www.minecraft.net/)
 [![ForgeVer](https://img.shields.io/badge/Forge-10.13.4.1614-important)](https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.7.10.html)
 [![DLCount](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases)
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
-## これはなに
-KaizPatchはNGTLib・RTM・MCTEの非公式改造物です。\
-何故かPatchという名前になっていますが、本来の意味での"パッチ"ではありません。
+## What is this?
+KaizPatch is an unofficial modification of NGTLib/RTM/MCTE.
 
-## 注意事項
+## Notes
 
-**当制作物の使用による一切の責任を負いません。**
+**I do NOT take any responsibility for the use of this mod.**
 
-導入時に坂レールが削除されます。ご注意ください。 また、導入前に適切な手段でワールドのバックアップをお願いします。
+The slope rail will be removed during installation. Please be aware of this. Also, please backup your world by appropriate means before installation.
 
 ## Base
 
@@ -21,48 +28,50 @@ KaizPatchはNGTLib・RTM・MCTEの非公式改造物です。\
 - RTM: 1.7.10.41
 - MCTE: 1.7.10.16
 
-## 導入方法
+## How to install
 
-0.全データのバックアップを取ってください\
-1.NGTLib・RTM・MCTEを抜いてください\
-2.KaizPatchを入れてください\
-3.既存のワールドを読み込む場合は英語でなんとかかんとかOK?と聞かれますのでよく理解したうえでOKを押してください。\
-4.完了！
+0.Backup all your data.\
+1.Delete NGTLib/RTM/MCTE from your mods folder.\
+2.Put KaizPatch in your mods folder.\
+3.If you want to load an existing world, you will be prompted with a warning, so make sure you understand it well before pressing OK.\
+4.Done!
 
-## 移植機能
+## Ported Features
 
-1.10.2及び1.12.2より以下の機能を移植しています。
+The following features have been ported from versions 1.10.2/1.12.2.
 
-- レンチ吸いつき
-- レンチ(1.10.2)
-- レンチ(1.12.2)
-- カント機能
-- レールクリックでの置換機能
+- EZ wrench curve
+- Wrench(1.10.2)
+- Wrench(1.12.2)
+- Rail cant
+- Rail replacement on click
 - CustomButton
 - ActionParts
-- モデル選択画面でのDataMap編集
-- カメラ
-- 券売機
-- スピーカー(一部仕様変更)
+- DataMap editing in the model selection GUI
+- Camera
+- Ticket Vendor
+- Speaker(Some specification changes)
 
-## 追加機能
-- モデルパックロードのマルチスレッド化
-- 乗客の視点追従
-- レール・ワイヤー描画距離の延長
-- ノッチ/ブレーキ段数カスタム
-- 加速度/減速度カスタム
+## Additional Features
+- Multi-threading of model pack loading.
+- Passenger perspective follows the movement of the train.
+- Extension of rail and wire rendering distance
+- Notch/Brake step customization
+- Acceleration/Deceleration Custom
   ```
-  ノッチ段数での最高速度(ノッチ段数をここで決定)
-  "maxSpeed": [ 1段, 2段, 以下無限(notDisplayCabがfalseの場合は5段固定) ],
-  加速度
-  "accelerateions": [ 1段, 2段, 以下無限(notDisplayCabがfalseの場合は5段固定) maxSpeedの個数と同値],
-  減速度(ブレーキ段数をここで決定)
-  "deccelerations": [惰性, -1段, -2段, 以下無限(notDisplayCabがfalseの場合は-8段固定)],
-  ```
-- 踏切・信号・転轍機・照明・改札・車止め・車両モデルをモデルとDataMapごとスポイト
-- 踏切・信号・転轍機・照明・標識モデルをShiftキー押しながら設置することで1度刻みで回転できる
-- コマンドのタブ補完
-- レンチの挙動を切り替え(`/rtm use1122marker (true|false)`)
+  Maximum speed at each notch step(The number of notches is also determined here.)
+  "maxSpeed": [ 1 step, 2 step, infinite...(If notDisplayCab is false, it will be fixed to 5 steps) ],
 
-## 謝辞
-公開にあたりまして、配布許可を頂いた[NGT-5479](https://twitter.com/ngt5479)様、約半年間に渡って地獄の様なデバッグに協力していただいた皆様に、この場をお借りして感謝申し上げます。
+  Acceleration
+  "accelerateions": [ 1 step, 2 step, infinite...(If notDisplayCab is false, it will be fixed to 5 steps) maxSpeedの個数と同値],
+
+  Deceleration(The number of brake steps is also determined here.)
+  "deccelerations": [inertia step, -1 step, -2 step, infinite...(If notDisplayCab is false, it will be fixed to -8 steps)],
+  ```
+- By wheel-clicking on a Crossing/Signal/Point/Light/Turnstile/Train Stop/Train model ,you can itemize the entire model and DataMap.
+- Rotate Crossing/Signal/Turnstile/Light/Sign Model in 1 degree increments by placing them while holding down the Shift key.
+- Tab completion for commands
+- Switch wrench behavior(`/rtm use1122marker (true|false)`)
+
+## Thanks
+I'd like to take this opportunity to thank [NGT-5479](https://twitter.com/ngt5479) for giving us permission to distribute it, and everyone who helped us debug the hell out of it over the course of about six months.

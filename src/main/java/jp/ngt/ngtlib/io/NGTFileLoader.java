@@ -295,11 +295,10 @@ public final class NGTFileLoader {
     }
 
     public static ZipFile getArchive(File file, String encoding) throws IOException {
-        String en2 = encoding.isEmpty() ? "UTF-8" : encoding;
         if (FileType.JAR.match(file.getName())) {
             return new JarFile(file.getAbsolutePath());
         } else if (FileType.ZIP.match(file.getName())) {
-            return new ZipFile(file.getAbsolutePath(), Charset.forName(en2));
+            return new ZipFile(file.getAbsolutePath(), Charset.forName(encoding.isEmpty() ? "UTF-8" : encoding));
         }
         return null;
     }

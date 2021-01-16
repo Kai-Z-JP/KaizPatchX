@@ -1,6 +1,6 @@
 # KaizPatch
 
-[English](README.md) | [日本語](README.ja.md) | [Русский](README.ru.md)
+[English](README.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [한국어](README.ko.md)
 
 The translation was done using DeepL.\
 If there are any incorrect translations, I would appreciate it if you could point them out.

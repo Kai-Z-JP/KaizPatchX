@@ -4,8 +4,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.util.Locker;
+import jp.ngt.ngtlib.util.NGTUtilClient;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -172,32 +174,66 @@ public final class GLHelper {
     private static final IntBuffer VIEWPORT_BUF = GLAllocation.createDirectIntBuffer(16);
 
     private static final IntBuffer SELECT_BUF = GLAllocation.createDirectIntBuffer(1024);
+    private static double DEPTH_RANGE;
+
 
     public static void startMousePicking(float range) {
-        float mouseX = Display.getWidth() / 2.0F;
+        float mouseX = Display.getWidth() / 2.0F;//マウス位置=画面中央
         float mouseY = Display.getHeight() / 2.0F;
+        //float fov = NGTUtilClient.getMinecraft().gameSettings.fovSetting;
+        //float aspect = (float)NGTUtilClient.getMinecraft().displayWidth / (float)NGTUtilClient.getMinecraft().displayHeight;
+
         VIEWPORT_BUF.clear();
         SELECT_BUF.clear();
-        GL11.glGetInteger(2978, VIEWPORT_BUF);
-        GL11.glSelectBuffer(SELECT_BUF);
-        GL11.glRenderMode(7170);
+
+        GL11.glGetInteger(GL11.GL_VIEWPORT, VIEWPORT_BUF);//[0, 0, DispW, DispH]
+        GL11.glSelectBuffer(SELECT_BUF);//[namesize, minZ, maxZ, no...]*n
+        GL11.glRenderMode(GL11.GL_SELECT);
         GL11.glInitNames();
         GL11.glPushName(0);
-        GL11.glMatrixMode(5889);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPushMatrix();
+        //GL11.glLoadIdentity();//不要
         Project.gluPickMatrix(mouseX, VIEWPORT_BUF.get(3) - mouseY, range, range, VIEWPORT_BUF);
-        GL11.glMatrixMode(5888);
+        //範囲:0.05F~EntityRenderer.farPlaneDistance * MathHelper.SQRT_2
+        //farPlaneDistance = mc.gameSettings.renderDistanceChunks * 16
+        //Project.gluPerspective(fov, aspect, 0.05F, 128.0F);//不要
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        DEPTH_RANGE = ((double) NGTUtilClient.getMinecraft().gameSettings.renderDistanceChunks * 16.0D * MathHelper.sqrt_float(2.0F)) - 0.05D;
     }
 
     public static int finishMousePicking() {
-        GL11.glMatrixMode(5889);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glPopMatrix();
-        int hits = GL11.glRenderMode(7168);
-        GL11.glMatrixMode(5888);
+        int hits = GL11.glRenderMode(GL11.GL_RENDER);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         return hits;
     }
 
     public static int getPickedObjId(int count) {
         return SELECT_BUF.get(count * 4 + 3);
+    }
+
+    /**
+     * 深度値のMin側(0.0~1.0)
+     */
+    public static double getPickedObjDepth(int count) {
+        //深度値はuintなので0.0~1.0に変換
+        double depthRaw = (double) Integer.toUnsignedLong(SELECT_BUF.get(count * 4 + 1));
+        return (depthRaw / (double) 0xFFFFFFFFL);
+    }
+
+    public static void preMoveTexUV(float u, float v) {
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(u, v, 0.0F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+    }
+
+    public static void postMoveTexUV() {
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glPopMatrix();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
     }
 }

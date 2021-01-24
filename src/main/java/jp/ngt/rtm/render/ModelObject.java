@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -158,7 +159,7 @@ public class ModelObject {
 	 * スムージング、アルファブレンド等行わず
 	 */
 	public void renderWithTexture(Object entity, int pass, float par3) {
-		Arrays.stream(this.textures).forEach(texture -> {
+		Arrays.stream(this.textures).filter(Objects::nonNull).forEach(texture -> {
 			if (this.useTexture) {
 				if (pass == 0) {
 					NGTUtilClient.bindTexture(texture.material.texture);

@@ -138,21 +138,22 @@ public final class NGTFileLoader {
 
         MODS_DIR = new ArrayList<>();
 
+        boolean dev = false;
         try {
             //Dev環境以外ではぬるぽ
             File modsDir2 = new File(Thread.currentThread().getContextClassLoader().getResource("").getPath());
             if (!modsDir2.getAbsolutePath().contains("mods")) {
                 MODS_DIR.add(modsDir2);//開発環境でのMod本体のパス
                 NGTLog.debug("[NGTFL] Add mods dir : " + modsDir2.getAbsolutePath());
+                dev = true;
             }
         } catch (NullPointerException ignored) {
         }
 
         File modsDir = NGTCore.proxy.getMinecraftDirectory("mods");
         String modsDirPath = modsDir.getAbsolutePath();
-
-        if (modsDirPath.contains(".") && !modsDirPath.contains(".minecraft")) {
-            modsDirPath = modsDirPath.replace("\\.", "");//開発環境では\.が含まれるため
+        if (dev) {
+            modsDirPath = modsDirPath.replaceAll("\\\\.\\\\mods$", "\\\\mods");//開発環境では\.が含まれるため
         }
 
         MODS_DIR.add(new File(modsDirPath));

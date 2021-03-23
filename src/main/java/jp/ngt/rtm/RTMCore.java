@@ -5,10 +5,12 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.command.CommandRTM;
 import jp.ngt.rtm.command.CommandTRec;
 import jp.ngt.rtm.event.RTMEventHandler;
@@ -24,7 +26,7 @@ import org.apache.logging.log4j.Level;
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
     public static final String MODID = "RTM";
-    public static final String VERSION = "1.7.10.41_KaizPatchX1";
+    public static final String VERSION = "1.7.10.41_KaizPatchX1_Umisaki_Beta1";
 
     @Instance(MODID)
     public static RTMCore instance;
@@ -184,6 +186,15 @@ public final class RTMCore {
 
         proxy.init();
     }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        PermissionManager.INSTANCE.registerPermission(RTMCore.EDIT_VEHICLE);
+        PermissionManager.INSTANCE.registerPermission(RTMCore.EDIT_RAIL);
+        PermissionManager.INSTANCE.registerPermission(RTMCore.DRIVE_TRAIN);
+        PermissionManager.INSTANCE.registerPermission(RTMCore.CHANGE_MODEL);
+    }
+
 
     @EventHandler
     public void handleServerStarting(FMLServerStartingEvent event) {

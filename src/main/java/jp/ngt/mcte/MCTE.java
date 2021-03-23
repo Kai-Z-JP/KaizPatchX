@@ -8,6 +8,7 @@ import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -25,6 +26,7 @@ import jp.ngt.mcte.item.ItemMiniature;
 import jp.ngt.mcte.item.ItemPainter;
 import jp.ngt.mcte.network.*;
 import jp.ngt.mcte.world.WorldTypePictorial;
+import jp.ngt.ngtlib.util.PermissionManager;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -139,6 +141,11 @@ public class MCTE {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		proxy.init();
+	}
+
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event) {
+		PermissionManager.INSTANCE.registerPermission(MCTE.USE_EDITOR);
 	}
 
 	@EventHandler

@@ -26,11 +26,15 @@ public class RenderEntityInstalledObject extends Render {
 
         ModelSetMachineClient modelSet = (ModelSetMachineClient) entity.getModelSet();
         MachineConfig cfg = modelSet.getConfig();
+        if (cfg.followRailAngle) {
+            GL11.glRotatef(entity.rotationPitch, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(entity.rotationRoll, 0.0F, 0.0F, 1.0F);
+        }
         int pass = MinecraftForgeClient.getRenderPass();
         modelSet.modelObj.render(entity, cfg, pass, par9);
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
     /*@Override
     public boolean isStaticEntity()//DisplayListに入れられる
@@ -38,13 +42,13 @@ public class RenderEntityInstalledObject extends Render {
         return true;//たまにStack overflow
     }*/
 
-	@Override
-	public void doRender(Entity entity, double par2, double par4, double par6, float par8, float par9) {
-		this.renderEntityInstalledObject((EntityInstalledObject) entity, par2, par4, par6, par8, par9);
-	}
+    @Override
+    public void doRender(Entity entity, double par2, double par4, double par6, float par8, float par9) {
+        this.renderEntityInstalledObject((EntityInstalledObject) entity, par2, par4, par6, par8, par9);
+    }
 
-	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
-		return null;
-	}
+    @Override
+    protected ResourceLocation getEntityTexture(Entity entity) {
+        return null;
+    }
 }

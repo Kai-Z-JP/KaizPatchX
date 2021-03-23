@@ -228,13 +228,16 @@ public class ItemInstalledObject extends ItemWithModel {
         float yaw = rm0.getRailRotation(split, i0);
         float yaw2 = -player.rotationYaw + 180.0F;
         float dif = MathHelper.wrapAngleTo180_float(yaw - yaw2);
+        boolean invert = false;
         if (Math.abs(dif) > 90.0F) {
             yaw += 180.0F;
+            invert = true;
         }
 
         entity.setPosition(posX, posY, posZ);
         entity.rotationYaw = yaw;
-        entity.rotationPitch = 0.0F;
+        entity.rotationPitch = -rm0.getRailPitch(split, i0) * (invert ? -1.0F : 1.0F);
+        entity.rotationRoll = rm0.getCant(split, i0) * (invert ? -1.0F : 1.0F);
         world.spawnEntityInWorld(entity);
         entity.setModelName(this.getModelName(stack));
         entity.getResourceState().readFromNBT(this.getModelState(stack).writeToNBT());

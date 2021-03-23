@@ -20,6 +20,7 @@ public class MachineConfig extends ModelConfig implements IConfigWithType {
 	public String sound_Running;
 
 	public boolean rotateByMetadata;
+	public boolean followRailAngle;//ATCなどをカントに追従
 	public int[] brightness;
 
 	@Override

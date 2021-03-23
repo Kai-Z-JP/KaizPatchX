@@ -24,6 +24,7 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 	private final ResourceState state = new ResourceState(this);
 	private ModelSetMachine myModelSet;
 	private final ScriptExecuter executer = new ScriptExecuter();
+	public float rotationRoll;
 
 	public EntityInstalledObject(World world) {
 		super(world);
@@ -48,12 +49,14 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 		}
 		this.setModelName(s);
 		this.getResourceState().readFromNBT(nbt.getCompoundTag("State"));
+		this.rotationRoll = nbt.getFloat("RotationRoll");
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbt) {
 		nbt.setString("ModelName", this.getModelName());
 		nbt.setTag("State", this.getResourceState().writeToNBT());
+		nbt.setFloat("RotationRoll", this.rotationRoll);
 	}
 
 	@Override

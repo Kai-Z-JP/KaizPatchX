@@ -430,7 +430,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 //		}
 
         boolean isBrakeDisabled = true;
-        float speed = this.getSpeed();
+        float speed = this.trainSpeed;
 
         //ブレーキ処理, 全ての車両で
         if (notch < 0) {
@@ -458,7 +458,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         if (this.isControlCar()) {
             if (isBrakeDisabled && !this.worldObj.isRemote) {
                 ModelSetVehicleBase<TrainConfig> set = this.getModelSet();
-                float acceleration = TrainSpeedManager.getAcceleration(notch, speed, set.getConfig());
+                float acceleration = TrainSpeedManager.getAcceleration(notch, Math.abs(speed), set.getConfig());
+                TrainState dir = this.getTrainState(10);
+                if ((dir == TrainState.Direction_Back && speed > 0) || (dir == TrainState.Direction_Front && speed < 0)) {
+                    acceleration = Math.abs(acceleration);
+                }
+                if (dir == TrainState.Direction_Back) {
+                    acceleration *= -1;
+                }
 
                 if (notch >= 0)//ブレーキ解
                 {
@@ -476,7 +483,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                     }
                     speed += acceleration - deceleration;
                 } else {
-                    speed += speed > 0.0F ? acceleration : (speed < 0.0F ? -acceleration : 0.0F);
+                    speed += acceleration;
                 }
 
                 this.setSpeed(speed);
@@ -749,7 +756,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     @Override
     public float getSpeed() {
-        return this.trainSpeed;
+        return Math.abs(this.trainSpeed);
     }
 
     public void setSpeed(float par1) {
@@ -774,7 +781,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     public boolean isControlCar() {
-        return this.getTrainStateData(TrainStateType.State_Direction.id) == TrainState.Direction_Front.data;
+        int data = this.getTrainStateData(TrainStateType.State_Direction.id);
+        return data == TrainState.Direction_Front.data || data == TrainState.Direction_Back.data;
     }
 
     public boolean existBogies() {

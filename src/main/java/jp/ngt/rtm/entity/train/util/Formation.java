@@ -299,7 +299,7 @@ public class Formation {
     public void setTrainStateData(int id, byte data, EntityTrainBase par2) {
         if (id == TrainStateType.State_Direction.id)//向き
         {
-            if (data == TrainState.Direction_Front.data) {
+            if (data == TrainState.Direction_Front.data || data == TrainState.Direction_Back.data) {
                 this.controlCar = par2;
             }
 

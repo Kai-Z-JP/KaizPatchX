@@ -1,5 +1,6 @@
-package jp.ngt.rtm;
+package jp.ngt.rtm.command;
 
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

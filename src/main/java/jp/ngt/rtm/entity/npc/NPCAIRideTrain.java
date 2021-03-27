@@ -3,6 +3,7 @@ package jp.ngt.rtm.entity.npc;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import net.minecraft.command.IEntitySelector;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -10,19 +11,24 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.List;
 
 public class NPCAIRideTrain extends EntityAIBase {
-    private static final double MAX_RANGE = 32.0D;
+	private static final double MAX_RANGE = 32.0D;
 
-    private static final IEntitySelector SELECTOR = EntityFloor.class::isInstance;
+	private static final IEntitySelector SELECTOR = new IEntitySelector() {
+		@Override
+		public boolean isEntityApplicable(Entity entity) {
+			return (entity instanceof EntityFloor);
+		}
+	};
 
-    private final EntityNPC npc;
-    private final float moveSpeed;
-    private EntityFloor target;
-    private PathEntity entityPathNavigate;
+	private final EntityNPC npc;
+	private final float moveSpeed;
+	private EntityFloor target;
+	private PathEntity entityPathNavigate;
 
-    public EntityVehicleBase targetTrain;
+	public EntityVehicleBase targetTrain;
 
-    public NPCAIRideTrain(EntityNPC par1, float par2) {
-        this.npc = par1;
+	public NPCAIRideTrain(EntityNPC par1, float par2) {
+		this.npc = par1;
 		this.moveSpeed = par2;
 	}
 

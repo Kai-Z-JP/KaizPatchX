@@ -329,6 +329,9 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
     public ModelSetVehicleBase<T> getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy() || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
+            if (this.myModelSet == null || this.myModelSet.isDummy()) {
+                return null;
+            }
             this.onModelChanged();
         }
         return this.myModelSet;

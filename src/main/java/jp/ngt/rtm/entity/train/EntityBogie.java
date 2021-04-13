@@ -202,7 +202,7 @@ public class EntityBogie extends Entity implements Lockable {
             pIndex = rm.getNearlestPoint(this.split, px, pz);
         } else {
             //移動範囲を制限して、「台車からの距離は同じでも位置は真逆」な点の検出を防ぐ
-            int indexInc = (int) ((speed + 0.25F) * (float) SPLIT_VALUE);//前回位置からどの程度進むか
+            int indexInc = (int) ((Math.abs(speed) + 0.25F) * (float) SPLIT_VALUE);//前回位置からどの程度進むか
             int indexNeg = this.prevPosIndex - indexInc;
             int indexPos = this.prevPosIndex + indexInc;
             int indexMin = Math.max(indexNeg, 0);
@@ -249,7 +249,7 @@ public class EntityBogie extends Entity implements Lockable {
 
 
         if (this.jointDelay > 0.0F) {
-            this.jointDelay -= speed;
+            this.jointDelay -= Math.abs(speed);
             if (this.jointDelay <= 0.0F) {
                 this.playJointSound();
             }
@@ -317,7 +317,7 @@ public class EntityBogie extends Entity implements Lockable {
         EntityTrainBase train = this.getTrain();
         TrainConfig cfg = train.getModelSet().getConfig();
         if (!cfg.muteJointSound) {
-            float pitch = (train.getSpeed() / cfg.maxSpeed[cfg.maxSpeed.length - 1]) * 0.5F + 1.0F;
+            float pitch = (Math.abs(train.getSpeed()) / cfg.maxSpeed[cfg.maxSpeed.length - 1]) * 0.5F + 1.0F;
             ResourceLocation sound = this.reverbSound ? JOINT_SOUND_REVERB : JOINT_SOUND;
             RTMCore.proxy.playSound(this, sound, 1.0F, pitch);
 

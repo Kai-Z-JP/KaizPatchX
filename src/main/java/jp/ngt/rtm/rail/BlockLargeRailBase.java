@@ -205,7 +205,7 @@ public class BlockLargeRailBase extends BlockContainer {
         if (world.isRemote) {
             if (this.railTextureType == 4 && entity instanceof EntityBogie) {
                 EntityTrainBase train = ((EntityBogie) entity).getTrain();
-                if (train != null && train.getSpeed() > 0.0F) {
+                if (train != null && Math.abs(train.getSpeed()) > 0.0F) {
                     double speed = (double) train.getSpeed() * 0.125D;//7.5
 
                     //10

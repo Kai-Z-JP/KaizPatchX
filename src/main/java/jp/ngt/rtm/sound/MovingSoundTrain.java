@@ -20,7 +20,7 @@ public class MovingSoundTrain extends MovingSoundVehicle {
 			EntityTrainBase train = (EntityTrainBase) this.entity;
 			TrainConfig cfg = train.getModelSet().getConfig();
 			float f0 = cfg.maxSpeed[0];
-            this.field_147663_c = (train.getSpeed() - f0) / (cfg.maxSpeed[cfg.maxSpeed.length - 1] - f0) + 1.0F;
+            this.field_147663_c = (Math.abs(train.getSpeed()) - f0) / (cfg.maxSpeed[cfg.maxSpeed.length - 1] - f0) + 1.0F;
 		}
 	}
 }

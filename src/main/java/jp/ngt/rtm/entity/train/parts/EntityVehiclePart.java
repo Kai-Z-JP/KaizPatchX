@@ -177,7 +177,7 @@ public abstract class EntityVehiclePart extends Entity {
     @Override
     @SideOnly(Side.CLIENT)//NetClientHandler.handleEntity, par9は常に3
     public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        if (this.getVehicle() == null || this.getVehicle().getSpeed() <= 0.0F) {
+        if (this.getVehicle() == null || this.getVehicle().getSpeed() == 0.0F) {
             this.setPosition(par1, par3, par5);
             this.setRotation(par7, par8);
         }
@@ -231,6 +231,6 @@ public abstract class EntityVehiclePart extends Entity {
 
     @Override
     public ItemStack getPickedResult(MovingObjectPosition target) {
-        return this.parent.getPickedResult(target);
+        return this.parent == null ? null : this.parent.getPickedResult(target);
     }
 }

@@ -35,7 +35,7 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 		}
 
 		int signal = this.theTrain.getSignal();
-		if (this.theTrain.getSpeed() > 0.0F) {
+		if (Math.abs(this.theTrain.getSpeed()) > 0.0F) {
 			switch (signal) {
 				case 1:
 					if (this.currentSignal != 1) {
@@ -80,7 +80,7 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 
 	@Override
 	protected ResourceLocation getSound(ModelSetVehicleBaseClient modelset) {
-		float speed = this.theTrain.getSpeed();
+		float speed = Math.abs(this.theTrain.getSpeed());
 		if (speed > 0) {
 			float acceleration = EnumNotch.getAcceleration(this.getNotch(), speed);
 
@@ -96,8 +96,12 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 	@Override
 	protected boolean changePitch() {
 		ModelSetVehicleBase<TrainConfig> modelset = this.theTrain.getModelSet();
-		float speed = this.theTrain.getSpeed();
+		float speed = Math.abs(this.theTrain.getSpeed());
 		return speed > 0 && (!(speed < modelset.getConfig().maxSpeed[0]));
+	}
+
+	public float getSpeed() {
+		return Math.abs(this.theTrain.getSpeed()) * 72.0F;
 	}
 
 	public float getMaxSpeed() {

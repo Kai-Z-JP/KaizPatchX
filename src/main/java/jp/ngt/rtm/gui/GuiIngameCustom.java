@@ -162,7 +162,7 @@ public class GuiIngameCustom extends GuiScreen {
 
 		//速度計
 		float max = train.getModelSet().getConfig().maxSpeed[train.getModelSet().getConfig().maxSpeed.length - 1];
-		float r0 = 270.0F * train.getSpeed() / max;
+		float r0 = 270.0F * Math.abs(train.getSpeed()) / max;
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) (halfW - 136), (float) (this.height - 29), 0.0F);
 		GL11.glRotatef(r0, 0.0F, 0.0F, 1.0F);

@@ -342,7 +342,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }
         float roll = par1 + pendulum;
         //float dif = roll - this.rotationRoll;
-        this.wave = (float) ((this.wave + this.getSpeed() * cfg.rollSpeedCoefficient) % (2.0D * Math.PI));//総走行距離(2PI区切り)
+        this.wave = (float) ((this.wave + this.trainSpeed * cfg.rollSpeedCoefficient) % (2.0D * Math.PI));//総走行距離(2PI区切り)
         float sw = (NGTMath.getSin(this.wave) + NGTMath.getSin(this.wave * cfg.rollVariationCoefficient)) * 0.5F;
         this.rotationRoll = roll + sw * cfg.rollWidthCoefficient;
         //できればPID制御したい
@@ -756,7 +756,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     @Override
     public float getSpeed() {
-        return Math.abs(this.trainSpeed);
+        return this.trainSpeed;
     }
 
     public void setSpeed(float par1) {

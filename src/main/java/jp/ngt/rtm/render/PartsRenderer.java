@@ -95,11 +95,21 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     }
 
     private ActionParts selectHits(T t, int hits) {
-        if (hits <= 0)
+        if (hits <= 0) {
             return Mouse.isButtonDown(1) ? this.hittedActionParts : null;
-        int hitIndex = 0;
-        for (int i = 0; i < hits; i++) {
-            hitIndex = GLHelper.getPickedObjId(i);
+        }
+
+        int hitIndex = 1;
+        double minDepth = Double.MAX_VALUE;
+        for (int i = 0; i < hits; ++i) {
+            double depth = GLHelper.getPickedObjDepth(i);
+            //NGTLog.debug("No:%d, Dep:%.5f", i, depth);
+            if (depth < minDepth)//画面に近い方を選択
+            {
+                int hitNo = GLHelper.getPickedObjId(i);
+                hitIndex = hitNo;
+                minDepth = depth;
+            }
         }
         return this.targetsList.get(hitIndex - 1);
     }

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Level;
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
     public static final String MODID = "RTM";
-    public static final String VERSION = "1.7.10.41_KaizPatchX1_Umisaki_Beta1";
+    public static final String VERSION = "1.7.10.41_KaizPatchX1";
 
     @Instance(MODID)
     public static RTMCore instance;
@@ -194,7 +194,6 @@ public final class RTMCore {
         PermissionManager.INSTANCE.registerPermission(RTMCore.DRIVE_TRAIN);
         PermissionManager.INSTANCE.registerPermission(RTMCore.CHANGE_MODEL);
     }
-
 
     @EventHandler
     public void handleServerStarting(FMLServerStartingEvent event) {

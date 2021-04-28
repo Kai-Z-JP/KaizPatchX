@@ -16,6 +16,7 @@ import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
 import jp.ngt.rtm.entity.train.util.BogieController;
 import jp.ngt.rtm.entity.vehicle.VehicleTrackerEntry;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
+import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.rail.TileEntityLargeRailSwitchCore;
@@ -440,17 +441,20 @@ public class EntityBogie extends Entity implements Lockable {
         }
         EntityTrainBase train = this.getTrain();
         if (train != null) {
-            //Clientでの台車位置決定は車両位置から
-            float[][] pos = train.getModelSet().getConfig().getBogiePos();
-            int bogieIndex = this.getBogieId();
-            Vec3 v31 = new Vec3(pos[bogieIndex][0], pos[bogieIndex][1], pos[bogieIndex][2]);
-            v31 = v31.rotateAroundX(train.rotationPitch);
-            v31 = v31.rotateAroundY(train.rotationYaw);
-            double newX = train.posX + v31.getX();
-            double newY = train.posY + v31.getY();
-            double newZ = train.posZ + v31.getZ();
-            //位置補正はRendererでやる
-            this.setPosition(newX, newY, newZ);
+            ModelSetVehicleBase<TrainConfig> modelSet = train.getModelSet();
+            if (modelSet != null) {
+                //Clientでの台車位置決定は車両位置から
+                float[][] pos = modelSet.getConfig().getBogiePos();
+                int bogieIndex = this.getBogieId();
+                Vec3 v31 = new Vec3(pos[bogieIndex][0], pos[bogieIndex][1], pos[bogieIndex][2]);
+                v31 = v31.rotateAroundX(train.rotationPitch);
+                v31 = v31.rotateAroundY(train.rotationYaw);
+                double newX = train.posX + v31.getX();
+                double newY = train.posY + v31.getY();
+                double newZ = train.posZ + v31.getZ();
+                //位置補正はRendererでやる
+                this.setPosition(newX, newY, newZ);
+            }
         }
         this.setRotation(this.rotationYaw, this.rotationPitch);
         this.setPosition(this.posX, this.posY, this.posZ);

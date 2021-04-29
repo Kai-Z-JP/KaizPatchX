@@ -4,7 +4,6 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.entity.EntityInstalledObject;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
-import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,17 +87,8 @@ public class EntityTie extends EntityCargo {
                 double d0 = 1.5D;
                 List<Entity> list = this.worldObj.selectEntitiesWithinAABB(Entity.class,
                         AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY - 0.5D, this.posZ - d0, this.posX + d0, this.posY + 4.5D, this.posZ + d0),
-                        new IEntitySelector() {
-                            @Override
-                            public boolean isEntityApplicable(Entity entity) {
-                                if (entity instanceof EntityVehiclePart || entity instanceof EntityBogie || entity instanceof EntityInstalledObject) {
-                                    return false;
-                                } else if (entity instanceof EntityVehicleBase) {
-                                    return EntityTie.this.getVehicle() != entity;
-                                }
-                                return true;
-                            }
-                        });
+                        entity -> (entity instanceof EntityVehicleBase) ? EntityTie.this.getVehicle() != entity : !(entity instanceof EntityVehiclePart || entity instanceof EntityBogie || entity instanceof EntityInstalledObject)
+                );
 
                 if (!list.isEmpty()) {
                     for (Entity entity : list) {

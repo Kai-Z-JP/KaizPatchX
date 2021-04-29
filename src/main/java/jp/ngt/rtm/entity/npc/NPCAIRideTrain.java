@@ -11,14 +11,9 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.List;
 
 public class NPCAIRideTrain extends EntityAIBase {
-    private static final double MAX_RANGE = 32.0D;
+	private static final double MAX_RANGE = 32.0D;
 
-    private static final IEntitySelector SELECTOR = new IEntitySelector() {
-        @Override
-        public boolean isEntityApplicable(Entity entity) {
-            return (entity instanceof EntityFloor);
-        }
-    };
+    private static final IEntitySelector SELECTOR = EntityFloor.class::isInstance;
 
     private final EntityNPC npc;
     private final float moveSpeed;

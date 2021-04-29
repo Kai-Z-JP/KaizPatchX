@@ -4,6 +4,7 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
+import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.command.CommandBase;
@@ -60,23 +61,27 @@ public class CommandRTM extends CommandBase {
             });
         } else {
             if (s[0].equalsIgnoreCase("delAllTrain")) {
-                int count = 0;
+                int countTrain = 0;
+                int countEntity = 0;
                 List<Entity> list = player.worldObj.loadedEntityList;
                 for (Entity entity0 : list) {
-                    Entity entity1 = null;
+                    Entity entity1;
                     if (entity0 instanceof EntityTrainBase) {
                         entity1 = entity0;
-                        ++count;
-                    } else if (entity0 instanceof EntityBogie) {
+                        ++countTrain;
+                    } else if (entity0 instanceof EntityBogie || entity0 instanceof EntityVehiclePart) {
                         entity1 = entity0;
+                    } else {
+                        continue;
                     }
+                    ++countEntity;
 
-                    if (entity1 != null && !entity1.isDead) {
+                    if (!entity1.isDead) {
                         entity1.setDead();
                     }
                 }
 
-                NGTLog.sendChatMessage(player, "Delete " + count + "trains.");
+                NGTLog.sendChatMessage(player, "Deleted " + countTrain + "trains." + " " + "Deleted " + countEntity + "entities.");
             }
         }
     }

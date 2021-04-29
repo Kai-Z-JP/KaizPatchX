@@ -7,13 +7,13 @@ import jp.ngt.ngtlib.NGTCore;
 import jp.ngt.ngtlib.util.NGTCertificate;
 
 public class PacketNoticeHandlerClient implements IMessageHandler<PacketNotice, IMessage> {
-	@Override
-	public IMessage onMessage(PacketNotice message, MessageContext ctx) {
-		if (message.type == PacketNotice.Side_CLIENT) {
-			if (message.notice.equals("regKey")) {
-				NGTCertificate.writePlayerData(NGTCore.proxy.getUserName());
-			}
-		}
-		return null;
-	}
+    @Override
+    public IMessage onMessage(PacketNotice message, MessageContext ctx) {
+        if (message.type == PacketNotice.Side_CLIENT) {
+            if (message.notice.equals("regKey")) {
+                NGTCertificate.writePlayerData(NGTCore.proxy.getUserName());
+            }
+        }
+        return null;
+    }
 }

@@ -16,10 +16,10 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class RTMResourceHandler {
-	/**
-	 * モデルパックで追加したsound.jsonの登録
-	 */
-	public static List<String> registerSounds() {
+    /**
+     * モデルパックで追加したsound.jsonの登録
+     */
+    public static List<String> registerSounds() {
         NGTLog.debug("[RTM](Client) Start registering sounds.json");
         List<String> list = new ArrayList<>();
         SimpleReloadableResourceManager rm = (SimpleReloadableResourceManager) NGTUtilClient.getMinecraft().getResourceManager();
@@ -49,14 +49,14 @@ public class RTMResourceHandler {
                 }
             }
         });
-		return list;
-	}
+        return list;
+    }
 
-	private static IMetadataSerializer getMetadataSerializer(SimpleReloadableResourceManager par1) {
-		return (IMetadataSerializer) NGTUtil.getField(SimpleReloadableResourceManager.class, par1, new String[]{"rmMetadataSerializer", "field_110547_c"});
-	}
+    private static IMetadataSerializer getMetadataSerializer(SimpleReloadableResourceManager par1) {
+        return (IMetadataSerializer) NGTUtil.getField(SimpleReloadableResourceManager.class, par1, new String[]{"rmMetadataSerializer", "field_110547_c"});
+    }
 
-	private static Map getDomainResourceManagers(SimpleReloadableResourceManager par1) {
-		return (Map) NGTUtil.getField(SimpleReloadableResourceManager.class, par1, new String[]{"domainResourceManagers", "field_110548_a"});
-	}
+    private static Map getDomainResourceManagers(SimpleReloadableResourceManager par1) {
+        return (Map) NGTUtil.getField(SimpleReloadableResourceManager.class, par1, new String[]{"domainResourceManagers", "field_110548_a"});
+    }
 }

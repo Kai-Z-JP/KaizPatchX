@@ -1,335 +1,334 @@
 {
-  "trainName": "s300ndp",
-  "trainType": "EC",
-
-  "trainModel2": {
-    "modelFile": "ModelTrain_s300ndp.mqo",
-    "textures": [
-      [
-        "mat1",
-        "textures/train/s300/s300nd.png",
-        "AlphaBlend"
-      ]
-    ]
-  },
-  "bogieModel2": {
-    "modelFile": "ModelBogie.class",
-    "textures": [
-      [
-        "default",
-        "textures/train/bogie.png"
-      ]
-    ]
-  },
-  "buttonTexture": "textures/train/s300/button_s300ndp.png",
-  "rollsignTexture": "textures/train/s300/s300_rollsign.png",
-  "rollsignNames": [
-    "Nozomi_Tokyo",
-    "Nozomi_ShinOsaka",
-    "Nozomi_Hakata",
-    "Hikari_Tokyo",
-    "Hikari_ShinOsaka",
-    "Hikari_Hakata",
-    "Hikari_Okayama",
-    "Hikari_N",
-    "Kodama_Tokyo",
-    "Kodama_ShinOsaka",
-    "Kodama_Hakata",
-    "Kodama_Okayama",
-    "Kodama_Nagoya",
-    "Dantai",
-    "Kaisou",
-    "N"
-  ],
-  "rollsigns": [
-    {
-      "uv": [
-        0.0,
-        1.0,
-        0.0,
-        1.0
-      ],
-      "pos": [
-        [
-          [
-            1.42,
-            2.64,
-            -9.525
-          ],
-          [
-            1.42,
-            2.45,
-            -9.525
-          ],
-          [
-            1.42,
-            2.45,
-            -9.025
-          ],
-          [
-            1.42,
-            2.64,
-            -9.025
-          ]
-        ],
-        [
-          [
-            1.42,
-            2.64,
-            7.45
-          ],
-          [
-            1.42,
-            2.45,
-            7.45
-          ],
-          [
-            1.42,
-            2.45,
-            7.95
-          ],
-          [
-            1.42,
-            2.64,
-            7.95
-          ]
-        ],
-        [
-          [
-            -1.42,
-            2.64,
-            -9.05
-          ],
-          [
-            -1.42,
-            2.45,
-            -9.05
-          ],
-          [
-            -1.42,
-            2.45,
-            -9.525
-          ],
-          [
-            -1.42,
-            2.64,
-            -9.525
-          ]
-        ],
-        [
-          [
-            -1.42,
-            2.64,
-            7.95
-          ],
-          [
-            -1.42,
-            2.45,
-            7.95
-          ],
-          [
-            -1.42,
-            2.45,
-            7.45
-          ],
-          [
-            -1.42,
-            2.64,
-            7.45
-          ]
+    "trainName": "s300ndp",
+    "trainType": "EC",
+    "trainModel2": {
+        "modelFile": "ModelTrain_s300ndp.mqo",
+        "textures": [
+            [
+                "mat1",
+                "textures/train/s300/s300nd.png",
+                "AlphaBlend"
+            ]
         ]
-      ],
-      "doAnimation": true,
-      "disableLighting": false
-    }
-  ],
-  "interiorLights": [
-    {
-      "pos": [
-        0.0,
-        2.5,
-        9.0
-      ]
     },
-    {
-      "pos": [
-        0.0,
-        2.5,
-        -9.0
-      ]
-    }
-  ],
-  "soundScriptPath": "scripts/sound_223.js",
-  "sound_BrakeRelease": "train.rtm_223_release",
-  "seatPos": [
-    [
-      12,
-      6,
-      110,
-      1
+    "bogieModel2": {
+        "modelFile": "ModelBogie.class",
+        "textures": [
+            [
+                "default",
+                "textures/train/bogie.png"
+            ]
+        ]
+    },
+    "buttonTexture": "textures/train/s300/button_s300ndp.png",
+    "rollsignTexture": "textures/train/s300/s300_rollsign.png",
+    "rollsignNames": [
+        "Nozomi_Tokyo",
+        "Nozomi_ShinOsaka",
+        "Nozomi_Hakata",
+        "Hikari_Tokyo",
+        "Hikari_ShinOsaka",
+        "Hikari_Hakata",
+        "Hikari_Okayama",
+        "Hikari_N",
+        "Kodama_Tokyo",
+        "Kodama_ShinOsaka",
+        "Kodama_Hakata",
+        "Kodama_Okayama",
+        "Kodama_Nagoya",
+        "Dantai",
+        "Kaisou",
+        "N"
     ],
-    [
-      12,
-      6,
-      90,
-      1
+    "rollsigns": [
+        {
+            "uv": [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "pos": [
+                [
+                    [
+                        1.42,
+                        2.64,
+                        -9.525
+                    ],
+                    [
+                        1.42,
+                        2.45,
+                        -9.525
+                    ],
+                    [
+                        1.42,
+                        2.45,
+                        -9.025
+                    ],
+                    [
+                        1.42,
+                        2.64,
+                        -9.025
+                    ]
+                ],
+                [
+                    [
+                        1.42,
+                        2.64,
+                        7.45
+                    ],
+                    [
+                        1.42,
+                        2.45,
+                        7.45
+                    ],
+                    [
+                        1.42,
+                        2.45,
+                        7.95
+                    ],
+                    [
+                        1.42,
+                        2.64,
+                        7.95
+                    ]
+                ],
+                [
+                    [
+                        -1.42,
+                        2.64,
+                        -9.05
+                    ],
+                    [
+                        -1.42,
+                        2.45,
+                        -9.05
+                    ],
+                    [
+                        -1.42,
+                        2.45,
+                        -9.525
+                    ],
+                    [
+                        -1.42,
+                        2.64,
+                        -9.525
+                    ]
+                ],
+                [
+                    [
+                        -1.42,
+                        2.64,
+                        7.95
+                    ],
+                    [
+                        -1.42,
+                        2.45,
+                        7.95
+                    ],
+                    [
+                        -1.42,
+                        2.45,
+                        7.45
+                    ],
+                    [
+                        -1.42,
+                        2.64,
+                        7.45
+                    ]
+                ]
+            ],
+            "doAnimation": true,
+            "disableLighting": false
+        }
     ],
-    [
-      12,
-      6,
-      70,
-      1
+    "interiorLights": [
+        {
+            "pos": [
+                0.0,
+                2.5,
+                9.0
+            ]
+        },
+        {
+            "pos": [
+                0.0,
+                2.5,
+                -9.0
+            ]
+        }
     ],
-    [
-      12,
-      6,
-      50,
-      1
+    "soundScriptPath": "scripts/sound_223.js",
+    "sound_BrakeRelease": "train.rtm_223_release",
+    "seatPos": [
+        [
+            12,
+            6,
+            110,
+            1
+        ],
+        [
+            12,
+            6,
+            90,
+            1
+        ],
+        [
+            12,
+            6,
+            70,
+            1
+        ],
+        [
+            12,
+            6,
+            50,
+            1
+        ],
+        [
+            12,
+            6,
+            30,
+            1
+        ],
+        [
+            12,
+            6,
+            10,
+            1
+        ],
+        [
+            12,
+            6,
+            -90,
+            1
+        ],
+        [
+            12,
+            6,
+            -70,
+            1
+        ],
+        [
+            12,
+            6,
+            -50,
+            1
+        ],
+        [
+            12,
+            6,
+            -30,
+            1
+        ],
+        [
+            12,
+            6,
+            -10,
+            1
+        ],
+        [
+            -12,
+            6,
+            110,
+            1
+        ],
+        [
+            -12,
+            6,
+            90,
+            1
+        ],
+        [
+            -12,
+            6,
+            70,
+            1
+        ],
+        [
+            -12,
+            6,
+            50,
+            1
+        ],
+        [
+            -12,
+            6,
+            30,
+            1
+        ],
+        [
+            -12,
+            6,
+            10,
+            1
+        ],
+        [
+            -12,
+            6,
+            -90,
+            1
+        ],
+        [
+            -12,
+            6,
+            -70,
+            1
+        ],
+        [
+            -12,
+            6,
+            -50,
+            1
+        ],
+        [
+            -12,
+            6,
+            -30,
+            1
+        ],
+        [
+            -12,
+            6,
+            -10,
+            1
+        ]
     ],
-    [
-      12,
-      6,
-      30,
-      1
+    "playerPos": [
+        [
+            0.8,
+            0.25,
+            9.187
+        ],
+        [
+            -0.8,
+            0.25,
+            -9.187
+        ]
     ],
-    [
-      12,
-      6,
-      10,
-      1
+    "bogiePos": [
+        [
+            0.0,
+            0.0,
+            7.125
+        ],
+        [
+            0.0,
+            0.0,
+            -7.125
+        ]
     ],
-    [
-      12,
-      6,
-      -90,
-      1
+    "maxSpeed": [
+        0.40,
+        1.38,
+        2.08,
+        2.77,
+        3.75
     ],
-    [
-      12,
-      6,
-      -70,
-      1
-    ],
-    [
-      12,
-      6,
-      -50,
-      1
-    ],
-    [
-      12,
-      6,
-      -30,
-      1
-    ],
-    [
-      12,
-      6,
-      -10,
-      1
-    ],
-    [
-      -12,
-      6,
-      110,
-      1
-    ],
-    [
-      -12,
-      6,
-      90,
-      1
-    ],
-    [
-      -12,
-      6,
-      70,
-      1
-    ],
-    [
-      -12,
-      6,
-      50,
-      1
-    ],
-    [
-      -12,
-      6,
-      30,
-      1
-    ],
-    [
-      -12,
-      6,
-      10,
-      1
-    ],
-    [
-      -12,
-      6,
-      -90,
-      1
-    ],
-    [
-      -12,
-      6,
-      -70,
-      1
-    ],
-    [
-      -12,
-      6,
-      -50,
-      1
-    ],
-    [
-      -12,
-      6,
-      -30,
-      1
-    ],
-    [
-      -12,
-      6,
-      -10,
-      1
-    ]
-  ],
-  "playerPos": [
-    [
-      0.8,
-      0.25,
-      9.187
-    ],
-    [
-      -0.8,
-      0.25,
-      -9.187
-    ]
-  ],
-  "bogiePos": [
-    [
-      0.0,
-      0.0,
-      7.125
-    ],
-    [
-      0.0,
-      0.0,
-      -7.125
-    ]
-  ],
-  "maxSpeed": [
-    0.40,
-    1.38,
-    2.08,
-    2.77,
-    3.75
-  ],
-  "accelerateion": 0.00111,
-  "doCulling": true,
-  "rolling": 0.125,
-  "smoothing": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479 300 JRC JRW"
+    "accelerateion": 0.00111,
+    "doCulling": true,
+    "rolling": 0.125,
+    "smoothing": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479 300 JRC JRW"
 }

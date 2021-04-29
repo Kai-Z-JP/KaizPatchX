@@ -1,24 +1,24 @@
 {
-  "railName": "1067mm_Grass",
-  "model": {
-    "modelFile": "ModelRail_1067mm_grass.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/rail/largeRailGrass.png",
-        ""
-      ]
+    "railName": "1067mm_Grass",
+    "model": {
+        "modelFile": "ModelRail_1067mm_grass.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/rail/largeRailGrass.png",
+                ""
+            ]
+        ],
+        "rendererPath": "scripts/RenderRailStandardGrass.js"
+    },
+    "buttonTexture": "textures/rail/button_1067mm_Grass.png",
+    "defaultBallast": [
+        {
+            "blockName": "gravel",
+            "blockMetadata": 0,
+            "height": 0.0625
+        }
     ],
-    "rendererPath": "scripts/RenderRailStandardGrass.js"
-  },
-  "buttonTexture": "textures/rail/button_1067mm_Grass.png",
-  "defaultBallast": [
-    {
-      "blockName": "gravel",
-      "blockMetadata": 0,
-      "height": 0.0625
-    }
-  ],
-  "accuracy": "LOW",
-  "tags": "ngt5479 1067mm Grass"
+    "accuracy": "LOW",
+    "tags": "ngt5479 1067mm Grass"
 }

@@ -1,11 +1,11 @@
 {
-  "texture": "ngt_m06",
-  "backTexture": 2,
-  "height": 4.5,
-  "width": 2.0,
-  "depth": 0.5,
-  "frame": 1,
-  "animationCycle": 1,
-  "color": 0,
-  "lightValue": -15
+    "texture": "ngt_m06",
+    "backTexture": 2,
+    "height": 4.5,
+    "width": 2.0,
+    "depth": 0.5,
+    "frame": 1,
+    "animationCycle": 1,
+    "color": 0,
+    "lightValue": -15
 }

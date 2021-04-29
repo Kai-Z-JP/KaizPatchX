@@ -40,17 +40,17 @@ public class RenderContainer extends Render {
         GL11.glPopMatrix();
     }
 
-	@Override
-	public void doRender(Entity par1, double par2, double par4, double par6, float par8, float par9) {
-		this.renderContainer((EntityContainer) par1, par2, par4, par6, par8, par9);
-	}
+    @Override
+    public void doRender(Entity par1, double par2, double par4, double par6, float par8, float par9) {
+        this.renderContainer((EntityContainer) par1, par2, par4, par6, par8, par9);
+    }
 
-	@Override
-	protected ResourceLocation getEntityTexture(Entity par1) {
-		return null;
-	}
+    @Override
+    protected ResourceLocation getEntityTexture(Entity par1) {
+        return null;
+    }
 
-	@Override
-	protected void bindEntityTexture(Entity entiy) {
-	}
+    @Override
+    protected void bindEntityTexture(Entity entiy) {
+    }
 }

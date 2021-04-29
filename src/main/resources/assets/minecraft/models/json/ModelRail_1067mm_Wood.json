@@ -1,29 +1,29 @@
 {
-  "railName": "1067mm_Wood",
-  "model": {
-    "modelFile": "ModelRail_1067mm.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/rail/largeRail.png",
-        ""
-      ]
-    ],
-    "rendererPath": "scripts/RenderRailStandard.js"
-  },
-  "buttonTexture": "textures/rail/button_1067mm_Wood.png",
-  "defaultBallast": [
-    {
-      "blockName": "gravel",
-      "blockMetadata": 0,
-      "height": 0.0625
+    "railName": "1067mm_Wood",
+    "model": {
+        "modelFile": "ModelRail_1067mm.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/rail/largeRail.png",
+                ""
+            ]
+        ],
+        "rendererPath": "scripts/RenderRailStandard.js"
     },
-    {
-      "blockName": "snow",
-      "blockMetadata": 0,
-      "height": 0.24
-    }
-  ],
-  "accuracy": "LOW",
-  "tags": "ngt5479 1067mm Wood"
+    "buttonTexture": "textures/rail/button_1067mm_Wood.png",
+    "defaultBallast": [
+        {
+            "blockName": "gravel",
+            "blockMetadata": 0,
+            "height": 0.0625
+        },
+        {
+            "blockName": "snow",
+            "blockMetadata": 0,
+            "height": 0.24
+        }
+    ],
+    "accuracy": "LOW",
+    "tags": "ngt5479 1067mm Wood"
 }

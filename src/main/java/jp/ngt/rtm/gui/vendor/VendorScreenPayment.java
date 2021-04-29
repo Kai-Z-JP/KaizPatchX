@@ -10,15 +10,15 @@ import net.minecraft.client.gui.GuiButton;
  */
 @SideOnly(Side.CLIENT)
 public class VendorScreenPayment extends VendorScreen {
-	public VendorScreenPayment(GuiTicketVendor par1) {
-		super(par1);
-	}
+    public VendorScreenPayment(GuiTicketVendor par1) {
+        super(par1);
+    }
 
-	@Override
-	public void init(int guiLeft, int guiTop) {
-	}
+    @Override
+    public void init(int guiLeft, int guiTop) {
+    }
 
-	@Override
-	public void onClickButton(GuiButton button) {
-	}
+    @Override
+    public void onClickButton(GuiButton button) {
+    }
 }

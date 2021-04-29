@@ -1,10 +1,10 @@
 {
-  "containerName": "C24FT",
-  "containerModel": "Model_C24FT.mqo",
-  "containerTexture": "textures/container/c_red.png",
-  "buttonTexture": "textures/container/button_C24FT.png",
-  "containerWidth": 2.49,
-  "containerHeight": 2.5,
-  "containerLength": 7.27,
-  "tags": "ngt5479"
+    "containerName": "C24FT",
+    "containerModel": "Model_C24FT.mqo",
+    "containerTexture": "textures/container/c_red.png",
+    "buttonTexture": "textures/container/button_C24FT.png",
+    "containerWidth": 2.49,
+    "containerHeight": 2.5,
+    "containerLength": 7.27,
+    "tags": "ngt5479"
 }

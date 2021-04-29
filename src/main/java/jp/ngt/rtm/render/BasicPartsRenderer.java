@@ -13,28 +13,28 @@ import java.util.List;
  */
 @SideOnly(Side.CLIENT)
 public class BasicPartsRenderer<T, MS extends ModelSetBase> extends PartsRenderer<T, MS> {
-	private Parts main;
+    private Parts main;
 
-	public BasicPartsRenderer(String... par1) {
-		super(par1);
-	}
+    public BasicPartsRenderer(String... par1) {
+        super(par1);
+    }
 
-	@Override
-	public void init(MS par1, ModelObject par2) {
-		List<GroupObject> goList = par2.model.getGroupObjects();
-		String[] array = goList.stream().map(groupObject -> groupObject.name).toArray(String[]::new);
-		this.main = this.registerParts(new Parts(array));
+    @Override
+    public void init(MS par1, ModelObject par2) {
+        List<GroupObject> goList = par2.model.getGroupObjects();
+        String[] array = goList.stream().map(groupObject -> groupObject.name).toArray(String[]::new);
+        this.main = this.registerParts(new Parts(array));
 
-		super.init(par1, par2);
-	}
+        super.init(par1, par2);
+    }
 
-	@Override
-	public void render(T entity, int pass, float par3) {
-		this.main.render(this);
-	}
+    @Override
+    public void render(T entity, int pass, float par3) {
+        this.main.render(this);
+    }
 
-	@Override
-	public World getWorld(T entity) {
-		return null;
-	}
+    @Override
+    public World getWorld(T entity) {
+        return null;
+    }
 }

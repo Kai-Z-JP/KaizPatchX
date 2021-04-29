@@ -44,8 +44,8 @@ public class PacketPlaySound extends PacketCustom implements IMessage, IMessageH
         buffer.writeFloat(this.pitch);
     }
 
-	@Override
-	public void fromBytes(ByteBuf buffer) {
+    @Override
+    public void fromBytes(ByteBuf buffer) {
         super.fromBytes(buffer);
         String s1 = ByteBufUtils.readUTF8String(buffer);
         String s2 = ByteBufUtils.readUTF8String(buffer);
@@ -54,8 +54,8 @@ public class PacketPlaySound extends PacketCustom implements IMessage, IMessageH
         this.pitch = buffer.readFloat();
     }
 
-	@Override
-	public IMessage onMessage(PacketPlaySound message, MessageContext ctx) {
+    @Override
+    public IMessage onMessage(PacketPlaySound message, MessageContext ctx) {
         World world = NGTUtil.getClientWorld();
         if (message.forEntity()) {
             Entity entity = message.getEntity(world);

@@ -22,16 +22,16 @@ import java.util.stream.IntStream;
  */
 @SideOnly(Side.CLIENT)
 public class BasicVehiclePartsRenderer extends VehiclePartsRenderer {
-	private Parts body;
-	private PartsWithChildren[] doorLeft, doorRight;
-	private PartsWithChildren[] pantographFront, pantographBack;
+    private Parts body;
+    private PartsWithChildren[] doorLeft, doorRight;
+    private PartsWithChildren[] pantographFront, pantographBack;
 
-	public BasicVehiclePartsRenderer(String... par1) {
-		super(par1);
-	}
+    public BasicVehiclePartsRenderer(String... par1) {
+        super(par1);
+    }
 
-	@Override
-	public void init(ModelSetVehicleBaseClient par1, ModelObject par2) {
+    @Override
+    public void init(ModelSetVehicleBaseClient par1, ModelObject par2) {
         VehicleBaseConfig cfg = par1.getConfig();
         List<String> list = new ArrayList<>();
 
@@ -52,13 +52,13 @@ public class BasicVehiclePartsRenderer extends VehiclePartsRenderer {
         this.partsList.addAll(Arrays.asList(this.doorRight));
         this.partsList.addAll(Arrays.asList(this.pantographFront));
         this.partsList.addAll(Arrays.asList(this.pantographBack));
-		this.partsList.add(this.body);
+        this.partsList.add(this.body);
 
-		super.init(par1, par2);
+        super.init(par1, par2);
 
-	}
+    }
 
-	private PartsWithChildren[] getParts(List<String> list, VehicleParts[] parts) {
+    private PartsWithChildren[] getParts(List<String> list, VehicleParts[] parts) {
         PartsWithChildren[] array = new PartsWithChildren[parts.length];
         IntStream.range(0, parts.length).forEach(i -> {
             array[i] = new PartsWithChildren(parts[i].objects);
@@ -70,33 +70,33 @@ public class BasicVehiclePartsRenderer extends VehiclePartsRenderer {
         return array;
     }
 
-	@Override
-	public void render(Entity entity, int pass, float par3) {
-		this.body.render(this);
-		VehicleBaseConfig cfg = this.modelSet.getConfig();
+    @Override
+    public void render(Entity entity, int pass, float par3) {
+        this.body.render(this);
+        VehicleBaseConfig cfg = this.modelSet.getConfig();
 
-		if (cfg.door_left != null) {
+        if (cfg.door_left != null) {
             float move = this.getDoorMovementL(entity);
             IntStream.range(0, cfg.door_left.length).forEach(j -> this.renderParts(this.sigmoid(move), cfg.door_left[j], this.doorLeft[j]));
         }
 
-		if (cfg.door_right != null) {
+        if (cfg.door_right != null) {
             float move = this.getDoorMovementR(entity);
             IntStream.range(0, cfg.door_right.length).forEach(j -> this.renderParts(this.sigmoid(move), cfg.door_right[j], this.doorRight[j]));
         }
 
-		if (cfg.pantograph_front != null) {
+        if (cfg.pantograph_front != null) {
             float move = this.getPantographMovementFront(entity);
             IntStream.range(0, cfg.pantograph_front.length).forEach(j -> this.renderParts(this.sigmoid(move), cfg.pantograph_front[j], this.pantographFront[j]));
         }
 
-		if (cfg.pantograph_back != null) {
+        if (cfg.pantograph_back != null) {
             float move = this.getPantographMovementBack(entity);
             IntStream.range(0, cfg.pantograph_back.length).forEach(j -> this.renderParts(this.sigmoid(move), cfg.pantograph_back[j], this.pantographBack[j]));
         }
-	}
+    }
 
-	private void renderParts(float move, VehicleParts parts, PartsWithChildren parts2) {
+    private void renderParts(float move, VehicleParts parts, PartsWithChildren parts2) {
         GL11.glPushMatrix();
         GL11.glTranslatef(parts.pos[0], parts.pos[1], parts.pos[2]);
         Arrays.stream(parts.transform).forEach(fa -> {
@@ -113,6 +113,6 @@ public class BasicVehiclePartsRenderer extends VehiclePartsRenderer {
             IntStream.range(0, parts.childParts.length).forEach(i -> this.renderParts(move, parts.childParts[i], (PartsWithChildren) parts2.childParts.get(i)));
         }
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 }

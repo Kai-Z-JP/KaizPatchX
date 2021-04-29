@@ -15,42 +15,42 @@ import java.util.Map;
  */
 @SideOnly(Side.CLIENT)
 public abstract class MCModel extends ModelBase implements IModelNGT {
-	@Override
-	public void renderAll(boolean smoothing) {
-		GL11.glPushMatrix();
-		GL11.glScalef(1.0F, -1.0F, -1.0F);
-		//GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-		this.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
-		GL11.glPopMatrix();
-	}
+    @Override
+    public void renderAll(boolean smoothing) {
+        GL11.glPushMatrix();
+        GL11.glScalef(1.0F, -1.0F, -1.0F);
+        //GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+        this.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
+        GL11.glPopMatrix();
+    }
 
-	@Override
-	public void renderOnly(boolean smoothing, String... groupNames) {
-		this.renderAll(smoothing);
-	}
+    @Override
+    public void renderOnly(boolean smoothing, String... groupNames) {
+        this.renderAll(smoothing);
+    }
 
-	@Override
-	public void renderPart(boolean smoothing, String partName) {
-		this.renderAll(smoothing);
-	}
+    @Override
+    public void renderPart(boolean smoothing, String partName) {
+        this.renderAll(smoothing);
+    }
 
-	@Override
-	public int getDrawMode() {
-		return 0;
-	}
+    @Override
+    public int getDrawMode() {
+        return 0;
+    }
 
-	@Override
-	public ArrayList<GroupObject> getGroupObjects() {
+    @Override
+    public ArrayList<GroupObject> getGroupObjects() {
         return new ArrayList<>();
     }
 
-	@Override
-	public Map<String, Material> getMaterials() {
+    @Override
+    public Map<String, Material> getMaterials() {
         return new HashMap<>();
     }
 
-	@Override
-	public FileType getType() {
-		return FileType.CLASS;
-	}
+    @Override
+    public FileType getType() {
+        return FileType.CLASS;
+    }
 }

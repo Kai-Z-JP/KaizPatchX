@@ -1,19 +1,19 @@
 {
-  "name": "BumpingPost_Type2",
-  "model": {
-    "modelFile": "ModelBumpingPost_Type2.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/bumpingPost.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/machine/button_BumpingPost_Type2.png",
-  "machineType": "BumpingPost",
-  "smoothing": true,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "BumpingPost_Type2",
+    "model": {
+        "modelFile": "ModelBumpingPost_Type2.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/bumpingPost.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/machine/button_BumpingPost_Type2.png",
+    "machineType": "BumpingPost",
+    "smoothing": true,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

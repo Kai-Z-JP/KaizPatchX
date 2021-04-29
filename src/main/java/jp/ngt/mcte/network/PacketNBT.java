@@ -14,38 +14,38 @@ import net.minecraft.world.World;
  * Editorのブロックデータのやりとり専用
  */
 public class PacketNBT implements IMessage, IMessageHandler<PacketNBT, IMessage> {
-	public NBTTagCompound nbtData;
+    public NBTTagCompound nbtData;
 
-	public PacketNBT() {
-	}
+    public PacketNBT() {
+    }
 
-	public PacketNBT(EntityEditor entity, NBTTagCompound nbt) {
-		this.nbtData = nbt;
-		this.nbtData.setInteger("EntityId", entity.getEntityId());
-	}
+    public PacketNBT(EntityEditor entity, NBTTagCompound nbt) {
+        this.nbtData = nbt;
+        this.nbtData.setInteger("EntityId", entity.getEntityId());
+    }
 
-	@Override
-	public void toBytes(ByteBuf buffer) {
-		ByteBufUtils.writeTag(buffer, this.nbtData);
-	}
+    @Override
+    public void toBytes(ByteBuf buffer) {
+        ByteBufUtils.writeTag(buffer, this.nbtData);
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buffer) {
-		this.nbtData = ByteBufUtils.readTag(buffer);
-	}
+    @Override
+    public void fromBytes(ByteBuf buffer) {
+        this.nbtData = ByteBufUtils.readTag(buffer);
+    }
 
-	public void onGetPacket(World world) {
-		int id = this.nbtData.getInteger("EntityId");
-		Entity entity = world.getEntityByID(id);
-		if (entity instanceof EntityEditor) {
-			((EntityEditor) entity).importBlocksFromNBT(this.nbtData);
-		}
-	}
+    public void onGetPacket(World world) {
+        int id = this.nbtData.getInteger("EntityId");
+        Entity entity = world.getEntityByID(id);
+        if (entity instanceof EntityEditor) {
+            ((EntityEditor) entity).importBlocksFromNBT(this.nbtData);
+        }
+    }
 
-	@Override
-	public IMessage onMessage(PacketNBT message, MessageContext ctx) {
-		World world = ctx.getServerHandler().playerEntity.worldObj;
-		message.onGetPacket(world);
-		return null;
-	}
+    @Override
+    public IMessage onMessage(PacketNBT message, MessageContext ctx) {
+        World world = ctx.getServerHandler().playerEntity.worldObj;
+        message.onGetPacket(world);
+        return null;
+    }
 }

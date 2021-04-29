@@ -9,15 +9,15 @@ import net.minecraftforge.event.world.WorldEvent;
 
 @SideOnly(Side.CLIENT)
 public final class NGTEventHandlerClient {
-	public static final NGTEventHandlerClient INSTANCE = new NGTEventHandlerClient();
+    public static final NGTEventHandlerClient INSTANCE = new NGTEventHandlerClient();
 
-	private NGTEventHandlerClient() {
-	}
+    private NGTEventHandlerClient() {
+    }
 
-	@SubscribeEvent
-	public void onChangeTexture(TextureStitchEvent.Post event) {
-		GLHelper.initGLList();
-	}
+    @SubscribeEvent
+    public void onChangeTexture(TextureStitchEvent.Post event) {
+        GLHelper.initGLList();
+    }
 
 	/*@SubscribeEvent
 	public void onFinishRenderWorld(RenderWorldLastEvent event)
@@ -31,10 +31,10 @@ public final class NGTEventHandlerClient {
 		GLHelper.clearGLList();
 	}*/
 
-	@SubscribeEvent
-	public void onUnloadWorld(WorldEvent.Unload event) {
-		if (event.world.isRemote) {
-			//GLHelper.clearGLList();
-		}
-	}
+    @SubscribeEvent
+    public void onUnloadWorld(WorldEvent.Unload event) {
+        if (event.world.isRemote) {
+            //GLHelper.clearGLList();
+        }
+    }
 }

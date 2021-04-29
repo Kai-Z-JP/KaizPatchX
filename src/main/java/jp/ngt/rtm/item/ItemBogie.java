@@ -12,15 +12,15 @@ import net.minecraft.util.MathHelper;
 import java.util.List;
 
 public class ItemBogie extends Item {
-	@SideOnly(Side.CLIENT)
-	private IIcon[] IIconarray;
-	private static final int num = 2;
+    @SideOnly(Side.CLIENT)
+    private IIcon[] IIconarray;
+    private static final int num = 2;
 
-	public ItemBogie() {
-		super();
-		this.setHasSubtypes(true);
-		this.maxStackSize = 16;
-	}
+    public ItemBogie() {
+        super();
+        this.setHasSubtypes(true);
+        this.maxStackSize = 16;
+    }
 
 	/*@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
@@ -50,30 +50,30 @@ public class ItemBogie extends Item {
         }
     }*/
 
-	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
-		int i = MathHelper.clamp_int(itemStack.getItemDamage(), 0, num - 1);
-		return super.getUnlocalizedName() + "." + itemStack.getItemDamage();
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack) {
+        int i = MathHelper.clamp_int(itemStack.getItemDamage(), 0, num - 1);
+        return super.getUnlocalizedName() + "." + itemStack.getItemDamage();
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1) {
-		int j = MathHelper.clamp_int(par1, 0, num - 1);
-		return this.IIconarray[j];
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int par1) {
+        int j = MathHelper.clamp_int(par1, 0, num - 1);
+        return this.IIconarray[j];
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item par1, CreativeTabs tab, List list) {
-		list.add(new ItemStack(par1, 1, 0));
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item par1, CreativeTabs tab, List list) {
+        list.add(new ItemStack(par1, 1, 0));
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {
-		this.IIconarray = new IIcon[num];
-		this.IIconarray[0] = register.registerIcon("rtm:bogie");
-		this.IIconarray[1] = register.registerIcon("rtm:bogie");
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        this.IIconarray = new IIcon[num];
+        this.IIconarray[0] = register.registerIcon("rtm:bogie");
+        this.IIconarray[1] = register.registerIcon("rtm:bogie");
+    }
 }

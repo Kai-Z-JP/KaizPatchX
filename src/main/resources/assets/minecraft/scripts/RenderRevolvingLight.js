@@ -6,9 +6,9 @@ importPackage(Packages.jp.ngt.rtm.render);
 var tmpArray = [0.0, 0.0, 0.0];
 
 function init(par1, par2) {
-	base = renderer.registerParts(new Parts("base"));
-	cover = renderer.registerParts(new Parts("cover"));
-	light = renderer.registerParts(new Parts("mirror", "light"));
+    base = renderer.registerParts(new Parts("base"));
+    cover = renderer.registerParts(new Parts("cover"));
+    light = renderer.registerParts(new Parts("mirror", "light"));
 }
 
 function render(entity, pass, par3) {
@@ -49,22 +49,22 @@ function render(entity, pass, par3) {
 
                 renderer.renderLightEffect(
                     null, tmpArray,
-					0.75, 0.0625, 5.0, 0xFF0000, 1, false
-				);
+                    0.75, 0.0625, 5.0, 0xFF0000, 1, false
+                );
 
-				renderer.renderLightEffect(
-					null, tmpArray,
-					0.75, 0.0, 0.0, 0xFF0000, 0, false
-				);
+                renderer.renderLightEffect(
+                    null, tmpArray,
+                    0.75, 0.0, 0.0, 0xFF0000, 0, false
+                );
 
-				GL11.glPopMatrix();
-			}
-		}
-		/*else if(state == -1)
-		{
-			light.render(renderer);
-		}*/
-	}
+                GL11.glPopMatrix();
+            }
+        }
+        /*else if(state == -1)
+        {
+            light.render(renderer);
+        }*/
+    }
 
-	GL11.glPopMatrix();
+    GL11.glPopMatrix();
 }

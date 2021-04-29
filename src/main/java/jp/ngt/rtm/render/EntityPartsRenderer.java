@@ -8,16 +8,16 @@ import net.minecraft.world.World;
 
 @SideOnly(Side.CLIENT)
 public abstract class EntityPartsRenderer<MS extends ModelSetBase> extends PartsRenderer<Entity, MS> {
-	public EntityPartsRenderer(String... par1) {
-		super(par1);
-	}
+    public EntityPartsRenderer(String... par1) {
+        super(par1);
+    }
 
-	public int getTick(Entity entity) {
-		return entity == null ? 0 : entity.ticksExisted;
-	}
+    public int getTick(Entity entity) {
+        return entity == null ? 0 : entity.ticksExisted;
+    }
 
-	@Override
-	public World getWorld(Entity entity) {
-		return entity.worldObj;
-	}
+    @Override
+    public World getWorld(Entity entity) {
+        return entity.worldObj;
+    }
 }

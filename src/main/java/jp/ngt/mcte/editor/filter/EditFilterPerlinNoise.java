@@ -7,43 +7,43 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
 public class EditFilterPerlinNoise extends EditFilterBase {
-	private final String[] names = {"Perlin2D", "Perlin3D"};
+    private final String[] names = {"Perlin2D", "Perlin3D"};
 
-	@Override
-	public void init(Config par) {
-		super.init(par);
-		par.addString("Mode", this.names[0], this.names);
-		par.addInt("Octaves", 1, 1, 256);
-		par.addFloat("Persistence", 1.0F, 0.0F, 65535.0F);
-		par.addFloat("ScaleX", 0.0625F, 0.0F, 255.0F);
-		par.addFloat("ScaleY", 0.0625F, 0.0F, 255.0F);
-		par.addFloat("ScaleZ", 0.0625F, 0.0F, 255.0F);
-	}
+    @Override
+    public void init(Config par) {
+        super.init(par);
+        par.addString("Mode", this.names[0], this.names);
+        par.addInt("Octaves", 1, 1, 256);
+        par.addFloat("Persistence", 1.0F, 0.0F, 65535.0F);
+        par.addFloat("ScaleX", 0.0625F, 0.0F, 255.0F);
+        par.addFloat("ScaleY", 0.0625F, 0.0F, 255.0F);
+        par.addFloat("ScaleZ", 0.0625F, 0.0F, 255.0F);
+    }
 
-	@Override
-	public String getFilterName() {
-		return "PerlinNoise";
-	}
+    @Override
+    public String getFilterName() {
+        return "PerlinNoise";
+    }
 
-	@Override
-	public boolean edit(Editor editor) {
-		AABBInt box = editor.getSelectBox();
-		if (box != null) {
-			editor.record(box);
-			String mode = this.getCfg().getString("Mode");
-			Repeatable repeater;
-			if (this.names[0].equals(mode)) {
-				repeater = this.getRepeaterPerlin2D(editor, box);
-			} else {
-				repeater = this.getRepeaterPerlin3D(editor, box);
-			}
-			editor.repeat(box, repeater);
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean edit(Editor editor) {
+        AABBInt box = editor.getSelectBox();
+        if (box != null) {
+            editor.record(box);
+            String mode = this.getCfg().getString("Mode");
+            Repeatable repeater;
+            if (this.names[0].equals(mode)) {
+                repeater = this.getRepeaterPerlin2D(editor, box);
+            } else {
+                repeater = this.getRepeaterPerlin3D(editor, box);
+            }
+            editor.repeat(box, repeater);
+            return true;
+        }
+        return false;
+    }
 
-	private Repeatable getRepeaterPerlin2D(final Editor editor, AABBInt box) {
+    private Repeatable getRepeaterPerlin2D(final Editor editor, AABBInt box) {
         final double[] r = {(double) (box.maxX - box.minX) / 2.0D, (double) (box.maxY - box.minY) / 2.0D, (double) (box.maxZ - box.minZ) / 2.0D};
         final int octaves = this.getCfg().getInt("Octaves");
         final float persistence = this.getCfg().getFloat("Persistence");
@@ -63,7 +63,7 @@ public class EditFilterPerlinNoise extends EditFilterBase {
         };
     }
 
-	private Repeatable getRepeaterPerlin3D(final Editor editor, AABBInt box) {
+    private Repeatable getRepeaterPerlin3D(final Editor editor, AABBInt box) {
         final double[] r = {(double) (box.maxX - box.minX) / 2.0D, (double) (box.maxY - box.minY) / 2.0D, (double) (box.maxZ - box.minZ) / 2.0D};
         final int octaves = this.getCfg().getInt("Octaves");
         final float persistence = this.getCfg().getFloat("Persistence");

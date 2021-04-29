@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 
 @SideOnly(Side.CLIENT)
 public interface IModelSetClient {
-	void renderSelectButton(GuiButtonSelectModel par1, Minecraft par2, int par3, int par4);
+    void renderSelectButton(GuiButtonSelectModel par1, Minecraft par2, int par3, int par4);
 
-	void renderModelInGui(Minecraft par1);
+    void renderModelInGui(Minecraft par1);
 }

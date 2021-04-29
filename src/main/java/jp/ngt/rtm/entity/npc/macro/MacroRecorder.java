@@ -34,36 +34,36 @@ public class MacroRecorder {
         if (this.recording) {
             return false;
         } else {
-			this.recording = true;
-			this.startTime = world.getWorldTime();
-			this.commands.clear();
-			NGTLog.sendChatMessage(NGTUtil.getClientPlayer(), "Start recording");
-			return true;
-		}
-	}
+            this.recording = true;
+            this.startTime = world.getWorldTime();
+            this.commands.clear();
+            NGTLog.sendChatMessage(NGTUtil.getClientPlayer(), "Start recording");
+            return true;
+        }
+    }
 
-	public boolean stop(World world) {
-		if (!this.recording) {
-			return false;
-		} else {
-			this.recording = false;
-			this.startTime = 0L;
-			this.saveToFile(NGTUtil.getClientPlayer());
-			return true;
-		}
-	}
+    public boolean stop(World world) {
+        if (!this.recording) {
+            return false;
+        } else {
+            this.recording = false;
+            this.startTime = 0L;
+            this.saveToFile(NGTUtil.getClientPlayer());
+            return true;
+        }
+    }
 
-	private void setCommand(World world, CommandType type, Object param) {
-		if (this.recording) {
-			long time = world.getWorldTime() - this.startTime;
-			this.commands.add(new TrainCommand(time, type, param));
-		}
-	}
+    private void setCommand(World world, CommandType type, Object param) {
+        if (this.recording) {
+            long time = world.getWorldTime() - this.startTime;
+            this.commands.add(new TrainCommand(time, type, param));
+        }
+    }
 
-	private void saveToFile(EntityPlayer player) {
-		File saveFile = null;
+    private void saveToFile(EntityPlayer player) {
+        File saveFile = null;
 
-		try {
+        try {
             File macroFolder = this.getMacroFolder();
             String fileName = DATE_FORMAT.format(new Date());
             saveFile = new File(macroFolder, fileName + ".txt");
@@ -76,41 +76,41 @@ public class MacroRecorder {
             NGTText.writeToText(saveFile, texts);
             NGTLog.sendChatMessage(player, "Save macro : " + saveFile.getName());
         } catch (IOException e) {
-			if (saveFile != null) {
-				NGTLog.sendChatMessage(player, "Failed to save file : " + saveFile.getAbsolutePath());
-			}
-			e.printStackTrace();
-		}
-	}
+            if (saveFile != null) {
+                NGTLog.sendChatMessage(player, "Failed to save file : " + saveFile.getAbsolutePath());
+            }
+            e.printStackTrace();
+        }
+    }
 
-	public boolean isRecording() {
-		return this.recording;
-	}
+    public boolean isRecording() {
+        return this.recording;
+    }
 
-	public void recNotch(World world, int notch) {
-		this.setCommand(world, CommandType.Notch, notch);
-	}
+    public void recNotch(World world, int notch) {
+        this.setCommand(world, CommandType.Notch, notch);
+    }
 
-	public void recHorn(World world) {
-		this.setCommand(world, CommandType.Horn, "");
-	}
+    public void recHorn(World world) {
+        this.setCommand(world, CommandType.Horn, "");
+    }
 
-	public void recChime(World world, String name) {
-		this.setCommand(world, CommandType.Chime, name);
-	}
+    public void recChime(World world, String name) {
+        this.setCommand(world, CommandType.Chime, name);
+    }
 
-	public void recDoor(World world, TrainState state) {
-		this.setCommand(world, CommandType.Door, state);
-	}
+    public void recDoor(World world, TrainState state) {
+        this.setCommand(world, CommandType.Door, state);
+    }
 
-	/**
-	 * 運転マクロ用フォルダ取得, なければ作成
-	 */
-	public File getMacroFolder() {
-		File macroFolder = new File(NGTFileLoader.getModsDir().get(0), MACRO_FOLDER);
-		if (!macroFolder.exists()) {
-			macroFolder.mkdirs();
-		}
-		return macroFolder;
-	}
+    /**
+     * 運転マクロ用フォルダ取得, なければ作成
+     */
+    public File getMacroFolder() {
+        File macroFolder = new File(NGTFileLoader.getModsDir().get(0), MACRO_FOLDER);
+        if (!macroFolder.exists()) {
+            macroFolder.mkdirs();
+        }
+        return macroFolder;
+    }
 }

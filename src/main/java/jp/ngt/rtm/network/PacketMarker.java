@@ -15,18 +15,18 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class PacketMarker extends PacketCustom implements IMessageHandler<PacketMarker, IMessage> {
-	private List<int[]> list;
+    private List<int[]> list;
 
-	public PacketMarker() {
-	}
+    public PacketMarker() {
+    }
 
-	public PacketMarker(TileEntityMarker marker, List<int[]> par4) {
-		super(marker);
-		this.list = par4;
-	}
+    public PacketMarker(TileEntityMarker marker, List<int[]> par4) {
+        super(marker);
+        this.list = par4;
+    }
 
-	@Override
-	public void toBytes(ByteBuf buffer) {
+    @Override
+    public void toBytes(ByteBuf buffer) {
         super.toBytes(buffer);
 
         buffer.writeInt(this.list.size());
@@ -37,8 +37,8 @@ public class PacketMarker extends PacketCustom implements IMessageHandler<Packet
         });
     }
 
-	@Override
-	public void fromBytes(ByteBuf buffer) {
+    @Override
+    public void fromBytes(ByteBuf buffer) {
         super.fromBytes(buffer);
 
         int size = buffer.readInt();
@@ -51,13 +51,13 @@ public class PacketMarker extends PacketCustom implements IMessageHandler<Packet
         });
     }
 
-	@Override
-	public IMessage onMessage(PacketMarker message, MessageContext ctx) {
-		World world = NGTUtil.getClientWorld();
-		TileEntity tile = message.getTileEntity(world);
-		if (tile instanceof TileEntityMarker) {
-			((TileEntityMarker) tile).setMarkersPos(message.list);
-		}
-		return null;
-	}
+    @Override
+    public IMessage onMessage(PacketMarker message, MessageContext ctx) {
+        World world = NGTUtil.getClientWorld();
+        TileEntity tile = message.getTileEntity(world);
+        if (tile instanceof TileEntityMarker) {
+            ((TileEntityMarker) tile).setMarkersPos(message.list);
+        }
+        return null;
+    }
 }

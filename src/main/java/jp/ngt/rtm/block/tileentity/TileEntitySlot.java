@@ -5,21 +5,21 @@ import jp.ngt.rtm.block.BlockSlot;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntitySlot extends TileEntity {
-	private int count;
+    private int count;
 
-	@Override
-	public void updateEntity() {
-		super.updateEntity();
+    @Override
+    public void updateEntity() {
+        super.updateEntity();
 
-		++count;
-		if (count > 4) {
-			count = 0;
-		}
+        ++count;
+        if (count > 4) {
+            count = 0;
+        }
 
-		if (count == 0 && this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
-			if (!this.worldObj.isRemote) {
-				((BlockSlot) RTMBlock.slot).inhaleLiquid(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
-			}
-		}
-	}
+        if (count == 0 && this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
+            if (!this.worldObj.isRemote) {
+                ((BlockSlot) RTMBlock.slot).inhaleLiquid(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+            }
+        }
+    }
 }

@@ -7,16 +7,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ItemGenerator extends Item {
-	public ItemGenerator() {
-		super();
-		this.setMaxStackSize(1);
-	}
+    public ItemGenerator() {
+        super();
+        this.setMaxStackSize(1);
+    }
 
-	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
-		if (world.isRemote) {
-			player.openGui(MCTE.instance, MCTE.guiIdGenerator, world, x, y, z);
-		}
-		return true;
-	}
+    @Override
+    public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
+        if (world.isRemote) {
+            player.openGui(MCTE.instance, MCTE.guiIdGenerator, world, x, y, z);
+        }
+        return true;
+    }
 }

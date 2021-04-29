@@ -1,19 +1,19 @@
 {
-  "name": "TrainDetector_01",
-  "model": {
-    "modelFile": "ATC01.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/trainDetector.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/machine/button_TrainDetector_01.png",
-  "machineType": "Antenna_Receive",
-  "smoothing": false,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "TrainDetector_01",
+    "model": {
+        "modelFile": "ATC01.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/trainDetector.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/machine/button_TrainDetector_01.png",
+    "machineType": "Antenna_Receive",
+    "smoothing": false,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

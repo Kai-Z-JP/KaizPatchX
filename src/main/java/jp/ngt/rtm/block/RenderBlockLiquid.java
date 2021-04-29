@@ -7,8 +7,8 @@ import jp.ngt.rtm.RTMBlock;
 
 @SideOnly(Side.CLIENT)
 public class RenderBlockLiquid extends RenderBlockLiquidBase {
-	@Override
-	public int getRenderId() {
-		return RTMBlock.renderIdLiquid;
-	}
+    @Override
+    public int getRenderId() {
+        return RTMBlock.renderIdLiquid;
+    }
 }

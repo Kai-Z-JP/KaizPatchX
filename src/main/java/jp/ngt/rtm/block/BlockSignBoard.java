@@ -19,47 +19,47 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 public class BlockSignBoard extends BlockContainer {
-	public BlockSignBoard() {
-		super(Material.circuits);
-		this.setLightOpacity(0);
-	}
+    public BlockSignBoard() {
+        super(Material.circuits);
+        this.setLightOpacity(0);
+    }
 
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
 
-	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
 
-	@Override
-	public int getRenderType() {
-		return -1;
-	}
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
 
-	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) {
-		return new TileEntitySignBoard();
-	}
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2) {
+        return new TileEntitySignBoard();
+    }
 
-	@Override
-	public Item getItemDropped(int par1, Random random, int par3) {
-		return null;
-	}
+    @Override
+    public Item getItemDropped(int par1, Random random, int par3) {
+        return null;
+    }
 
-	@Override
-	public void dropBlockAsItemWithChance(World world, int par2, int par3, int par4, int par5, float par6, int par7) {
-		if (!world.isRemote) {
-			this.dropBlockAsItem(world, par2, par3, par4, new ItemStack(RTMItem.installedObject, 1, 17));
-		}
-	}
+    @Override
+    public void dropBlockAsItemWithChance(World world, int par2, int par3, int par4, int par5, float par6, int par7) {
+        if (!world.isRemote) {
+            this.dropBlockAsItem(world, par2, par3, par4, new ItemStack(RTMItem.installedObject, 1, 17));
+        }
+    }
 
-	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-		return new ItemStack(RTMItem.installedObject, 1, 17);
-	}
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
+        return new ItemStack(RTMItem.installedObject, 1, 17);
+    }
 
 	/*@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
@@ -138,51 +138,51 @@ public class BlockSignBoard extends BlockContainer {
 		this.setBlockBounds(0.5F + cx - w , 0.5F + cy - h, 0.5F + cz - d, 0.5F + cx + w, 0.5F + cy + h, 0.5F + cz + d);
     }*/
 
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-		if (world.isRemote) {
-			player.openGui(RTMCore.instance, RTMCore.guiIdSelectTexture, world, x, y, z);
-		}
-		return true;
-	}
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+        if (world.isRemote) {
+            player.openGui(RTMCore.instance, RTMCore.guiIdSelectTexture, world, x, y, z);
+        }
+        return true;
+    }
 
-	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-	}
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+    }
 
-	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
-		TileEntitySignBoard tile = (TileEntitySignBoard) world.getTileEntity(x, y, z);
-		if (tile != null) {
-			int value = tile.getProperty().lightValue;
-			if (value >= 0) {
-				return value;
-			} else if (value == -16) {
-				return NGTMath.RANDOM.nextInt(6) * 3;
-			} else if (tile.isGettingPower) {
-				return -value;
-			}
-		}
-		return 0;
-	}
+    @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+        TileEntitySignBoard tile = (TileEntitySignBoard) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            int value = tile.getProperty().lightValue;
+            if (value >= 0) {
+                return value;
+            } else if (value == -16) {
+                return NGTMath.RANDOM.nextInt(6) * 3;
+            } else if (tile.isGettingPower) {
+                return -value;
+            }
+        }
+        return 0;
+    }
 
-	@Deprecated
-	private boolean isGettingPower(IBlockAccess world, int x, int y, int z) {
-		for (int i = 0; i < BlockUtil.facing.length; ++i) {
-			int[] ia = BlockUtil.facing[i];
-			if (this.getIndirectPowerLevelTo(world, x + ia[0], y + ia[1], z + ia[2], i) > 0) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Deprecated
+    private boolean isGettingPower(IBlockAccess world, int x, int y, int z) {
+        for (int i = 0; i < BlockUtil.facing.length; ++i) {
+            int[] ia = BlockUtil.facing[i];
+            if (this.getIndirectPowerLevelTo(world, x + ia[0], y + ia[1], z + ia[2], i) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Deprecated
-	private int getIndirectPowerLevelTo(IBlockAccess world, int x, int y, int z, int side) {
-		if (world instanceof World) {
-			return ((World) world).getIndirectPowerLevelTo(x, y, z, side);
-		}
-		Block block = world.getBlock(x, y, z);
-		return block.shouldCheckWeakPower(world, x, y, z, side) ? 15 : block.isProvidingWeakPower(world, x, y, z, side);
-	}
+    @Deprecated
+    private int getIndirectPowerLevelTo(IBlockAccess world, int x, int y, int z, int side) {
+        if (world instanceof World) {
+            return ((World) world).getIndirectPowerLevelTo(x, y, z, side);
+        }
+        Block block = world.getBlock(x, y, z);
+        return block.shouldCheckWeakPower(world, x, y, z, side) ? 15 : block.isProvidingWeakPower(world, x, y, z, side);
+    }
 }

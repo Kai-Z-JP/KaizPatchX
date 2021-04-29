@@ -19,44 +19,44 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class Menu {
-	private final List<MenuEntry> menuList = new ArrayList<>();
+    private final List<MenuEntry> menuList = new ArrayList<>();
 
-	public Menu(String s) {
-		this.init(s);
-	}
+    public Menu(String s) {
+        this.init(s);
+    }
 
-	/**
-	 * 重複時は上書き
-	 */
-	public boolean add(MenuEntry entry) {
-		if (entry.item != null) {
-			int index = this.menuList.indexOf(entry);
-			if (index >= 0) {
-				NGTLog.debug("[Menu] 重複アイテムを削除 : %s", entry.item.getDisplayName());
-				this.menuList.remove(index);
-			}
-			return this.menuList.add(entry);
-		}
-		return false;
-	}
+    /**
+     * 重複時は上書き
+     */
+    public boolean add(MenuEntry entry) {
+        if (entry.item != null) {
+            int index = this.menuList.indexOf(entry);
+            if (index >= 0) {
+                NGTLog.debug("[Menu] 重複アイテムを削除 : %s", entry.item.getDisplayName());
+                this.menuList.remove(index);
+            }
+            return this.menuList.add(entry);
+        }
+        return false;
+    }
 
-	public void remove(int index) {
-		this.menuList.remove(index);
-	}
+    public void remove(int index) {
+        this.menuList.remove(index);
+    }
 
-	public MenuEntry get(int index) {
-		return this.menuList.get(index);
-	}
+    public MenuEntry get(int index) {
+        return this.menuList.get(index);
+    }
 
-	public List<MenuEntry> getList() {
-		return this.menuList;
-	}
+    public List<MenuEntry> getList() {
+        return this.menuList;
+    }
 
-	public boolean init(String s) {
-		this.menuList.clear();
+    public boolean init(String s) {
+        this.menuList.clear();
 
-		if (s != null && !s.isEmpty()) {
-			try {
+        if (s != null && !s.isEmpty()) {
+            try {
                 NBTTagCompound nbt0 = (NBTTagCompound) JsonToNBT.func_150315_a(s);
                 NBTTagList nbttaglist = nbt0.getTagList("list", 10);
                 IntStream.range(0, nbttaglist.tagCount()).mapToObj(nbttaglist::getCompoundTagAt).map(MenuEntry::readFromNBT).filter(Objects::nonNull).forEach(this::add);
@@ -65,17 +65,17 @@ public class Menu {
                     return true;
                 }
             } catch (NBTException e) {
-				e.printStackTrace();
-			}
-		}
+                e.printStackTrace();
+            }
+        }
 
-		this.add(new MenuEntry(new ItemStack(Items.cookie, 10), 200));
-		this.add(new MenuEntry(new ItemStack(Items.cooked_fished, 5), 500));
-		return false;
-	}
+        this.add(new MenuEntry(new ItemStack(Items.cookie, 10), 200));
+        this.add(new MenuEntry(new ItemStack(Items.cooked_fished, 5), 500));
+        return false;
+    }
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
         NBTTagList nbttaglist = new NBTTagList();
         this.menuList.stream().map(MenuEntry::writeToNBT).forEach(nbttaglist::appendTag);
         NBTTagCompound nbt = new NBTTagCompound();
@@ -83,23 +83,23 @@ public class Menu {
         return nbt.toString();
     }
 
-	public boolean exportToText() {
-		File file = NGTFileLoader.saveFile(FileType.JSON);
-		if (file != null) {
-			return NGTText.writeToText(file, this.toString());
-		}
-		return false;
-	}
+    public boolean exportToText() {
+        File file = NGTFileLoader.saveFile(FileType.JSON);
+        if (file != null) {
+            return NGTText.writeToText(file, this.toString());
+        }
+        return false;
+    }
 
-	public boolean importFromText() {
-		File file = NGTFileLoader.selectFile(FileType.JSON);
-		if (file != null) {
-			try {
-				return this.init(NGTText.readText(file, false, "UTF-8"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
+    public boolean importFromText() {
+        File file = NGTFileLoader.selectFile(FileType.JSON);
+        if (file != null) {
+            try {
+                return this.init(NGTText.readText(file, false, "UTF-8"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 }

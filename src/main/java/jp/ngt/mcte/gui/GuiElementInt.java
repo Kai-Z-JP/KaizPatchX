@@ -9,41 +9,41 @@ import net.minecraft.client.gui.GuiTextField;
 
 @SideOnly(Side.CLIENT)
 public class GuiElementInt extends GuiTextField implements IGuiElement {
-	private final Config cfg;
-	private final String paramName;
+    private final Config cfg;
+    private final String paramName;
 
-	public GuiElementInt(int x, int y, int w, int h, Config cfg, String key) {
-		super(NGTUtilClient.getMinecraft().fontRenderer, x, y, w, h);
-		this.cfg = cfg;
-		this.paramName = key;
-		this.setText(String.valueOf(cfg.getInt(key)));
-	}
+    public GuiElementInt(int x, int y, int w, int h, Config cfg, String key) {
+        super(NGTUtilClient.getMinecraft().fontRenderer, x, y, w, h);
+        this.cfg = cfg;
+        this.paramName = key;
+        this.setText(String.valueOf(cfg.getInt(key)));
+    }
 
-	@Override
-	public void setFocused(boolean par1) {
-		super.setFocused(par1);
-		if (!par1) {
-			this.updateValue();
-		}
-	}
+    @Override
+    public void setFocused(boolean par1) {
+        super.setFocused(par1);
+        if (!par1) {
+            this.updateValue();
+        }
+    }
 
-	private void updateValue() {
-		try {
+    private void updateValue() {
+        try {
             int value = Integer.parseInt(this.getText());
             this.cfg.setInt(this.paramName, value);
             this.setText(String.valueOf(this.cfg.getInt(this.paramName)));
         } catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
-	}
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public void init(GuiScreenCustom gui) {
-		gui.getTextFields().add(this);
-	}
+    @Override
+    public void init(GuiScreenCustom gui) {
+        gui.getTextFields().add(this);
+    }
 
-	@Override
-	public void setYPos(int y) {
-		this.yPosition = y;
-	}
+    @Override
+    public void setYPos(int y) {
+        this.yPosition = y;
+    }
 }

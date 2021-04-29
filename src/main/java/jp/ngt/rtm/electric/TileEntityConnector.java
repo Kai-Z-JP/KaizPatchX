@@ -6,72 +6,72 @@ import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
 
 public class TileEntityConnector extends TileEntityConnectorBase {
-	private static final int METADATA = 6;
+    private static final int METADATA = 6;
 
-	private int prevOutputSignal = -1;
+    private int prevOutputSignal = -1;
 
-	@Override
-	public void onGetElectricity(int x, int y, int z, int level, int counter) {
-		if (this.getBlockMetadata() < METADATA)//in
-		{
-			super.onGetElectricity(x, y, z, level, counter);
-		}
-	}
+    @Override
+    public void onGetElectricity(int x, int y, int z, int level, int counter) {
+        if (this.getBlockMetadata() < METADATA)//in
+        {
+            super.onGetElectricity(x, y, z, level, counter);
+        }
+    }
 
-	@Override
-	protected void sendElectricity(Connection connection, int level, int counter) {
-		if (this.getBlockMetadata() < METADATA && connection.type == ConnectionType.DIRECT)//in
-		{
-			IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
-			if (provider != null) {
-				provider.setElectricity(this.xCoord, this.yCoord, this.zCoord, level);
-			}
-		} else {
-			super.sendElectricity(connection, level, counter);
-		}
-	}
+    @Override
+    protected void sendElectricity(Connection connection, int level, int counter) {
+        if (this.getBlockMetadata() < METADATA && connection.type == ConnectionType.DIRECT)//in
+        {
+            IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
+            if (provider != null) {
+                provider.setElectricity(this.xCoord, this.yCoord, this.zCoord, level);
+            }
+        } else {
+            super.sendElectricity(connection, level, counter);
+        }
+    }
 
-	@Override
-	public void updateEntity() {
-		super.updateEntity();
+    @Override
+    public void updateEntity() {
+        super.updateEntity();
 
-		if (!this.worldObj.isRemote) {
-			if (this.getBlockMetadata() >= METADATA)//out
-			{
-				this.checkSignalOutput();
-			}
-		}
-	}
+        if (!this.worldObj.isRemote) {
+            if (this.getBlockMetadata() >= METADATA)//out
+            {
+                this.checkSignalOutput();
+            }
+        }
+    }
 
-	private void checkSignalOutput() {
-		Connection connection = this.getBlockConnection();
-		if (connection == null) {
-			return;
-		}
+    private void checkSignalOutput() {
+        Connection connection = this.getBlockConnection();
+        if (connection == null) {
+            return;
+        }
 
-		IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
-		if (provider != null) {
-			int level = provider.getElectricity();
-			if (level != this.prevOutputSignal) {
-				//this.onGetElectricity(connection.x, connection.y, connection.z, level, 0);
-				this.sendElectricityToAll(level);
-				this.prevOutputSignal = level;
-			}
-		}
-	}
+        IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
+        if (provider != null) {
+            int level = provider.getElectricity();
+            if (level != this.prevOutputSignal) {
+                //this.onGetElectricity(connection.x, connection.y, connection.z, level, 0);
+                this.sendElectricityToAll(level);
+                this.prevOutputSignal = level;
+            }
+        }
+    }
 
-	/**
-	 * 接続タイプ3(TileEntity直付)のを返す
-	 */
-	private Connection getBlockConnection() {
+    /**
+     * 接続タイプ3(TileEntity直付)のを返す
+     */
+    private Connection getBlockConnection() {
         return this.connections.stream().filter(connection -> connection.type == ConnectionType.DIRECT).findFirst().orElse(null);
     }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared() {
-		return NGTUtil.getChunkLoadDistanceSq();
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return NGTUtil.getChunkLoadDistanceSq();
+    }
 
 //	@Override
 //	@SideOnly(Side.CLIENT)
@@ -80,13 +80,13 @@ public class TileEntityConnector extends TileEntityConnectorBase {
 //		return bb;
 //	}
 
-	@Override
-	public String getSubType() {
-		return (this.getBlockMetadata() < METADATA) ? "Input" : "Output";
-	}
+    @Override
+    public String getSubType() {
+        return (this.getBlockMetadata() < METADATA) ? "Input" : "Output";
+    }
 
-	@Override
-	protected String getDefaultName() {
-		return (this.getBlockMetadata() < METADATA) ? "Input01" : "Output01";
-	}
+    @Override
+    protected String getDefaultName() {
+        return (this.getBlockMetadata() < METADATA) ? "Input01" : "Output01";
+    }
 }

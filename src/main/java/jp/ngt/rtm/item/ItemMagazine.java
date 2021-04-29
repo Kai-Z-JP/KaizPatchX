@@ -11,19 +11,19 @@ import net.minecraft.util.EnumChatFormatting;
 import java.util.List;
 
 public class ItemMagazine extends Item {
-	public final GunType magazineType;
+    public final GunType magazineType;
 
-	public ItemMagazine(GunType par1) {
-		super();
-		this.magazineType = par1;
-		this.maxStackSize = 1;
-		this.setMaxDamage(par1.maxSize);
-	}
+    public ItemMagazine(GunType par1) {
+        super();
+        this.magazineType = par1;
+        this.maxStackSize = 1;
+        this.setMaxDamage(par1.maxSize);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-		int max = itemStack.getMaxDamage();
-		list.add(EnumChatFormatting.GRAY + "Bullet:" + (max - itemStack.getItemDamage()) + "/" + max);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+        int max = itemStack.getMaxDamage();
+        list.add(EnumChatFormatting.GRAY + "Bullet:" + (max - itemStack.getItemDamage()) + "/" + max);
+    }
 }

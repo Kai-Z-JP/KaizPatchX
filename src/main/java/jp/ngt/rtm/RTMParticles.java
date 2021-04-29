@@ -18,25 +18,25 @@ public class RTMParticles {
         if (instance == null) {
             instance = new RTMParticles();
         }
-		return instance;
-	}
+        return instance;
+    }
 
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void handleTextureRemap(TextureStitchEvent.Pre event) {
-		if (event.map.getTextureType() == 1) {
-			getInstance().registerIIcons(event.map);
-		}
-	}
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void handleTextureRemap(TextureStitchEvent.Pre event) {
+        if (event.map.getTextureType() == 1) {
+            getInstance().registerIIcons(event.map);
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	public void registerIIcons(IIconRegister register) {
+    @SideOnly(Side.CLIENT)
+    public void registerIIcons(IIconRegister register) {
         this.icons = new IIcon[iconNames.length];
         IntStream.range(0, this.icons.length).forEach(i -> this.icons[i] = register.registerIcon(iconNames[i]));
     }
 
-	@SideOnly(Side.CLIENT)
-	public IIcon getIIcon(int par1) {
-		return this.icons[par1];
-	}
+    @SideOnly(Side.CLIENT)
+    public IIcon getIIcon(int par1) {
+        return this.icons[par1];
+    }
 }

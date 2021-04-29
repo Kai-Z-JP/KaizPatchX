@@ -25,25 +25,25 @@ public class NGTZ {
         }
     }
 
-	public void load(InputStream is) throws IOException {
-		ZipInputStream zip = new ZipInputStream(is);
-		ZipEntry ze;
-		while ((ze = zip.getNextEntry()) != null) {
-			if (!ze.isDirectory()) {
-				String partsName = ze.getName().replace(".ngto", "");
-				this.registerNGTO(partsName, zip);//getNextEntry()でZISをエントリのISとして扱える
+    public void load(InputStream is) throws IOException {
+        ZipInputStream zip = new ZipInputStream(is);
+        ZipEntry ze;
+        while ((ze = zip.getNextEntry()) != null) {
+            if (!ze.isDirectory()) {
+                String partsName = ze.getName().replace(".ngto", "");
+                this.registerNGTO(partsName, zip);//getNextEntry()でZISをエントリのISとして扱える
 
-			}
-		}
-		zip.close();
-	}
+            }
+        }
+        zip.close();
+    }
 
-	private void registerNGTO(String name, InputStream is) {
-		NGTObject ngto = NGTObject.load(is);
-		this.objects.put(name, ngto);
-	}
+    private void registerNGTO(String name, InputStream is) {
+        NGTObject ngto = NGTObject.load(is);
+        this.objects.put(name, ngto);
+    }
 
-	public Map<String, NGTObject> getObjects() {
-		return this.objects;
-	}
+    public Map<String, NGTObject> getObjects() {
+        return this.objects;
+    }
 }

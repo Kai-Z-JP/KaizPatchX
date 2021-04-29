@@ -1,74 +1,73 @@
 {
-  "trainName": "minecart",
-  "trainType": "CC",
-
-  "trainModel2": {
-    "modelFile": "ModelTrain_Minecart.class",
-    "textures": [
-      [
-        "default",
-        "textures/entity/minecart.png"
-      ]
-    ]
-  },
-  "bogieModel2": {
-    "modelFile": "ModelBogie.class",
-    "textures": [
-      [
-        "default",
-        "textures/train/tp.png"
-      ]
-    ]
-  },
-  "buttonTexture": "textures/train/objTest/button_minecart.png",
-  "sound_Stop": "",
-  "sound_S_A": "minecraft:minecart.base",
-  "sound_Acceleration": "minecraft:minecart.base",
-  "sound_Deceleration": "minecraft:minecart.base",
-  "sound_D_S": "minecraft:minecart.base",
-  "sound_Horn": "",
-  "seatPos": [],
-  "playerPos": [
-    [
-      0.0,
-      0.0,
-      1.0
+    "trainName": "minecart",
+    "trainType": "CC",
+    "trainModel2": {
+        "modelFile": "ModelTrain_Minecart.class",
+        "textures": [
+            [
+                "default",
+                "textures/entity/minecart.png"
+            ]
+        ]
+    },
+    "bogieModel2": {
+        "modelFile": "ModelBogie.class",
+        "textures": [
+            [
+                "default",
+                "textures/train/tp.png"
+            ]
+        ]
+    },
+    "buttonTexture": "textures/train/objTest/button_minecart.png",
+    "sound_Stop": "",
+    "sound_S_A": "minecraft:minecart.base",
+    "sound_Acceleration": "minecraft:minecart.base",
+    "sound_Deceleration": "minecraft:minecart.base",
+    "sound_D_S": "minecraft:minecart.base",
+    "sound_Horn": "",
+    "seatPos": [],
+    "playerPos": [
+        [
+            0.0,
+            0.0,
+            1.0
+        ],
+        [
+            0.0,
+            0.0,
+            -1.0
+        ]
     ],
-    [
-      0.0,
-      0.0,
-      -1.0
-    ]
-  ],
-  "bogiePos": [
-    [
-      0.0,
-      0.0,
-      1.25
+    "bogiePos": [
+        [
+            0.0,
+            0.0,
+            1.25
+        ],
+        [
+            0.0,
+            0.0,
+            -1.25
+        ]
     ],
-    [
-      0.0,
-      0.0,
-      -1.25
-    ]
-  ],
-  "jointDelay": [
-    [
-      0.0
+    "jointDelay": [
+        [
+            0.0
+        ],
+        [
+            0.0
+        ]
     ],
-    [
-      0.0
-    ]
-  ],
-  "maxSpeed": [
-    0.1,
-    0.2,
-    0.3,
-    0.4,
-    0.4
-  ],
-  "trainDistance": 2.25,
-  "isSingleTrain": true,
-  "doCulling": false,
-  "tags": "ngt5479"
+    "maxSpeed": [
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.4
+    ],
+    "trainDistance": 2.25,
+    "isSingleTrain": true,
+    "doCulling": false,
+    "tags": "ngt5479"
 }

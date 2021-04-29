@@ -1,6 +1,6 @@
 {
-  "name": "TestHoge",
-  "homepage": "http://forum.minecraftuser.jp/viewtopic.php?f=13&t=13633",
-  "updateURL": "https://dl.dropboxusercontent.com/s/4dxg83j6rocd0ls/version.txt",
-  "version": "1.7.10.2"
+    "name": "TestHoge",
+    "homepage": "http://forum.minecraftuser.jp/viewtopic.php?f=13&t=13633",
+    "updateURL": "https://dl.dropboxusercontent.com/s/4dxg83j6rocd0ls/version.txt",
+    "version": "1.7.10.2"
 }

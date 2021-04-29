@@ -1,22 +1,22 @@
 {
-  "name": "Turnstile01",
-  "model": {
-    "modelFile": "ModelMachine_Turnstile01.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/turnstile_green.png",
-        "Light",
-        "textures/machine/turnstile_light0.png"
-      ]
-    ],
-    "rendererPath": "scripts/RenderTurnstile01.js"
-  },
-  "buttonTexture": "textures/machine/button_Turnstile01.png",
-  "machineType": "Turnstile",
-  "sound_OnActivate": "minecraft:random.door_open",
-  "smoothing": true,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "Turnstile01",
+    "model": {
+        "modelFile": "ModelMachine_Turnstile01.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/turnstile_green.png",
+                "Light",
+                "textures/machine/turnstile_light0.png"
+            ]
+        ],
+        "rendererPath": "scripts/RenderTurnstile01.js"
+    },
+    "buttonTexture": "textures/machine/button_Turnstile01.png",
+    "machineType": "Turnstile",
+    "sound_OnActivate": "minecraft:random.door_open",
+    "smoothing": true,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

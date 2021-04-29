@@ -6,13 +6,13 @@ import jp.ngt.ngtlib.renderer.model.MCModel;
 
 @SideOnly(Side.CLIENT)
 public abstract class ModelTrainBase extends MCModel {
-	public ModelTrainBase() {
-		this(1024, 1024);
-	}
+    public ModelTrainBase() {
+        this(1024, 1024);
+    }
 
-	public ModelTrainBase(int width, int height) {
-		this.init();
-	}
+    public ModelTrainBase(int width, int height) {
+        this.init();
+    }
 
-	public abstract void init();
+    public abstract void init();
 }

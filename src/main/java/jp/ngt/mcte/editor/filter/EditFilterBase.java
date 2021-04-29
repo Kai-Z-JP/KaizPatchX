@@ -6,28 +6,28 @@ import jp.ngt.ngtlib.io.NGTFileLoader;
 import java.io.File;
 
 public abstract class EditFilterBase {
-	protected Config cfg;
+    protected Config cfg;
 
-	public EditFilterBase() {
-	}
+    public EditFilterBase() {
+    }
 
-	public void init(Config par) {
-		this.cfg = par;
-	}
+    public void init(Config par) {
+        this.cfg = par;
+    }
 
-	public void save() {
-		this.cfg.save(this.getCfgFile());
-	}
+    public void save() {
+        this.cfg.save(this.getCfgFile());
+    }
 
-	public File getCfgFile() {
-		return new File(NGTFileLoader.getModsDir().get(0), FilterManager.FILTER_PATH + this.getFilterName() + ".cfg");
-	}
+    public File getCfgFile() {
+        return new File(NGTFileLoader.getModsDir().get(0), FilterManager.FILTER_PATH + this.getFilterName() + ".cfg");
+    }
 
-	public Config getCfg() {
-		return this.cfg;
-	}
+    public Config getCfg() {
+        return this.cfg;
+    }
 
-	public abstract String getFilterName();
+    public abstract String getFilterName();
 
 	/*@Deprecated
 	public String getCfgName()
@@ -35,5 +35,5 @@ public abstract class EditFilterBase {
 		return this.getFilterName();
 	}*/
 
-	public abstract boolean edit(Editor editor);
+    public abstract boolean edit(Editor editor);
 }

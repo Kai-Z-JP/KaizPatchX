@@ -1,44 +1,44 @@
 {
-  "signalName": "switching",
-  "signalModel": "ModelSignal_switching.mqo",
-  "signalTexture": "textures/signal/colorSignal.png",
-  "lightTexture": "textures/signal/switchingSignal.png",
-  "buttonTexture": "textures/signal/button_switchingSignal.png",
-  "modelPartsFixture": {
-    "objects": [
-      "pole",
-      "body2",
-      "body4"
+    "signalName": "switching",
+    "signalModel": "ModelSignal_switching.mqo",
+    "signalTexture": "textures/signal/colorSignal.png",
+    "lightTexture": "textures/signal/switchingSignal.png",
+    "buttonTexture": "textures/signal/button_switchingSignal.png",
+    "modelPartsFixture": {
+        "objects": [
+            "pole",
+            "body2",
+            "body4"
+        ],
+        "pos": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "modelPartsBody": {
+        "objects": [
+            "body",
+            "body3",
+            "light1",
+            "light2",
+            "light3",
+            "light4"
+        ],
+        "pos": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "lights": [
+        "S(1) I(0) P(light2 light3 light4)",
+        "S(5) I(0) P(light1 light3 light4)",
+        "S(7) I(0) P(light2 light3)",
+        "S(11) I(0) P(light1 light3)"
     ],
-    "pos": [
-      0.0,
-      0.0,
-      0.0
-    ]
-  },
-  "modelPartsBody": {
-    "objects": [
-      "body",
-      "body3",
-      "light1",
-      "light2",
-      "light3",
-      "light4"
-    ],
-    "pos": [
-      0.0,
-      0.0,
-      0.0
-    ]
-  },
-  "lights": [
-    "S(1) I(0) P(light2 light3 light4)",
-    "S(5) I(0) P(light1 light3 light4)",
-    "S(7) I(0) P(light2 light3)",
-    "S(11) I(0) P(light1 light3)"
-  ],
-  "rotateBody": false,
-  "smoothing": true,
-  "doCulling": true,
-  "tags": "ngt5479"
+    "rotateBody": false,
+    "smoothing": true,
+    "doCulling": true,
+    "tags": "ngt5479"
 }

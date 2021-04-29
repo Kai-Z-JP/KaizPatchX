@@ -5,13 +5,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public interface IRenderer {
-	void startDrawing(int par1);
+    void startDrawing(int par1);
 
-	int draw();
+    int draw();
 
-	void addVertexWithUV(float x, float y, float z, float u, float v);
+    void addVertexWithUV(float x, float y, float z, float u, float v);
 
-	void setNormal(float x, float y, float z);
+    void setNormal(float x, float y, float z);
 
-	void setBrightness(int par1);
+    void setBrightness(int par1);
 }

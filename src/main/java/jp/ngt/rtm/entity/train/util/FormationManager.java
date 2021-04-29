@@ -24,41 +24,41 @@ public final class FormationManager {
     }
 
     public void loadData(World world) {
-		if (world instanceof WorldServer && world.provider.dimensionId == 0) {
-			FormationData data = (FormationData) world.mapStorage.loadData(FormationData.class, SAVE_NAME);
-			if (data == null) {
-				data = new FormationData(SAVE_NAME);
-				world.mapStorage.setData(SAVE_NAME, data);
-			}
-			this.saveData = data;
-		}
-	}
+        if (world instanceof WorldServer && world.provider.dimensionId == 0) {
+            FormationData data = (FormationData) world.mapStorage.loadData(FormationData.class, SAVE_NAME);
+            if (data == null) {
+                data = new FormationData(SAVE_NAME);
+                world.mapStorage.setData(SAVE_NAME, data);
+            }
+            this.saveData = data;
+        }
+    }
 
-	public Map<Long, Formation> getFormations() {
-		return this.formationMap;
-	}
+    public Map<Long, Formation> getFormations() {
+        return this.formationMap;
+    }
 
-	public Formation getFormation(long id) {
-		return this.formationMap.get(id);
-	}
+    public Formation getFormation(long id) {
+        return this.formationMap.get(id);
+    }
 
-	public void setFormation(long id, Formation formation) {
-		this.formationMap.put(id, formation);
-		if (!this.isRemote && this.saveData != null)//NBT読み込み時に、先に編成登録が行われるため
-		{
-			this.saveData.markDirty();
-		}
-	}
+    public void setFormation(long id, Formation formation) {
+        this.formationMap.put(id, formation);
+        if (!this.isRemote && this.saveData != null)//NBT読み込み時に、先に編成登録が行われるため
+        {
+            this.saveData.markDirty();
+        }
+    }
 
-	public void removeFormation(long id) {
-		this.formationMap.remove(id);
-		if (!this.isRemote && this.saveData != null) {
-			this.saveData.markDirty();
-		}
-		//パケット送る
-	}
+    public void removeFormation(long id) {
+        this.formationMap.remove(id);
+        if (!this.isRemote && this.saveData != null) {
+            this.saveData.markDirty();
+        }
+        //パケット送る
+    }
 
-	public void updateFormations(World world) {
+    public void updateFormations(World world) {
 		/*for(Entry<Long, Formation> entry : this.formationMap.entrySet())
 		{
 			if(!entry.getValue().onUpdate(world))
@@ -75,19 +75,19 @@ public final class FormationManager {
 			}
 			this.removingFormations.clear();
 		}*/
-	}
+    }
 
-	public long getNewFormationId() {
-		return System.currentTimeMillis();
-	}
+    public long getNewFormationId() {
+        return System.currentTimeMillis();
+    }
 
-	/**
-	 * 編成を新規に作成(車両設置時のみ使用)
-	 */
-	public Formation createNewFormation(EntityTrainBase par1) {
-		long newId = this.getNewFormationId();
-		Formation formation = new Formation(newId, 1);
-		formation.setTrain(par1, 0, 0);
-		return formation;
-	}
+    /**
+     * 編成を新規に作成(車両設置時のみ使用)
+     */
+    public Formation createNewFormation(EntityTrainBase par1) {
+        long newId = this.getNewFormationId();
+        Formation formation = new Formation(newId, 1);
+        formation.setTrain(par1, 0, 0);
+        return formation;
+    }
 }

@@ -1,24 +1,24 @@
 {
-  "railName": "1435mm_Wood",
-  "model": {
-    "modelFile": "ModelRail_1435mm.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/rail/largeRail.png",
-        ""
-      ]
+    "railName": "1435mm_Wood",
+    "model": {
+        "modelFile": "ModelRail_1435mm.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/rail/largeRail.png",
+                ""
+            ]
+        ],
+        "rendererPath": "scripts/RenderRailStandard.js"
+    },
+    "buttonTexture": "textures/rail/button_1435mm_Wood.png",
+    "defaultBallast": [
+        {
+            "blockName": "gravel",
+            "blockMetadata": 0,
+            "height": 0.0625
+        }
     ],
-    "rendererPath": "scripts/RenderRailStandard.js"
-  },
-  "buttonTexture": "textures/rail/button_1435mm_Wood.png",
-  "defaultBallast": [
-    {
-      "blockName": "gravel",
-      "blockMetadata": 0,
-      "height": 0.0625
-    }
-  ],
-  "accuracy": "LOW",
-  "tags": "ngt5479 1435mm Wood"
+    "accuracy": "LOW",
+    "tags": "ngt5479 1435mm Wood"
 }

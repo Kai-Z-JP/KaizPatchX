@@ -13,13 +13,13 @@ public class RailMapSwitch extends RailMap {
     public RailMapSwitch(RailPosition par1, RailPosition par2, RailDir sDir, RailDir eDir) {
         super(par1, par2);
         this.startDir = sDir;
-		this.endDir = eDir;
-	}
+        this.endDir = eDir;
+    }
 
-	@Deprecated
-	//TileEntity.updateEntity()のタイミングで呼ばれる
-	public void onUpdate(World world) {
-		if (world.isRemote) {
+    @Deprecated
+    //TileEntity.updateEntity()のタイミングで呼ばれる
+    public void onUpdate(World world) {
+        if (world.isRemote) {
             IntStream.range(0, 2).filter(i -> (i != 0 || this.startDir != RailDir.NONE) && (i != 1 || this.endDir != RailDir.NONE)).forEach(i -> {
                 if (this.isOpen) {
                     if (this.count[i] > 0) {
@@ -31,27 +31,27 @@ public class RailMapSwitch extends RailMap {
                     }
                 }
             });
-		}
-	}
+        }
+    }
 
-	public RailMapSwitch setState(boolean par1) {
-		this.isOpen = par1;
-		return this;
-	}
+    public RailMapSwitch setState(boolean par1) {
+        this.isOpen = par1;
+        return this;
+    }
 
-	public float getStartMovement() {
-		return (float) this.count[0] / (float) MAX_COUNT;
-	}
+    public float getStartMovement() {
+        return (float) this.count[0] / (float) MAX_COUNT;
+    }
 
-	public float getEndMovement() {
-		return (float) this.count[1] / (float) MAX_COUNT;
-	}
+    public float getEndMovement() {
+        return (float) this.count[1] / (float) MAX_COUNT;
+    }
 
-	public boolean shouldRenderRSide() {
-		return (this.startDir != RailDir.RIGHT) && (this.endDir != RailDir.RIGHT);
-	}
+    public boolean shouldRenderRSide() {
+        return (this.startDir != RailDir.RIGHT) && (this.endDir != RailDir.RIGHT);
+    }
 
-	public boolean shouldRenderLSide() {
-		return (this.startDir != RailDir.LEFT) && (this.endDir != RailDir.LEFT);
-	}
+    public boolean shouldRenderLSide() {
+        return (this.startDir != RailDir.LEFT) && (this.endDir != RailDir.LEFT);
+    }
 }

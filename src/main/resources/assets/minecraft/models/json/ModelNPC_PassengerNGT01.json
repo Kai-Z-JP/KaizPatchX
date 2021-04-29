@@ -1,5 +1,5 @@
 {
-  "name": "PassengerNGT01",
-  "texture": "textures/npc/passenger01.png",
-  "role": "passenger"
+    "name": "PassengerNGT01",
+    "texture": "textures/npc/passenger01.png",
+    "role": "passenger"
 }

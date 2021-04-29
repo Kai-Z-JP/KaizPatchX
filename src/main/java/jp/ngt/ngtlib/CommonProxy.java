@@ -7,50 +7,50 @@ import net.minecraft.world.World;
 import java.io.File;
 
 public class CommonProxy {
-	public boolean isServer() {
-		return true;
-	}
+    public boolean isServer() {
+        return true;
+    }
 
-	public World getWorld() {
-		return null;
-	}
+    public World getWorld() {
+        return null;
+    }
 
-	public EntityPlayer getPlayer() {
-		return null;
-	}
+    public EntityPlayer getPlayer() {
+        return null;
+    }
 
-	public File getMinecraftDirectory(String folder) {
-		return MinecraftServer.getServer().getFile(folder);
-	}
+    public File getMinecraftDirectory(String folder) {
+        return MinecraftServer.getServer().getFile(folder);
+    }
 
-	public String getUserName() {
-		return "";
-	}
+    public String getUserName() {
+        return "";
+    }
 
-	public int getNewRenderType() {
-		return -1;
-	}
+    public int getNewRenderType() {
+        return -1;
+    }
 
-	public void preInit() {
-	}
+    public void preInit() {
+    }
 
-	public void init() {
-	}
+    public void init() {
+    }
 
-	public void postInit() {
-	}
+    public void postInit() {
+    }
 
-	public void removeGuiWarning() {
-	}
+    public void removeGuiWarning() {
+    }
 
-	public void breakBlock(World world, int x, int y, int z, int meta) {
-		world.setBlockToAir(x, y, z);
-	}
+    public void breakBlock(World world, int x, int y, int z, int meta) {
+        world.setBlockToAir(x, y, z);
+    }
 
-	public void zoom(EntityPlayer player, int count) {
-	}
+    public void zoom(EntityPlayer player, int count) {
+    }
 
-	public int getChunkLoadDistance() {
-		return 256;
-	}
+    public int getChunkLoadDistance() {
+        return 256;
+    }
 }

@@ -10,43 +10,43 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class EditorManager {
-	public static final EditorManager INSTANCE = new EditorManager();
+    public static final EditorManager INSTANCE = new EditorManager();
 
-	/**
-	 * [PlayerName, Editor]
-	 */
-	private final Map<String, Editor> editorMap = new HashMap<>();
+    /**
+     * [PlayerName, Editor]
+     */
+    private final Map<String, Editor> editorMap = new HashMap<>();
 
-	private EditorManager() {
-	}
+    private EditorManager() {
+    }
 
-	public void add(String playerName, Editor editor) {
-		this.editorMap.put(playerName, editor);
-	}
+    public void add(String playerName, Editor editor) {
+        this.editorMap.put(playerName, editor);
+    }
 
-	public void remove(EntityEditor entity) {
-		String key = this.editorMap.entrySet().stream().filter(entry -> entry.getValue().getEntity().equals(entity)).findFirst().map(Entry::getKey).orElse("");
+    public void remove(EntityEditor entity) {
+        String key = this.editorMap.entrySet().stream().filter(entry -> entry.getValue().getEntity().equals(entity)).findFirst().map(Entry::getKey).orElse("");
 
-		if (!key.isEmpty()) {
-			this.editorMap.remove(key);
-		}
-	}
+        if (!key.isEmpty()) {
+            this.editorMap.remove(key);
+        }
+    }
 
-	public void removeAll() {
-		NGTLog.sendChatMessageToAll("Clear %s Editors", this.editorMap.size());
-		this.editorMap.forEach((key, value) -> value.getEntity().setDead());
-		this.editorMap.clear();
-	}
+    public void removeAll() {
+        NGTLog.sendChatMessageToAll("Clear %s Editors", this.editorMap.size());
+        this.editorMap.forEach((key, value) -> value.getEntity().setDead());
+        this.editorMap.clear();
+    }
 
-	public boolean canPlayerUseEditor(EntityPlayer par1) {
-		return PermissionManager.INSTANCE.hasPermission(par1, MCTE.USE_EDITOR);
-	}
+    public boolean canPlayerUseEditor(EntityPlayer par1) {
+        return PermissionManager.INSTANCE.hasPermission(par1, MCTE.USE_EDITOR);
+    }
 
-	public Editor getEditor(EntityPlayer par1) {
-		return this.getEditor(par1.getCommandSenderName());
-	}
+    public Editor getEditor(EntityPlayer par1) {
+        return this.getEditor(par1.getCommandSenderName());
+    }
 
-	public Editor getEditor(String par1) {
-		return this.editorMap.entrySet().stream().filter(entry -> entry.getKey().equals(par1)).findFirst().map(Entry::getValue).orElse(null);
-	}
+    public Editor getEditor(String par1) {
+        return this.editorMap.entrySet().stream().filter(entry -> entry.getKey().equals(par1)).findFirst().map(Entry::getValue).orElse(null);
+    }
 }

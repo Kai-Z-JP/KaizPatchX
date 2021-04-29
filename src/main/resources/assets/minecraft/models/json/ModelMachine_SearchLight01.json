@@ -1,25 +1,25 @@
 {
-  "name": "SearchLight01",
-  "model": {
-    "modelFile": "ModelMachine_SearchLight.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/searchLight.png",
-        "Light"
-      ]
+    "name": "SearchLight01",
+    "model": {
+        "modelFile": "ModelMachine_SearchLight.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/searchLight.png",
+                "Light"
+            ]
+        ],
+        "rendererPath": "scripts/RenderSearchLight.js"
+    },
+    "buttonTexture": "textures/machine/button_SearchLight01.png",
+    "machineType": "Light",
+    "rotateByMetadata": true,
+    "brightness": [
+        0,
+        15
     ],
-    "rendererPath": "scripts/RenderSearchLight.js"
-  },
-  "buttonTexture": "textures/machine/button_SearchLight01.png",
-  "machineType": "Light",
-  "rotateByMetadata": true,
-  "brightness": [
-    0,
-    15
-  ],
-  "smoothing": true,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "smoothing": true,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

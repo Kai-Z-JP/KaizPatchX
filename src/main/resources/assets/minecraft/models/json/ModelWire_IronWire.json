@@ -1,19 +1,19 @@
 {
-  "name": "IronWire",
-  "model": {
-    "modelFile": "ModelCylinder.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/wire/ironWire.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/wire/button_IronWire.png",
-  "deflectionCoefficient": 0.0625,
-  "lengthCoefficient": 0.0625,
-  "sectionLength": 0.5,
-  "doCulling": true,
-  "smoothing": true
+    "name": "IronWire",
+    "model": {
+        "modelFile": "ModelCylinder.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/wire/ironWire.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/wire/button_IronWire.png",
+    "deflectionCoefficient": 0.0625,
+    "lengthCoefficient": 0.0625,
+    "sectionLength": 0.5,
+    "doCulling": true,
+    "smoothing": true
 }

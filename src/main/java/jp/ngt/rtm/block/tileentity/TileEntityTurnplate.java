@@ -12,79 +12,79 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 public class TileEntityTurnplate extends TileEntity {
-	public int height;
-	public int width;
-	public int radius;
-	public float speed;
+    public int height;
+    public int width;
+    public int radius;
+    public float speed;
 
-	public boolean isMoving;
-	public float rotation;
+    public boolean isMoving;
+    public float rotation;
 
-	public NGTObject blocksObject;
-	@SideOnly(Side.CLIENT)
-	public World dummyWorld;
-	@SideOnly(Side.CLIENT)
-	public DisplayList glList;
+    public NGTObject blocksObject;
+    @SideOnly(Side.CLIENT)
+    public World dummyWorld;
+    @SideOnly(Side.CLIENT)
+    public DisplayList glList;
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+    }
 
-	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
-	}
+    @Override
+    public void writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+    }
 
-	@Override
-	public void updateEntity() {
-		if (this.isMoving) {
-			this.rotation += this.speed;
-			this.rotation %= 360.0F;
-		}
-	}
+    @Override
+    public void updateEntity() {
+        if (this.isMoving) {
+            this.rotation += this.speed;
+            this.rotation %= 360.0F;
+        }
+    }
 
-	/**
-	 * Server Only
-	 */
-	public void onBlockChanged() {
-		boolean powered = this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord);
-		if (powered) {
-			if (this.blocksObject == null) {
-				this.setup();
-			}
-			this.isMoving = true;
-		} else {
-			this.isMoving = false;
-		}
-		this.getDescriptionPacket();
-	}
+    /**
+     * Server Only
+     */
+    public void onBlockChanged() {
+        boolean powered = this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord);
+        if (powered) {
+            if (this.blocksObject == null) {
+                this.setup();
+            }
+            this.isMoving = true;
+        } else {
+            this.isMoving = false;
+        }
+        this.getDescriptionPacket();
+    }
 
-	private void setup() {
-		//NGTObject ngto = NGTOUtil.copyBlocks(world, x, y, z, width, height, depth);
-	}
+    private void setup() {
+        //NGTObject ngto = NGTOUtil.copyBlocks(world, x, y, z, width, height, depth);
+    }
 
-	/**
-	 * ブロック破壊
-	 */
-	public void removed() {
-	}
+    /**
+     * ブロック破壊
+     */
+    public void removed() {
+    }
 
-	@Override
-	public Packet getDescriptionPacket() {
-		NGTUtil.sendPacketToClient(this);
-		return null;
-	}
+    @Override
+    public Packet getDescriptionPacket() {
+        NGTUtil.sendPacketToClient(this);
+        return null;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared() {
-		return NGTUtil.getChunkLoadDistanceSq();
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return NGTUtil.getChunkLoadDistanceSq();
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox() {
-		return INFINITE_EXTENT_AABB;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        return INFINITE_EXTENT_AABB;
+    }
 }

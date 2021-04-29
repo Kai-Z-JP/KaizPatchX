@@ -19,7 +19,7 @@ public class PartsWithChildren extends Parts {
     }
 
     @Override
-	public void init(PartsRenderer renderer) {
+    public void init(PartsRenderer renderer) {
         super.init(renderer);
 
         this.childParts.forEach(parts -> parts.init(renderer));

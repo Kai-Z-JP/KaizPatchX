@@ -11,12 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ItemBellows extends Item {
-	public ItemBellows() {
-		super();
-	}
+    public ItemBellows() {
+        super();
+    }
 
-	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
+    @Override
+    public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
         if (!world.isRemote) {
             if (world.getBlock(x, y, z) == RTMBlock.brickSlab) {
                 if (world.rand.nextInt(5) == 0) {
@@ -30,22 +30,22 @@ public class ItemBellows extends Item {
         return true;
     }
 
-	protected boolean setLiquid(World world, int x, int y, int z, Block block, int metadata) {
-		int m0 = world.getBlockMetadata(x, y, z);
-		int x0 = x - BlockUtil.facing[m0][0];
-		int y0 = y - BlockUtil.facing[m0][1];
-		int z0 = z - BlockUtil.facing[m0][2];
-		if (world.getBlock(x0, y0, z0) == Blocks.air) {
-			world.setBlock(x0, y0, z0, block, metadata, 2);
-			return true;
-		} else if (block instanceof BlockLiquidBase) {
-			for (int y1 = 1; y1 < 16; ++y1) {
-				if (world.getBlock(x0, y0 + y1 - 1, z0) == block && world.getBlock(x0, y0 + y1, z0) == Blocks.air) {
-					world.setBlock(x0, y0 + y1, z0, block, metadata, 2);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    protected boolean setLiquid(World world, int x, int y, int z, Block block, int metadata) {
+        int m0 = world.getBlockMetadata(x, y, z);
+        int x0 = x - BlockUtil.facing[m0][0];
+        int y0 = y - BlockUtil.facing[m0][1];
+        int z0 = z - BlockUtil.facing[m0][2];
+        if (world.getBlock(x0, y0, z0) == Blocks.air) {
+            world.setBlock(x0, y0, z0, block, metadata, 2);
+            return true;
+        } else if (block instanceof BlockLiquidBase) {
+            for (int y1 = 1; y1 < 16; ++y1) {
+                if (world.getBlock(x0, y0 + y1 - 1, z0) == block && world.getBlock(x0, y0 + y1, z0) == Blocks.air) {
+                    world.setBlock(x0, y0 + y1, z0, block, metadata, 2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

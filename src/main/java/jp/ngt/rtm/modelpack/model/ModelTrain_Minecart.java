@@ -16,44 +16,44 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ModelTrain_Minecart implements IModelNGT {
-	private final ModelBase model = new ModelMinecart();
+    private final ModelBase model = new ModelMinecart();
 
-	@Override
-	public void renderAll(boolean smoothing) {
-		GL11.glPushMatrix();
-		GL11.glScalef(1.0F, -1.0F, -1.0F);
-		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-		this.model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F * 3.0F);
-		GL11.glPopMatrix();
-	}
+    @Override
+    public void renderAll(boolean smoothing) {
+        GL11.glPushMatrix();
+        GL11.glScalef(1.0F, -1.0F, -1.0F);
+        GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+        this.model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F * 3.0F);
+        GL11.glPopMatrix();
+    }
 
-	@Override
-	public void renderOnly(boolean smoothing, String... groupNames) {
-		this.renderAll(smoothing);
-	}
+    @Override
+    public void renderOnly(boolean smoothing, String... groupNames) {
+        this.renderAll(smoothing);
+    }
 
-	@Override
-	public void renderPart(boolean smoothing, String partName) {
-		this.renderAll(smoothing);
-	}
+    @Override
+    public void renderPart(boolean smoothing, String partName) {
+        this.renderAll(smoothing);
+    }
 
-	@Override
-	public int getDrawMode() {
-		return 0;
-	}
+    @Override
+    public int getDrawMode() {
+        return 0;
+    }
 
-	@Override
-	public ArrayList<GroupObject> getGroupObjects() {
+    @Override
+    public ArrayList<GroupObject> getGroupObjects() {
         return new ArrayList<>();
     }
 
-	@Override
-	public Map<String, Material> getMaterials() {
+    @Override
+    public Map<String, Material> getMaterials() {
         return new HashMap<>();
     }
 
-	@Override
-	public FileType getType() {
-		return FileType.CLASS;
-	}
+    @Override
+    public FileType getType() {
+        return FileType.CLASS;
+    }
 }

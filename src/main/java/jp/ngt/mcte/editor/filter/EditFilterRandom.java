@@ -6,21 +6,21 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
 public class EditFilterRandom extends EditFilterBase {
-	@Override
-	public void init(Config par) {
-		super.init(par);
-		par.addInt("Denominator", 2, 1, 65536);
-	}
+    @Override
+    public void init(Config par) {
+        super.init(par);
+        par.addInt("Denominator", 2, 1, 65536);
+    }
 
-	@Override
-	public String getFilterName() {
-		return "Random";
-	}
+    @Override
+    public String getFilterName() {
+        return "Random";
+    }
 
-	@Override
-	public boolean edit(final Editor editor) {
-		AABBInt box = editor.getSelectBox();
-		if (box != null) {
+    @Override
+    public boolean edit(final Editor editor) {
+        AABBInt box = editor.getSelectBox();
+        if (box != null) {
             final int n = this.getCfg().getInt("Denominator");
             editor.record(box);
             editor.repeat(box, (box1, index, x, y, z) -> {
@@ -33,6 +33,6 @@ public class EditFilterRandom extends EditFilterBase {
             });
             return true;
         }
-		return false;
-	}
+        return false;
+    }
 }

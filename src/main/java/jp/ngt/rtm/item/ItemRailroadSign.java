@@ -13,13 +13,13 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class ItemRailroadSign extends Item {
-	public ItemRailroadSign() {
-		super();
-		this.setHasSubtypes(true);
-	}
+    public ItemRailroadSign() {
+        super();
+        this.setHasSubtypes(true);
+    }
 
-	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
+    @Override
+    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
         if (!world.isRemote) {
             if (par7 == 0) {
                 y -= 1;
@@ -46,15 +46,15 @@ public class ItemRailroadSign extends Item {
         return true;
     }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1) {
-		return this.itemIcon;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int par1) {
+        return this.itemIcon;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {
-		this.itemIcon = register.registerIcon("rtm:sign_0");
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        this.itemIcon = register.registerIcon("rtm:sign_0");
+    }
 }

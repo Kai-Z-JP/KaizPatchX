@@ -1,17 +1,17 @@
 {
-  "railName": "NoModel_W1",
-  "railModel": "Model_none.mqo",
-  "railTexture": "textures/rail/largeRailPC.png",
-  "buttonTexture": "textures/rail/button_NoModel_W1.png",
-  "polygonType": 4,
-  "ballastWidth": 1,
-  "defaultBallast": [
-    {
-      "blockName": "stone",
-      "blockMetadata": 0,
-      "height": 0.0625
-    }
-  ],
-  "allowCrossing": true,
-  "tags": "ngt5479"
+    "railName": "NoModel_W1",
+    "railModel": "Model_none.mqo",
+    "railTexture": "textures/rail/largeRailPC.png",
+    "buttonTexture": "textures/rail/button_NoModel_W1.png",
+    "polygonType": 4,
+    "ballastWidth": 1,
+    "defaultBallast": [
+        {
+            "blockName": "stone",
+            "blockMetadata": 0,
+            "height": 0.0625
+        }
+    ],
+    "allowCrossing": true,
+    "tags": "ngt5479"
 }

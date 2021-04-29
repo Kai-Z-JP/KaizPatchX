@@ -1,31 +1,31 @@
 {
-  "name": "127mmTank",
-  "model": {
-    "modelFile": "127mmTank.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/firearm/127mmArtillery.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/vehicle/button_127mmTank.png",
-  "vehicleType": "Car",
-  "size": [
-    7.0,
-    2.625
-  ],
-  "playerPos": [
-    [
-      0.0,
-      1.5,
-      3.0
-    ]
-  ],
-  "smoothing": true,
-  "doCulling": true,
-  "changeYawOnStopping": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479 Tank Original"
+    "name": "127mmTank",
+    "model": {
+        "modelFile": "127mmTank.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/firearm/127mmArtillery.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/vehicle/button_127mmTank.png",
+    "vehicleType": "Car",
+    "size": [
+        7.0,
+        2.625
+    ],
+    "playerPos": [
+        [
+            0.0,
+            1.5,
+            3.0
+        ]
+    ],
+    "smoothing": true,
+    "doCulling": true,
+    "changeYawOnStopping": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479 Tank Original"
 }

@@ -11,27 +11,27 @@ import net.minecraft.entity.player.EntityPlayer;
 import java.util.List;
 
 public class EditFilterDeleteEntity extends EditFilterBase {
-	@Override
-	public void init(Config par) {
-		super.init(par);
-	}
+    @Override
+    public void init(Config par) {
+        super.init(par);
+    }
 
-	@Override
-	public String getFilterName() {
-		return "DeleteEntity";
-	}
+    @Override
+    public String getFilterName() {
+        return "DeleteEntity";
+    }
 
-	@Override
-	public boolean edit(Editor editor) {
-		AABBInt box = editor.getSelectBox();
-		if (box != null) {
-			//editor.record(box);
-			WorldSnapshot snapshot = editor.copy(box, "");
-			List<Entity> list2 = snapshot.getEntities();
-			list2.stream().filter(obj -> !(obj instanceof EntityEditor) && !(obj instanceof EntityPlayer)).forEach(Entity::setDead);
-			NGTLog.sendChatMessage(editor.getEntity().getPlayer(), "Delete Entities : " + list2.size());
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean edit(Editor editor) {
+        AABBInt box = editor.getSelectBox();
+        if (box != null) {
+            //editor.record(box);
+            WorldSnapshot snapshot = editor.copy(box, "");
+            List<Entity> list2 = snapshot.getEntities();
+            list2.stream().filter(obj -> !(obj instanceof EntityEditor) && !(obj instanceof EntityPlayer)).forEach(Entity::setDead);
+            NGTLog.sendChatMessage(editor.getEntity().getPlayer(), "Delete Entities : " + list2.size());
+            return true;
+        }
+        return false;
+    }
 }

@@ -7,20 +7,20 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
 public class EditFilterFillSurface extends EditFilterBase {
-	@Override
-	public void init(Config par) {
-		super.init(par);
-	}
+    @Override
+    public void init(Config par) {
+        super.init(par);
+    }
 
-	@Override
-	public String getFilterName() {
-		return "FillSurface";
-	}
+    @Override
+    public String getFilterName() {
+        return "FillSurface";
+    }
 
-	@Override
-	public boolean edit(final Editor editor) {
-		AABBInt box = editor.getSelectBox();
-		if (box != null) {
+    @Override
+    public boolean edit(final Editor editor) {
+        AABBInt box = editor.getSelectBox();
+        if (box != null) {
             editor.record(box);
             editor.repeat(box, (box1, index, x, y, z) -> {
                 World world = editor.getWorld();
@@ -34,6 +34,6 @@ public class EditFilterFillSurface extends EditFilterBase {
             });
             return true;
         }
-		return false;
-	}
+        return false;
+    }
 }

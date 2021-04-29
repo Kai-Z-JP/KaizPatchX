@@ -14,19 +14,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ItemHacksaw extends Item {
-	public ItemHacksaw() {
-		this.maxStackSize = 1;
-		this.setMaxDamage(ToolMaterial.IRON.getMaxUses());
-		this.setCreativeTab(CreativeTabs.tabTools);
-	}
+    public ItemHacksaw() {
+        this.maxStackSize = 1;
+        this.setMaxDamage(ToolMaterial.IRON.getMaxUses());
+        this.setCreativeTab(CreativeTabs.tabTools);
+    }
 
-	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
-		if (!player.canPlayerEdit(x, y, z, side, itemstack)) {
-			return false;
-		} else {
-			Block block = world.getBlock(x, y, z);
-			if (block == RTMBlock.steelSlab && world.getBlockMetadata(x, y, z) == 0) {
+    @Override
+    public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
+        if (!player.canPlayerEdit(x, y, z, side, itemstack)) {
+            return false;
+        } else {
+            Block block = world.getBlock(x, y, z);
+            if (block == RTMBlock.steelSlab && world.getBlockMetadata(x, y, z) == 0) {
                 if (!world.isRemote) {
                     player.entityDropItem(new ItemStack(RTMItem.steel_ingot, 1, 0), 0.5F);
                     world.setBlock(x, y, z, Blocks.air);
@@ -37,12 +37,12 @@ public class ItemHacksaw extends Item {
             } else {
                 return false;
             }
-		}
-	}
+        }
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D() {
-		return true;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean isFull3D() {
+        return true;
+    }
 }

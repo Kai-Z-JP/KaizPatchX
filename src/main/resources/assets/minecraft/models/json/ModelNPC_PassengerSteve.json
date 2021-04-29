@@ -1,5 +1,5 @@
 {
-  "name": "PassengerSteve",
-  "texture": "textures/entity/steve.png",
-  "role": "passenger"
+    "name": "PassengerSteve",
+    "texture": "textures/entity/steve.png",
+    "role": "passenger"
 }

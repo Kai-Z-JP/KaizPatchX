@@ -17,70 +17,70 @@ import java.net.URL;
 import java.util.*;
 
 public class VersionChecker {
-	private static final VersionChecker checker = new VersionChecker();
+    private static final VersionChecker checker = new VersionChecker();
 
-	private final List<PackInfo> checkList = new ArrayList<>();
-	/**
-	 * {name, version, homepage}
-	 */
-	private final List<String[]> updateList = new ArrayList<>();
+    private final List<PackInfo> checkList = new ArrayList<>();
+    /**
+     * {name, version, homepage}
+     */
+    private final List<String[]> updateList = new ArrayList<>();
 
-	private boolean finished;
+    private boolean finished;
 
-	/**
-	 * 更新通知リストに追加
-	 */
-	public static void addToCheckList(PackInfo par1) {
-		checker.checkList.add(par1);
-	}
+    /**
+     * 更新通知リストに追加
+     */
+    public static void addToCheckList(PackInfo par1) {
+        checker.checkList.add(par1);
+    }
 
-	public static void checkVersion() {
-		Thread thread = new VersionCheckThread();
-		thread.start();
-	}
+    public static void checkVersion() {
+        Thread thread = new VersionCheckThread();
+        thread.start();
+    }
 
-	public static void sendUpdateMessage(ClientConnectedToServerEvent event) {
-		if (checker.finished) {
-			checker.updateList.forEach(sa -> {
-				IChatComponent component = new ChatComponentTranslation("message.version", EnumChatFormatting.AQUA + sa[0]);
-				component.appendText(" : " + EnumChatFormatting.GREEN + sa[1]);
-				if (sa[2] != null && sa[2].length() > 0) {
-					IChatComponent component2 = new ChatComponentTranslation("  §6§nDownload here");
-					component2.setChatStyle(new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2])));
-					component.appendSibling(component2);
-					//component.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2]));
-				}
-				event.handler.handleChat(new S02PacketChat(component));
-			});
-		}
-	}
+    public static void sendUpdateMessage(ClientConnectedToServerEvent event) {
+        if (checker.finished) {
+            checker.updateList.forEach(sa -> {
+                IChatComponent component = new ChatComponentTranslation("message.version", EnumChatFormatting.AQUA + sa[0]);
+                component.appendText(" : " + EnumChatFormatting.GREEN + sa[1]);
+                if (sa[2] != null && sa[2].length() > 0) {
+                    IChatComponent component2 = new ChatComponentTranslation("  §6§nDownload here");
+                    component2.setChatStyle(new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2])));
+                    component.appendSibling(component2);
+                    //component.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sa[2]));
+                }
+                event.handler.handleChat(new S02PacketChat(component));
+            });
+        }
+    }
 
-	public static class VersionCheckThread extends Thread {
-		public VersionCheckThread() {
-			super("NGT Version Check");
-		}
+    public static class VersionCheckThread extends Thread {
+        public VersionCheckThread() {
+            super("NGT Version Check");
+        }
 
-		@Override
-		public void run() {
-			List<String> strings = new ArrayList<>();
-			Map<String, String> latestVerMap = new HashMap<>();//<name, ver>
-			for (PackInfo info : checker.checkList) {
-				if (latestVerMap.containsKey(info.name)) {
-					String ver = latestVerMap.get(info.name);
-					if (!info.version.equals(ver)) {
-						checker.updateList.add(new String[]{info.name, ver, info.homepage});
-						continue;
-					}
-				}
+        @Override
+        public void run() {
+            List<String> strings = new ArrayList<>();
+            Map<String, String> latestVerMap = new HashMap<>();//<name, ver>
+            for (PackInfo info : checker.checkList) {
+                if (latestVerMap.containsKey(info.name)) {
+                    String ver = latestVerMap.get(info.name);
+                    if (!info.version.equals(ver)) {
+                        checker.updateList.add(new String[]{info.name, ver, info.homepage});
+                        continue;
+                    }
+                }
 
-				String location = info.updateURL;
-				if (location == null || location.length() == 0) {
-					continue;
-				}
+                String location = info.updateURL;
+                if (location == null || location.length() == 0) {
+                    continue;
+                }
 
-				//HttpURLConnection connection = null;
+                //HttpURLConnection connection = null;
 
-				try {
+                try {
 			    	/*while((location != null) && (!location.isEmpty()))
 				    {
 				        URL url = new URL(location);
@@ -97,33 +97,33 @@ public class VersionChecker {
 				    }
 
 				    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));*/
-					URL url = new URL(location);
-					BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-					String string;
-					while ((string = br.readLine()) != null) {
-						strings.add(string);
-					}
-					br.close();
+                    URL url = new URL(location);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+                    String string;
+                    while ((string = br.readLine()) != null) {
+                        strings.add(string);
+                    }
+                    br.close();
 
-					//connection.disconnect();
-				} catch (MalformedURLException e) {
-					NGTLog.debug("URL:" + location);
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+                    //connection.disconnect();
+                } catch (MalformedURLException e) {
+                    NGTLog.debug("URL:" + location);
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-				String[] sa1 = strings.toArray(new String[0]);
-				strings.clear();
+                String[] sa1 = strings.toArray(new String[0]);
+                strings.clear();
 
-				Arrays.stream(sa1).map(s -> s.split(":")).filter(sa2 -> sa2.length == 2).forEach(sa2 -> {
-					latestVerMap.put(sa2[0], sa2[1]);
-					if (info.name.equals(sa2[0]) && !info.version.equals(sa2[1])) {
-						checker.updateList.add(new String[]{info.name, sa2[1], info.homepage});
-					}
-				});
-			}
-			checker.finished = true;
-		}
-	}
+                Arrays.stream(sa1).map(s -> s.split(":")).filter(sa2 -> sa2.length == 2).forEach(sa2 -> {
+                    latestVerMap.put(sa2[0], sa2[1]);
+                    if (info.name.equals(sa2[0]) && !info.version.equals(sa2[1])) {
+                        checker.updateList.add(new String[]{info.name, sa2[1], info.homepage});
+                    }
+                });
+            }
+            checker.finished = true;
+        }
+    }
 }

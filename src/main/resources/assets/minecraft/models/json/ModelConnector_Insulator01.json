@@ -1,24 +1,24 @@
 {
-  "name": "Insulator01",
-  "model": {
-    "modelFile": "Connector.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/connector/insulator.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/connector/button_Insulator01.png",
-  "connectorType": "Relay",
-  "wirePos": [
-    0.0,
-    -0.25,
-    0.0
-  ],
-  "smoothing": false,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "Insulator01",
+    "model": {
+        "modelFile": "Connector.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/connector/insulator.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/connector/button_Insulator01.png",
+    "connectorType": "Relay",
+    "wirePos": [
+        0.0,
+        -0.25,
+        0.0
+    ],
+    "smoothing": false,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

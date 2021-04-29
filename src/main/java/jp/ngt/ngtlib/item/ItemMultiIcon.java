@@ -14,43 +14,43 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class ItemMultiIcon extends Item {
-	private final Map<Integer, String> iconNameMap;
-	@SideOnly(Side.CLIENT)
-	private Map<Integer, IIcon> iconMap;
-	@SideOnly(Side.CLIENT)
-	public static IIcon MISSING_ICON;//TextureMap.missingImage
+    private final Map<Integer, String> iconNameMap;
+    @SideOnly(Side.CLIENT)
+    private Map<Integer, IIcon> iconMap;
+    @SideOnly(Side.CLIENT)
+    public static IIcon MISSING_ICON;//TextureMap.missingImage
 
-	public ItemMultiIcon(Map<Integer, String> par1) {
-		super();
-		this.setHasSubtypes(true);
-		this.iconNameMap = par1;
-	}
+    public ItemMultiIcon(Map<Integer, String> par1) {
+        super();
+        this.setHasSubtypes(true);
+        this.iconNameMap = par1;
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack par1) {
-		return super.getUnlocalizedName() + "." + par1.getItemDamage();
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack par1) {
+        return super.getUnlocalizedName() + "." + par1.getItemDamage();
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1) {
-		if (this.iconMap.containsKey(par1)) {
-			return this.iconMap.get(par1);
-		}
-		return MISSING_ICON;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int par1) {
+        if (this.iconMap.containsKey(par1)) {
+            return this.iconMap.get(par1);
+        }
+        return MISSING_ICON;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item par1, CreativeTabs tab, List list) {
-		for (Entry<Integer, IIcon> entry : this.iconMap.entrySet()) {
-			list.add(new ItemStack(par1, 1, entry.getKey()));
-		}
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item par1, CreativeTabs tab, List list) {
+        for (Entry<Integer, IIcon> entry : this.iconMap.entrySet()) {
+            list.add(new ItemStack(par1, 1, entry.getKey()));
+        }
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
         this.iconMap = new HashMap<>();
         for (Entry<Integer, String> entry : this.iconNameMap.entrySet()) {
             this.iconMap.put(entry.getKey(), register.registerIcon(entry.getValue()));

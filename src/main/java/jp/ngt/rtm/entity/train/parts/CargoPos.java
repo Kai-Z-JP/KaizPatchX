@@ -11,15 +11,15 @@ public enum CargoPos {
 
     public final float min;
     public final float max;
-	public final float[] zPos;
+    public final float[] zPos;
 
-	CargoPos(float p1, float p2, float[] p3) {
-		this.min = p1;
-		this.max = p2;
-		this.zPos = p3;
-	}
+    CargoPos(float p1, float p2, float[] p3) {
+        this.min = p1;
+        this.max = p2;
+        this.zPos = p3;
+    }
 
-	public static CargoPos getCargoPos(float size) {
+    public static CargoPos getCargoPos(float size) {
         return Arrays.stream(CargoPos.values()).filter(cp -> size > cp.min && size <= cp.max).findFirst().orElse(C40FT);
     }
 }

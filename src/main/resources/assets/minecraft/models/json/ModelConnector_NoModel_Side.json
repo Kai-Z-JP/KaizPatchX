@@ -1,24 +1,24 @@
 {
-  "name": "NoModel_Side",
-  "model": {
-    "modelFile": "CoN_Side.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/connector/insulator.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/connector/button_NoModel_Side.png",
-  "connectorType": "Relay",
-  "wirePos": [
-    0.0,
-    -0.5,
-    0.0
-  ],
-  "smoothing": false,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "NoModel_Side",
+    "model": {
+        "modelFile": "CoN_Side.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/connector/insulator.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/connector/button_NoModel_Side.png",
+    "connectorType": "Relay",
+    "wirePos": [
+        0.0,
+        -0.5,
+        0.0
+    ],
+    "smoothing": false,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

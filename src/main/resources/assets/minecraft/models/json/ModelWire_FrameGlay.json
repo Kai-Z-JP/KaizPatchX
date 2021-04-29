@@ -1,18 +1,18 @@
 {
-  "name": "FrameGlay",
-  "model": {
-    "modelFile": "ModelFrame.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/wire/iron.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/wire/button_FrameGlay.png",
-  "deflectionCoefficient": 0.0,
-  "sectionLength": 0.5,
-  "doCulling": true,
-  "smoothing": false
+    "name": "FrameGlay",
+    "model": {
+        "modelFile": "ModelFrame.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/wire/iron.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/wire/button_FrameGlay.png",
+    "deflectionCoefficient": 0.0,
+    "sectionLength": 0.5,
+    "doCulling": true,
+    "smoothing": false
 }

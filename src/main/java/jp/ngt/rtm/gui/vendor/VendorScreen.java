@@ -7,16 +7,16 @@ import net.minecraft.client.gui.GuiButton;
 
 @SideOnly(Side.CLIENT)
 public abstract class VendorScreen {
-	protected GuiTicketVendor vendor;
+    protected GuiTicketVendor vendor;
 
-	public VendorScreen(GuiTicketVendor par1) {
-		this.vendor = par1;
-	}
+    public VendorScreen(GuiTicketVendor par1) {
+        this.vendor = par1;
+    }
 
-	public abstract void init(int guiLeft, int guiTop);
+    public abstract void init(int guiLeft, int guiTop);
 
-	public abstract void onClickButton(GuiButton button);
+    public abstract void onClickButton(GuiButton button);
 
-	public void drawScreen() {
-	}
+    public void drawScreen() {
+    }
 }

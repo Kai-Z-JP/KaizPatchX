@@ -7,7 +7,7 @@ import net.minecraft.block.material.Material;
  * 特に機能のないブロック
  */
 public class BlockDummy extends Block {
-	public BlockDummy(Material material) {
-		super(material);
-	}
+    public BlockDummy(Material material) {
+        super(material);
+    }
 }

@@ -18,14 +18,14 @@ public final class RTMRail {
     public static Block largeRailSlopeBase0;
     public static Block largeRailSlopeCore0;
 
-	public static Block[] largeRailBase = new Block[railTexture.length];
-	public static Block[] largeRailCore = new Block[railTexture.length];
-	public static Block[] largeRailSwitchBase = new Block[railTexture.length];
-	public static Block[] largeRailSwitchCore = new Block[railTexture.length];
-	public static Block[] largeRailSlopeBase = new Block[railTexture.length];
-	public static Block[] largeRailSlopeCore = new Block[railTexture.length];
+    public static Block[] largeRailBase = new Block[railTexture.length];
+    public static Block[] largeRailCore = new Block[railTexture.length];
+    public static Block[] largeRailSwitchBase = new Block[railTexture.length];
+    public static Block[] largeRailSwitchCore = new Block[railTexture.length];
+    public static Block[] largeRailSlopeBase = new Block[railTexture.length];
+    public static Block[] largeRailSlopeCore = new Block[railTexture.length];
 
-	public static void init() {
+    public static void init() {
         largeRailBase0 = (new BlockLargeRailBase(2)).setBlockName("rtm:LRBase").setBlockTextureName(railTexture[2]);
         largeRailCore0 = (new BlockLargeRailCore(2)).setBlockName("rtm:LRCore").setBlockTextureName(railTexture[2]);
         largeRailSwitchBase0 = (new BlockLargeRailSwitchBase(2)).setBlockName("rtm:LRSBase").setBlockTextureName(railTexture[2]);
@@ -61,95 +61,95 @@ public final class RTMRail {
 
         GameRegistry.registerTileEntity(TileEntityLargeRailBase.class, "TERailBase");
         GameRegistry.registerTileEntity(TileEntityLargeRailNormalCore.class, "TERailCore");
-		GameRegistry.registerTileEntity(TileEntityLargeRailSwitchBase.class, "TERailSwitchBase");
-		GameRegistry.registerTileEntity(TileEntityLargeRailSwitchCore.class, "TERailSwitchCore");
-		GameRegistry.registerTileEntity(TileEntityLargeRailSlopeBase.class, "TERailSlopeBase");
-		GameRegistry.registerTileEntity(TileEntityLargeRailSlopeCore.class, "TERailSlopeCore");
-		GameRegistry.registerTileEntity(TileEntityMarker.class, "TEMarker");
-	}
+        GameRegistry.registerTileEntity(TileEntityLargeRailSwitchBase.class, "TERailSwitchBase");
+        GameRegistry.registerTileEntity(TileEntityLargeRailSwitchCore.class, "TERailSwitchCore");
+        GameRegistry.registerTileEntity(TileEntityLargeRailSlopeBase.class, "TERailSlopeBase");
+        GameRegistry.registerTileEntity(TileEntityLargeRailSlopeCore.class, "TERailSlopeCore");
+        GameRegistry.registerTileEntity(TileEntityMarker.class, "TEMarker");
+    }
 
-	//互換性
-	public static RailProperty getProperty(byte shape, int texType) {
-		String s0 = "1067mm";
-		switch (texType) {
-			case 0:
-				switch (shape) {
-					case 0:
-						s0 = "Monorail_StraddleBeam";
-						break;
-					case 1:
-						s0 = "GuidingRail";
-						break;
-					case 2:
-						s0 = "1067mm_Abt";
-						break;
-					case 3:
-						s0 = "1067mm_HP_Wood";
-						break;
-				}
-				break;
-			case 5:
-				switch (shape & 1) {
-					case 0:
-						s0 = "1067mm_Tram";
-						break;
-					case 1:
-						s0 = "1435mm_Tram";
-						break;
-				}
-				break;
-			default:
-				switch (shape) {
-					case 0:
-						s0 = "1067mm_Wood";
-						break;
-					case 2:
-						s0 = "1067mm_PC";
-						break;
-					case 1:
-						s0 = "1435mm_Wood";
-						break;
-					case 3:
-						s0 = "1435mm_PC";
-						break;
-					case 4:
-						s0 = "1524mm_Wood";
-						break;
-					case 6:
-						s0 = "1524mm_PC";
-						break;
-					case 5:
-						s0 = "762mm_Wood";
-						break;
-					case 7:
-						s0 = "762mm_PC";
-						break;
-				}
-				break;
-		}
+    //互換性
+    public static RailProperty getProperty(byte shape, int texType) {
+        String s0 = "1067mm";
+        switch (texType) {
+            case 0:
+                switch (shape) {
+                    case 0:
+                        s0 = "Monorail_StraddleBeam";
+                        break;
+                    case 1:
+                        s0 = "GuidingRail";
+                        break;
+                    case 2:
+                        s0 = "1067mm_Abt";
+                        break;
+                    case 3:
+                        s0 = "1067mm_HP_Wood";
+                        break;
+                }
+                break;
+            case 5:
+                switch (shape & 1) {
+                    case 0:
+                        s0 = "1067mm_Tram";
+                        break;
+                    case 1:
+                        s0 = "1435mm_Tram";
+                        break;
+                }
+                break;
+            default:
+                switch (shape) {
+                    case 0:
+                        s0 = "1067mm_Wood";
+                        break;
+                    case 2:
+                        s0 = "1067mm_PC";
+                        break;
+                    case 1:
+                        s0 = "1435mm_Wood";
+                        break;
+                    case 3:
+                        s0 = "1435mm_PC";
+                        break;
+                    case 4:
+                        s0 = "1524mm_Wood";
+                        break;
+                    case 6:
+                        s0 = "1524mm_PC";
+                        break;
+                    case 5:
+                        s0 = "762mm_Wood";
+                        break;
+                    case 7:
+                        s0 = "762mm_PC";
+                        break;
+                }
+                break;
+        }
 
-		Block block = Blocks.gravel;
-		int meta = 0;
-		switch (texType) {
-			case 0:
-			case 1:
-				block = Blocks.air;
-				break;
-			case 2:
-				block = Blocks.gravel;
-				break;
-			case 3:
-				block = Blocks.stone;
-				break;
-			case 4:
-				block = Blocks.snow;
-				break;
-			case 5:
-				block = Blocks.wool;
-				meta = 7;
-				break;
-		}
-		float h = (texType == 4) ? 0.18125F + 0.0625F : 0.0625F;
-		return new RailProperty(s0, block, meta, h);
-	}
+        Block block = Blocks.gravel;
+        int meta = 0;
+        switch (texType) {
+            case 0:
+            case 1:
+                block = Blocks.air;
+                break;
+            case 2:
+                block = Blocks.gravel;
+                break;
+            case 3:
+                block = Blocks.stone;
+                break;
+            case 4:
+                block = Blocks.snow;
+                break;
+            case 5:
+                block = Blocks.wool;
+                meta = 7;
+                break;
+        }
+        float h = (texType == 4) ? 0.18125F + 0.0625F : 0.0625F;
+        return new RailProperty(s0, block, meta, h);
+    }
 }

@@ -27,51 +27,51 @@ public class RenderFluorescent extends TileEntitySpecialRenderer {
             case 0:
                 GL11.glTranslatef(0.0f, move, 0.0f);
                 break;
-			case 1:
-				GL11.glTranslatef(0.0f, 0.0f, move);
-				break;
-			case 2:
-				GL11.glTranslatef(0.0f, -move, 0.0f);
-				break;
-			case 3:
-				GL11.glTranslatef(0.0f, 0.0f, -move);
-				break;
-			case 4:
-				GL11.glTranslatef(0.0f, move, 0.0f);
-				GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-				break;
-			case 5:
-				GL11.glTranslatef(move, 0.0f, 0.0f);
-				GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-				break;
-			case 6:
-				GL11.glTranslatef(0.0f, -move, 0.0f);
-				GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-				break;
-			case 7:
-				GL11.glTranslatef(-move, 0.0f, 0.0f);
-				GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-				break;
-		}
+            case 1:
+                GL11.glTranslatef(0.0f, 0.0f, move);
+                break;
+            case 2:
+                GL11.glTranslatef(0.0f, -move, 0.0f);
+                break;
+            case 3:
+                GL11.glTranslatef(0.0f, 0.0f, -move);
+                break;
+            case 4:
+                GL11.glTranslatef(0.0f, move, 0.0f);
+                GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+                break;
+            case 5:
+                GL11.glTranslatef(move, 0.0f, 0.0f);
+                GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+                break;
+            case 6:
+                GL11.glTranslatef(0.0f, -move, 0.0f);
+                GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+                break;
+            case 7:
+                GL11.glTranslatef(-move, 0.0f, 0.0f);
+                GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+                break;
+        }
 
-		GL11.glScalef(-1.0F, -1.0F, 1.0F);
-		this.bindTexture(texture);
+        GL11.glScalef(-1.0F, -1.0F, 1.0F);
+        this.bindTexture(texture);
 
-		//NGTRenderHelper.setLightmapMaxBrightness();
-		this.model.render(meta, 0, 0.0625F);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GLHelper.disableLighting();
-		this.model.render(meta, 1, 0.0625F);
-		GLHelper.enableLighting();
-		GL11.glDisable(GL11.GL_BLEND);
+        //NGTRenderHelper.setLightmapMaxBrightness();
+        this.model.render(meta, 0, 0.0625F);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GLHelper.disableLighting();
+        this.model.render(meta, 1, 0.0625F);
+        GLHelper.enableLighting();
+        GL11.glDisable(GL11.GL_BLEND);
 
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		GL11.glPopMatrix();
-	}
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopMatrix();
+    }
 
-	@Override
-	public void renderTileEntityAt(TileEntity par1, double par2, double par4, double par6, float par8) {
-		this.render((TileEntityFluorescent) par1, par2, par4, par6, par8);
-	}
+    @Override
+    public void renderTileEntityAt(TileEntity par1, double par2, double par4, double par6, float par8) {
+        this.render((TileEntityFluorescent) par1, par2, par4, par6, par8);
+    }
 }

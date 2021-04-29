@@ -5,11 +5,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtil;
 
 public class TileEntityInsulator extends TileEntityConnectorBase {
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared() {
-		return NGTUtil.getChunkLoadDistanceSq();
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return NGTUtil.getChunkLoadDistanceSq();
+    }
 
 //	@Override
 //	@SideOnly(Side.CLIENT)
@@ -18,13 +18,13 @@ public class TileEntityInsulator extends TileEntityConnectorBase {
 //		return bb;
 //	}
 
-	@Override
-	public String getSubType() {
-		return "Relay";
-	}
+    @Override
+    public String getSubType() {
+        return "Relay";
+    }
 
-	@Override
-	protected String getDefaultName() {
-		return "Insulator01";
-	}
+    @Override
+    protected String getDefaultName() {
+        return "Insulator01";
+    }
 }

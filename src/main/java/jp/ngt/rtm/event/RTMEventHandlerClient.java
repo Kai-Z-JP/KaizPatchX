@@ -53,17 +53,17 @@ public final class RTMEventHandlerClient {
         this.guiIngame.onRenderGui(event);
     }
 
-	@SubscribeEvent
-	public void onUpdateFOV(FOVUpdateEvent event)//EntityRenderer.updateFovModifierHand()
-	{
-		event.newfov = RTMCore.proxy.getFov(event.entity, event.fov);
-	}
+    @SubscribeEvent
+    public void onUpdateFOV(FOVUpdateEvent event)//EntityRenderer.updateFovModifierHand()
+    {
+        event.newfov = RTMCore.proxy.getFov(event.entity, event.fov);
+    }
 
-	@SubscribeEvent
-	public void onRenderWorldBlocks(RenderWorldEvent.Post event)//WorldRenderer.updateRenderer()
-	{
-		if (event.pass == 0)//1はたまにしか呼ばれない
-		{
+    @SubscribeEvent
+    public void onRenderWorldBlocks(RenderWorldEvent.Post event)//WorldRenderer.updateRenderer()
+    {
+        if (event.pass == 0)//1はたまにしか呼ばれない
+        {
             List list = NGTUtilClient.getMinecraft().renderGlobal.tileEntities;
             for (Object o : list) {
                 TileEntity tile = (TileEntity) o;
@@ -77,67 +77,67 @@ public final class RTMEventHandlerClient {
                     boolean flag2 = size[1] < event.renderer.posY + 16 && size[4] >= event.renderer.posY;
                     boolean flag3 = size[2] < event.renderer.posZ + 16 && size[5] >= event.renderer.posZ;
                     if (flag1 && flag2 && flag3) {
-						if (GLHelper.isValid(rail.glList)) {
-							rail.shouldRerenderRail = true;
-						}
-					}
-				}
-			}
-		}
-	}
+                        if (GLHelper.isValid(rail.glList)) {
+                            rail.shouldRerenderRail = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void onLoadSound(SoundLoadEvent event) {
-		this.soundHandler.onLoadSound(event);
-	}
+    @SubscribeEvent
+    public void onLoadSound(SoundLoadEvent event) {
+        this.soundHandler.onLoadSound(event);
+    }
 
-	private boolean isPlayerSittingSeat(EntityPlayer player, byte type) {
-		if (player.isRiding() && player.ridingEntity instanceof EntityFloor) {
-			return ((EntityFloor) player.ridingEntity).getSeatType() == type;
-		}
-		return false;
-	}
+    private boolean isPlayerSittingSeat(EntityPlayer player, byte type) {
+        if (player.isRiding() && player.ridingEntity instanceof EntityFloor) {
+            return ((EntityFloor) player.ridingEntity).getSeatType() == type;
+        }
+        return false;
+    }
 
-	@SubscribeEvent
-	public void onRenderPlayer(RenderPlayerEvent.Pre event) {
-		if (this.isPlayerSittingSeat(event.entityPlayer, (byte) 3))//寝台
-		{
-			GL11.glPushMatrix();
-			event.renderer.modelBipedMain.isRiding = false;
-			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270.0F, 0.0F, 1.0F, 0.0F);
-		}
-	}
+    @SubscribeEvent
+    public void onRenderPlayer(RenderPlayerEvent.Pre event) {
+        if (this.isPlayerSittingSeat(event.entityPlayer, (byte) 3))//寝台
+        {
+            GL11.glPushMatrix();
+            event.renderer.modelBipedMain.isRiding = false;
+            GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(270.0F, 0.0F, 1.0F, 0.0F);
+        }
+    }
 
-	@SubscribeEvent
-	public void onRenderPlayer(RenderPlayerEvent.Post event) {
-		if (this.isPlayerSittingSeat(event.entityPlayer, (byte) 3))//寝台
-		{
-			event.renderer.modelBipedMain.isRiding = true;
-			GL11.glPopMatrix();
-		}
+    @SubscribeEvent
+    public void onRenderPlayer(RenderPlayerEvent.Post event) {
+        if (this.isPlayerSittingSeat(event.entityPlayer, (byte) 3))//寝台
+        {
+            event.renderer.modelBipedMain.isRiding = true;
+            GL11.glPopMatrix();
+        }
 
-		//RenderEventHandler.INSTANCE.renderEntity(event.entity, event.renderer, event.x, event.y, event.z);
+        //RenderEventHandler.INSTANCE.renderEntity(event.entity, event.renderer, event.x, event.y, event.z);
 
-		RenderBullet.INSTANCE.onPlayerRender(event.entityPlayer, false);
-	}
+        RenderBullet.INSTANCE.onPlayerRender(event.entityPlayer, false);
+    }
 
-	@SubscribeEvent
-	public void onRenderLiving(RenderLivingEvent.Pre event) {
-		this.renderEntityPre(event.entity, event.renderer, event.x, event.y, event.z);
-	}
+    @SubscribeEvent
+    public void onRenderLiving(RenderLivingEvent.Pre event) {
+        this.renderEntityPre(event.entity, event.renderer, event.x, event.y, event.z);
+    }
 
-	@SubscribeEvent
-	public void onRenderLiving(RenderLivingEvent.Post event) {
-		this.renderEntityPost(event.entity, event.renderer, event.x, event.y, event.z);
+    @SubscribeEvent
+    public void onRenderLiving(RenderLivingEvent.Post event) {
+        this.renderEntityPost(event.entity, event.renderer, event.x, event.y, event.z);
 
-		if (event.entity instanceof EntityNPC) {
-			RenderBullet.INSTANCE.onNPCRender((EntityNPC) event.entity, event.x, event.y, event.z);
-		}
-	}
+        if (event.entity instanceof EntityNPC) {
+            RenderBullet.INSTANCE.onNPCRender((EntityNPC) event.entity, event.x, event.y, event.z);
+        }
+    }
 
-	@SubscribeEvent
-	public void onRenderPlayerHand(RenderHandEvent event) {
+    @SubscribeEvent
+    public void onRenderPlayerHand(RenderHandEvent event) {
         EntityPlayer player = NGTUtilClient.getMinecraft().thePlayer;
         byte viewMode = ClientProxy.getViewMode();
         if (viewMode >= 0 && viewMode < 3) {
@@ -147,32 +147,32 @@ public final class RTMEventHandlerClient {
         RenderBullet.INSTANCE.onPlayerRender(player, true);
     }
 
-	//NVD////////////////////////////////////////////////////////////////////////
+    //NVD////////////////////////////////////////////////////////////////////////
 
-	public void renderEntityPre(EntityLivingBase entity, RendererLivingEntity renderer, double x, double y, double z) {
-		if (!this.isPlayerWearedNVD(entity)) {
-			return;
-		}
+    public void renderEntityPre(EntityLivingBase entity, RendererLivingEntity renderer, double x, double y, double z) {
+        if (!this.isPlayerWearedNVD(entity)) {
+            return;
+        }
 
-		GLHelper.disableLighting();
-		//GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1.0F, 0.5F, 0.4F, 1.0F);
-		GLHelper.setLightmapMaxBrightness();
-	}
+        GLHelper.disableLighting();
+        //GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glColor4f(1.0F, 0.5F, 0.4F, 1.0F);
+        GLHelper.setLightmapMaxBrightness();
+    }
 
-	public void renderEntityPost(EntityLivingBase entity, RendererLivingEntity renderer, double x, double y, double z) {
-		if (!this.isPlayerWearedNVD(entity)) {
-			return;
-		}
+    public void renderEntityPost(EntityLivingBase entity, RendererLivingEntity renderer, double x, double y, double z) {
+        if (!this.isPlayerWearedNVD(entity)) {
+            return;
+        }
 
-		//GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GLHelper.enableLighting();
-	}
+        //GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GLHelper.enableLighting();
+    }
 
-	private boolean isPlayerWearedNVD(EntityLivingBase entity) {
+    private boolean isPlayerWearedNVD(EntityLivingBase entity) {
         EntityPlayer viewer = NGTUtilClient.getMinecraft().thePlayer;
         return entity != viewer && ClientProxy.getViewMode() == 3;
     }
 
-	/////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
 }

@@ -1,61 +1,60 @@
 {
-  "trainName": "hoki800",
-  "trainType": "CC",
-
-  "trainModel2": {
-    "modelFile": "ModelTrain_hoki800.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/train/hoki800/hoki800.png"
-      ]
-    ]
-  },
-  "bogieModel2": {
-    "modelFile": "ModelBogie_ft1.obj",
-    "textures": [
-      [
-        "default",
-        "textures/train/ft1.png"
-      ]
-    ]
-  },
-  "buttonTexture": "textures/train/hoki800/button_hoki800.png",
-  "soundScriptPath": "scripts/sound_trailer.js",
-  "sound_Stop": "",
-  "sound_S_A": "",
-  "sound_Acceleration": "",
-  "sound_Deceleration": "",
-  "sound_D_S": "",
-  "sound_Horn": "",
-  "seatPos": [],
-  "playerPos": [
-    [
-      0.8,
-      0.0,
-      6.2
+    "trainName": "hoki800",
+    "trainType": "CC",
+    "trainModel2": {
+        "modelFile": "ModelTrain_hoki800.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/train/hoki800/hoki800.png"
+            ]
+        ]
+    },
+    "bogieModel2": {
+        "modelFile": "ModelBogie_ft1.obj",
+        "textures": [
+            [
+                "default",
+                "textures/train/ft1.png"
+            ]
+        ]
+    },
+    "buttonTexture": "textures/train/hoki800/button_hoki800.png",
+    "soundScriptPath": "scripts/sound_trailer.js",
+    "sound_Stop": "",
+    "sound_S_A": "",
+    "sound_Acceleration": "",
+    "sound_Deceleration": "",
+    "sound_D_S": "",
+    "sound_Horn": "",
+    "seatPos": [],
+    "playerPos": [
+        [
+            0.8,
+            0.0,
+            6.2
+        ],
+        [
+            -0.8,
+            0.0,
+            -6.2
+        ]
     ],
-    [
-      -0.8,
-      0.0,
-      -6.2
-    ]
-  ],
-  "bogiePos": [
-    [
-      0.0,
-      0.0,
-      5.1
+    "bogiePos": [
+        [
+            0.0,
+            0.0,
+            5.1
+        ],
+        [
+            0.0,
+            0.0,
+            -5.1
+        ]
     ],
-    [
-      0.0,
-      0.0,
-      -5.1
-    ]
-  ],
-  "trainDistance": 6.4,
-  "doCulling": true,
-  "smoothing": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479 800 JNR"
+    "trainDistance": 6.4,
+    "doCulling": true,
+    "smoothing": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479 800 JNR"
 }

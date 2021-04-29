@@ -18,47 +18,47 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public final class NGTUtilClient {
-	public static Minecraft getMinecraft() {
-		return FMLClientHandler.instance().getClient();
-	}
+    public static Minecraft getMinecraft() {
+        return FMLClientHandler.instance().getClient();
+    }
 
-	public static void bindTexture(ResourceLocation par1) {
-		getMinecraft().renderEngine.bindTexture(par1);
-	}
+    public static void bindTexture(ResourceLocation par1) {
+        getMinecraft().renderEngine.bindTexture(par1);
+    }
 
-	public static void checkGLError(String par1) {
-		checkGLError(par1, false);
-	}
+    public static void checkGLError(String par1) {
+        checkGLError(par1, false);
+    }
 
-	public static void checkGLError(String par1, boolean par2) {
-		int i = GL11.glGetError();
-		if (i != 0) {
-			if (par2) {
-				return;
-			}
-			NGTLog.debug("GL_ERROR" + "@" + par1);
-			//NGTLog.debug(i + ": " + GLU.gluErrorString(i));
-			NGTLog.debug(i + ": " + Util.translateGLErrorString(i));
-			//GL43.glDebugMessageCallback(new KHRDebugCallback());
-			//int program = GL20.glCreateProgram();
-			//NGTLog.debug(GL20.glGetProgramInfoLog(program, 256));
-			//NGTLog.debug(GL20.glGetShaderInfoLog(shader, maxLength));
-		}
-	}
+    public static void checkGLError(String par1, boolean par2) {
+        int i = GL11.glGetError();
+        if (i != 0) {
+            if (par2) {
+                return;
+            }
+            NGTLog.debug("GL_ERROR" + "@" + par1);
+            //NGTLog.debug(i + ": " + GLU.gluErrorString(i));
+            NGTLog.debug(i + ": " + Util.translateGLErrorString(i));
+            //GL43.glDebugMessageCallback(new KHRDebugCallback());
+            //int program = GL20.glCreateProgram();
+            //NGTLog.debug(GL20.glGetProgramInfoLog(program, 256));
+            //NGTLog.debug(GL20.glGetShaderInfoLog(shader, maxLength));
+        }
+    }
 
-	public static int getLightValue(World world, int x, int y, int z) {
-		if (world.blockExists(x, 0, z)) {
+    public static int getLightValue(World world, int x, int y, int z) {
+        if (world.blockExists(x, 0, z)) {
             int sky = world.getSkyBlockTypeBrightness(EnumSkyBlock.Sky, x, y, z);
             int block = world.getSkyBlockTypeBrightness(EnumSkyBlock.Block, x, y, z);
             return Math.max(sky, block);
         }
-		return 0;
-	}
+        return 0;
+    }
 
-	static byte hasShader = -1;
+    static byte hasShader = -1;
 
-	public static boolean usingShader() {
-		if (hasShader < 0) {
+    public static boolean usingShader() {
+        if (hasShader < 0) {
 			/*hasShader = 0;
 			List<ModContainer> list = Loader.instance().getActiveModList();
 			for(ModContainer container : list)
@@ -75,11 +75,11 @@ public final class NGTUtilClient {
                 hasShader = 1;
             }
         }
-		return hasShader == 1;
-	}
+        return hasShader == 1;
+    }
 
-	public static void playSound(ISound sound) {
-		getMinecraft().getSoundHandler().playSound(sound);
-		//getMinecraft().getSoundHandler().playDelayedSound(sound, 0);
-	}
+    public static void playSound(ISound sound) {
+        getMinecraft().getSoundHandler().playSound(sound);
+        //getMinecraft().getSoundHandler().playDelayedSound(sound, 0);
+    }
 }

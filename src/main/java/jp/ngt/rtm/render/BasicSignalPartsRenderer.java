@@ -30,40 +30,40 @@ public class BasicSignalPartsRenderer extends SignalPartsRenderer {
         super.init(par1, par2);
     }
 
-	@Override
-	public void render(TileEntity entity, int pass, float par3) {
-		GL11.glPushMatrix();
+    @Override
+    public void render(TileEntity entity, int pass, float par3) {
+        GL11.glPushMatrix();
 
-		this.lightList.clear();
+        this.lightList.clear();
 
-		IModelNGT model = this.modelObj.model;
-		SignalConfig cfg = this.modelSet.getConfig();
-		boolean smoothing = cfg.smoothing;
+        IModelNGT model = this.modelObj.model;
+        SignalConfig cfg = this.modelSet.getConfig();
+        boolean smoothing = cfg.smoothing;
 
-		if (pass == 0) {
-			model.renderOnly(smoothing, cfg.modelPartsFixture.objects);
-		}
+        if (pass == 0) {
+            model.renderOnly(smoothing, cfg.modelPartsFixture.objects);
+        }
 
-		if (cfg.rotateBody) {
-			float yaw = this.getRotation(entity) - this.getBlockDirection(entity);
-			float[] fa1 = cfg.modelPartsBody.pos;
-			GL11.glTranslatef(fa1[0], fa1[1], fa1[2]);
-			GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
-			GL11.glTranslatef(-fa1[0], -fa1[1], -fa1[2]);
-		}
+        if (cfg.rotateBody) {
+            float yaw = this.getRotation(entity) - this.getBlockDirection(entity);
+            float[] fa1 = cfg.modelPartsBody.pos;
+            GL11.glTranslatef(fa1[0], fa1[1], fa1[2]);
+            GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(-fa1[0], -fa1[1], -fa1[2]);
+        }
 
-		if (pass == 0) {
-			model.renderOnly(smoothing, cfg.modelPartsBody.objects);
-		} else if (pass == 2) {
-			//信号上限への対応は個々でのみ行う
-			int signal = this.getSignal(entity);
-			if (signal > SignalLevel.HIGH_SPEED_PROCEED.level) {
-				signal = SignalLevel.HIGH_SPEED_PROCEED.level;
-			}
+        if (pass == 0) {
+            model.renderOnly(smoothing, cfg.modelPartsBody.objects);
+        } else if (pass == 2) {
+            //信号上限への対応は個々でのみ行う
+            int signal = this.getSignal(entity);
+            if (signal > SignalLevel.HIGH_SPEED_PROCEED.level) {
+                signal = SignalLevel.HIGH_SPEED_PROCEED.level;
+            }
 
-			boolean finish = false;
-			int i0 = -1;
-			for (int j = 0; j < 2; ++j) {
+            boolean finish = false;
+            int i0 = -1;
+            for (int j = 0; j < 2; ++j) {
                 if (j == 1) {
                     float f0 = 0.0625F;
                     GL11.glColor4f(f0, f0, f0, 1.0F);
@@ -87,14 +87,14 @@ public class BasicSignalPartsRenderer extends SignalPartsRenderer {
                                 this.lightList.add(s);
                             });
                         }
-					} else {
+                    } else {
                         //点灯してないライト
                         Arrays.stream(lightPart.parts).filter(s -> !this.lightList.contains(s)).forEach(s -> model.renderPart(smoothing, s));
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 }

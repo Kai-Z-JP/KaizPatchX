@@ -18,24 +18,24 @@ import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-	@Override
-	public void preInit() {
-		VersionChecker.addToCheckList(new PackInfo(MCTE.metadata.name, MCTE.metadata.url, MCTE.metadata.updateUrl, MCTE.metadata.version));
+    @Override
+    public void preInit() {
+        VersionChecker.addToCheckList(new PackInfo(MCTE.metadata.name, MCTE.metadata.url, MCTE.metadata.updateUrl, MCTE.metadata.version));
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityEditor.class, new RenderEditor());
+        RenderingRegistry.registerEntityRenderingHandler(EntityEditor.class, new RenderEditor());
 
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMiniature.class, RenderMiniature.INSTANCE);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMiniature.class, RenderMiniature.INSTANCE);
 
-		MinecraftForgeClient.registerItemRenderer(MCTE.itemMiniature, RenderItemMiniature.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(MCTE.itemMiniature, RenderItemMiniature.INSTANCE);
 
-		MCTEKeyHandlerClient.init();
+        MCTEKeyHandlerClient.init();
 
-		MinecraftForge.EVENT_BUS.register(RenderItemMiniature.INSTANCE);
-	}
+        MinecraftForge.EVENT_BUS.register(RenderItemMiniature.INSTANCE);
+    }
 
-	@Override
-	public void init() {
-		FMLCommonHandler.instance().bus().register(new MCTEKeyHandlerClient());
-		FilterManager.INSTANCE.loadFilters();//preInitではdevPathが設定できてないため
-	}
+    @Override
+    public void init() {
+        FMLCommonHandler.instance().bus().register(new MCTEKeyHandlerClient());
+        FilterManager.INSTANCE.loadFilters();//preInitではdevPathが設定できてないため
+    }
 }

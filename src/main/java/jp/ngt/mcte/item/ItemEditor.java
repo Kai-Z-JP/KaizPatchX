@@ -18,53 +18,53 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class ItemEditor extends Item {
-	public ItemEditor() {
-		super();
-		this.setMaxStackSize(1);
-	}
+    public ItemEditor() {
+        super();
+        this.setMaxStackSize(1);
+    }
 
-	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
-		if (!world.isRemote) {
-			if (EditorManager.INSTANCE.canPlayerUseEditor(player)) {
-				Editor editor = EditorManager.INSTANCE.getEditor(player);
-				if (editor != null) {
-					MovingObjectPosition target = editor.getEntity().getTarget(false);
-					if (target != null) {
-						editor.getEntity().setPos(editor.getEntity().isSelectEnd(), target.blockX, target.blockY, target.blockZ);
-					}
-					return itemstack;
-				}
-			} else {
-				NGTLog.sendChatMessage(player, "You don't have permission to use Editor.");
-			}
-		}
-		return itemstack;
-	}
+    @Override
+    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player) {
+        if (!world.isRemote) {
+            if (EditorManager.INSTANCE.canPlayerUseEditor(player)) {
+                Editor editor = EditorManager.INSTANCE.getEditor(player);
+                if (editor != null) {
+                    MovingObjectPosition target = editor.getEntity().getTarget(false);
+                    if (target != null) {
+                        editor.getEntity().setPos(editor.getEntity().isSelectEnd(), target.blockX, target.blockY, target.blockZ);
+                    }
+                    return itemstack;
+                }
+            } else {
+                NGTLog.sendChatMessage(player, "You don't have permission to use Editor.");
+            }
+        }
+        return itemstack;
+    }
 
-	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
-		if (!world.isRemote) {
-			if (EditorManager.INSTANCE.canPlayerUseEditor(player)) {
-				Editor editor = EditorManager.INSTANCE.getEditor(player);
-				if (editor != null) {
-					editor.getEntity().setPos(editor.getEntity().isSelectEnd(), x, y, z);
-					return true;
-				}
+    @Override
+    public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
+        if (!world.isRemote) {
+            if (EditorManager.INSTANCE.canPlayerUseEditor(player)) {
+                Editor editor = EditorManager.INSTANCE.getEditor(player);
+                if (editor != null) {
+                    editor.getEntity().setPos(editor.getEntity().isSelectEnd(), x, y, z);
+                    return true;
+                }
 
-				EntityEditor entityEditor = Editor.getNewEditor(world, player, x, y, z);
-				entityEditor.setPositionAndRotation(player.posX, player.posY, player.posZ, 0.0F, 0.0F);
-				world.spawnEntityInWorld(entityEditor);
-			} else {
-				NGTLog.sendChatMessage(player, "You don't have permission to use Editor.");
-			}
-		}
-		return true;
-	}
+                EntityEditor entityEditor = Editor.getNewEditor(world, player, x, y, z);
+                entityEditor.setPositionAndRotation(player.posX, player.posY, player.posZ, 0.0F, 0.0F);
+                world.spawnEntityInWorld(entityEditor);
+            } else {
+                NGTLog.sendChatMessage(player, "You don't have permission to use Editor.");
+            }
+        }
+        return true;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean par4) {
-		IntStream.range(0, 8).mapToObj(i -> EnumChatFormatting.GRAY + StatCollector.translateToLocal("usage.editor." + i)).forEach(list::add);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean par4) {
+        IntStream.range(0, 8).mapToObj(i -> EnumChatFormatting.GRAY + StatCollector.translateToLocal("usage.editor." + i)).forEach(list::add);
+    }
 }

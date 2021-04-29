@@ -1,10 +1,10 @@
 {
-  "texture": "ngt_test01",
-  "height": 0.75,
-  "width": 2.25,
-  "depth": 0.25,
-  "frame": 1,
-  "animationCycle": 1,
-  "color": 0,
-  "lightValue": -16
+    "texture": "ngt_test01",
+    "height": 0.75,
+    "width": 2.25,
+    "depth": 0.25,
+    "frame": 1,
+    "animationCycle": 1,
+    "color": 0,
+    "lightValue": -16
 }

@@ -44,96 +44,96 @@ public final class NGTOModel implements IModelNGT {
         this.scale = par2;
     }
 
-	private NGTObject loadModel(ResourceLocation par1) {
-		try {
-			IResource res = Minecraft.getMinecraft().getResourceManager().getResource(par1);
-			return NGTObject.load(res.getInputStream());
-		} catch (IOException e) {
-			throw new ModelFormatException("IO Exception reading model", e);
-		}
-	}
+    private NGTObject loadModel(ResourceLocation par1) {
+        try {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(par1);
+            return NGTObject.load(res.getInputStream());
+        } catch (IOException e) {
+            throw new ModelFormatException("IO Exception reading model", e);
+        }
+    }
 
-	@Override
-	public void renderAll(boolean smoothing) {
-		if (this.world == null) {
-			if (NGTUtil.getClientWorld() == null) {
-				return;
-			}
-			this.world = new NGTWorld(NGTUtil.getClientWorld(), this.ngto);
-		}
-		GL11.glPushMatrix();
-		GL11.glScalef(this.scale, this.scale, this.scale);
-		float x = (float) this.ngto.xSize * 0.5F;
-		float z = (float) this.ngto.zSize * 0.5F;
-		GL11.glTranslatef(-x, 0.0F, -z);
-		int pass = MinecraftForgeClient.getRenderPass();
-		if (pass == -1) {
-			pass = 0;
-		}
-		NGTRenderer.renderTileEntities(this.world, 0.0F, pass);
-		NGTRenderer.renderEntities(this.world, 0.0F, pass);
-		this.renderBlocks(pass);
-		GL11.glPopMatrix();
-	}
+    @Override
+    public void renderAll(boolean smoothing) {
+        if (this.world == null) {
+            if (NGTUtil.getClientWorld() == null) {
+                return;
+            }
+            this.world = new NGTWorld(NGTUtil.getClientWorld(), this.ngto);
+        }
+        GL11.glPushMatrix();
+        GL11.glScalef(this.scale, this.scale, this.scale);
+        float x = (float) this.ngto.xSize * 0.5F;
+        float z = (float) this.ngto.zSize * 0.5F;
+        GL11.glTranslatef(-x, 0.0F, -z);
+        int pass = MinecraftForgeClient.getRenderPass();
+        if (pass == -1) {
+            pass = 0;
+        }
+        NGTRenderer.renderTileEntities(this.world, 0.0F, pass);
+        NGTRenderer.renderEntities(this.world, 0.0F, pass);
+        this.renderBlocks(pass);
+        GL11.glPopMatrix();
+    }
 
-	@Override
-	public void renderOnly(boolean smoothing, String... groupNames) {
-		if (groupNames.length == 1 && groupNames[0].equals(GROUP_NAME)) {
-			this.renderAll(smoothing);
-		}
-	}
+    @Override
+    public void renderOnly(boolean smoothing, String... groupNames) {
+        if (groupNames.length == 1 && groupNames[0].equals(GROUP_NAME)) {
+            this.renderAll(smoothing);
+        }
+    }
 
-	@Override
-	public void renderPart(boolean smoothing, String partName) {
-		if (partName.equals(GROUP_NAME)) {
-			this.renderAll(smoothing);
-		}
-	}
+    @Override
+    public void renderPart(boolean smoothing, String partName) {
+        if (partName.equals(GROUP_NAME)) {
+            this.renderAll(smoothing);
+        }
+    }
 
-	private void renderBlocks(int pass) {
-		if (this.glLists == null) {
-			this.glLists = new DisplayList[2];
-		}
+    private void renderBlocks(int pass) {
+        if (this.glLists == null) {
+            this.glLists = new DisplayList[2];
+        }
 
-		NGTUtilClient.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        NGTUtilClient.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
 
-		boolean smoothing = NGTUtilClient.getMinecraft().gameSettings.ambientOcclusion != 0;
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_SMOOTH);
-		}
-		if (!GLHelper.isValid(this.glLists[pass])) {
-			this.glLists[pass] = GLHelper.generateGLList();
-			GLHelper.startCompile(this.glLists[pass]);
-			NGTRenderer.renderNGTObject(this.world, this.ngto, true, 0, pass);
-			GLHelper.endCompile();
-		} else {
-			GLHelper.callList(this.glLists[pass]);
-		}
-		if (smoothing) {
-			GL11.glShadeModel(GL11.GL_FLAT);
-		}
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GLHelper.enableLighting();
-		NGTUtilClient.getMinecraft().entityRenderer.enableLightmap(0.0D);
-	}
+        boolean smoothing = NGTUtilClient.getMinecraft().gameSettings.ambientOcclusion != 0;
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
+        if (!GLHelper.isValid(this.glLists[pass])) {
+            this.glLists[pass] = GLHelper.generateGLList();
+            GLHelper.startCompile(this.glLists[pass]);
+            NGTRenderer.renderNGTObject(this.world, this.ngto, true, 0, pass);
+            GLHelper.endCompile();
+        } else {
+            GLHelper.callList(this.glLists[pass]);
+        }
+        if (smoothing) {
+            GL11.glShadeModel(GL11.GL_FLAT);
+        }
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GLHelper.enableLighting();
+        NGTUtilClient.getMinecraft().entityRenderer.enableLightmap(0.0D);
+    }
 
-	@Override
-	public int getDrawMode() {
-		return 0;
-	}
+    @Override
+    public int getDrawMode() {
+        return 0;
+    }
 
-	@Override
-	public ArrayList<GroupObject> getGroupObjects() {
-		return this.parts;
-	}
+    @Override
+    public ArrayList<GroupObject> getGroupObjects() {
+        return this.parts;
+    }
 
-	@Override
-	public Map<String, Material> getMaterials() {
-		return this.materials;
-	}
+    @Override
+    public Map<String, Material> getMaterials() {
+        return this.materials;
+    }
 
-	@Override
-	public FileType getType() {
-		return FileType.NGTO;
-	}
+    @Override
+    public FileType getType() {
+        return FileType.NGTO;
+    }
 }

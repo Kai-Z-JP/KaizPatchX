@@ -1,20 +1,20 @@
 {
-  "name": "Windmill02",
-  "model": {
-    "modelFile": "Windmill.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/windmill02.png",
-        ""
-      ]
-    ],
-    "rendererPath": "scripts/RenderWindmill.js"
-  },
-  "buttonTexture": "textures/machine/button_Windmill.png",
-  "machineType": "Gate",
-  "smoothing": true,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "Windmill02",
+    "model": {
+        "modelFile": "Windmill.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/windmill02.png",
+                ""
+            ]
+        ],
+        "rendererPath": "scripts/RenderWindmill.js"
+    },
+    "buttonTexture": "textures/machine/button_Windmill.png",
+    "machineType": "Gate",
+    "smoothing": true,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

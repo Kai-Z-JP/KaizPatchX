@@ -1,24 +1,24 @@
 {
-  "railName": "1067mm_overpass_L_slab",
-  "model": {
-    "modelFile": "ModelRail_1067mm_overpass_slab.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/rail/largeRailPC.png",
-        ""
-      ]
+    "railName": "1067mm_overpass_L_slab",
+    "model": {
+        "modelFile": "ModelRail_1067mm_overpass_slab.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/rail/largeRailPC.png",
+                ""
+            ]
+        ],
+        "rendererPath": "scripts/RenderRailOverpass.js"
+    },
+    "buttonTexture": "textures/rail/button_1067mm_overpass_L_slab.png",
+    "defaultBallast": [
+        {
+            "blockName": "air",
+            "blockMetadata": 0,
+            "height": 0.0625
+        }
     ],
-    "rendererPath": "scripts/RenderRailOverpass.js"
-  },
-  "buttonTexture": "textures/rail/button_1067mm_overpass_L_slab.png",
-  "defaultBallast": [
-    {
-      "blockName": "air",
-      "blockMetadata": 0,
-      "height": 0.0625
-    }
-  ],
-  "accuracy": "LOW",
-  "tags": "ngt5479 1067mm Slab"
+    "accuracy": "LOW",
+    "tags": "ngt5479 1067mm Slab"
 }

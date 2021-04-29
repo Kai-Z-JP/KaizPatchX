@@ -1,19 +1,19 @@
 {
-  "name": "ATC_01",
-  "model": {
-    "modelFile": "ATC01.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/atc.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/machine/button_ATC_01.png",
-  "machineType": "Antenna_Send",
-  "smoothing": false,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "name": "ATC_01",
+    "model": {
+        "modelFile": "ATC01.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/atc.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/machine/button_ATC_01.png",
+    "machineType": "Antenna_Send",
+    "smoothing": false,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

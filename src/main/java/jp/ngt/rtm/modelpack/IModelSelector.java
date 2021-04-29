@@ -6,21 +6,21 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import jp.ngt.rtm.modelpack.state.ResourceState;
 
 public interface IModelSelector {
-	ResourceState getResourceState();
+    ResourceState getResourceState();
 
-	String getModelType();
+    String getModelType();
 
-	String getModelName();
+    String getModelName();
 
-	void setModelName(String par1);
+    void setModelName(String par1);
 
-	/**
-	 * {x,y,z} or {entityId, -1, 0}
-	 */
-	int[] getPos();
+    /**
+     * {x,y,z} or {entityId, -1, 0}
+     */
+    int[] getPos();
 
-	@SideOnly(Side.CLIENT)
-	boolean closeGui(String par1, ResourceState par2);
+    @SideOnly(Side.CLIENT)
+    boolean closeGui(String par1, ResourceState par2);
 
-	ModelSetBase getModelSet();
+    ModelSetBase getModelSet();
 }

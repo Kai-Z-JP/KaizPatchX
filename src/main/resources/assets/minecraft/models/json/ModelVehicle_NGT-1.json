@@ -1,57 +1,57 @@
 {
-  "name": "NGT-1",
-  "model": {
-    "modelFile": "NGT-1.ngto",
-    "textures": [
-      [
-        "default",
-        "textures/vehicle/cv33.png",
-        ""
-      ]
-    ]
-  },
-  "buttonTexture": "textures/vehicle/button_NGT-1.png",
-  "vehicleType": "Plane",
-  "size": [
-    5.0,
-    2.0
-  ],
-  "playerPos": [
-    [
-      0.0,
-      1.5,
-      4.25
-    ]
-  ],
-  "scale": 1.0,
-  "friction": [
-    0.9,
-    0.999
-  ],
-  "acceleration": [
-    0.01,
-    0.05
-  ],
-  "maxSpeed": [
-    1.0,
-    3.0
-  ],
-  "maxYaw": [
-    15.0,
-    2.5
-  ],
-  "pitchCoefficient": [
-    2.5,
-    2.5
-  ],
-  "yawCoefficient": [
-    2.5,
-    2.5
-  ],
-  "rollCoefficient": [
-    45.0,
-    45.0
-  ],
-  "changeYawOnStopping": true,
-  "tags": "ngt5479"
+    "name": "NGT-1",
+    "model": {
+        "modelFile": "NGT-1.ngto",
+        "textures": [
+            [
+                "default",
+                "textures/vehicle/cv33.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/vehicle/button_NGT-1.png",
+    "vehicleType": "Plane",
+    "size": [
+        5.0,
+        2.0
+    ],
+    "playerPos": [
+        [
+            0.0,
+            1.5,
+            4.25
+        ]
+    ],
+    "scale": 1.0,
+    "friction": [
+        0.9,
+        0.999
+    ],
+    "acceleration": [
+        0.01,
+        0.05
+    ],
+    "maxSpeed": [
+        1.0,
+        3.0
+    ],
+    "maxYaw": [
+        15.0,
+        2.5
+    ],
+    "pitchCoefficient": [
+        2.5,
+        2.5
+    ],
+    "yawCoefficient": [
+        2.5,
+        2.5
+    ],
+    "rollCoefficient": [
+        45.0,
+        45.0
+    ],
+    "changeYawOnStopping": true,
+    "tags": "ngt5479"
 }

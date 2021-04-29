@@ -1,25 +1,25 @@
 {
-  "name": "RevolvingLight_Red",
-  "model": {
-    "modelFile": "RevolvingLight.mqo",
-    "textures": [
-      [
-        "default",
-        "textures/machine/revolvingLight.png",
-        "Light_AlphaBlend"
-      ]
+    "name": "RevolvingLight_Red",
+    "model": {
+        "modelFile": "RevolvingLight.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/revolvingLight.png",
+                "Light_AlphaBlend"
+            ]
+        ],
+        "rendererPath": "scripts/RenderRevolvingLight.js"
+    },
+    "buttonTexture": "textures/machine/button_RevolvingLight_Red.png",
+    "machineType": "Light",
+    "rotateByMetadata": true,
+    "brightness": [
+        0,
+        7
     ],
-    "rendererPath": "scripts/RenderRevolvingLight.js"
-  },
-  "buttonTexture": "textures/machine/button_RevolvingLight_Red.png",
-  "machineType": "Light",
-  "rotateByMetadata": true,
-  "brightness": [
-    0,
-    7
-  ],
-  "smoothing": true,
-  "doCulling": true,
-  "accuracy": "LOW",
-  "tags": "ngt5479"
+    "smoothing": true,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "tags": "ngt5479"
 }

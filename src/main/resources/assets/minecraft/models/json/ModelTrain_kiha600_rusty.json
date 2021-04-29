@@ -1,71 +1,70 @@
 {
-  "trainName": "kiha600_rusty",
-  "trainType": "DC",
-
-  "trainModel2": {
-    "modelFile": "ModelTrain_kiha600.class",
-    "textures": [
-      [
-        "default",
-        "textures/train/kiha600/kiha600_rusty.png"
-      ]
-    ]
-  },
-  "bogieModel2": {
-    "modelFile": "ModelBogie.class",
-    "textures": [
-      [
-        "default",
-        "textures/train/bogie.png"
-      ]
-    ]
-  },
-  "buttonTexture": "textures/train/kiha600/button_kiha600_rusty.png",
-  "sound_Stop": "",
-  "sound_S_A": "",
-  "sound_Acceleration": "",
-  "sound_Deceleration": "",
-  "sound_D_S": "",
-  "sound_Horn": "",
-  "seatPos": [
-    [
-      0,
-      0,
-      0,
-      0
-    ]
-  ],
-  "playerPos": [
-    [
-      0.8,
-      0.0,
-      9.187
+    "trainName": "kiha600_rusty",
+    "trainType": "DC",
+    "trainModel2": {
+        "modelFile": "ModelTrain_kiha600.class",
+        "textures": [
+            [
+                "default",
+                "textures/train/kiha600/kiha600_rusty.png"
+            ]
+        ]
+    },
+    "bogieModel2": {
+        "modelFile": "ModelBogie.class",
+        "textures": [
+            [
+                "default",
+                "textures/train/bogie.png"
+            ]
+        ]
+    },
+    "buttonTexture": "textures/train/kiha600/button_kiha600_rusty.png",
+    "sound_Stop": "",
+    "sound_S_A": "",
+    "sound_Acceleration": "",
+    "sound_Deceleration": "",
+    "sound_D_S": "",
+    "sound_Horn": "",
+    "seatPos": [
+        [
+            0,
+            0,
+            0,
+            0
+        ]
     ],
-    [
-      -0.8,
-      0.0,
-      -9.187
-    ]
-  ],
-  "bogiePos": [
-    [
-      0.0,
-      0.0,
-      7.125
+    "playerPos": [
+        [
+            0.8,
+            0.0,
+            9.187
+        ],
+        [
+            -0.8,
+            0.0,
+            -9.187
+        ]
     ],
-    [
-      0.0,
-      0.0,
-      -7.125
-    ]
-  ],
-  "accelerateion": 0.0008,
-  "maxSpeed": [
-    0.40,
-    0.50,
-    0.60,
-    0.70,
-    0.80
-  ],
-  "tags": "ngt5479 Kiha600 Kashima"
+    "bogiePos": [
+        [
+            0.0,
+            0.0,
+            7.125
+        ],
+        [
+            0.0,
+            0.0,
+            -7.125
+        ]
+    ],
+    "accelerateion": 0.0008,
+    "maxSpeed": [
+        0.40,
+        0.50,
+        0.60,
+        0.70,
+        0.80
+    ],
+    "tags": "ngt5479 Kiha600 Kashima"
 }

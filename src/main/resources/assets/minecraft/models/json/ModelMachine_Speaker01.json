@@ -1,16 +1,22 @@
 {
-  "name": "Speaker01",
-  "model": {
-      "modelFile": "speaker_01.mqoz",
-      "textures": [["default", "textures/machine/speaker.png", ""]],
-      "rendererPath": "scripts/RenderSpeaker.js"
-  },
-  "buttonTexture": "textures/machine/button_speaker01.png",
-  "machineType": "Speaker",
-  "rotateByMetadata": true,
-  "useCustomColor": false,
-  "smoothing": true,
-  "doCulling": true,
-  "accuracy": "MEDIUM",
-  "tags": "ngt5479"
+    "name": "Speaker01",
+    "model": {
+        "modelFile": "speaker_01.mqoz",
+        "textures": [
+            [
+                "default",
+                "textures/machine/speaker.png",
+                ""
+            ]
+        ],
+        "rendererPath": "scripts/RenderSpeaker.js"
+    },
+    "buttonTexture": "textures/machine/button_speaker01.png",
+    "machineType": "Speaker",
+    "rotateByMetadata": true,
+    "useCustomColor": false,
+    "smoothing": true,
+    "doCulling": true,
+    "accuracy": "MEDIUM",
+    "tags": "ngt5479"
 }

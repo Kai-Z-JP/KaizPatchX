@@ -6,13 +6,13 @@ import jp.ngt.ngtlib.renderer.model.MCModel;
 
 @SideOnly(Side.CLIENT)
 public abstract class ModelBogieBase extends MCModel {
-	public ModelBogieBase() {
-		this(256, 256);
-	}
+    public ModelBogieBase() {
+        this(256, 256);
+    }
 
-	public ModelBogieBase(int width, int height) {
-		this.init();
-	}
+    public ModelBogieBase(int width, int height) {
+        this.init();
+    }
 
-	public abstract void init();
+    public abstract void init();
 }

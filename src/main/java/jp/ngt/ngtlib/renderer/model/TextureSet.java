@@ -16,11 +16,11 @@ public class TextureSet {
     public final ResourceLocation[] subTextures;
     public final boolean doAlphaBlend;
 
-	public TextureSet(Material par1, int subTexturesSize, boolean par3Alpha, String... args) {
-		this.material = par1;
-		this.doAlphaBlend = par3Alpha;
+    public TextureSet(Material par1, int subTexturesSize, boolean par3Alpha, String... args) {
+        this.material = par1;
+        this.doAlphaBlend = par3Alpha;
 
-		if (subTexturesSize > 0) {
+        if (subTexturesSize > 0) {
             this.subTextures = new ResourceLocation[subTexturesSize];
             String textureName = par1.texture.getResourcePath();
             int index = textureName.indexOf(".png");
@@ -33,7 +33,7 @@ public class TextureSet {
                 }
             });
         } else {
-			this.subTextures = null;
-		}
-	}
+            this.subTextures = null;
+        }
+    }
 }

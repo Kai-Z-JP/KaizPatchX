@@ -8,47 +8,47 @@ import net.minecraft.util.ResourceLocation;
 import javax.script.ScriptEngine;
 
 public abstract class ModelSetBase<T extends ModelConfig> {
-	protected final T cfg;
-	private final boolean isDummyModel;
+    protected final T cfg;
+    private final boolean isDummyModel;
 
-	public ScriptEngine serverSE;
+    public ScriptEngine serverSE;
 
-	/**
-	 * ダミー用
-	 */
-	public ModelSetBase() {
-		this.cfg = this.getDummyConfig();
-		this.isDummyModel = true;
-	}
+    /**
+     * ダミー用
+     */
+    public ModelSetBase() {
+        this.cfg = this.getDummyConfig();
+        this.isDummyModel = true;
+    }
 
-	public ModelSetBase(T par1) {
-		this.cfg = par1;
-		this.isDummyModel = false;
+    public ModelSetBase(T par1) {
+        this.cfg = par1;
+        this.isDummyModel = false;
 
-		if (this.cfg.serverScriptPath != null) {
-			this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath));
-		}
-	}
+        if (this.cfg.serverScriptPath != null) {
+            this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath));
+        }
+    }
 
-	public T getConfig() {
-		return this.cfg;
-	}
+    public T getConfig() {
+        return this.cfg;
+    }
 
-	public abstract T getDummyConfig();
+    public abstract T getDummyConfig();
 
-	public boolean isDummy() {
-		return this.isDummyModel;
-	}
+    public boolean isDummy() {
+        return this.isDummyModel;
+    }
 
-	protected ResourceLocation getSoundResource(String par1) {
-		if (par1 != null && par1.length() > 0) {
-			if (par1.contains(":")) {
-				String[] sa = par1.split(":");
-				return ModelPackManager.INSTANCE.getResource(sa[0], sa[1]);
-			} else {
-				return ModelPackManager.INSTANCE.getResource("rtm", par1);
-			}
-		}
-		return null;
-	}
+    protected ResourceLocation getSoundResource(String par1) {
+        if (par1 != null && par1.length() > 0) {
+            if (par1.contains(":")) {
+                String[] sa = par1.split(":");
+                return ModelPackManager.INSTANCE.getResource(sa[0], sa[1]);
+            } else {
+                return ModelPackManager.INSTANCE.getResource("rtm", par1);
+            }
+        }
+        return null;
+    }
 }

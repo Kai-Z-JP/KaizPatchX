@@ -6,10 +6,10 @@ import jp.ngt.ngtlib.gui.GuiScreenCustom;
 
 @SideOnly(Side.CLIENT)
 public interface IGuiElement {
-	/**
-	 * buttonListへの登録など行う
-	 */
-	void init(GuiScreenCustom gui);
+    /**
+     * buttonListへの登録など行う
+     */
+    void init(GuiScreenCustom gui);
 
-	void setYPos(int y);
+    void setYPos(int y);
 }

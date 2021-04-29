@@ -16,17 +16,17 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemLinePole extends Item {
-	@SideOnly(Side.CLIENT)
-	private IIcon[] iconArray;
-	private static final int num = 4;
+    @SideOnly(Side.CLIENT)
+    private IIcon[] iconArray;
+    private static final int num = 4;
 
-	public ItemLinePole() {
-		super();
-		this.setHasSubtypes(true);
-	}
+    public ItemLinePole() {
+        super();
+        this.setHasSubtypes(true);
+    }
 
-	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
+    @Override
+    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
         if (!world.isRemote) {
             int meta = itemStack.getItemDamage();
             int x = par4;
@@ -66,33 +66,33 @@ public class ItemLinePole extends Item {
         return true;
     }
 
-	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
-		int i = MathHelper.clamp_int(itemStack.getItemDamage(), 0, num - 1);
-		return super.getUnlocalizedName() + "." + itemStack.getItemDamage();
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack) {
+        int i = MathHelper.clamp_int(itemStack.getItemDamage(), 0, num - 1);
+        return super.getUnlocalizedName() + "." + itemStack.getItemDamage();
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int par1) {
-		int j = MathHelper.clamp_int(par1, 0, num - 1);
-		return this.iconArray[j];
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int par1) {
+        int j = MathHelper.clamp_int(par1, 0, num - 1);
+        return this.iconArray[j];
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-		for (int j = 0; j < num; ++j) {
-			par3List.add(new ItemStack(par1, 1, j));
-		}
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+        for (int j = 0; j < num; ++j) {
+            par3List.add(new ItemStack(par1, 1, j));
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {
-		this.iconArray = new IIcon[num];
-		this.iconArray[0] = register.registerIcon("rtm:itemLinePole_0");//コンクリ
-		this.iconArray[1] = register.registerIcon("rtm:itemLinePole_1");//鉄骨
-		this.iconArray[2] = register.registerIcon("rtm:itemLinePole_2");//コンクリ2
-		this.iconArray[3] = register.registerIcon("rtm:itemLinePole_3");//信号
-	}
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        this.iconArray = new IIcon[num];
+        this.iconArray[0] = register.registerIcon("rtm:itemLinePole_0");//コンクリ
+        this.iconArray[1] = register.registerIcon("rtm:itemLinePole_1");//鉄骨
+        this.iconArray[2] = register.registerIcon("rtm:itemLinePole_2");//コンクリ2
+        this.iconArray[3] = register.registerIcon("rtm:itemLinePole_3");//信号
+    }
 }

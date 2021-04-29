@@ -8,32 +8,32 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 public class CommandProtection extends CommandBase {
-	@Override
-	public int getRequiredPermissionLevel() {
-		return 3;//OP権限
-	}
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 3;//OP権限
+    }
 
-	@Override
-	public String getCommandName() {
-		return "protect";
-	}
+    @Override
+    public String getCommandName() {
+        return "protect";
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return "commands.protect.usage";
-	}
+    @Override
+    public String getCommandUsage(ICommandSender sender) {
+        return "commands.protect.usage";
+    }
 
-	@Override
-	public void processCommand(ICommandSender sender, String[] args) {
-		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+    @Override
+    public void processCommand(ICommandSender sender, String[] args) {
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
-		if (args.length > 0) {
-			ItemStack stack = ItemProtectionKey.getKey(args[0]);
-			player.entityDropItem(stack, 0.5F);
-			NGTLog.sendChatMessage(player, "Give Key [%s]", args[0]);
-			return;
-		}
+        if (args.length > 0) {
+            ItemStack stack = ItemProtectionKey.getKey(args[0]);
+            player.entityDropItem(stack, 0.5F);
+            NGTLog.sendChatMessage(player, "Give Key [%s]", args[0]);
+            return;
+        }
 
-		NGTLog.sendChatMessage(player, "Invalid command");
-	}
+        NGTLog.sendChatMessage(player, "Invalid command");
+    }
 }

@@ -37,18 +37,18 @@ public class MtlParser {
                 lineCount++;
                 currentLine = currentLine.replaceAll("\\s+", " ").trim();
 
-				if (currentLine.length() == 0 || currentLine.startsWith("#")) {
-				} else if (currentLine.startsWith("newmtl ")) {
-					String[] sa = currentLine.split(" ");
-					this.currentMaterial = new Material((byte) this.materials.size(), null);
-					this.materials.put(sa[1], this.currentMaterial);
-				}
+                if (currentLine.length() == 0 || currentLine.startsWith("#")) {
+                } else if (currentLine.startsWith("newmtl ")) {
+                    String[] sa = currentLine.split(" ");
+                    this.currentMaterial = new Material((byte) this.materials.size(), null);
+                    this.materials.put(sa[1], this.currentMaterial);
+                }
 
-				//Tr:透過
-			}
-		} catch (IOException e) {
-			throw new ModelFormatException("IO Exception reading model format", e);
-		} finally {
+                //Tr:透過
+            }
+        } catch (IOException e) {
+            throw new ModelFormatException("IO Exception reading model format", e);
+        } finally {
             try {
                 reader.close();
             } catch (IOException ignored) {
@@ -57,10 +57,10 @@ public class MtlParser {
                 inputStream.close();
             } catch (IOException ignored) {
             }
-		}
-	}
+        }
+    }
 
-	public Map<String, Material> getMaterials() {
-		return this.materials;
-	}
+    public Map<String, Material> getMaterials() {
+        return this.materials;
+    }
 }

@@ -261,7 +261,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         float moveZ = (float) (origPos[0] - ((double) startPos[2] + 0.5D + (double) revXZ[1]));
 
         //頂点-中間点
-        IntStream.rangeClosed(startIndex, endIndex).forEach(i -> {
+        for (int i = startIndex; i <= endIndex; i++) {
             double[] p1 = rm.getRailPos(max, i);
             double h = rm.getRailHeight(max, i);
             float x0 = moveX + (float) (p1[1] - origPos[1]);
@@ -277,7 +277,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
             GL11.glRotatef(-pitch, 1.0F, 0.0F, 0.0F);
             Arrays.stream(pArray).forEach(parts -> parts.render(this));
             GL11.glPopMatrix();
-        });
+        }
     }
 
     public ModelObject getModelObject() {

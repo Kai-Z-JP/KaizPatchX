@@ -4,7 +4,7 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
-import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
+import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.command.CommandBase;
@@ -69,7 +69,7 @@ public class CommandRTM extends CommandBase {
                     if (entity0 instanceof EntityTrainBase) {
                         entity1 = entity0;
                         ++countTrain;
-                    } else if (entity0 instanceof EntityBogie || entity0 instanceof EntityVehiclePart) {
+                    } else if (entity0 instanceof EntityBogie || entity0 instanceof EntityFloor) {
                         entity1 = entity0;
                     } else {
                         continue;

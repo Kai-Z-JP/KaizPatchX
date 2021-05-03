@@ -108,7 +108,7 @@ public final class PermissionManager {
             if (this.getPlayerList(category).contains(player.getCommandSenderName())) {
                 return true;
             } else {
-                NGTLog.sendChatMessage(player, "%s need permission (%s).", player.getCommandSenderName());
+                NGTLog.sendChatMessage(player, "%s need permission (%s).", player.getCommandSenderName(), category);
                 return false;
             }
         }

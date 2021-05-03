@@ -27,7 +27,7 @@ public class SpeakerSounds {
 
     private SpeakerSounds(boolean par1) {
         this.sideServer = par1;
-        if (NGTUtil.isServer()) {
+        if (NGTUtil.isServerThread()) {
             loadSoundList();
         }
     }

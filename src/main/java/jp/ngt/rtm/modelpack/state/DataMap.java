@@ -152,7 +152,7 @@ public final class DataMap {
         }
 
         boolean sync = ((flag & SYNC_FLAG) != 0);
-        boolean onServerSide = NGTUtil.isServer();
+        boolean onServerSide = NGTUtil.isServerThread();
         if (onServerSide || !sync || (this.entity == null) || this.entity instanceof Item) {
             //Client側かつ同期する場合は、一旦Server経由でセットするので、ここでは処理しない
             //ただしアイテム状態(entity==null)はここでset

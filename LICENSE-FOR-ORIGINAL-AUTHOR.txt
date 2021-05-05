@@ -1,0 +1,19 @@
+RTMの作者にのみ適用されるライセンス
+
+RTMの作者はGNU Lessor General Public Licenseに関わらず、
+RTM、NGTLib及びMCTEの改善の用途に限り以下の著作権表示を含めることを条件に
+自由にソースコード及びリソースを使用することを認めます。
+
+(c) Kaiz_JP and other authors 2021
+
+==== REFERENCE ENGLISH TRANSLATION ====
+This English translation is only for Reference.
+
+The license applied for the original author of RTM
+
+Notwithstanding the GNU Lessor General Public License,
+the original author(s) of RTM are free to use the source code and resources
+only for the purpose of improving RTM, NGTLib and MCTE,
+provided that the following copyright notice is included.
+
+(c) Kaiz_JP and other authors 2021

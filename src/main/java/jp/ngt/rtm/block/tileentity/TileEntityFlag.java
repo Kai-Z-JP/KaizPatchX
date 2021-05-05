@@ -23,7 +23,7 @@ public class TileEntityFlag extends TileEntityPlaceable implements ITextureHolde
     public float wave;
 
     public TileEntityFlag() {
-        if (!NGTUtil.isServerThread()) {
+        if (!NGTUtil.isServer()) {
             //上で初期化するとNoSuchFieldError
             this.wave = (float) NGTMath.RANDOM.nextInt(360);
         }

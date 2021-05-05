@@ -103,7 +103,7 @@ public final class ModelPackManager {
      * SMPの時のみClient側で呼ばれる
      */
     public void addModelSetName(int count, String type, String name) {
-        assert NGTUtil.isSMP() && !NGTUtil.isServerThread();
+        assert NGTUtil.isSMP() && !NGTUtil.isServer();
         if (count == 0) {
             this.smpModelSetMap.values().forEach(Map::clear);
         }
@@ -130,7 +130,7 @@ public final class ModelPackManager {
     }
 
     public <T extends ModelSetBase> T getModelSet(String type, String name) {
-        boolean isSMPClient = NGTUtil.isSMP() && !NGTUtil.isServerThread();
+        boolean isSMPClient = NGTUtil.isSMP() && !NGTUtil.isServer();
         Map<String, Map<String, ModelSetBase>> map = isSMPClient ? this.smpModelSetMap : this.allModelSetMap;
         T modelSet = (T) map.get(type).get(name);
         return (modelSet == null) ? (T) this.dummyMap.get(type) : modelSet;

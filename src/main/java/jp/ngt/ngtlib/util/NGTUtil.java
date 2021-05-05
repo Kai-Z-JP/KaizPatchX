@@ -29,12 +29,8 @@ public final class NGTUtil {
     /**
      * 現在のスレッドがServer threadかどうか
      */
-    public static boolean isServerThread() {
-        return FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER;
-    }
-
     public static boolean isServer() {
-        return FMLCommonHandler.instance().getSide() == Side.SERVER;
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER;
     }
 
     /**

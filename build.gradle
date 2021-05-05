@@ -16,6 +16,9 @@ buildscript {
         }
     }
 }
+plugins {
+    id "com.anatawa12.jarInJar" version "1.0.1"
+}
 
 apply plugin: 'forge'
 
@@ -74,3 +77,13 @@ task sourcesJar(type: Jar) {
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+
+tasks.embedJarInJar {
+    dependsOn tasks.reobf
+    target = "FMLInCpw"
+    basePackage = "com.github.com.Kai_Z_JP.KaizPatch.jarInJar"
+}
+
+tasks.assemble {
+    dependsOn tasks.embedJarInJar
+}

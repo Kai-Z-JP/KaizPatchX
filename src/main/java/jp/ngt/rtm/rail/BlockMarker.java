@@ -24,6 +24,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class BlockMarker extends BlockContainer {
@@ -147,27 +148,28 @@ public class BlockMarker extends BlockContainer {
             int type = this.markerType;
             int dis1 = RTMCore.railGeneratingDistance;
             int dis2 = dis1 * 2;
+            int dis3 = dis1 * dis1;
             int hei1 = RTMCore.railGeneratingHeight;
             int hei2 = hei1 * 2;
             boolean isCreative = player == null || player.capabilities.isCreativeMode;
 
             if (type == 0) {
-                for (int i = 0; i < dis2; ++i) {
-                    for (int j = 0; j < hei2; ++j) {
-                        for (int k = 0; k < dis2; ++k) {
-                            int x0 = x - dis1 + i;
-                            int y0 = y - hei1 + j;
-                            int z0 = z - dis1 + k;
-                            if (!(i == dis1 && k == dis1) && world.getBlock(x0, y0, z0) == RTMBlock.marker) {
-                                RailPosition rpS = this.getRailPosition(world, x, y, z);
-                                RailPosition rpE = this.getRailPosition(world, x0, y0, z0);
-                                if (rpS == null || rpE == null) {
-                                    continue;//設置後すぐ右クリするとnullなので
-                                }
+                RailPosition rpS = this.getRailPosition(world, x, y, z);
 
-                                return this.createRail0(world, rpS, rpE, prop, makeRail, isCreative);
-                            }
-                        }
+                List<TileEntity> tileEntityList = ((List<TileEntity>) world.loadedTileEntityList);
+                if (tileEntityList != null && !tileEntityList.isEmpty()) {
+                    RailPosition rpE = tileEntityList.stream()
+                            .filter(TileEntityMarker.class::isInstance)
+                            .map(TileEntityMarker.class::cast)
+                            .filter(tile -> tile.getMarkerRP() != rpS)
+                            .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
+                            .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
+                            .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
+                            .min(Comparator.comparingDouble(o -> o.getDistanceFrom(x, y, z)))
+                            .map(TileEntityMarker::getMarkerRP)
+                            .orElse(null);
+                    if (rpS != null && rpE != null) {
+                        return this.createRail0(world, rpS, rpE, prop, makeRail, isCreative);
                     }
                 }
             } else if (type == 1) {

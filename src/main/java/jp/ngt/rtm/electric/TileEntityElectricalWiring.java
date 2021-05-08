@@ -7,7 +7,6 @@ import jp.ngt.rtm.electric.Connection.ConnectionType;
 import jp.ngt.rtm.item.ItemWithModel;
 import jp.ngt.rtm.network.PacketWire;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,6 +16,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -277,23 +277,31 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
     }
 
     private TileEntityElectricalWiring searchActiveTEEW() {
-        int dis0 = 256;
-        int dis1 = dis0 / 2;
-        for (int i = 0; i < dis0; ++i) {
-            for (int j = 0; j < dis0; ++j) {
-                for (int k = 0; k < dis0; ++k) {
-                    TileEntityElectricalWiring tile0 = this.getWireTileEntity(this.xCoord - dis1 + i, this.yCoord - dis1 + j, this.zCoord - dis1 + k, ConnectionType.NONE);
-                    if (!(i == dis1 && j == dis1 && k == dis1) && tile0 != null && tile0.isActivated) {
-                        return tile0;
-                    }
-                }
+        int dis0 = 128;
+        int dis1 = dis0 * dis0;
+        List<TileEntity> tileEntityList = ((List<TileEntity>) this.worldObj.loadedTileEntityList);
+        if (tileEntityList != null && !tileEntityList.isEmpty()) {
+            TileEntityElectricalWiring teew = tileEntityList.stream()
+                    .filter(tile -> tile != this)
+                    .filter(TileEntityElectricalWiring.class::isInstance)
+                    .map(TileEntityElectricalWiring.class::cast)
+                    .filter(tile -> tile.isActivated)
+                    .filter(tile -> tile.getDistanceFrom(this.xCoord, this.yCoord, this.zCoord) < dis1)
+                    .min(Comparator.comparingDouble(o -> o.getDistanceFrom(this.xCoord, this.yCoord, this.zCoord)))
+                    .orElse(null);
+            if (teew != null) {
+                return teew;
             }
         }
 
         int dis = 64;
-        List<Entity> list = this.worldObj.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(this.xCoord - dis, this.yCoord - dis, this.zCoord - dis, this.xCoord + dis, this.yCoord + dis, this.zCoord + dis));
-        if (list != null && !list.isEmpty()) {
-            return list.stream().findFirst().filter(EntityElectricalWiring.class::isInstance).map(EntityElectricalWiring.class::cast).map(entity -> entity.tileEW).filter(tileEW -> tileEW.isActivated).orElse(null);
+        List<EntityElectricalWiring> entityList = this.worldObj.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(this.xCoord - dis, this.yCoord - dis, this.zCoord - dis, this.xCoord + dis, this.yCoord + dis, this.zCoord + dis));
+        if (entityList != null && !entityList.isEmpty()) {
+            return entityList.stream()
+                    .map(entity -> entity.tileEW)
+                    .filter(tileEW -> tileEW.isActivated)
+                    .min(Comparator.comparingDouble(o -> o.getDistanceFrom(this.xCoord, this.yCoord, this.zCoord)))
+                    .orElse(null);
         }
         return null;
     }
@@ -316,9 +324,12 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
     }
 
     public static TileEntityElectricalWiring getWireEntity(World world, int x, int y, int z) {
-        List<Entity> list = world.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 2, z + 1));
+        List<EntityElectricalWiring> list = world.getEntitiesWithinAABB(EntityElectricalWiring.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 2, z + 1));
         if (list != null && !list.isEmpty()) {
-            return list.stream().filter(EntityElectricalWiring.class::isInstance).findFirst().map(entity -> ((EntityElectricalWiring) entity).tileEW).orElse(null);
+            return list.stream()
+                    .map(entity -> entity.tileEW)
+                    .findFirst()
+                    .orElse(null);
         }
         return null;
     }

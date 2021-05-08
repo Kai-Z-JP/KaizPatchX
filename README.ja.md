@@ -7,7 +7,12 @@
 [![DLCount](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases)
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
+## Minecraft1.12.2のユーザー向け
+
+[fixRTM](https://github.com/fixrtm/fixrtm) をご利用ください。
+
 ## これはなに
+
 KaizPatchはNGTLib・RTM・MCTEの非公式改造物です。\
 何故かPatchという名前になっていますが、本来の意味での"パッチ"ではありません。
 
@@ -67,4 +72,5 @@ KaizPatchはNGTLib・RTM・MCTEの非公式改造物です。\
 - レンチの挙動を切り替え(`/rtm use1122marker (true|false)`)
 
 ## 謝辞
-公開にあたりまして、配布許可を頂いた[NGT-5479](https://twitter.com/ngt5479)様、約半年間に渡って地獄の様なデバッグに協力していただいた皆様に、この場をお借りして感謝申し上げます。
+
+公開にあたりまして、配布許可を頂いた[NGT-5479](https://twitter.com/ngt5479) 様、約半年間に渡って地獄の様なデバッグに協力していただいた皆様に、この場をお借りして感謝申し上げます。

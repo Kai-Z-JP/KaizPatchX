@@ -160,7 +160,7 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
                 executor = Executors.newWorkStealingPool();
                 break;
             default:
-                executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 3);
+                executor = Executors.newFixedThreadPool(Math.max(Runtime.getRuntime().availableProcessors() / 3, 1));
                 break;
         }
         List<Future<?>> list;

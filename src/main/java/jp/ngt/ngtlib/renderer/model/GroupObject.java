@@ -17,7 +17,7 @@ public final class GroupObject {
     public String name;
     public byte drawMode;
     public float smoothingAngle;
-    public ArrayList<Face> faces = new ArrayList<>();
+    public List<Face> faces = new ArrayList<>();
 
     public GroupObject(int par1) {
         this("", par1);

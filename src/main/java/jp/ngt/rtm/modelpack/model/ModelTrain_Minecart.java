@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SideOnly(Side.CLIENT)
@@ -43,7 +44,7 @@ public class ModelTrain_Minecart implements IModelNGT {
     }
 
     @Override
-    public ArrayList<GroupObject> getGroupObjects() {
+    public List<GroupObject> getGroupObjects() {
         return new ArrayList<>();
     }
 

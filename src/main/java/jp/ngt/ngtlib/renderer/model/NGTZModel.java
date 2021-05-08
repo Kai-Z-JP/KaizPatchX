@@ -20,10 +20,10 @@ import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class NGTZModel implements IModelNGT {
-    private final List<NGTOParts> objects = new ArrayList();
+    private final List<NGTOParts> objects = new ArrayList<>();
     private final float scale;
 
-    private final ArrayList<GroupObject> parts = new ArrayList<>();
+    private final List<GroupObject> parts = new ArrayList<>();
     private final Map<String, Material> materials = new HashMap<>();
 
     public NGTZModel(ResourceLocation par1, float par2) {
@@ -54,7 +54,7 @@ public class NGTZModel implements IModelNGT {
     }
 
     @Override
-    public ArrayList<GroupObject> getGroupObjects() {
+    public List<GroupObject> getGroupObjects() {
         return this.parts;
     }
 

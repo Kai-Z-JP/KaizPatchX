@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -31,8 +32,8 @@ public final class ObjModel extends PolygonModel {
     private static final Pattern face_V_Pattern = Pattern.compile("(f( \\d+){3,4} *\\n)|(f( \\d+){3,4} *$)");
     private static final Pattern groupObjectPattern = Pattern.compile("([go]( [\\w\\d]+) *\\n)|([go]( [\\w\\d]+) *$)");
 
-    private ArrayList<Vertex> vertexNormals;
-    private ArrayList<TextureCoordinate> textureCoordinates;
+    private List<Vertex> vertexNormals;
+    private List<TextureCoordinate> textureCoordinates;
     private Map<String, Material> materials;
 
     private byte currentMaterial;

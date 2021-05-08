@@ -40,17 +40,17 @@ public final class ModelPackManager {
      * SMPで使用可能なModelSet
      */
     private final Map<String, Map<String, ModelSetBase>> smpModelSetMap = new HashMap<>();
-    private final Map<String, TypeEntry> typeMap = new HashMap();
-    private final Map<String, ModelSetBase> dummyMap = new HashMap();
+    private final Map<String, TypeEntry> typeMap = new HashMap<>();
+    private final Map<String, ModelSetBase> dummyMap = new HashMap<>();
     /**
      * モデルファイルのキャッシュ
      */
-    private final Map<String, IModelNGT> modelFileMap = new HashMap();
-    private final Map<String, Map<String, ResourceLocation>> resourceMap = new HashMap();
+    private final Map<String, IModelNGT> modelFileMap = new HashMap<>();
+    private final Map<String, Map<String, ResourceLocation>> resourceMap = new HashMap<>();
     /**
      * Scriptキャッシュ
      */
-    private final Map<String, String> scriptCache = new HashMap(64);
+    private final Map<String, String> scriptCache = new HashMap<>(64);
 
     private ModelPackManager() {
     }

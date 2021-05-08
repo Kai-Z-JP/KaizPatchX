@@ -13,6 +13,7 @@ import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.network.PacketNotice;
+import jp.ngt.rtm.network.PacketRTMKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
@@ -591,7 +592,9 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                 String[][] sa0 = this.modelset.getConfig().sound_Announcement;
                 if (sa0 != null && index < sa0.length) {
                     String[] sa1 = sa0[index][1].split(":");
-                    RTMCore.proxy.playSound(this.train, new ResourceLocation(sa1[0], sa1[1]), 1.0F, 1.0F);
+
+                    RTMCore.NETWORK_WRAPPER.sendToServer(new PacketRTMKey(player, RTMCore.KEY_Chime, sa0[index][1]));
+//                    RTMCore.proxy.playSound(this.train, new ResourceLocation(sa1[0], sa1[1]), 1.0F, 1.0F);
                 }
                 return;
             } else if (button.id <= 129) {

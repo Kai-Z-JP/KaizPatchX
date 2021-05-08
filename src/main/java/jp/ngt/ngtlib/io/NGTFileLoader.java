@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -159,7 +160,18 @@ public final class NGTFileLoader {
         MODS_DIR.add(new File(modsDirPath));
         NGTLog.debug("[NGTFL] Add mods dir : " + modsDirPath);
 
+        File jarInJarModDir = NGTCore.proxy.getMinecraftDirectory("jar-mods-cache/v1");
+        MODS_DIR.add(new File(normalizePath(jarInJarModDir.getAbsolutePath())));
+        NGTLog.debug("[NGTFL] Add jar-in-jar cache dir : " + modsDirPath);
+
         return MODS_DIR;
+    }
+
+    // cache pattern (String#replace compiles regex every time)
+    private static final Pattern selfReferencePathRegex
+            = Pattern.compile(Pattern.quote(File.separator + '.' + File.separator));
+    private static String normalizePath(String file) {
+        return selfReferencePathRegex.matcher(file).replaceAll(File.separator);
     }
 
     private static JFileChooser getCustomChooser(String title) {

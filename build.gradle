@@ -23,7 +23,7 @@ plugins {
 apply plugin: 'forge'
 
 def baseversion = "src1.7.10_20200822"
-version = "latest"
+version = "SNAPSHOT"
 group = "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = baseversion + "+" + "KaizPatch" + "X"
 

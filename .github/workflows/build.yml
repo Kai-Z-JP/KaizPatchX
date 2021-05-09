@@ -50,4 +50,4 @@ jobs:
                     # optional, default is artifact
                     name: KaizPatchX-${{ steps.vars.outputs.sha_short }}.jar
                     # A file, directory or wildcard pattern that describes what to upload
-                    path: build/libs/src1.7.10_20200822+KaizPatchX-latest.jar
+                    path: build/libs/src1.7.10_20200822+KaizPatchX-SNAPSHOT.jar

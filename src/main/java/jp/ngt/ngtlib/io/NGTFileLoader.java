@@ -169,9 +169,9 @@ public final class NGTFileLoader {
 
     // cache pattern (String#replace compiles regex every time)
     private static final Pattern selfReferencePathRegex
-            = Pattern.compile(Pattern.quote(File.separator + '.' + File.separator));
+            = Pattern.compile(Pattern.quote(File.separator + "." + File.separator));
     private static String normalizePath(String file) {
-        return selfReferencePathRegex.matcher(file).replaceAll(File.separator);
+        return file.replaceAll("\\\\.\\\\mods$", "\\\\mods");
     }
 
     private static JFileChooser getCustomChooser(String title) {

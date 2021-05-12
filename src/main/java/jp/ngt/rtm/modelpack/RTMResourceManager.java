@@ -11,6 +11,8 @@ import net.minecraft.client.resources.data.IMetadataSerializer;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -54,20 +56,12 @@ public class RTMResourceManager implements IResourceManager {
                 int index = path.indexOf(".zip");
                 String zipPath = path.substring(0, index + 4);
                 try {
-                    ZipFile zip = new ZipFile(zipPath);
-                    Enumeration<? extends ZipEntry> enu = zip.entries();
-                    while (enu.hasMoreElements()) {
-                        ZipEntry ze = enu.nextElement();
-                        if (!ze.isDirectory()) {
-                            File fileInZip = new File(zipPath, ze.getName());
-                            if (par1.getResourcePath().contains(fileInZip.getName())) {
-                                stream = zip.getInputStream(ze);
-                            }
-                        }
-                    }
+                    stream = this.getInputStreamFromZip(zipPath, par1, StandardCharsets.UTF_8);
                     //zip.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    stream = this.getInputStreamFromZip(zipPath, par1, Charset.forName("MS932"));
                 }
             } else {
                 File resource = new File(this.domain, par1.getResourcePath());
@@ -82,6 +76,22 @@ public class RTMResourceManager implements IResourceManager {
         }
 
         throw new FileNotFoundException(par1.toString());
+    }
+
+    private InputStream getInputStreamFromZip(String zipPath, ResourceLocation par1, Charset encoding) throws IOException {
+        InputStream stream = null;
+        ZipFile zip = new ZipFile(zipPath, encoding);
+        Enumeration<? extends ZipEntry> enu = zip.entries();
+        while (enu.hasMoreElements()) {
+            ZipEntry ze = enu.nextElement();
+            if (!ze.isDirectory()) {
+                File fileInZip = new File(zipPath, ze.getName());
+                if (par1.getResourcePath().contains(fileInZip.getName())) {
+                    stream = zip.getInputStream(ze);
+                }
+            }
+        }
+        return stream;
     }
 
     @Override

@@ -139,9 +139,12 @@ public class BlockLargeRailBase extends BlockContainer {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof TileEntityLargeRailBase) {
             ItemStack itemStack = new ItemStack(RTMItem.itemLargeRail);
-            RailProperty property = ((TileEntityLargeRailBase) tileEntity).getRailCore().getProperty();
-            ItemRail.writePropToItem(property, itemStack);
-            return itemStack;
+            TileEntityLargeRailCore coreTile = ((TileEntityLargeRailBase) tileEntity).getRailCore();
+            if (coreTile != null) {
+                RailProperty property = coreTile.getProperty();
+                ItemRail.writePropToItem(property, itemStack);
+                return itemStack;
+            }
         }
         return null;
     }

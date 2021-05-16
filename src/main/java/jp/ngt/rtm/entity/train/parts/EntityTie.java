@@ -41,9 +41,8 @@ public class EntityTie extends EntityCargo {
             long l1 = nbt.getLong("riderUUID_Least");
             if (l0 != 0L && l1 != 0L) {
                 UUID uuid = new UUID(l0, l1);
-                List<Entity> list = this.worldObj.getLoadedEntityList();
+                List<Entity> list = this.worldObj.loadedEntityList;
                 list.stream().map(Entity.class::cast).filter(entity -> uuid.equals(entity.getUniqueID())).forEach(entity -> entity.mountEntity(this));
-
             }
         }
     }

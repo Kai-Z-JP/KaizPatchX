@@ -87,7 +87,7 @@ public abstract class EntityVehiclePart extends Entity {
     }
 
     private boolean loadTrainFromUUID(UUID uuid) {
-        List<Entity> list = this.worldObj.getLoadedEntityList();
+        List<Entity> list = this.worldObj.loadedEntityList;
         for (Entity entity : list) {
             if (uuid.equals(entity.getUniqueID()) && entity instanceof EntityVehicleBase) {
                 this.setVehicle((EntityVehicleBase) entity);

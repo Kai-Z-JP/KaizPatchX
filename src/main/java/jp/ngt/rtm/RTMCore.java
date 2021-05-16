@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
+import paulscode.sound.SoundSystemConfig;
 
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
@@ -174,6 +175,9 @@ public final class RTMCore {
 
         ForgeChunkManager.setForcedChunkLoadingCallback(this, RTMChunkManager.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RTMChunkManager.INSTANCE);
+        
+        SoundSystemConfig.setNumberNormalChannels(1024);
+        SoundSystemConfig.setNumberStreamingChannels(32);
     }
 
     @EventHandler

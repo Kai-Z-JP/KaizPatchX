@@ -2,7 +2,7 @@ package jp.ngt.rtm.event;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+ import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
@@ -95,7 +95,7 @@ public final class RTMKeyHandlerClient {
     }
 
     @SubscribeEvent
-    public void keyDown(KeyInputEvent event) {
+    public void keyDown(InputEvent event) {
         Minecraft mc = NGTUtilClient.getMinecraft();
         EntityPlayer player = mc.thePlayer;
         Entity riding = player.ridingEntity;

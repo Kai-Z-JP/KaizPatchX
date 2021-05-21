@@ -13,14 +13,20 @@ DeepLを使用して翻訳しました。\
 [![DLCount](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases)
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
+## For RTM 1.12.2 Users
+
+Please use [fixRTM](https://www.curseforge.com/minecraft/mc-mods/fixrtm).
+
 ## What is this?
+
 KaizPatch is an unofficial modification of NGTLib/RTM/MCTE.
 
 ## Notes
 
 **I do NOT take any responsibility for the use of this mod.**
 
-The slope rail will be removed during installation. Please be aware of this. Also, please backup your world by appropriate means before installation.
+The slope rail will be removed during installation. Please be aware of this. Also, please backup your world by
+appropriate means before installation.
 
 ## Base
 

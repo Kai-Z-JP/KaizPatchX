@@ -7,9 +7,9 @@
 [![DLCount](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases)
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
-## Minecraft1.12.2のユーザー向け
+## RTM 1.12.2のユーザーへ
 
-[fixRTM](https://github.com/fixrtm/fixrtm) をご利用ください。
+[fixRTM](https://www.curseforge.com/minecraft/mc-mods/fixrtm) をご利用ください。
 
 ## これはなに
 

@@ -13,9 +13,9 @@ DeepLを使用して翻訳しました。\
 [![DLCount](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases)
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
-## For users of version 1.12.2
+## For RTM 1.12.2 Users
 
-Please use [fixRTM](https://github.com/fixrtm/fixrtm).
+Please use [fixRTM](https://www.curseforge.com/minecraft/mc-mods/fixrtm).
 
 ## What is this?
 

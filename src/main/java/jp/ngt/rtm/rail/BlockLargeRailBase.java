@@ -95,7 +95,7 @@ public class BlockLargeRailBase extends BlockContainer {
 
     public boolean preventMobMovement(World world, int x, int y, int z) {
         TileEntityLargeRailBase rail = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
-        if (rail.getRailCore() != null) {
+        if (rail != null && rail.getRailCore() != null) {
             TileEntityLargeRailCore core = rail.getRailCore();
             ModelSetRail set = core.getProperty().getModelSet();
             return !set.getConfig().allowCrossing;

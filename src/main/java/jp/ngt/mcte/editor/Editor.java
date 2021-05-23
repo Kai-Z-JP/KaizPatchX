@@ -224,6 +224,9 @@ public class Editor {
     }
 
     public void transformBlocks(byte type) {
+        if (this.clipboard == null) {
+            return;
+        }
         BlockSet[] blocks = new BlockSet[this.clipboard.getSize()];
         int[] box = this.getEntity().getPasteBox();
         int xSize = box[0];

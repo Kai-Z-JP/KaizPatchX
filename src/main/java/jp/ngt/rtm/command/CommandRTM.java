@@ -4,7 +4,6 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
-import jp.ngt.rtm.entity.train.util.Formation;
 import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.network.PacketNotice;
@@ -18,7 +17,6 @@ import net.minecraft.util.MathHelper;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CommandRTM extends CommandBase {
@@ -83,9 +81,7 @@ public class CommandRTM extends CommandBase {
                         entity1.setDead();
                     }
                 }
-                Map<Long, Formation> formationMap = FormationManager.getInstance().getFormations();
-                int countFormation = formationMap.size();
-                formationMap.clear();
+                int countFormation = FormationManager.getInstance().clearFormations();
 
                 player.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
                 player.addChatMessage(new ChatComponentText("Deleted " + countEntity + "entities."));

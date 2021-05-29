@@ -58,6 +58,16 @@ public final class FormationManager {
         //パケット送る
     }
 
+    public int clearFormations() {
+        int count = this.formationMap.size();
+        this.formationMap.clear();
+        if (!this.isRemote && this.saveData != null) {
+            this.saveData.markDirty();
+        }
+        //パケット送る
+        return count;
+    }
+
     public void updateFormations(World world) {
 		/*for(Entry<Long, Formation> entry : this.formationMap.entrySet())
 		{

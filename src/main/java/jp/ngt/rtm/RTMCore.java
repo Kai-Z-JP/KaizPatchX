@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.command.CommandRTM;
 import jp.ngt.rtm.command.CommandTRec;
@@ -175,9 +176,11 @@ public final class RTMCore {
 
         ForgeChunkManager.setForcedChunkLoadingCallback(this, RTMChunkManager.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RTMChunkManager.INSTANCE);
-        
-        SoundSystemConfig.setNumberNormalChannels(1024);
-        SoundSystemConfig.setNumberStreamingChannels(32);
+
+        if (event.getSide() == Side.CLIENT) {
+            SoundSystemConfig.setNumberNormalChannels(1024);
+            SoundSystemConfig.setNumberStreamingChannels(32);
+        }
     }
 
     @EventHandler

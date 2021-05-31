@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.6') {
+        classpath('com.anatawa12.forge:ForgeGradle:2.3-1.0.5') {
             changing = true
         }
     }

@@ -176,17 +176,17 @@ public class BlockMarker extends BlockContainer {
                 }
             } else if (type == 1) {
                 List<RailPosition> list = new ArrayList<>();
-                for (int i = 0; i < dis2; ++i) {
-                    {
-                        for (int k = 0; k < dis2; ++k) {
-                            int x0 = x - dis1 + i;
-                            int z0 = z - dis1 + k;
-                            Block block = world.getBlock(x0, y, z0);
-                            if (block == RTMBlock.marker || block == RTMBlock.markerSwitch) {
-                                list.add(this.getRailPosition(world, x0, y, z0));
-                            }
-                        }
-                    }
+                List<TileEntity> tileEntityList = ((List<TileEntity>) world.loadedTileEntityList);
+                if (tileEntityList != null && !tileEntityList.isEmpty()) {
+                    list = tileEntityList.stream()
+                            .filter(TileEntityMarker.class::isInstance)
+                            .map(TileEntityMarker.class::cast)
+                            .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
+                            .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
+                            .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
+                            .map(TileEntityMarker::getMarkerRP)
+                            .collect(Collectors.toList());
+                    list.forEach(rp -> rp.addHeight(prop.blockHeight - 0.0625F));
                 }
 
                 if (list.size() > 0) {

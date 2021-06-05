@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlockMarker extends BlockContainer {
     /**
@@ -162,6 +163,7 @@ public class BlockMarker extends BlockContainer {
                             .filter(TileEntityMarker.class::isInstance)
                             .map(TileEntityMarker.class::cast)
                             .filter(tile -> tile.getMarkerRP() != rpS)
+                            .filter(tile -> tile.getBlockType().equals(RTMBlock.marker))
                             .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
                             .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
                             .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))

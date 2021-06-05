@@ -1,6 +1,7 @@
 package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.TileEntityMovingMachine;
 import jp.ngt.rtm.block.tileentity.TileEntityStation;
@@ -135,6 +136,8 @@ public class RTMGuiHandler implements IGuiHandler {
             return new GuiSpeaker((TileEntitySpeaker) world.getTileEntity(x, y, z));
         } else if (ID == RTMCore.guiIdCamera) {
             return new GuiCamera(player);
+        } else if (ID == RTMCore.guiIdChangeOffset) {
+            return new GuiChangeOffset((TileEntityPlaceable) world.getTileEntity(x, y, z));
         }
         return null;
     }

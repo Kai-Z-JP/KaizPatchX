@@ -7,11 +7,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 
 public abstract class TileEntityPlaceable extends TileEntity {
-    private float rotation;
+    private float offsetX, offsetY, offsetZ, rotation;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
+        this.setOffset(
+                nbt.getFloat("offsetX"),
+                nbt.getFloat("offsetY"),
+                nbt.getFloat("offsetZ"),
+                false
+        );
         this.setRotation(nbt.getFloat("Yaw"), false);
     }
 
@@ -19,6 +25,31 @@ public abstract class TileEntityPlaceable extends TileEntity {
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setFloat("Yaw", this.rotation);
+        nbt.setFloat("offsetX", this.offsetX);
+        nbt.setFloat("offsetY", this.offsetY);
+        nbt.setFloat("offsetZ", this.offsetZ);
+    }
+
+    public float getOffsetX() {
+        return this.offsetX;
+    }
+
+    public float getOffsetY() {
+        return this.offsetY;
+    }
+
+    public float getOffsetZ() {
+        return this.offsetZ;
+    }
+
+    public void setOffset(float offsetX, float offsetY, float offsetZ, boolean sync) {
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        this.offsetZ = offsetZ;
+        if (sync) {
+            this.getDescriptionPacket();
+            this.markDirty();
+        }
     }
 
     public float getRotation() {

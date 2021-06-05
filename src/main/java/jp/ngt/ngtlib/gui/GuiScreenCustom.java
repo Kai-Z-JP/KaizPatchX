@@ -118,4 +118,12 @@ public abstract class GuiScreenCustom extends GuiScreen {
     public float getZLevel() {
         return this.zLevel;
     }
+
+    protected float getFieldValue(GuiTextFieldCustom field, float defaultVal) {
+        try {
+            return Float.parseFloat(field.getText());
+        } catch (NumberFormatException e) {
+            return defaultVal;
+        }
+    }
 }

@@ -22,6 +22,7 @@ public class TileEntityTrainWorkBench extends TileEntity //implements IInventory
     public static final int Max_CraftingTime = 64;
     private int craftingTime = 0;
     private boolean isCrafting = false;
+    private boolean isCreative = false;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
@@ -55,7 +56,11 @@ public class TileEntityTrainWorkBench extends TileEntity //implements IInventory
 
         if (this.isCrafting) {
             if (this.craftingTime < Max_CraftingTime) {
-                ++this.craftingTime;
+                if (this.isCreative) {
+                    this.craftingTime = Max_CraftingTime;
+                } else {
+                    ++this.craftingTime;
+                }
             } else {
                 this.craftingTime = 0;
                 this.isCrafting = false;
@@ -88,6 +93,7 @@ public class TileEntityTrainWorkBench extends TileEntity //implements IInventory
     public void startCrafting(EntityPlayer player, boolean sendPacket) {
         this.craftingTime = 0;
         this.isCrafting = true;
+        this.isCreative = NGTUtil.isServer() && player.capabilities.isCreativeMode;
 
         ContainerRTMWorkBench container = (ContainerRTMWorkBench) player.openContainer;
         container.startCrafting();

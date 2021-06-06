@@ -63,6 +63,8 @@ public class TileEntityMarker extends TileEntity {
 
     private int count;
 
+    public boolean fitNeighbor = true;
+
     public TileEntityMarker() {
         this.markerState = MarkerState.DISTANCE.set(this.markerState, true);
         this.markerState = MarkerState.GRID.set(this.markerState, false);

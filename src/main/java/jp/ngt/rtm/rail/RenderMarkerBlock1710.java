@@ -169,14 +169,14 @@ public class RenderMarkerBlock1710 extends RenderMarkerBlockBase {
             float yaw = NGTMath.toDegrees(dirRad);
 
             if (curElm == MarkerElement.HORIZONTIAL) {
-                if (neighborRP != null) {
+                if (neighborRP != null && tileEntity.fitNeighbor) {
                     yaw = MathHelper.wrapAngleTo180_float(neighborRP.anchorYaw + 180.0F);
                 }
                 rp.anchorYaw = yaw;
                 rp.anchorLengthHorizontal = length;
             } else if (curElm == MarkerElement.VERTICAL) {
                 float pitch = MathHelper.wrapAngleTo180_float(yaw - rp.anchorYaw);
-                if (neighborRP != null) {
+                if (neighborRP != null && tileEntity.fitNeighbor) {
                     pitch = -neighborRP.anchorPitch;
                 } else if (fitOpposite) {
                     double dy = vec3.yCoord - rp.posY;
@@ -186,7 +186,7 @@ public class RenderMarkerBlock1710 extends RenderMarkerBlockBase {
                 rp.anchorLengthVertical = length;
             } else if (curElm == MarkerElement.CANT) {
                 float cant = MathHelper.wrapAngleTo180_float(yaw - rp.anchorYaw);
-                if (neighborRP != null) {
+                if (neighborRP != null && tileEntity.fitNeighbor) {
                     cant = -neighborRP.cantEdge;
                 }
                 rp.cantEdge = cant;

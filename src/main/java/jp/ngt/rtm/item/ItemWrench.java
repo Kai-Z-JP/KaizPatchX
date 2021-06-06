@@ -77,11 +77,17 @@ public class ItemWrench extends Item {
             case 9:
                 this.changeMarkerAnchor(world, player, marker);
                 break;
+            case 10:
+                marker.fitNeighbor ^= true;
+                if (world.isRemote) {
+                    NGTLog.sendChatMessage(player, "Set fit neighbor rail: " + marker.fitNeighbor);
+                }
+                break;
         }
     }
 
     private void changeMode(World world, ItemStack itemStack, EntityPlayer player) {
-        int i = (itemStack.getItemDamage() + 1) % 10;
+        int i = (itemStack.getItemDamage() + 1) % 11;
         if (i >= 2 && i <= 5) {
             i = 6;
         }

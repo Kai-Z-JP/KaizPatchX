@@ -186,7 +186,6 @@ public class BlockMarker extends BlockContainer {
                             .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
                             .map(TileEntityMarker::getMarkerRP)
                             .collect(Collectors.toList());
-                    list.forEach(rp -> rp.addHeight(prop.blockHeight - 0.0625F));
                 }
 
                 if (list.size() == 2 && list.stream().allMatch(rp -> rp.switchType == 1)) {

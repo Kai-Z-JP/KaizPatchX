@@ -313,7 +313,7 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
                 float cantLimit = 80.0F;
                 float cant = (pitchDif < -cantLimit) ? -cantLimit : (Math.min(pitchDif, cantLimit));
                 RailPosition neighborRP = getNeighborRail(marker);
-                if (neighborRP != null) {
+                if (neighborRP != null && marker.fitNeighbor) {
                     cant = -neighborRP.cantEdge;
                 }
                 rp.cantEdge = cant;
@@ -389,14 +389,14 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
                 float length = (float) (dx / MathHelper.sin(dirRad));
                 float yaw = NGTMath.toDegrees(dirRad);
                 if (curElm == MarkerElement.HORIZONTIAL) {
-                    if (neighborRP != null) {
+                    if (neighborRP != null && marker.fitNeighbor) {
                         yaw = MathHelper.wrapAngleTo180_float(neighborRP.anchorYaw + 180.0F);
                     }
                     rp.anchorYaw = yaw;
                     rp.anchorLengthHorizontal = length;
                 } else if (curElm == MarkerElement.VERTICAL) {
                     float pitch = MathHelper.wrapAngleTo180_float(yaw - rp.anchorYaw);
-                    if (neighborRP != null) {
+                    if (neighborRP != null && marker.fitNeighbor) {
                         pitch = -neighborRP.anchorPitch;
                     } else if (fitOpposite) {
                         double dy = targetVec.yCoord - rp.posY;

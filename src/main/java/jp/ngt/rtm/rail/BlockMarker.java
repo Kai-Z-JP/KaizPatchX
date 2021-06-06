@@ -171,8 +171,6 @@ public class BlockMarker extends BlockContainer {
                             .map(TileEntityMarker::getMarkerRP)
                             .orElse(null);
                     if (rpS != null && rpE != null) {
-                        rpS.addHeight(prop.blockHeight - 0.0625F);
-                        rpE.addHeight(prop.blockHeight - 0.0625F);
                         return this.createRail0(world, rpS, rpE, prop, makeRail, isCreative);
                     }
                 }

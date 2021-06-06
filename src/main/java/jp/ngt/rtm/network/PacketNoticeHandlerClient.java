@@ -10,6 +10,7 @@ import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
 import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.rail.TileEntityMarker;
+import jp.ngt.rtm.rail.TileEntityTurnTableCore;
 import jp.ngt.rtm.sound.SpeakerSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -72,6 +73,12 @@ public class PacketNoticeHandlerClient implements IMessageHandler<PacketNotice, 
                 NGTUtil.getClientPlayer().capabilities.setFlySpeed(speed / 20f);
                 NGTUtil.getClientPlayer().addChatMessage(new ChatComponentText("FlySpeed set " + sa0[1]));
                 NGTUtil.getClientPlayer().sendPlayerAbilities();
+            } else if (msg.startsWith("TT")) {
+                TileEntity tile = message.getTileEntity(world);
+                if (tile instanceof TileEntityTurnTableCore) {
+                    float f0 = Float.parseFloat(msg.split(":")[1]);
+                    ((TileEntityTurnTableCore) tile).setRotation(f0);
+                }
             }
         }
         return null;

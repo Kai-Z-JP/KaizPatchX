@@ -12,7 +12,6 @@ import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.item.ItemRail;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRail;
-import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -181,24 +180,9 @@ public class BlockLargeRailBase extends BlockContainer {
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntityLargeRailBase tile0 = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
-        TileEntityLargeRailCore tile = tile0.getRailCore();
-
-        if (!world.isRemote && tile != null) {
-            if (tile instanceof TileEntityLargeRailNormalCore) {
-                TileEntityLargeRailNormalCore tile1 = (TileEntityLargeRailNormalCore) tile;
-                RailMap railmap = tile1.getRailMap(null);
-                if (railmap != null) {
-                    railmap.breakRail(world, tile1.getProperty(), tile1);
-                }
-            } else if (tile instanceof TileEntityLargeRailSwitchCore) {
-                TileEntityLargeRailSwitchCore tile1 = (TileEntityLargeRailSwitchCore) tile;
-                RailMap[] railmaps = tile1.getAllRailMaps();
-                Arrays.stream(railmaps).forEach(rm -> rm.breakRail(world, tile1.getProperty(), tile1));
-            } else if (tile instanceof TileEntityLargeRailSlopeCore) {
-                TileEntityLargeRailSlopeCore tile1 = (TileEntityLargeRailSlopeCore) tile;
-                RailMap railmap = tile1.getRailMap(null);
-                railmap.breakRail(world, tile1.getProperty(), tile1);
-            }
+        TileEntityLargeRailCore core = tile0.getRailCore();
+        if (!world.isRemote && core != null) {
+            Arrays.stream(core.getAllRailMaps()).forEach(rm -> rm.breakRail(world, core.getProperty(), core));
         }
         super.breakBlock(world, x, y, z, block, meta);
     }

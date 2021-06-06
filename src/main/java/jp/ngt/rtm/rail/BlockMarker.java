@@ -191,6 +191,9 @@ public class BlockMarker extends BlockContainer {
                     list.forEach(rp -> rp.addHeight(prop.blockHeight - 0.0625F));
                 }
 
+                if (list.size() == 2 && list.stream().allMatch(rp -> rp.switchType == 1)) {
+                    return this.createTurntable(world, list.get(0), list.get(1), prop, makeRail, isCreative);
+                }
                 if (list.size() > 0) {
                     return this.createRail1(world, x, y, z, list, prop, makeRail, isCreative);
                 }
@@ -327,6 +330,47 @@ public class BlockMarker extends BlockContainer {
             }
             return false;
         }
+    }
+
+    private boolean createTurntable(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
+        int cx = 0;
+        int cy = start.blockY;
+        int cz = 0;
+        int r = 0;
+
+        if (start.blockX == end.blockX && (start.blockZ - end.blockZ) % 2 == 0) {
+            cx = start.blockX;
+            cz = (start.blockZ + end.blockZ) / 2;
+            r = Math.abs(start.blockZ - end.blockZ) / 2;
+        }
+
+        if (start.blockZ == end.blockZ && (start.blockX - end.blockX) % 2 == 0) {
+            cx = (start.blockX + end.blockX) / 2;
+            cz = start.blockZ;
+            r = Math.abs(start.blockX - end.blockX) / 2;
+        }
+
+        if (r == 0) {
+            return false;
+        }
+
+        RailMapTurntable railMap = new RailMapTurntable(start, end, cx, cy, cz, r);
+        if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
+            railMap.setRail(world, RTMRail.largeRailBase0, cx, cy, cz, prop);
+
+            world.setBlock(cx, cy, cz, RTMRail.TURNTABLE_CORE, 0, 3);
+            TileEntityTurnTableCore tile = (TileEntityTurnTableCore) world.getTileEntity(cx, cy, cz);
+            tile.setRailPositions(new RailPosition[]{start, end});
+            tile.setProperty(prop);
+            tile.setStartPoint(cx, cy, cz);
+
+            tile.createRailMap();
+            tile.sendPacket();
+
+            return true;
+        }
+
+        return false;
     }
 
     public static byte getMarkerDir(Block block, int meta) {

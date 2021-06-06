@@ -145,7 +145,7 @@ public class RailMap {
         });
     }
 
-    private void addRailBlock(int x, int y, int z) {
+    protected void addRailBlock(int x, int y, int z) {
         for (int i = 0; i < this.rails.size(); ++i) {
             int[] ia = this.rails.get(i);
             if (ia[0] == x && ia[2] == z) {
@@ -247,11 +247,19 @@ public class RailMap {
                 TileEntityLargeRailCore core2 = ((TileEntityLargeRailBase) rail).getRailCore();
                 if (core2 == null || core2 == core) {
                     posList.add(new int[]{x, y, z});
+                    ((List<TileEntity>) world.loadedTileEntityList).remove(rail);
+
                 }
             }
         });
-        posList.forEach(pos -> world.setBlockToAir(pos[0], pos[1], pos[2]));
+        posList.forEach(pos -> {
+            world.setBlockToAir(pos[0], pos[1], pos[2]);
+            world.removeTileEntity(pos[0], pos[1], pos[2]);
+        });
         world.setBlockToAir(core.xCoord, core.yCoord, core.zCoord);
+        world.removeTileEntity(core.xCoord, core.yCoord, core.zCoord);
+        ((List<TileEntity>) world.loadedTileEntityList).remove(core);
+
         this.rails.clear();
     }
 

@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL12;
 public class RenderLargeRail extends TileEntitySpecialRenderer {
     public static final RenderLargeRail INSTANCE = new RenderLargeRail();
 
-    private RenderLargeRail() {
+    protected RenderLargeRail() {
     }
 
     @Override

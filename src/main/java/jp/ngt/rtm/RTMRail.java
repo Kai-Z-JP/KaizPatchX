@@ -17,6 +17,7 @@ public final class RTMRail {
     public static Block largeRailSwitchCore0;
     public static Block largeRailSlopeBase0;
     public static Block largeRailSlopeCore0;
+    public static Block TURNTABLE_CORE;
 
     public static Block[] largeRailBase = new Block[railTexture.length];
     public static Block[] largeRailCore = new Block[railTexture.length];
@@ -32,6 +33,7 @@ public final class RTMRail {
         largeRailSwitchCore0 = (new BlockLargeRailSwitchCore(2)).setBlockName("rtm:LRSCore").setBlockTextureName(railTexture[3]);
         largeRailSlopeBase0 = (new BlockLargeRailSlopeBase(2)).setBlockName("rtm:LRLBase").setBlockTextureName(railTexture[2]);
         largeRailSlopeCore0 = (new BlockLargeRailSlopeCore(2)).setBlockName("rtm:LRLCore").setBlockTextureName(railTexture[2]);
+        TURNTABLE_CORE = (new BlockTurntableCore(2)).setBlockName("rtm:turntable_core").setBlockTextureName(railTexture[2]);
 
         IntStream.range(0, railTexture.length).forEach(i -> {
             largeRailBase[i] = (new BlockLargeRailBase(i)).setBlockName("rtm:LRBase." + i).setBlockTextureName(railTexture[i]);
@@ -48,6 +50,7 @@ public final class RTMRail {
         GameRegistry.registerBlock(largeRailSwitchCore0, "rtm:LRSCore");
         GameRegistry.registerBlock(largeRailSlopeBase0, "rtm:LRLBase");
         GameRegistry.registerBlock(largeRailSlopeCore0, "rtm:LRLCore");
+        GameRegistry.registerBlock(TURNTABLE_CORE, "rtm:turntable_core");
 
         //インスタンス使いまわして登録は不可
         IntStream.range(0, railTexture.length).forEach(i -> {
@@ -65,6 +68,7 @@ public final class RTMRail {
         GameRegistry.registerTileEntity(TileEntityLargeRailSwitchCore.class, "TERailSwitchCore");
         GameRegistry.registerTileEntity(TileEntityLargeRailSlopeBase.class, "TERailSlopeBase");
         GameRegistry.registerTileEntity(TileEntityLargeRailSlopeCore.class, "TERailSlopeCore");
+        GameRegistry.registerTileEntity(TileEntityTurnTableCore.class, "TETurntableCore");
         GameRegistry.registerTileEntity(TileEntityMarker.class, "TEMarker");
     }
 

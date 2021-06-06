@@ -96,6 +96,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailNormalCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSwitchCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSlopeCore.class, RenderLargeRail.INSTANCE);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurnTableCore.class, new RenderTurntable());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInsulator.class, RenderElectricalWiring.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnector.class, RenderElectricalWiring.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySignal.class, new RenderSignal());

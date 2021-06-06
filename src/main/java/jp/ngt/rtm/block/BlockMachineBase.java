@@ -1,5 +1,6 @@
 package jp.ngt.rtm.block;
 
+import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityMachineBase;
@@ -42,12 +43,22 @@ public abstract class BlockMachineBase extends BlockContainer {
     }
 
     protected boolean clickMachine(World world, int x, int y, int z, EntityPlayer player) {
-        if (player.isSneaking())//NGTUtil.isEquippedItem(player, RTMItem.crowbar))
-        {
-            if (world.isRemote) {
-                player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
+        if (world.isRemote) {
+            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
+                ItemStack itemStack = player.getCurrentEquippedItem();
+                ItemInstalledObject itemInst = (ItemInstalledObject) player.getCurrentEquippedItem().getItem();
+                TileEntityMachineBase machine = (TileEntityMachineBase) world.getTileEntity(x, y, z);
+                if (machine.getMachineType().toString().equals(itemInst.getSubType(itemStack))) {
+                    player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                    return true;
+                }
             }
-            return true;
+
+            //NGTUtil.isEquippedItem(player, RTMItem.crowbar))
+            if (player.isSneaking()) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
+                return true;
+            }
         }
         return false;
     }

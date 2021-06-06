@@ -118,14 +118,6 @@ public class GuiRailMarker extends GuiScreenCustom {
         this.currentRP.cantRandom = this.getFieldValue(this.fieldCantRandom, this.currentRP.cantRandom);
     }
 
-    private float getFieldValue(GuiTextFieldCustom field, float defaultVal) {
-        try {
-            return Float.parseFloat(field.getText());
-        } catch (NumberFormatException e) {
-            return defaultVal;
-        }
-    }
-
     private void sendPacket() {
         this.updateValues();
         RTMCore.NETWORK_WRAPPER.sendToServer(new PacketMarkerRPClient(this.marker));

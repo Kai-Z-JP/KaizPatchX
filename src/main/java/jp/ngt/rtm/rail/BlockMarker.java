@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlockMarker extends BlockContainer {
     /**
@@ -162,6 +163,7 @@ public class BlockMarker extends BlockContainer {
                             .filter(TileEntityMarker.class::isInstance)
                             .map(TileEntityMarker.class::cast)
                             .filter(tile -> tile.getMarkerRP() != rpS)
+                            .filter(tile -> tile.getBlockType().equals(RTMBlock.marker))
                             .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
                             .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
                             .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
@@ -169,22 +171,24 @@ public class BlockMarker extends BlockContainer {
                             .map(TileEntityMarker::getMarkerRP)
                             .orElse(null);
                     if (rpS != null && rpE != null) {
+                        rpS.addHeight(prop.blockHeight - 0.0625F);
+                        rpE.addHeight(prop.blockHeight - 0.0625F);
                         return this.createRail0(world, rpS, rpE, prop, makeRail, isCreative);
                     }
                 }
             } else if (type == 1) {
                 List<RailPosition> list = new ArrayList<>();
-                for (int i = 0; i < dis2; ++i) {
-                    {
-                        for (int k = 0; k < dis2; ++k) {
-                            int x0 = x - dis1 + i;
-                            int z0 = z - dis1 + k;
-                            Block block = world.getBlock(x0, y, z0);
-                            if (block == RTMBlock.marker || block == RTMBlock.markerSwitch) {
-                                list.add(this.getRailPosition(world, x0, y, z0));
-                            }
-                        }
-                    }
+                List<TileEntity> tileEntityList = ((List<TileEntity>) world.loadedTileEntityList);
+                if (tileEntityList != null && !tileEntityList.isEmpty()) {
+                    list = tileEntityList.stream()
+                            .filter(TileEntityMarker.class::isInstance)
+                            .map(TileEntityMarker.class::cast)
+                            .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
+                            .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
+                            .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
+                            .map(TileEntityMarker::getMarkerRP)
+                            .collect(Collectors.toList());
+                    list.forEach(rp -> rp.addHeight(prop.blockHeight - 0.0625F));
                 }
 
                 if (list.size() > 0) {

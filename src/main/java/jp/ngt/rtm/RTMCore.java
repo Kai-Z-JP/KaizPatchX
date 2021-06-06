@@ -28,7 +28,7 @@ import paulscode.sound.SoundSystemConfig;
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
     public static final String MODID = "RTM";
-    public static final String VERSION = "1.7.10.41_KaizPatchX1.1";
+    public static final String VERSION = "1.7.10.41_KaizPatchX1.2RC1";
 
     @Instance(MODID)
     public static RTMCore instance;
@@ -60,6 +60,7 @@ public final class RTMCore {
     public static short guiIdRailMarker = getNextGuiID();
     public static short guiIdSpeaker = getNextGuiID();
     public static short guiIdCamera = getNextGuiID();
+    public static short guiIdChangeOffset = getNextGuiID();
 
     public static final byte KEY_Forward = 0;
     public static final byte KEY_Back = 1;

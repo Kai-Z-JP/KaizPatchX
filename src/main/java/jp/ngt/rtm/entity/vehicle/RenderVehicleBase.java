@@ -47,7 +47,7 @@ public final class RenderVehicleBase extends Render {
     protected void renderVehicleBase(EntityVehicleBase<?> vehicle, double par2, double par4, double par6, float par8, float par9) {
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
+        GL11.glTranslated(par2, par4, par6);
 
         ModelSetVehicleBaseClient modelSet = (ModelSetVehicleBaseClient) vehicle.getModelSet();
         if (modelSet != null) {

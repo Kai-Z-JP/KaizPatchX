@@ -89,7 +89,7 @@ public class Formation {
     }
 
     public FormationEntry getEntry(EntityTrainBase par1) {
-        return Arrays.stream(this.entries).filter(entry -> entry != null && par1.equals(entry.train)).findFirst().orElse(null);
+        return Arrays.stream(this.entries).filter(Objects::nonNull).filter(entry -> par1.equals(entry.train)).findFirst().orElse(null);
     }
 
     /**
@@ -137,7 +137,7 @@ public class Formation {
     private void reverse() {
         NGTUtil.reverse(this.entries);
         //向きを反転
-        Arrays.stream(this.entries).forEach(entry -> entry.dir ^= 1);
+        Arrays.stream(this.entries).filter(Objects::nonNull).forEach(entry -> entry.dir ^= 1);
     }
 
     private void addAll(FormationEntry[] par1) {
@@ -189,10 +189,10 @@ public class Formation {
         this.reallocation();
 
         //entry2.updateFormationData(this, (byte)i);
-        Arrays.stream(this.entries).forEach(entry2 -> {
-            entry2.train.setNotch(-(entry2.train.getModelSet().getConfig().deccelerations.length - 1));
-            entry2.train.setSpeed(0.0F);
-            entry2.train.setTrainStateData(TrainStateType.State_Direction.id, TrainState.Direction_Center.data);
+        Arrays.stream(this.entries).filter(Objects::nonNull).map(e -> e.train).filter(Objects::nonNull).forEach(train -> {
+            train.setNotch(-(train.getModelSet().getConfig().deccelerations.length - 1));
+            train.setSpeed(0.0F);
+            train.setTrainStateData(TrainStateType.State_Direction.id, TrainState.Direction_Center.data);
         });
 
         FormationManager.getInstance().removeFormation(par5.id);
@@ -259,7 +259,7 @@ public class Formation {
 
     private EntityTrainBase getControlCar() {
         if (this.controlCar == null || !this.controlCar.isControlCar()) {
-            controlCar = Arrays.stream(this.entries).filter(entry -> entry != null && entry.train.isControlCar()).findFirst().map(entry -> entry.train).orElse(this.controlCar);
+            this.controlCar = Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).filter(EntityTrainBase::isControlCar).findFirst().orElse(this.controlCar);
         }
         return this.controlCar;
     }
@@ -274,7 +274,7 @@ public class Formation {
         }
 
         if (this.entries != null) {
-            Arrays.stream(this.entries).filter(entry -> entry.train != null).forEach(entry -> entry.train.setSpeed_NoSync(par1));
+            Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).forEach(train -> train.setSpeed_NoSync(par1));
         }
         this.speed = par1;
     }
@@ -303,30 +303,28 @@ public class Formation {
                 this.controlCar = par2;
             }
 
-            Arrays.stream(this.entries).filter(Objects::nonNull).forEach(entry -> {
-                if (par2.equals(entry.train)) {
-                    entry.train.setTrainStateData_NoSync(id, data);
-                } else {
-                    if (entry.train.getTrainStateData(TrainStateType.State_Direction.id) == data) {
-                        entry.train.setTrainStateData_NoSync(id, TrainState.Direction_Center.data);
-                    }
+            Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).forEach(train -> {
+                if (par2.equals(train)) {
+                    train.setTrainStateData_NoSync(id, data);
+                } else if (train.getTrainStateData(TrainStateType.State_Direction.id) == data) {
+                    train.setTrainStateData_NoSync(id, TrainState.Direction_Center.data);
                 }
             });
         } else if (id == TrainStateType.State_Door.id)//ドア
         {
             int stateR = data & 1;
             int stateL = data >> 1;
-            Arrays.stream(this.entries).filter(Objects::nonNull).forEach(entry -> {
-                int data2 = (entry.train.getTrainDirection() == 0) ? (stateL << 1 | stateR) : (stateR << 1 | stateL);
-                entry.train.setTrainStateData_NoSync(id, (byte) data2);
+            Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).forEach(train -> {
+                int data2 = (train.getTrainDirection() == 0) ? (stateL << 1 | stateR) : (stateR << 1 | stateL);
+                train.setTrainStateData_NoSync(id, (byte) data2);
             });
         } else {
-            Arrays.stream(this.entries).filter(Objects::nonNull).forEach(entry -> entry.train.setTrainStateData_NoSync(id, data));
+            Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).forEach(train -> train.setTrainStateData_NoSync(id, data));
         }
     }
 
     public boolean containBogie(EntityBogie bogie) {
-        return Arrays.stream(this.entries).map(entry -> entry.train).anyMatch(train -> train.getBogie(0) == bogie || train.getBogie(1) == bogie);
+        return Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).anyMatch(train -> train.getBogie(0) == bogie || train.getBogie(1) == bogie);
     }
 
     private void sendPacket() {

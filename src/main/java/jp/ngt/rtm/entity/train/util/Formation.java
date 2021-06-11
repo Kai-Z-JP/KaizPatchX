@@ -306,7 +306,7 @@ public class Formation {
             Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).forEach(train -> {
                 if (par2.equals(train)) {
                     train.setTrainStateData_NoSync(id, data);
-                } else if (train.getTrainStateData(TrainStateType.State_Direction.id) == data) {
+                } else if (train.getTrainStateData(TrainStateType.State_Direction.id) != TrainState.Direction_Center.data) {
                     train.setTrainStateData_NoSync(id, TrainState.Direction_Center.data);
                 }
             });

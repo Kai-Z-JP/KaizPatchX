@@ -20,6 +20,7 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
     public static final float ROTATION_STEP = 15.0F;
 
     private boolean isGettingPower;
+    private float prevRotation;
     private float rotation;
 
     @Override
@@ -55,6 +56,11 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
 
                 ((RailMapTurntable) this.getRailMap(null)).setRotation(this.rotation);
                 this.updateTrainYaw();
+            }
+        } else {
+            float f0 = this.rotation % ROTATION_STEP;
+            if (!(this.isGettingPower || (f0 != 0.0F))) {
+                this.prevRotation = this.rotation;
             }
         }
     }
@@ -93,7 +99,12 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
     }
 
     public void setRotation(float rotation) {
+        this.prevRotation = this.rotation;
         this.rotation = rotation;
+    }
+
+    public float getPrevRotation() {
+        return this.prevRotation;
     }
 
     @SideOnly(Side.CLIENT)

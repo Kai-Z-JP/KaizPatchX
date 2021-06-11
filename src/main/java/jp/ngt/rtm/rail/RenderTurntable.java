@@ -7,6 +7,7 @@ import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRailClient;
 import jp.ngt.rtm.render.RailPartsRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -40,7 +41,7 @@ public class RenderTurntable extends RenderLargeRail {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             GL11.glTranslatef((float) (par2 + 0.5F), (float) (par4), (float) (par6 + 0.5F));
-            GL11.glRotatef(tileEntity.getRotation(), 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(tileEntity.getPrevRotation() + (MathHelper.wrapAngleTo180_float(tileEntity.getRotation() - tileEntity.getPrevRotation())) * par8, 0.0F, 1.0F, 0.0F);
             GL11.glTranslatef(-(float) (par2 + 0.5F), -(float) (par4), -(float) (par6 + 0.5F));
 
             try {

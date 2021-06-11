@@ -84,7 +84,12 @@ public class TileEntityCrossingGate extends TileEntityMachineBase {
     public AxisAlignedBB getRenderBoundingBox() {
         float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
         return AxisAlignedBB.getBoundingBox(
-                this.xCoord + box[0], this.yCoord + box[1], this.zCoord + box[2], this.xCoord + box[3], this.yCoord + box[4], this.zCoord + box[5]);
+                this.xCoord + box[0] + this.getOffsetX(),
+                this.yCoord + box[1] + this.getOffsetY(),
+                this.zCoord + box[2] + this.getOffsetZ(),
+                this.xCoord + box[3] + this.getOffsetX(),
+                this.yCoord + box[4] + this.getOffsetY(),
+                this.zCoord + box[5] + this.getOffsetZ());
     }
 
     @Override

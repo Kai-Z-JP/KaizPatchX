@@ -65,9 +65,14 @@ public abstract class BlockMachineBase extends BlockContainer {
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        TileEntityMachineBase tile = (TileEntityMachineBase) world.getTileEntity(x, y, z);
-        MachineConfig cfg = tile.getModelSet().getConfig();
-        return tile.isGettingPower ? cfg.brightness[1] : cfg.brightness[0];
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileEntityMachineBase) {
+            TileEntityMachineBase tileEntityMachineBase = (TileEntityMachineBase) tile;
+            MachineConfig cfg = tileEntityMachineBase.getModelSet().getConfig();
+            return tileEntityMachineBase.isGettingPower ? cfg.brightness[1] : cfg.brightness[0];
+        } else {
+            return this.getLightValue();
+        }
     }
 
     @Override

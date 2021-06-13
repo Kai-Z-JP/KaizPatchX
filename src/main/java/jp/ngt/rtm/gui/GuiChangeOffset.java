@@ -1,10 +1,10 @@
 package jp.ngt.rtm.gui;
 
+import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.gui.GuiTextFieldCustom;
 import jp.ngt.ngtlib.network.PacketNBT;
-import jp.ngt.ngtlib.util.KeyboardUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;

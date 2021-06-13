@@ -2,9 +2,9 @@ package jp.ngt.rtm.gui.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.gui.GuiTextFieldCustom;
-import jp.ngt.ngtlib.util.KeyboardUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketMarkerRPClient;

@@ -2,6 +2,7 @@ package jp.ngt.mcte.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.mcte.MCTE;
 import jp.ngt.mcte.MCTEKeyHandlerClient;
 import jp.ngt.mcte.editor.EntityEditor;
@@ -10,7 +11,6 @@ import jp.ngt.mcte.network.PacketEditor;
 import jp.ngt.mcte.network.PacketResetSlot;
 import jp.ngt.ngtlib.gui.GuiContainerCustom;
 import jp.ngt.ngtlib.io.NGTFileLoader;
-import jp.ngt.ngtlib.util.KeyboardUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.OpenGlHelper;

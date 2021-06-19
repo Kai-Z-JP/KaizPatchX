@@ -184,8 +184,7 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
             executor.shutdown();
         }
 
-
-        list.forEach(future -> {
+        list.parallelStream().forEach(future -> {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {

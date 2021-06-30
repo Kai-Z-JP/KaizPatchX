@@ -773,7 +773,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     public void stopTrain(boolean changeSpeed) {
         if (this.formation != null) {
-            this.setNotch(this.getModelSet().getConfig().deccelerations.length - 1);
+            this.setEBNotch();
             if (changeSpeed) {
                 this.setSpeed(0.0F);
             }
@@ -936,6 +936,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             }
         }
         return false;
+    }
+
+    public void setEBNotch() {
+        int prevNotch = this.getNotch();
+        int EB_NOTCH = -(this.getModelSet().getConfig().deccelerations.length - 1);
+        if (prevNotch != EB_NOTCH) {
+            this.setByteToDataWatcher(TrainStateType.State_Notch.id, (byte) EB_NOTCH);
+        }
     }
 
     /**

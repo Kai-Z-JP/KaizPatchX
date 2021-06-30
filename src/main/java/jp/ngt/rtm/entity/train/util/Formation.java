@@ -188,9 +188,11 @@ public class Formation {
         this.addAll(par5.entries);
         this.reallocation();
 
+        this.setSpeed(0.0f);
+
         //entry2.updateFormationData(this, (byte)i);
         Arrays.stream(this.entries).filter(Objects::nonNull).map(e -> e.train).filter(Objects::nonNull).forEach(train -> {
-            train.setNotch(-(train.getModelSet().getConfig().deccelerations.length - 1));
+            train.setEBNotch();
             train.setSpeed(0.0F);
             train.setTrainStateData(TrainStateType.State_Direction.id, TrainState.Direction_Center.data);
         });
@@ -250,7 +252,9 @@ public class Formation {
         Formation formation = new Formation(FormationManager.getInstance().getNewFormationId(), size);
 
         int j = 0;
-        IntStream.range(i0, this.entries.length).forEach(i -> formation.setEntry(this.entries[i], j));
+        for (int i = i0; i < this.entries.length; i++, j++) {
+            formation.setEntry(this.entries[i], j);
+        }
         formation.reallocation();
 
         this.trim(0, i0 - 1);

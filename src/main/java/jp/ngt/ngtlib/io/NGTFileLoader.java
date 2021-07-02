@@ -168,10 +168,11 @@ public final class NGTFileLoader {
     }
 
     // cache pattern (String#replace compiles regex every time)
-    private static final Pattern selfReferencePathRegex
-            = Pattern.compile(Pattern.quote(File.separator + "." + File.separator));
+    private static final Pattern dotSlashModRegex
+            = Pattern.compile(Pattern.quote(File.separator + "." + File.separator + "mods"));
+    private static final String slashMod = File.separator + "mods";
     private static String normalizePath(String file) {
-        return file.replaceAll("\\\\.\\\\mods$", "\\\\mods");
+        return dotSlashModRegex.matcher(file).replaceAll(slashMod);
     }
 
     private static JFileChooser getCustomChooser(String title) {

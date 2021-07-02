@@ -152,10 +152,7 @@ public final class NGTFileLoader {
         }
 
         File modsDir = NGTCore.proxy.getMinecraftDirectory("mods");
-        String modsDirPath = modsDir.getAbsolutePath();
-        if (dev) {
-            modsDirPath = modsDirPath.replaceAll("\\\\.\\\\mods$", "\\\\mods");//開発環境では\.が含まれるため
-        }
+        String modsDirPath = normalizePath(modsDir.getAbsolutePath());
 
         MODS_DIR.add(new File(modsDirPath));
         NGTLog.debug("[NGTFL] Add mods dir : " + modsDirPath);

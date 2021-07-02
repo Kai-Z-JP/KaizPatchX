@@ -1,0 +1,77 @@
+name: Bug report[JP]
+description: 改善に役に立つレポートを作成する
+title: "[BUG]"
+labels: [bug]
+assignees:
+  - Kai-Z-JP
+
+body:
+
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: >
+        バグが何であるかについての明確で簡潔な説明。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: >
+        動作を再現する手順
+      placeholder: >
+        1. '...' をスポーンします。
+        2. '....'　をクリックします。
+        3. '....'　をします。
+        4. エラーが発生します。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: >
+        何が起こると予想したのかについての明確で簡潔な説明。
+
+  - type: textarea
+    attributes:
+      label: Actual Behavior
+      description: >
+        この問題の説明に役に立つスクリーンショットを添付してください。
+
+  - type: textarea
+    attributes:
+      label: Screenshots
+      description: >
+        この問題の説明に役に立つスクリーンショットを添付してください。
+
+  - type: textarea
+    attributes:
+      label: Crash Reports
+      description: >
+        クラッシュするする場合、この問題の説明に役に立つクラッシュレポートを添付してください。
+
+  - type: input
+    attributes:
+      label: OS
+      description: あなたの使っている OS とそのバージョンを教えて下さい。 macOS, Windows または GNU/Linux のディストリビューションです。
+      placeholder: "macOS 11.4, Windows 10 Home 21H1, Ubuntu 21.04"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: KaizPatchX Version
+      description: KaizPatchXのバージョン
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Other Mods
+      description: 他に導入しているmod
+      placeholder: "Optifine"
+    validations:
+      required: false

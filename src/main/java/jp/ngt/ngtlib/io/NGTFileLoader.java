@@ -152,13 +152,13 @@ public final class NGTFileLoader {
         }
 
         File modsDir = NGTCore.proxy.getMinecraftDirectory("mods");
-        String modsDirPath = normalizePath(modsDir.getAbsolutePath());
+        String modsDirPath = dev ? normalizePath(modsDir.getAbsolutePath()) : modsDir.getAbsolutePath();
 
         MODS_DIR.add(new File(modsDirPath));
         NGTLog.debug("[NGTFL] Add mods dir : " + modsDirPath);
 
         File jarInJarModDir = NGTCore.proxy.getMinecraftDirectory("jar-mods-cache/v1");
-        MODS_DIR.add(new File(normalizePath(jarInJarModDir.getAbsolutePath())));
+        MODS_DIR.add(new File(dev ? normalizePath(jarInJarModDir.getAbsolutePath()) : jarInJarModDir.getAbsolutePath()));
         NGTLog.debug("[NGTFL] Add jar-in-jar cache dir : " + modsDirPath);
 
         return MODS_DIR;
@@ -167,7 +167,12 @@ public final class NGTFileLoader {
     // cache pattern (String#replace compiles regex every time)
     private static final Pattern dotSlashModRegex
             = Pattern.compile(Pattern.quote(File.separator + "." + File.separator + "mods"));
-    private static final String slashMod = File.separator + "mods";
+    private static final String slashMod = getEscapedSeparator() + "mods";
+
+    private static String getEscapedSeparator() {
+        return File.separator.equals("\\") ? File.separator + File.separator : File.separator;
+    }
+
     private static String normalizePath(String file) {
         return dotSlashModRegex.matcher(file).replaceAll(slashMod);
     }

@@ -1,0 +1,75 @@
+name: Bug report[EN]
+description: Create a report to help us improve
+title: "[BUG]"
+labels: [bug]
+assignees:
+  - Kai-Z-JP
+
+body:
+
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: >
+        A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: >
+        Steps to reproduce the behavior
+      placeholder: >
+        1. Spawn '...'
+        2. Click on '....'
+        3. Do '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: >
+        A clear and concise description of what you expected to happen.
+
+  - type: textarea
+    attributes:
+      label: Actual Behavior
+      description: >
+        A clear and concise description of what actually happened.
+
+  - type: textarea
+    attributes:
+      label: Screenshots
+      description: >
+        If applicable, add screenshots to help explain your problem.
+
+  - type: textarea
+    attributes:
+      label: Crash Reports
+      description: >
+        If your Minecraft was crashed, add crash report to help explain your problem.
+
+  - type: input
+    attributes:
+      label: OS
+      description: Your running Operating System and its version. macOS, Windows or some GNU/Linux distributions.
+      placeholder: "macOS 11.4, Windows 10 Home 21H1, Ubuntu 21.04"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: KaizPatchX Version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Other Mods
+      placeholder: "Optifine"
+    validations:
+      required: false

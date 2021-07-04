@@ -32,7 +32,7 @@ public final class NGTClassUtil {
     }
 
     public static String resourceNameToClassName(String resourceName) {
-        return fileNameToClassName(resourceName).replace('\\', '.');
+        return fileNameToClassName(resourceName).replace(File.separatorChar, '.');
     }
 
     /**

@@ -188,7 +188,7 @@ public class EntityBogie extends Entity implements Lockable {
         this.movingYaw = MathHelper.wrapAngleTo180_float(this.rotationYaw + (this.isFront() ? 0.0F : 180.0F));
 
         double px = this.posX + (double) NGTMath.sin(this.movingYaw) * (double) speed;
-        double py = this.posY;
+        double py = this.posY - 1;
         double pz = this.posZ + (double) NGTMath.cos(this.movingYaw) * (double) speed;
 
         if (!this.resetRailObj(px, py, pz)) {
@@ -279,13 +279,20 @@ public class EntityBogie extends Entity implements Lockable {
             {
             } else//新しいレール上に移動
             {
-                this.currentRailObj = coreObj;
+                RailMap railMap;
                 if (coreObj instanceof TileEntityLargeRailSwitchCore) {
                     TileEntityLargeRailSwitchCore switchObj = (TileEntityLargeRailSwitchCore) coreObj;
-                    this.currentRailMap = switchObj.getSwitch().getNearestPoint(this).getActiveRailMap(this.worldObj);
+                    railMap = switchObj.getSwitch().getNearestPoint(this).getActiveRailMap(this.worldObj);
                 } else {
-                    this.currentRailMap = coreObj.getRailMap(this);
+                    railMap = coreObj.getRailMap(this);
                 }
+
+                if (this.currentRailMap != null && !this.currentRailMap.canConnect(railMap)) {
+                    return true;
+                }
+
+                this.currentRailObj = coreObj;
+                this.currentRailMap = railMap;
                 this.split = (int) (this.currentRailMap.getLength() * (double) SPLIT_VALUE);
                 this.prevPosIndex = -1;
                 this.onChangeRail(px, py, pz);

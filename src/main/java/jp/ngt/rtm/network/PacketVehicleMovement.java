@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.RTMEntity;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import net.minecraft.entity.Entity;
@@ -85,7 +86,7 @@ public class PacketVehicleMovement implements IMessage, IMessageHandler<PacketVe
             double y = (double) entity.serverPosY * DIV_32;
             double z = (double) entity.serverPosZ * DIV_32;
 
-            entity.setPositionAndRotation2(x, y, z, message.trainYaw, message.trainPitch, 3);
+            entity.setPositionAndRotation2(x, y, z, message.trainYaw, message.trainPitch, RTMEntity.FREQ_VEHICLE);
             if (entity instanceof EntityVehicleBase) {
                 ((EntityVehicleBase) entity).setRollAndSpeed(message.trainSpeed, message.trainRoll);
             } else {

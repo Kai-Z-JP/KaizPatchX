@@ -159,7 +159,7 @@ public final class NGTFileLoader {
 
         File jarInJarModDir = NGTCore.proxy.getMinecraftDirectory("jar-mods-cache/v1");
         MODS_DIR.add(new File(dev ? normalizePath(jarInJarModDir.getAbsolutePath()) : jarInJarModDir.getAbsolutePath()));
-        NGTLog.debug("[NGTFL] Add jar-in-jar cache dir : " + modsDirPath);
+        NGTLog.debug("[NGTFL] Add jar-in-jar cache dir : " + jarInJarModDir);
 
         return MODS_DIR;
     }

@@ -9,6 +9,7 @@ import net.minecraft.util.ChunkCoordinates;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandMCtrl extends CommandBase {
     @Override
@@ -81,5 +82,22 @@ public class CommandMCtrl extends CommandBase {
     private void help(ICommandSender player) {
         NGTLog.sendChatMessage(player, "Target filter -> @a...all, @n...nearest, @r:00...range, or name");
         Arrays.stream(ModelCtrl.values()).filter(mc -> !mc.discription.isEmpty()).forEach(mc -> NGTLog.sendChatMessage(player, mc.discription));
+    }
+
+    private static final List<List<String>> subCommandsList = Arrays.asList(
+            Arrays.asList("@a", "@n", "@r"),
+            Arrays.asList("notch", "dir", "dm:", "state:")
+    );
+
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
+        if (args.length <= 2) {
+            //入力されている文字列と先頭一致
+            if (args[args.length - 1].length() == 0) {
+                return subCommandsList.get(args.length - 1);
+            }
+            return subCommandsList.get(args.length - 1).stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
+        }
+        return null;
     }
 }

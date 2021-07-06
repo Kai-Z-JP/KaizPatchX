@@ -28,7 +28,7 @@ import java.util.Objects;
 public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Entity implements IModelSelectorWithType {
     public static final int MAX_SEAT_ROTATION = 45;
     public static final int MAX_DOOR_MOVE = 60;
-    public static final int MAX_PANTOGRAPH_MOVE = 40;
+    public static final int MAX_PANTOGRAPH_MOVE = 80;
     public static final float TO_ANGULAR_VELOCITY = (float) (360.0D / Math.PI);
 
     private final ResourceState state = new ResourceState(this);

@@ -71,4 +71,18 @@ public final class StraightLine implements ILine {
     public double getLength() {
         return this.length;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof StraightLine) {
+            StraightLine line = (StraightLine) obj;
+            return this.startX == line.startX && this.startY == line.startY && this.endX == line.endX && this.endY == line.endY;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return MathHelper.floor_double(this.length);
+    }
 }

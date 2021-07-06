@@ -90,6 +90,10 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
      * カーブでの傾き具合(0.0~1.0)
      */
     public float rolling;
+    /**
+     * パンタグラフの摺板位置{X,Z,minY,maxY}
+     */
+    public float[][] pantoPos;
 
     public float rollSpeedCoefficient;
     public float rollVariationCoefficient;

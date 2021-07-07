@@ -5,7 +5,6 @@ import jp.ngt.ngtlib.io.IProgressWatcher;
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
 import jp.ngt.ngtlib.io.NGTLog;
-import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.network.PacketModelPack;
@@ -95,14 +94,9 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
             this.runThread();
         } catch (Throwable e) {
             this.finish();
-            if (this.threadSide == Side.CLIENT) {
-                CrashReport crashReport = CrashReport.makeCrashReport(e, "Loading RTM ModelPack");
-                crashReport.makeCategory("Initialization");
-                crashReport = NGTUtilClient.getMinecraft().addGraphicsAndWorldToCrashReport(crashReport);
-                NGTUtilClient.getMinecraft().displayCrashReport(crashReport);
-            } else {
-                e.printStackTrace();
-            }
+            CrashReport crashReport = CrashReport.makeCrashReport(e, "Loading RTM ModelPack");
+            crashReport.makeCategory("Initialization");
+            RTMCore.proxy.reportCrash(crashReport);
         } finally {
             if (this.displayWindow) {
                 this.mainFrame.dispose();

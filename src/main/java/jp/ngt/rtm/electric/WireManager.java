@@ -1,16 +1,20 @@
 package jp.ngt.rtm.electric;
 
 import jp.ngt.ngtlib.math.ILine;
+import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.StraightLine;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.modelpack.cfg.WireConfig;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkCoordIntPair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public final class WireManager {
     public static final WireManager INSTANCE = new WireManager();
@@ -20,7 +24,7 @@ public final class WireManager {
     private static final double Y_TANGE = 2.0D;
     private static final double XZ_TANGE = 1.0D;
 
-    private final Map<WireChunk, List<WireEntry>> loadedWires = new HashMap<>();
+    private final Map<ChunkCoordIntPair, List<WireEntry>> loadedWires = new HashMap<>();
 
     private WireManager() {
     }
@@ -56,18 +60,17 @@ public final class WireManager {
 
                 Vec3 startVec = vec1.getY() <= vec2.getY() ? vec1 : vec2;
                 Vec3 endVec = vec1.getY() > vec2.getY() ? vec1 : vec2;
-                int x1 = (int) (Math.min(vec1.getX(), vec2.getX())) / CHUNK_DIV;
-                int x2 = (int) (Math.max(vec1.getX(), vec2.getX())) / CHUNK_DIV;
-                int z1 = (int) (Math.min(vec1.getZ(), vec2.getZ())) / CHUNK_DIV;
-                int z2 = (int) (Math.max(vec1.getZ(), vec2.getZ())) / CHUNK_DIV;
+                int x1 = (int) (Math.min(vec1.getX(), vec2.getX())) >> 4;
+                int x2 = (int) (Math.max(vec1.getX(), vec2.getX())) >> 4;
+                int z1 = (int) (Math.min(vec1.getZ(), vec2.getZ())) >> 4;
+                int z2 = (int) (Math.max(vec1.getZ(), vec2.getZ())) >> 4;
                 double minY = startVec.getY() + cfg.yOffset;
                 double maxY = endVec.getY() + cfg.yOffset;
                 WireEntry entry = new WireEntry(new StraightLine(startVec.getZ(), startVec.getX(), endVec.getZ(), endVec.getX()), minY, maxY);
 
                 for (int i = x1; i <= x2; ++i) {
                     for (int j = z1; j <= z2; ++j) {
-                        WireChunk chunk = new WireChunk(i, j);
-                        List<WireEntry> list = this.loadedWires.computeIfAbsent(chunk, k -> new ArrayList<>());
+                        List<WireEntry> list = this.loadedWires.computeIfAbsent(new ChunkCoordIntPair(i, j), k -> new ArrayList<>());
 
                         if (add) {
                             list.add(entry);
@@ -84,14 +87,14 @@ public final class WireManager {
      * 指定座標に最も近いワイヤの高さを取得
      */
     public double getWireY(float yaw, double x, double y, double z) {
-        List<WireEntry> list = this.loadedWires.get(new WireChunk(x, z));
+        int cX = MathHelper.floor_double(x) >> 4;
+        int cZ = MathHelper.floor_double(z) >> 4;
+        List<WireEntry> list = this.loadedWires.get(new ChunkCoordIntPair(cX, cZ));
         if (list != null) {
-            for (WireEntry entry : list) {
-                if (entry.inRange(x, y, z)) {
-                    int index = entry.lineXZ.getNearlestPoint(SPLIT, x, z);
-                    return entry.minY + (entry.maxY - entry.minY) * ((double) index / (double) SPLIT) + EntityTrainBase.TRAIN_HEIGHT;
-                }
-            }
+            return list.stream().filter(entry -> entry.inRange(yaw, x, y, z)).mapToDouble(entry -> {
+                int index = entry.lineXZ.getNearlestPoint(SPLIT, x, z);
+                return entry.minY + (entry.maxY - entry.minY) * ((double) index / (double) SPLIT) + EntityTrainBase.TRAIN_HEIGHT;
+            }).min().orElse(y);
         }
         return y;
     }
@@ -133,34 +136,6 @@ public final class WireManager {
         @Override
         public int hashCode() {
             return this.lineXZ.hashCode();
-        }
-    }
-
-    public static final class WireChunk {
-        public final int chunkX, chunkZ;
-
-        public WireChunk(double x, double z) {
-            this.chunkX = (int) (x / CHUNK_DIV);
-            this.chunkZ = (int) (z / CHUNK_DIV);
-        }
-
-        public WireChunk(int x, int z) {
-            this.chunkX = x;
-            this.chunkZ = z;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof WireChunk) {
-                WireChunk chunk = (WireChunk) obj;
-                return this.chunkX == chunk.chunkX && this.chunkZ == chunk.chunkZ;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return (this.chunkX & 0xFFF) | ((this.chunkZ & 0xFFF) << 12);
         }
     }
 }

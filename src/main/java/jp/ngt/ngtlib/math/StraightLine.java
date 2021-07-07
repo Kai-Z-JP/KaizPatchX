@@ -74,7 +74,9 @@ public final class StraightLine implements ILine {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof StraightLine) {
+        if (this == obj) {
+            return true;
+        } else if (obj instanceof StraightLine) {
             StraightLine line = (StraightLine) obj;
             return this.startX == line.startX && this.startY == line.startY && this.endX == line.endX && this.endY == line.endY;
         }

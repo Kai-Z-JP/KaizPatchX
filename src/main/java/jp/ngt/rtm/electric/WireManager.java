@@ -72,7 +72,7 @@ public final class WireManager {
                         if (add) {
                             list.add(entry);
                         } else {
-                            list.remove(entry);
+                            list.removeIf(Predicate.isEqual(entry));
                         }
                     }
                 }

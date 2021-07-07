@@ -109,18 +109,21 @@ public class BlockLargeRailBase extends BlockContainer {
 
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z) {
-        TileEntityLargeRailBase rail = (TileEntityLargeRailBase) blockAccess.getTileEntity(x, y, z);
-        float f0 = 0.0625F;
-        float[] fa = rail.getBlockHeights(x, y, z, f0, true);
-        float height2 = 0.0F;
-        for (int i = 0; i < 4; ++i) {
-            height2 += fa[i];
+        TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityLargeRailBase) {
+            TileEntityLargeRailBase rail = (TileEntityLargeRailBase) tileEntity;
+            float f0 = 0.0625F;
+            float[] fa = rail.getBlockHeights(x, y, z, f0, true);
+            float height2 = 0.0F;
+            for (int i = 0; i < 4; ++i) {
+                height2 += fa[i];
+            }
+            height2 *= 0.25F;
+            if (height2 < 0.0625F) {
+                height2 = 0.0625F;
+            }
+            this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, height2, 1.0F);
         }
-        height2 *= 0.25F;
-        if (height2 < 0.0625F) {
-            height2 = 0.0625F;
-        }
-        this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, height2, 1.0F);
     }
 
     @Override

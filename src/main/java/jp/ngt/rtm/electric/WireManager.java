@@ -83,7 +83,7 @@ public final class WireManager {
     /**
      * 指定座標に最も近いワイヤの高さを取得
      */
-    public double getWireY(double x, double y, double z) {
+    public double getWireY(float yaw, double x, double y, double z) {
         List<WireEntry> list = this.loadedWires.get(new WireChunk(x, z));
         if (list != null) {
             for (WireEntry entry : list) {
@@ -113,10 +113,12 @@ public final class WireManager {
             this.maxZ = Math.max(d1[0], d2[0]);
         }
 
-        public boolean inRange(double x, double y, double z) {
-            return x >= this.minX - XZ_TANGE && x <= this.maxX + XZ_TANGE
+        public boolean inRange(float yaw, double x, double y, double z) {
+            float cos = MathHelper.abs(NGTMath.cos(yaw));
+            float sin = MathHelper.abs(NGTMath.sin(yaw));
+            return x >= this.minX - cos && x <= this.maxX + cos
                     && y >= this.minY - Y_TANGE && y <= this.maxY + Y_TANGE
-                    && z >= this.minZ - XZ_TANGE && z <= this.maxZ + XZ_TANGE;
+                    && z >= this.minZ - sin && z <= this.maxZ + sin;
         }
 
         @Override

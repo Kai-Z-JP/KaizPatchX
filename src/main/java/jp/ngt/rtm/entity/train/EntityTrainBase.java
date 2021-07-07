@@ -362,7 +362,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                     jp.ngt.ngtlib.math.Vec3 vec = PooledVec3.create(fa[0], fa[3], fa[1]);
                     vec = vec.rotateAroundX(this.rotationPitch);
                     vec = vec.rotateAroundY(this.rotationYaw);
-                    double y = WireManager.INSTANCE.getWireY(this.posX + vec.getX(), trainY + vec.getY(), this.posZ + vec.getZ());
+                    double y = WireManager.INSTANCE.getWireY(this.rotationYaw, this.posX + vec.getX(), trainY + vec.getY(), this.posZ + vec.getZ());
                     ia[i] = (int) ((y - (trainY + fa[3])) / (fa[2] - fa[3]) * MAX_PANTOGRAPH_MOVE);
 
 //                    //架線有り&走行中&寒冷地->スパーク

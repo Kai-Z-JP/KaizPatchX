@@ -13,6 +13,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.command.RTMCommand;
+import jp.ngt.rtm.electric.WireManager;
 import jp.ngt.rtm.event.RTMEventHandler;
 import jp.ngt.rtm.gui.RTMGuiHandler;
 import jp.ngt.rtm.item.ItemBucketLiquid;
@@ -205,6 +206,7 @@ public final class RTMCore {
     @EventHandler
     public void handleServerStarting(FMLServerStartingEvent event) {
         RTMCommand.init(event);
+        WireManager.INSTANCE.clear();
     }
 
     private static short guiId;

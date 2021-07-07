@@ -4,11 +4,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMAchievement;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.electric.WireManager;
 import jp.ngt.rtm.entity.npc.EntityMotorman;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
@@ -309,12 +311,26 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                 ++this.pantograph_B;
             }
         } else {
-            if (this.pantograph_F > 0) {
+            int[] ia = this.getPantographMaxHeight();
+
+            if (this.pantograph_F > ia[0]) {
                 --this.pantograph_F;
+            } else if (this.pantograph_F < ia[0]) {
+                if (ia[0] == 0) {
+                    ++this.pantograph_F;
+                } else {
+                    this.pantograph_F = ia[0];
+                }
             }
 
-            if (this.pantograph_B > 0) {
+            if (this.pantograph_B > ia[1]) {
                 --this.pantograph_B;
+            } else if (this.pantograph_B < ia[1]) {
+                if (ia[1] == 0) {
+                    ++this.pantograph_B;
+                } else {
+                    this.pantograph_B = ia[1];
+                }
             }
         }
 
@@ -330,6 +346,45 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                 this.complessorActive = true;
             }
         }
+    }
+
+    private static final int[] PANTO_POS_ZERO = new int[]{0, 0};
+
+    protected int[] getPantographMaxHeight() {
+        int[] ia;
+        TrainConfig config = this.getModelSet().getConfig();
+        if (config.pantoPos != null) {
+            ia = new int[config.pantoPos.length];
+            for (int i = 0; i < ia.length; ++i) {
+                float[] fa = config.pantoPos[i];
+                if (fa[3] > 0.0F) {
+                    double trainY = this.posY + TRAIN_HEIGHT;
+                    jp.ngt.ngtlib.math.Vec3 vec = PooledVec3.create(fa[0], fa[3], fa[1]);
+                    vec = vec.rotateAroundX(this.rotationPitch);
+                    vec = vec.rotateAroundY(this.rotationYaw);
+                    double y = WireManager.INSTANCE.getWireY(this.rotationYaw, this.posX + vec.getX(), trainY + vec.getY(), this.posZ + vec.getZ());
+                    ia[i] = (int) ((y - (trainY + fa[3])) / (fa[2] - fa[3]) * MAX_PANTOGRAPH_MOVE);
+
+//                    //架線有り&走行中&寒冷地->スパーク
+//                    long time = this.worldObj.getWorldTime() % 24000;
+//                    if ((trainY + vec.getY() != y) && this.getSpeed() != 0.0F && (time >= 11615 && time <= 22925)
+//                            && this.worldObj.getBiomeGenForCoords((int) this.posX, (int) this.posZ).getEnableSnow()) {
+//                        Random rand = this.worldObj.rand;
+//                        if (rand.nextInt(20) == 0) {
+//                            int count = rand.nextInt(5) + 1;
+//                            for (int k = 0; k < 5; ++k) {
+//                                NGTParticle.INSTANCE.spawnParticle(this.worldObj, RTMParticle.PARTICLE_SPARK, false,
+//                                        this.posX + vec.getX(), y, this.posZ + vec.getZ(),
+//                                        rand.nextGaussian() * 0.0625D, -0.25D, rand.nextGaussian() * 0.0625D, ia);
+//                            }
+//                        }
+//                    }
+                }
+            }
+        } else {
+            ia = PANTO_POS_ZERO;
+        }
+        return ia;
     }
 
     //BCから呼び出し

@@ -34,9 +34,17 @@ public class Connection {
         this.wireName = par5;
     }
 
-    public static List<Connection> readListFromNBT(NBTTagCompound nbt) {
+    public static List<Connection> readListFromNBT(NBTTagCompound nbt, World world) {
         NBTTagList tagList = nbt.getTagList("connections", 10);
-        return IntStream.range(0, tagList.tagCount()).mapToObj(tagList::getCompoundTagAt).map(Connection::readFromNBT).collect(Collectors.toList());
+        List<Connection> connectionList = IntStream.range(0, tagList.tagCount()).mapToObj(tagList::getCompoundTagAt).map(Connection::readFromNBT).collect(Collectors.toList());
+        if (world != null) {
+            connectionList.forEach(connection -> connection.setTileEntity(world));
+        }
+        return connectionList;
+    }
+
+    public void setTileEntity(World world) {
+        this.connectedObject = world.getTileEntity(x, y, z);
     }
 
     public static Connection readFromNBT(NBTTagCompound nbt) {
@@ -186,6 +194,22 @@ public class Connection {
         }
 
         return this.connectedObject != null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj instanceof Connection) {
+            Connection con = (Connection) obj;
+            return this.type == con.type && this.x == con.x && this.y == con.y && this.z == con.z;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return ((this.x & 0xFF) << 16) | ((this.y & 0xFF) << 8) | ((this.z & 0xFF));
     }
 
     /**

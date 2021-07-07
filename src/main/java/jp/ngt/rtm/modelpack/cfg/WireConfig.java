@@ -15,6 +15,7 @@ public class WireConfig extends ModelConfig {
      */
     public float lengthCoefficient;
     public float sectionLength;
+    public float yOffset;
 
     @Override
     public void init() {

@@ -1,7 +1,7 @@
 package jp.ngt.rtm.electric;
 
-import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.math.NGTVec;
+import jp.ngt.ngtlib.math.PooledVec3;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -14,7 +14,7 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     private final ResourceState state = new ResourceState(this);
     private String modelName = "";
     private ModelSetConnector myModelSet;
-    public NGTVec wirePos;
+    public Vec3 wirePos = Vec3.ZERO;
 
     public TileEntityConnectorBase() {
     }
@@ -51,36 +51,43 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
                 PacketNBT.sendToClient(this);
             }
 
-            if (this.worldObj != null)//readNBT時ぬるぽ回避
-            {
-                ConnectorConfig cfg = this.myModelSet.getConfig();
-                this.wirePos = new NGTVec(cfg.wirePos[0], cfg.wirePos[1], cfg.wirePos[2]);
-                int meta = this.getBlockMetadata();
-                switch (meta) {
-                    case 0:
-                        this.wirePos.rotateAroundZ(NGTMath.toRadians(180.0F));
-                        break;
-                    case 1:
-                        break;
-                    case 2://Z
-                        this.wirePos.rotateAroundX(NGTMath.toRadians(-90.0F));
-                        this.wirePos.rotateAroundY(NGTMath.toRadians(180.0F));
-                        break;
-                    case 3://Z
-                        this.wirePos.rotateAroundX(NGTMath.toRadians(-90.0F));
-                        break;
-                    case 4://X
-                        this.wirePos.rotateAroundX(NGTMath.toRadians(-90.0F));
-                        this.wirePos.rotateAroundY(NGTMath.toRadians(-90.0F));
-                        break;
-                    case 5://X
-                        this.wirePos.rotateAroundX(NGTMath.toRadians(-90.0F));
-                        this.wirePos.rotateAroundY(NGTMath.toRadians(90.0F));
-                        break;
-                }
+            //readNBT時ぬるぽ回避
+            if (this.worldObj != null && this.myModelSet != null) {
+                this.updateWirePos(this.myModelSet.getConfig());
             }
         }
         return this.myModelSet;
+    }
+
+    public void updateWirePos(ConnectorConfig cfg) {
+        if (cfg == null) {
+            cfg = this.getModelSet().getConfig();
+        }
+        Vec3 vec = PooledVec3.create(cfg.wirePos[0], cfg.wirePos[1], cfg.wirePos[2]);
+        int meta = this.getBlockMetadata();
+        switch (meta) {
+            case 0:
+                vec = vec.rotateAroundZ((180.0F));
+                break;
+            case 1:
+                break;
+            case 2://Z
+                vec = vec.rotateAroundX(-90.0F);
+                vec = vec.rotateAroundY(180.0F);
+                break;
+            case 3://Z
+                vec = vec.rotateAroundX(-90.0F);
+                break;
+            case 4://X
+                vec = vec.rotateAroundX(-90.0F);
+                vec = vec.rotateAroundY(-90.0F);
+                break;
+            case 5://X
+                vec = vec.rotateAroundX(-90.0F);
+                vec = vec.rotateAroundY(90.0F);
+                break;
+        }
+        this.wirePos = vec;
     }
 
     @Override

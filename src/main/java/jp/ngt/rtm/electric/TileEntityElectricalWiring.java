@@ -34,19 +34,14 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 
         List<Connection> prevConnections = this.connections;
         this.connections = new ArrayList<>();
-        this.connections.addAll(Connection.readListFromNBT(nbt));
+        this.connections.addAll(Connection.readListFromNBT(nbt, this.getWorldObj()));
 
         if (this.getWorldObj() != null && this.getWorldObj().isRemote) {
-            for (Connection connection : this.connections) {
-                if (!prevConnections.contains(connection)) {
-                    WireManager.INSTANCE.addWire(this, connection);//新規Conのみ登録
-                }
-                prevConnections.remove(connection);//重複Con削除
-            }
+            //新規Conのみ登録
+            this.connections.stream().filter(connection -> !prevConnections.remove(connection)).forEach(connection -> WireManager.INSTANCE.addWire(this, connection));
 
-            for (Connection connection : prevConnections) {
-                WireManager.INSTANCE.removeWire(this, connection);//解除されたConを削除
-            }
+            //解除されたConを削除
+            prevConnections.forEach(connection -> WireManager.INSTANCE.removeWire(this, connection));
         }
     }
 
@@ -357,8 +352,6 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
      */
     public void onBlockBreaked() {
         this.connections.forEach(connection -> this.sendElectricity(connection, 0, 0));
-        //解除されたConを削除
-        this.connections.forEach(connection -> WireManager.INSTANCE.removeWire(this, connection));
     }
 
     @Override

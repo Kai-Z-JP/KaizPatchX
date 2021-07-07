@@ -25,6 +25,10 @@ public final class WireManager {
     private WireManager() {
     }
 
+    public void clear() {
+        this.loadedWires.clear();
+    }
+
     /**
      * TEElectricalWiring.readFromNBT()で呼び出し
      */

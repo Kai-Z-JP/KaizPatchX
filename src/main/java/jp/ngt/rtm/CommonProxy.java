@@ -1,6 +1,7 @@
 package jp.ngt.rtm;
 
 import cpw.mods.fml.relauncher.Side;
+import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.entity.vehicle.IUpdateVehicle;
@@ -9,14 +10,20 @@ import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.*;
 import jp.ngt.rtm.modelpack.modelset.*;
 import jp.ngt.rtm.network.PacketPlaySound;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class CommonProxy {
     private final FormationManager fm = new FormationManager(false);
+
+    protected final CrashReport thrownMarker = new CrashReport("", new Throwable());
+    protected final AtomicReference<CrashReport> crashReportHolder = new AtomicReference<>(null);
 
     public void preInit() {
         ModelPackManager.INSTANCE.registerType("ModelFirearm", FirearmConfig.class, ModelSetFirearm.class);
@@ -87,5 +94,23 @@ public class CommonProxy {
      */
     public FormationManager getFormationManager() {
         return this.fm;
+    }
+
+    public void reportCrash(CrashReport report) {
+        NGTUtil.getServer().addServerInfoToCrashReport(report);
+        this.crashReportHolder.compareAndSet(null, report);
+    }
+
+    public void postReportCrash() {
+        this.crashReportHolder.set(this.thrownMarker);
+    }
+
+    public CrashReport getCrashReport() {
+        return this.crashReportHolder.get();
+    }
+
+    public boolean canCrash() {
+        CrashReport report = this.crashReportHolder.get();
+        return !(report == null || report == RTMCore.proxy.thrownMarker);
     }
 }

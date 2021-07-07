@@ -2,6 +2,7 @@ package jp.ngt.rtm.event;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
@@ -12,8 +13,10 @@ import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.network.ConnectionManager;
 import jp.ngt.rtm.sound.SpeakerSounds;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ReportedException;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -61,5 +64,14 @@ public final class RTMEventHandler {
     public void onLoadWorld(WorldEvent.Load event) {
         //StationManager.INSTANCE.loadData(event.world);
         FormationManager.getInstance().loadData(event.world);
+    }
+
+    @SubscribeEvent
+    public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (RTMCore.proxy.canCrash()) {
+            CrashReport report = RTMCore.proxy.getCrashReport();
+            RTMCore.proxy.postReportCrash();
+            throw new ReportedException(report);
+        }
     }
 }

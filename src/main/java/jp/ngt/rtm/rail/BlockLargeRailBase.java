@@ -154,7 +154,8 @@ public class BlockLargeRailBase extends BlockContainer {
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
         if (world.isRemote) {
-            return super.removedByPlayer(world, player, x, y, z);
+            return false;
+//            return super.removedByPlayer(world, player, x, y, z);
         } else {
             if (PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_RAIL)) {
                 if (!player.capabilities.isCreativeMode) {

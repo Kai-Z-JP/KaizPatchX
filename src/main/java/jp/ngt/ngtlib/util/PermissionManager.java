@@ -113,6 +113,8 @@ public final class PermissionManager {
         if (this.getPlayerList("negative.".concat(category)).contains(player.getCommandSenderName())) {
             return false;
         }
+        if (!category.equals("fixrtm.all_permit") && hasPermissionInternal(player, "fixrtm.all_permit"))
+            return true;
         if (this.isOp(player)) {
             return true;//シングル or OP
         } else {

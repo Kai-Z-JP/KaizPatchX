@@ -2,6 +2,8 @@ package jp.ngt.rtm.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.util.PermissionManager;
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.RailConfig;
@@ -37,8 +39,7 @@ public class ItemRail extends ItemWithModel {
         if (block instanceof BlockMarker) {
             return false;
         }
-        if (world.isRemote) {
-        } else {
+        if (!world.isRemote && PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_RAIL)) {
             TileEntity tile = world.getTileEntity(x, y, z);
             if (!(tile instanceof TileEntityLargeRailBase)) {
                 return true;

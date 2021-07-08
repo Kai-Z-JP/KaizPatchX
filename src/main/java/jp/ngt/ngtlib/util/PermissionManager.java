@@ -71,6 +71,7 @@ public final class PermissionManager {
 
     public void registerPermission(String per1) {
         this.getPlayerList(per1);
+        this.getPlayerList("negative." + per1);
     }
 
     public void showPermissionList(ICommandSender player) {

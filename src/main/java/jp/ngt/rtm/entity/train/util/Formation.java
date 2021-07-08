@@ -149,11 +149,7 @@ public class Formation {
 
     private void trim(int start, int end) {
         FormationEntry[] array = new FormationEntry[end - start + 1];
-        int j = 0;
-        for (int i = start; i <= end; ++i) {
-            array[j] = this.entries[i];
-            ++j;
-        }
+        if (end + 1 - start >= 0) System.arraycopy(this.entries, start, array, 0, end + 1 - start);
         this.entries = array;
     }
 
@@ -224,11 +220,7 @@ public class Formation {
             int size = this.entries.length - entry.entryId - 1;
             Formation formation = new Formation(FormationManager.getInstance().getNewFormationId(), size);
 
-            int j = 0;
-            for (int i = entry.entryId + 1; i < this.entries.length; ++i) {
-                formation.setEntry(this.entries[i], j);
-                ++j;
-            }
+            IntStream.range(entry.entryId + 1, this.entries.length).forEach(i -> formation.setEntry(this.entries[i], i - (entry.entryId + 1)));
 
             this.trim(0, entry.entryId - 1);
             formation.reallocation();
@@ -251,10 +243,7 @@ public class Formation {
         int size = this.entries.length - i0;
         Formation formation = new Formation(FormationManager.getInstance().getNewFormationId(), size);
 
-        int j = 0;
-        for (int i = i0; i < this.entries.length; i++, j++) {
-            formation.setEntry(this.entries[i], j);
-        }
+        IntStream.range(i0, this.entries.length).forEach(i -> formation.setEntry(this.entries[i], i - i0));
         formation.reallocation();
 
         this.trim(0, i0 - 1);
@@ -291,13 +280,10 @@ public class Formation {
 
         this.direction = (byte) (par1 ^ entry.dir);//編成としての向き,XOR
 
-        byte b0;
-        for (FormationEntry entry2 : this.entries) {
-            if (entry2 != null) {
-                b0 = (byte) (this.direction ^ entry2.dir);
-                entry2.train.setTrainDirection_NoSync(b0);
-            }
-        }
+        Arrays.stream(this.entries).filter(Objects::nonNull).forEach(entry2 -> {
+            byte b0 = (byte) (this.direction ^ entry2.dir);
+            entry2.train.setTrainDirection_NoSync(b0);
+        });
     }
 
     public void setTrainStateData(int id, byte data, EntityTrainBase par2) {

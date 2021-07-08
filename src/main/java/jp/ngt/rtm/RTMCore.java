@@ -12,8 +12,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import jp.ngt.ngtlib.util.PermissionManager;
-import jp.ngt.rtm.command.CommandRTM;
-import jp.ngt.rtm.command.CommandTRec;
+import jp.ngt.rtm.command.RTMCommand;
+import jp.ngt.rtm.electric.WireManager;
 import jp.ngt.rtm.event.RTMEventHandler;
 import jp.ngt.rtm.gui.RTMGuiHandler;
 import jp.ngt.rtm.item.ItemBucketLiquid;
@@ -28,7 +28,7 @@ import paulscode.sound.SoundSystemConfig;
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
     public static final String MODID = "RTM";
-    public static final String VERSION = "1.7.10.41_KaizPatchX1.2";
+    public static final String VERSION = "1.7.10.41_KaizPatchX1.3RC1";
 
     @Instance(MODID)
     public static RTMCore instance;
@@ -205,8 +205,8 @@ public final class RTMCore {
 
     @EventHandler
     public void handleServerStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandRTM());
-        event.registerServerCommand(new CommandTRec());
+        RTMCommand.init(event);
+        WireManager.INSTANCE.clear();
     }
 
     private static short guiId;

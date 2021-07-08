@@ -32,8 +32,17 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
 
-        this.connections.clear();
-        this.connections.addAll(Connection.readListFromNBT(nbt));
+        List<Connection> prevConnections = this.connections;
+        this.connections = new ArrayList<>();
+        this.connections.addAll(Connection.readListFromNBT(nbt, this.getWorldObj()));
+
+        if (this.getWorldObj() != null && this.getWorldObj().isRemote) {
+            //新規Conのみ登録
+            this.connections.stream().filter(connection -> !prevConnections.remove(connection)).forEach(connection -> WireManager.INSTANCE.addWire(this, connection));
+
+            //解除されたConを削除
+            prevConnections.forEach(connection -> WireManager.INSTANCE.removeWire(this, connection));
+        }
     }
 
     @Override

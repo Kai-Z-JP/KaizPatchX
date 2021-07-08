@@ -2,7 +2,8 @@ package jp.ngt.rtm.electric;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.math.NGTVec;
+import jp.ngt.ngtlib.math.PooledVec3;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetConnectorClient;
@@ -14,14 +15,12 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class RenderElectricalWiring extends TileEntitySpecialRenderer {
     public static final RenderElectricalWiring INSTANCE = new RenderElectricalWiring();
-    private final NGTVec vecTmp = new NGTVec(0.0D, 0.0D, 0.0D);
 
     private RenderElectricalWiring() {
     }
@@ -70,8 +69,8 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
 
     protected void renderAllWire(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
         GL11.glPushMatrix();
-        NGTVec vec = tileEntity.wirePos;
-        GL11.glTranslatef((float) par2 + 0.5F + (float) vec.xCoord, (float) par4 + 0.5F + (float) vec.yCoord, (float) par6 + 0.5F + (float) vec.zCoord);
+        Vec3 vec = tileEntity.wirePos;
+        GL11.glTranslatef((float) par2 + 0.5F + (float) vec.getX(), (float) par4 + 0.5F + (float) vec.getY(), (float) par6 + 0.5F + (float) vec.getZ());
 
         tileEntity.getConnectionList().stream()
                 .filter(connection -> connection.type.isVisible && connection.isRoot)
@@ -91,21 +90,21 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
             GL11.glDisable(GL11.GL_CULL_FACE);
         }
 
-        NGTVec vec = this.getConnectedTarget(tileEntity, connection, par8);
+        Vec3 vec = this.getConnectedTarget(tileEntity, connection, par8);
         WirePartsRenderer renderer = (WirePartsRenderer) modelSet.modelObj.renderer;
-        renderer.renderWire(tileEntity, connection, vec, par8);
+        renderer.renderWire(tileEntity, connection, vec.toNGTVec(), par8);
 
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
 
-    public NGTVec getConnectedTarget(TileEntityConnectorBase tileEntity, Connection connection, float par8) {
-        NGTVec posMain = tileEntity.wirePos;
+    public Vec3 getConnectedTarget(TileEntityConnectorBase tileEntity, Connection connection, float par8) {
+        Vec3 posMain = tileEntity.wirePos;
         float x = 0.0F;
         float y = 0.0F;
         float z = 0.0F;
-        float thisX = (float) tileEntity.xCoord + 0.5F + (float) posMain.xCoord;
-        float thisY = (float) tileEntity.yCoord + 0.5F + (float) posMain.yCoord;
-        float thisZ = (float) tileEntity.zCoord + 0.5F + (float) posMain.zCoord;
+        float thisX = (float) tileEntity.xCoord + 0.5F + (float) posMain.getX();
+        float thisY = (float) tileEntity.yCoord + 0.5F + (float) posMain.getY();
+        float thisZ = (float) tileEntity.zCoord + 0.5F + (float) posMain.getZ();
         if (connection.type == ConnectionType.TO_ENTITY) {
             x = (float) connection.x + 0.5F - thisX;
             y = (float) connection.y - thisY;
@@ -116,14 +115,14 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
             if (entity != null) {
                 float f9 = entity.getSwingProgress(par8);
                 float f10 = MathHelper.sin(MathHelper.sqrt_float(f9) * (float) Math.PI);
-                Vec3 vec3 = Vec3.createVectorHelper(-0.46D, -0.2D, 0.65D);
-                vec3.rotateAroundX(-(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * par8) * (float) Math.PI / 180.0F);
-                vec3.rotateAroundY(-(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * par8) * (float) Math.PI / 180.0F);
-                vec3.rotateAroundY(f10 * 0.5F);
-                vec3.rotateAroundX(-f10 * 0.7F);
-                double x0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) par8 + vec3.xCoord;
-                double y0 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double) par8 + vec3.yCoord;
-                double z0 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) par8 + vec3.zCoord;
+                Vec3 vec3 = PooledVec3.create(-0.46D, -0.2D, 0.65D);
+                vec3 = vec3.rotateAroundX(-(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * par8));
+                vec3 = vec3.rotateAroundY(-(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * par8));
+                vec3 = vec3.rotateAroundY(f10 * 0.5F);
+                vec3 = vec3.rotateAroundX(-f10 * 0.7F);
+                double x0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) par8 + vec3.getX();
+                double y0 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double) par8 + vec3.getY();
+                double z0 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) par8 + vec3.getZ();
                 double d6 = entity == Minecraft.getMinecraft().thePlayer ? 0.0D : (double) entity.getEyeHeight();
 
                 if (RenderManager.instance.options.thirdPersonView > 0 || entity != Minecraft.getMinecraft().thePlayer) {
@@ -142,17 +141,16 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         } else {
             TileEntity tile = tileEntity.getWorldObj().getTileEntity(connection.x, connection.y, connection.z);
             if (tile instanceof TileEntityConnectorBase) {
-                NGTVec posTarget = ((TileEntityConnectorBase) tile).wirePos;
+                Vec3 posTarget = ((TileEntityConnectorBase) tile).wirePos;
                 if (posTarget != null) {
-                    x = (float) connection.x + 0.5F + (float) posTarget.xCoord - thisX;
-                    y = (float) connection.y + 0.5F + (float) posTarget.yCoord - thisY;
-                    z = (float) connection.z + 0.5F + (float) posTarget.zCoord - thisZ;
+                    x = (float) connection.x + 0.5F + (float) posTarget.getX() - thisX;
+                    y = (float) connection.y + 0.5F + (float) posTarget.getY() - thisY;
+                    z = (float) connection.z + 0.5F + (float) posTarget.getZ() - thisZ;
                 }
             }
         }
 
-        this.vecTmp.setValue(x, y, z);
-        return this.vecTmp;
+        return PooledVec3.create(x, y, z);
     }
 
     @Override

@@ -43,6 +43,7 @@ import jp.ngt.rtm.sound.SoundUpdaterVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -318,5 +319,13 @@ public class ClientProxy extends CommonProxy {
     @Override
     public FormationManager getFormationManager() {
         return NGTUtil.isServer() ? super.getFormationManager() : this.fmClient;
+    }
+
+    @Override
+    public void reportCrash(CrashReport report) {
+        this.crashReportHolder.set(report);
+        NGTUtilClient.getMinecraft().addGraphicsAndWorldToCrashReport(report);
+        NGTUtilClient.getMinecraft().displayCrashReport(report);
+        this.postReportCrash();
     }
 }

@@ -151,4 +151,8 @@ public class Vec3 {
         double d0 = this.dotProduct(vec) / (this.length() * vec.length());
         return Math.min(d0, 1.0D);
     }
+
+    public NGTVec toNGTVec() {
+        return new NGTVec(this.x, this.y, this.z);
+    }
 }

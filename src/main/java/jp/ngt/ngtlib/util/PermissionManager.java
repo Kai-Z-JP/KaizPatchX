@@ -71,6 +71,7 @@ public final class PermissionManager {
 
     public void registerPermission(String per1) {
         this.getPlayerList(per1);
+        this.getPlayerList("negative." + per1);
     }
 
     public void showPermissionList(ICommandSender player) {
@@ -102,13 +103,24 @@ public final class PermissionManager {
     }
 
     public boolean hasPermission(ICommandSender player, String category) {
+        boolean has = hasPermissionInternal(player, category);
+        if (!has)
+            NGTLog.sendChatMessageToAll("%s need permission (%s).", player.getCommandSenderName(), category);
+        return has;
+    }
+
+    private boolean hasPermissionInternal(ICommandSender player, String category) {
+        if (this.getPlayerList("negative.".concat(category)).contains(player.getCommandSenderName())) {
+            return false;
+        }
+        if (!category.equals("fixrtm.all_permit") && hasPermissionInternal(player, "fixrtm.all_permit"))
+            return true;
         if (this.isOp(player)) {
             return true;//シングル or OP
         } else {
             if (this.getPlayerList(category).contains(player.getCommandSenderName())) {
                 return true;
             } else {
-                NGTLog.sendChatMessageToAll("%s need permission (%s).", player.getCommandSenderName(), category);
                 return false;
             }
         }

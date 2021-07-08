@@ -197,6 +197,7 @@ public final class RTMCore {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        PermissionManager.INSTANCE.registerPermission("fixrtm.all_permit");
         PermissionManager.INSTANCE.registerPermission(RTMCore.EDIT_VEHICLE);
         PermissionManager.INSTANCE.registerPermission(RTMCore.EDIT_RAIL);
         PermissionManager.INSTANCE.registerPermission(RTMCore.DRIVE_TRAIN);

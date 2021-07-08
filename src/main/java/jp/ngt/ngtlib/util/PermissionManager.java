@@ -109,6 +109,9 @@ public final class PermissionManager {
     }
 
     private boolean hasPermissionInternal(ICommandSender player, String category) {
+        if (this.getPlayerList("negative.".concat(category)).contains(player.getCommandSenderName())) {
+            return false;
+        }
         if (this.isOp(player)) {
             return true;//シングル or OP
         } else {

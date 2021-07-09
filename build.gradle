@@ -49,7 +49,6 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    implementation group: 'systems.manifold', name: 'manifold-io', version: '2021.1.14'
     embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     embed 'org.jetbrains:annotations:20.1.0'
 }

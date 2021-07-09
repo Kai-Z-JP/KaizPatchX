@@ -46,7 +46,8 @@ public class PacketModelPack implements IMessage, IMessageHandler<PacketModelPac
         if (index > i0) {
             index = i0;
         }
-        this.bytes = buffer.readBytes(index).array();
+        this.bytes = new byte[index];
+        buffer.readBytes(bytes);
     }
 
     @Override

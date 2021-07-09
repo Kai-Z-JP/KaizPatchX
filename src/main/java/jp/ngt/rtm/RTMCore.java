@@ -4,13 +4,11 @@ import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.command.RTMCommand;
 import jp.ngt.rtm.electric.WireManager;
@@ -103,6 +101,11 @@ public final class RTMCore {
 
     public static final int PacketSize = 512;
     public static final int ATOMIC_BOM_META = 2;
+
+    @Mod.EventHandler
+    public void construct(FMLConstructionEvent event) {
+        FIXFileLoader.INSTANCE.load();
+    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

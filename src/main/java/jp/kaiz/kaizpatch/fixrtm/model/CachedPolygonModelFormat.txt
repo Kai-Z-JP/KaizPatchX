@@ -1,0 +1,67 @@
+CachedModel {
+    s4                      drawMode;
+    VecAccuracy             accuracy;
+    SizeBox                 sizeBox;
+    s4                      objects_size;
+    GroupObject             objects[objects_size];
+    s4                      materials_size;
+    {
+        UTF                 name;
+        Material            material;
+    }                       materials[materials_size];
+}
+
+VecAccuracy {
+    u1                      value;
+}
+
+0: LOW, 1: MEDIUM
+
+SizeBox {
+    r4                      values[6];
+}
+
+GroupObject {
+    UTF                     name;
+    s1                      drawMode;
+    r4                      smoothingAngle;
+    s4                      faces_size;
+    Face                    faces[faces_size];
+}
+
+Face {
+    s1                      material;
+    s4                      size;
+    {
+        Vertex              vertex;
+        TextureCoordinate   textureCoordinate;
+        Vertex              normal;
+    }                       elements[size];
+    Vertex                  faceNormal;
+}
+
+Vertex {
+    r4                      x;
+    r4                      y;
+    r4                      z;
+}
+
+TextureCoordinate {
+    r4                      u;
+    r4                      v;
+}
+
+Material {
+    s1                      id;
+    UTF                     texture;
+}
+
+/// primitives
+
+UTF: DataInput.readUTF
+u1:  DataInput.readUnsignedByte
+s1:  DataInput.readByte
+s2:  DataInput.readShort
+s4:  DataInput.readInt
+r4:  DataInput.readFloat
+

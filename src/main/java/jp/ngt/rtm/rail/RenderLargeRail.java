@@ -18,22 +18,26 @@ public class RenderLargeRail extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        this.renderTileEntityLargeRail((TileEntityLargeRailCore) tileEntity, d0, d1, d2, f);
+        this.renderTileEntityLargeRail((TileEntityLargeRailBase) tileEntity, d0, d1, d2, f);
     }
 
-    private void renderTileEntityLargeRail(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6, float par8) {
-        if (!tileEntity.isLoaded()) {
+    private void renderTileEntityLargeRail(TileEntityLargeRailBase tileEntity, double par2, double par4, double par6, float par8) {
+        TileEntityLargeRailCore core = tileEntity.getRailCore();
+
+        if (core == null || !core.isLoaded() || core.shouldRender(tileEntity)) {
             return;
         }
+        core.setTickRender(tileEntity);
 
         GL11.glPushMatrix();
+        GL11.glTranslatef(core.xCoord - tileEntity.xCoord, core.yCoord - tileEntity.yCoord, core.zCoord - tileEntity.zCoord);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_CULL_FACE);
 
         try {
-            ModelSetRailClient modelSet = (ModelSetRailClient) tileEntity.getProperty().getModelSet();
+            ModelSetRailClient modelSet = (ModelSetRailClient) core.getProperty().getModelSet();
             RailPartsRenderer renderer = (RailPartsRenderer) modelSet.model.renderer;
-            renderer.renderRail(tileEntity, par2, par4, par6, par8);
+            renderer.renderRail(core, par2, par4, par6, par8);
         } catch (ClassCastException ignored) {
         }
 

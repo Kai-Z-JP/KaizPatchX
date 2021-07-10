@@ -13,6 +13,7 @@ import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailPosition;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -21,6 +22,8 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.Arrays;
 
 public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
+    private long lastRenderTime;
+    private TileEntityLargeRailBase lastRenderTileEntity;
     protected boolean isCollidedTrain = false;
     public boolean colliding = false;
     private int signal = 0;
@@ -101,6 +104,15 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         {
             this.railmap = new RailMap(this.railPositions[0], this.railPositions[1]);
         }
+    }
+
+    public boolean shouldRender(TileEntityLargeRailBase tileEntity) {
+        return this.lastRenderTime == Minecraft.getSystemTime() && this.lastRenderTileEntity != tileEntity;
+    }
+
+    public void setTickRender(TileEntityLargeRailBase tileEntity) {
+        this.lastRenderTime = Minecraft.getSystemTime();
+        this.lastRenderTileEntity = tileEntity;
     }
 
     /**

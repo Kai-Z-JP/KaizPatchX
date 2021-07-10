@@ -185,7 +185,8 @@ public class BlockLargeRailBase extends BlockContainer {
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntityLargeRailBase tile0 = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
         TileEntityLargeRailCore core = tile0.getRailCore();
-        if (!world.isRemote && core != null) {
+        if (!world.isRemote && core != null && !core.breaking) {
+            core.breaking = true;
             Arrays.stream(core.getAllRailMaps()).forEach(rm -> rm.breakRail(world, core.getProperty(), core));
         }
         super.breakBlock(world, x, y, z, block, meta);

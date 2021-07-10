@@ -22,6 +22,7 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.Arrays;
 
 public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
+    public boolean breaking;
     private long lastRenderTime;
     private TileEntityLargeRailBase lastRenderTileEntity;
     protected boolean isCollidedTrain = false;

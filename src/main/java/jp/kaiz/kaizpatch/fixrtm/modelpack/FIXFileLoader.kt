@@ -1,3 +1,5 @@
+//Copyright © 2021 anatawa12.
+
 package jp.kaiz.kaizpatch.fixrtm.modelpack
 
 import jp.kaiz.kaizpatch.fixrtm.directoryDigestBaseStream

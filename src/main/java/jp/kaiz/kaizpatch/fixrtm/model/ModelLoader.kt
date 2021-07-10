@@ -1,3 +1,5 @@
+//Copyright © 2021 anatawa12.
+
 @file:JvmName("ModelLoaderKt")
 
 package jp.kaiz.kaizpatch.fixrtm.model

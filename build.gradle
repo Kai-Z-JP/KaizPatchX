@@ -1,4 +1,5 @@
 buildscript {
+    ext.kotlin_version = '1.5.20'
     repositories {
         mavenCentral()
         maven {
@@ -10,13 +11,20 @@ buildscript {
         classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.6') {
             changing = true
         }
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-plugins {
-    id "com.anatawa12.jarInJar" version "1.0.1"
+//plugins {
+//    id "com.anatawa12.jarInJar" version "1.0.1"
+//}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
 }
 
 apply plugin: 'forge'
+apply plugin: 'kotlin'
 
 def baseversion = "src1.7.10_20200822"
 version = "SNAPSHOT"
@@ -41,7 +49,8 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    embed 'org.jetbrains:annotations:20.1.0'
 }
 
 processResources {
@@ -73,12 +82,46 @@ task sourcesJar(type: Jar) {
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-tasks.embedJarInJar {
-    dependsOn tasks.reobf
-    target = "FMLInCpw"
-    basePackage = "com.github.com.Kai_Z_JP.KaizPatch.jarInJar"
+//tasks.embedJarInJar {
+//    dependsOn tasks.reobf
+//    target = "FMLInCpw"
+//    basePackage = "com.github.com.Kai_Z_JP.KaizPatch.jarInJar"
+//}
+
+//tasks.assemble {
+//    dependsOn tasks.embedJarInJar
+//}
+
+jar {
+    dependsOn configurations.compile
+    from {
+        configurations.embed.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    configurations.embed.each { dep ->
+        from(project.zipTree(dep)) {
+        }
+    }
+
+    from(rootDir) {
+        include 'README.md'
+        include 'LICENSE'
+    }
 }
 
-tasks.assemble {
-    dependsOn tasks.embedJarInJar
+repositories {
+    mavenCentral()
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 public abstract class PolygonModel implements IModelNGT {
     protected String fileName;
     protected int drawMode;
-    protected VecAccuracy accuracy;
-    protected float[] sizeBox = new float[6];
+    public VecAccuracy accuracy;
+    public float[] sizeBox = new float[6];
 
     /**
      * 全ての頂点

@@ -2,6 +2,7 @@ package jp.ngt.rtm.block;
 
 import jp.ngt.ngtlib.block.BlockUtil;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntitySignBoard;
@@ -184,5 +185,13 @@ public class BlockSignBoard extends BlockContainer {
         }
         Block block = world.getBlock(x, y, z);
         return block.shouldCheckWeakPower(world, x, y, z, side) ? 15 : block.isProvidingWeakPower(world, x, y, z, side);
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
+        if (world.isRemote || PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_ORNAMENT)) {
+            return super.removedByPlayer(world, player, x, y, z, willHarvest);
+        }
+        return false;
     }
 }

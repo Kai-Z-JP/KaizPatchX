@@ -80,6 +80,7 @@ public final class RTMCore {
     public static final String EDIT_RAIL = "editRail";
     public static final String DRIVE_TRAIN = "driveTrain";
     public static final String CHANGE_MODEL = "changeModel";
+    public static final String EDIT_ORNAMENT = "editOrnament";
 
     public static float trainSoundVol;
     public static float gunSoundVol;
@@ -205,6 +206,7 @@ public final class RTMCore {
         PermissionManager.INSTANCE.registerPermission(RTMCore.EDIT_RAIL);
         PermissionManager.INSTANCE.registerPermission(RTMCore.DRIVE_TRAIN);
         PermissionManager.INSTANCE.registerPermission(RTMCore.CHANGE_MODEL);
+        PermissionManager.INSTANCE.registerPermission(RTMCore.EDIT_ORNAMENT);
     }
 
     @EventHandler

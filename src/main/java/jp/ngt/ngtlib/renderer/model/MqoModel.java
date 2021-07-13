@@ -121,7 +121,9 @@ public class MqoModel extends PolygonModel {
 
     @Override
     protected void postInit() {
-        this.groupObjects.add(this.currentGroupObject);
+        if (this.currentGroupObject != null) {
+            this.groupObjects.add(this.currentGroupObject);
+        }
         this.vertices.addAll(this.currentVertices);
         this.currentVertices.clear();
         this.mirrorVertex.clear();

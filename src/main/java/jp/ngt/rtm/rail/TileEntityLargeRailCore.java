@@ -16,10 +16,13 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     public boolean breaking;
@@ -32,6 +35,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     //private byte railShape;
     private byte railShapeTemp = -1;
     private RailProperty property = ItemRail.getDefaultProperty();
+    public final List<RailProperty> subRails = new ArrayList<>();
 
     protected RailPosition[] railPositions;
     protected RailMap railmap;
@@ -40,7 +44,10 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     private AxisAlignedBB renderAABB;
 
     @SideOnly(Side.CLIENT)
-    public DisplayList glList;
+    public DisplayList[] glLists;
+
+    @SideOnly(Side.CLIENT)
+    public DisplayList railBlocks;
     /**
      * レールを再描画するかどうか(明るさ変更等)
      */
@@ -61,7 +68,27 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
             this.property = RTMRail.getProperty(shape, 0);
         }
         //this.railShape = nbt.getByte("railShape");
+        this.readRailProperties(nbt);
         this.readRailData(nbt);
+    }
+
+    public void readRailProperties(NBTTagCompound nbt) {
+        if (nbt.hasKey("Property")) {
+            this.property = RailProperty.readFromNBT(nbt.getCompoundTag("Property"));
+            this.subRails.clear();
+            NBTTagList list = nbt.getTagList("SubRails", 10);
+            for (int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound nbt1 = list.getCompoundTagAt(i);
+                RailProperty property = RailProperty.readFromNBT(nbt1);
+                this.subRails.add(property);
+            }
+        } else//.24互換
+        {
+            byte shape = nbt.getByte("railShape");
+            //int texType = ((BlockLargeRailBase)this.getBlockType()).railTextureType;
+            this.railShapeTemp = shape;
+            this.property = RTMRail.getProperty(shape, 0);
+        }
     }
 
     protected void readRailData(NBTTagCompound nbt) {
@@ -89,10 +116,21 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         super.writeToNBT(nbt);
 
         //nbt.setByte("railShape", this.railShape);
+        this.writeRailProperties(nbt);
+        this.writeRailData(nbt);
+    }
+
+    public void writeRailProperties(NBTTagCompound nbt) {
         NBTTagCompound nbtProp = new NBTTagCompound();
         this.property.writeToNBT(nbtProp);
         nbt.setTag("Property", nbtProp);
-        this.writeRailData(nbt);
+        NBTTagList tagList = new NBTTagList();
+        this.subRails.forEach(property -> {
+            NBTTagCompound nbtProp1 = new NBTTagCompound();
+            property.writeToNBT(nbtProp1);
+            tagList.appendTag(nbtProp1);
+        });
+        nbt.setTag("SubRails", tagList);
     }
 
     protected void writeRailData(NBTTagCompound nbt) {
@@ -120,7 +158,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
      * レール情報の読み込みが完了してるかどうか(=RailPositionが存在する)
      */
     public boolean isLoaded() {
-        return this.railPositions != null;
+        return (this.railPositions != null && this.railPositions.length > 0);
     }
 
     public RailPosition[] getRailPositions() {
@@ -169,14 +207,48 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     @Override
     public void onChunkUnload() {
         if (this.worldObj.isRemote) {
-            GLHelper.deleteGLList(this.glList);
+            this.deleteGLList();
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void deleteGLList() {
+        if (this.glLists != null) {
+            Arrays.stream(this.glLists).forEach(GLHelper::deleteGLList);
+        }
+        GLHelper.deleteGLList(this.railBlocks);
+        this.glLists = new DisplayList[this.subRails.size() + 1];
+        this.railBlocks = null;
+    }
+
+
+    public void replaceRail(RailProperty state) {
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        state.writeToNBT(nbtTagCompound);
+        this.property = RailProperty.readFromNBT(nbtTagCompound);
+        this.subRails.clear();
+        this.sendPacket();
+    }
+
+    public void addSubRail(RailProperty state) {
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        state.writeToNBT(nbtTagCompound);
+        RailProperty newState = RailProperty.readFromNBT(nbtTagCompound);
+        RailProperty oldState = this.subRails.stream().filter(state1 -> state1.railModel.equals(newState.railModel)).findFirst().orElse(null);
+        if (oldState == null) {
+            if (!this.getProperty().railModel.equals(newState.railModel)) {
+                this.subRails.add(newState);
+            }
+        } else {
+            this.subRails.remove(oldState);
+        }
+        this.sendPacket();
     }
 
     @Override
     public void invalidate() {
         if (this.worldObj.isRemote) {
-            GLHelper.deleteGLList(this.glList);
+            this.deleteGLList();
         }
     }
 

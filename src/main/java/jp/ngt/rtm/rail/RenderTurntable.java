@@ -46,7 +46,7 @@ public class RenderTurntable extends RenderLargeRail {
 
             try {
                 RailPartsRenderer renderer = (RailPartsRenderer) modelSet.model.renderer;
-                renderer.renderRail(tileEntity, par2, par4, par6, par8);
+                renderer.renderRail(tileEntity, 0, par2, par4, par6, par8);
             } catch (ClassCastException ignored) {
             }
         }

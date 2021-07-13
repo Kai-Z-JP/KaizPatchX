@@ -50,8 +50,14 @@ public class ItemRail extends ItemWithModel {
                 return true;
             }
 
-            core.setProperty(ItemRail.getProperty(itemStack));
-            core.sendPacket();
+            RailProperty property = ItemRail.getProperty(itemStack);
+            if (property != null) {
+                if (player.isSneaking()) {
+                    core.replaceRail(property);
+                } else {
+                    core.addSubRail(property);
+                }
+            }
         }
         return true;
     }

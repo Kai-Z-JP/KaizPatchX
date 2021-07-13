@@ -45,7 +45,9 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
         this.sY = tile.getStartPoint()[1];
         this.sZ = tile.getStartPoint()[2];
         this.property = new NBTTagCompound();
-        tile.getProperty().writeToNBT(this.property);
+        NBTTagCompound nbt = new NBTTagCompound();
+        tile.writeRailProperties(nbt);
+        this.property = nbt;
         this.railPositions = tile.getRailPositions();
 
         switch (par2Type) {
@@ -110,7 +112,7 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
         if (tile instanceof TileEntityLargeRailCore) {
             TileEntityLargeRailCore tile0 = (TileEntityLargeRailCore) tile;
             tile0.setStartPoint(message.sX, message.sY, message.sZ);
-            tile0.setProperty(RailProperty.readFromNBT(message.property));
+            tile0.readRailProperties(message.property);
             tile0.setRailPositions(message.railPositions);
             if (message.dataType == TYPE_NORMAL && tile instanceof TileEntityLargeRailNormalCore) {
             } else if (message.dataType == TYPE_SLOPE && tile instanceof TileEntityLargeRailSlopeCore) {

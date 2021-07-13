@@ -579,12 +579,20 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                 }
             } else if (button.id == 114)//車内放送
             {
+                String[][] announce = (this.modelset.getConfig()).sound_Announcement;
                 i0 = 9;
                 i1 = this.train.getTrainStateData(i0) - 1;
+                if (announce != null && i1 < 0) {
+                    i1 = announce.length - 1;
+                }
             } else if (button.id == 115)//車内放送
             {
+                String[][] announce = (this.modelset.getConfig()).sound_Announcement;
                 i0 = 9;
                 i1 = this.train.getTrainStateData(i0) + 1;
+                if (announce != null && i1 >= announce.length) {
+                    i1 = 0;
+                }
             } else if (button.id == 128) {
                 return;
             } else if (button.id == 129) {

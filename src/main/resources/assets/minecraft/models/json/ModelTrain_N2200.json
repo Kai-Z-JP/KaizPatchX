@@ -1,0 +1,275 @@
+{
+  "trainName": "N2200",
+  "trainType": "EC",
+  "trainModel2": {
+    "modelFile": "n2100_mc.mqoz",
+    "textures": [
+      [
+        "mat_n2100_body",
+        "textures/train/n2100/n2100.png",
+        "OneTex"
+      ],
+      [
+        "mat_n2100_body_tp",
+        "textures/train/n2100/n2100.png",
+        "AlphaBlend, OneTex"
+      ],
+      [
+        "mat_n2100_light",
+        "textures/train/n2100/n2100.png",
+        "Light, OneTex"
+      ]
+    ],
+    "rendererPath": "scripts/RenderN2100.js"
+  },
+  "bogieModel2": {
+    "modelFile": "n2100_bogie_mc.mqoz",
+    "textures": [
+      [
+        "mat_n2100_bogie",
+        "textures/train/n2100/n2100_bogie.png"
+      ]
+    ]
+  },
+  "buttonTexture": "textures/train/n2100/button_n2200.png",
+  "sound_Horn": "rtm:sounds/train/rtm_223mh.ogg",
+  "sound_BrakeRelease": "rtm:sounds/train/rtm_223_release.ogg",
+  "sound_BrakeRelease2": "rtm:sounds/train/brakeR_w.ogg",
+  "sound_Announcement": [
+    [
+      "関空快速",
+      "rtm:sounds/train/rtm_223_kankuRapid.ogg"
+    ],
+    [
+      "Test",
+      "hoge:sounds/train/test.ogg"
+    ]
+  ],
+  "soundScriptPath": "scripts/sound_223.js",
+  "muteJointSound": true,
+  "interiorLights": [
+    {
+      "pos": [
+        0.0,
+        3.3,
+        5.0
+      ]
+    },
+    {
+      "pos": [
+        0.0,
+        3.3,
+        -5.0
+      ]
+    }
+  ],
+  "seatPosF": [
+    [
+      1.1,
+      1.09,
+      -6.6,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      -6.0,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      -5.4,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      -2.1,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      -1.5,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      -0.9,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      -0.3,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      6.6,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      6.0,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      5.4,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      2.1,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      1.5,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      0.9,
+      2
+    ],
+    [
+      1.1,
+      1.09,
+      0.3,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -6.6,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -6.0,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -5.4,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -2.1,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -1.5,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -0.9,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      -0.3,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      6.6,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      6.0,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      5.4,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      2.1,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      1.5,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      0.9,
+      2
+    ],
+    [
+      -1.1,
+      1.09,
+      0.3,
+      2
+    ]
+  ],
+  "trainDistance": 7.3,
+  "playerPos": [
+    [
+      0.62,
+      1.1,
+      6.57
+    ],
+    [
+      -0.62,
+      1.1,
+      -6.57
+    ]
+  ],
+  "bogiePos": [
+    [
+      0.0,
+      0.0,
+      4.8
+    ],
+    [
+      0.0,
+      0.0,
+      -4.8
+    ]
+  ],
+  "maxSpeed": [
+    0.278,
+    0.556,
+    0.834,
+    1.112,
+    1.389
+  ],
+  "rolling": 0.2,
+  "smoothing": true,
+  "doCulling": true,
+  "rollSpeedCoefficient": 0.125,
+  "rollVariationCoefficient": 0.51,
+  "rollWidthCoefficient": 1.0,
+  "tags": "ngt5479 N2100"
+}

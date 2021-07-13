@@ -1,0 +1,24 @@
+{
+	"railName": "1067mm_Guard",
+	"model": {
+		"modelFile": "guard_rail_1067mm.mqo",
+		"textures": [
+			[
+				"default",
+				"textures/rail/largeRail.png",
+				""
+			]
+		]
+	},
+	"buttonTexture": "textures/rail/button_1067mm_Guard.png",
+	"defaultBallast": [
+		{
+			"blockName": "air",
+			"blockMetadata": 0,
+			"height": 0.0625
+		}
+	],
+	"allowCrossing": true,
+	"accuracy": "LOW",
+	"tags": "ngt5479 1067mm Guard"
+}

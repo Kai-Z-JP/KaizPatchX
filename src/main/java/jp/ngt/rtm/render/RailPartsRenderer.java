@@ -4,10 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.renderer.GLHelper;
-import jp.ngt.ngtlib.renderer.IRenderer;
-import jp.ngt.ngtlib.renderer.NGTRenderHelper;
-import jp.ngt.ngtlib.renderer.PolygonRenderer;
+import jp.ngt.ngtlib.renderer.*;
 import jp.ngt.ngtlib.renderer.model.Face;
 import jp.ngt.ngtlib.renderer.model.GroupObject;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRailClient;
@@ -27,6 +24,7 @@ import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClient> {
+    protected int currentRailIndex;
     private final FloatBuffer convBuf;
 
     public RailPartsRenderer(String... par1) {
@@ -44,7 +42,8 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     /**
      * RenderLargeRailから呼ばれる
      */
-    public void renderRail(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6, float par8) {
+    public void renderRail(TileEntityLargeRailCore tileEntity, int index, double par2, double par4, double par6, float par8) {
+        this.currentRailIndex = index;
         this.renderRailStatic(tileEntity, par2, par4, par6, par8);
 
         this.renderRailDynamic(tileEntity, par2, par4, par6, par8);
@@ -84,11 +83,21 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * スクリプトから呼び出し
      */
     public void renderStaticParts(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6) {
-        boolean hasGLList = GLHelper.isValid(tileEntity.glList);
+        boolean hasGLList = true;
+        if (tileEntity.glLists == null) {
+            tileEntity.glLists = new DisplayList[tileEntity.subRails.size() + 1];
+            hasGLList = false;
+        } else if (tileEntity.glLists.length != tileEntity.subRails.size() + 1) {
+            Arrays.stream(tileEntity.glLists).forEach(GLHelper::deleteGLList);
+            tileEntity.glLists = new DisplayList[tileEntity.subRails.size() + 1];
+            hasGLList = false;
+        }
+        if (hasGLList) {
+            hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
+        }
         if (!hasGLList) {
-            tileEntity.glList = GLHelper.generateGLList();
-        } else if (tileEntity.shouldRerenderRail)//再描画
-        {
+            tileEntity.glLists[this.currentRailIndex] = GLHelper.generateGLList(tileEntity.glLists[this.currentRailIndex]);
+        } else if (tileEntity.shouldRerenderRail) {
             hasGLList = false;
         }
 
@@ -99,11 +108,14 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
                 int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
                 FloatBuffer fb = this.createMatrix(fa);
 
-                GLHelper.startCompile(tileEntity.glList);//GL_COMPILE_AND_EXECUTEは画面がチラつく
+                GLHelper.startCompile(tileEntity.glLists[this.currentRailIndex]);//GL_COMPILE_AND_EXECUTEは画面がチラつく
                 this.tessellateParts(tileEntity, fb, brightness, this.modelSet.model.model.getGroupObjects());
                 GLHelper.endCompile();
                 tileEntity.shouldRerenderRail = false;
                 hasGLList = true;
+            } else {
+                tileEntity.shouldRerenderRail = true;
+                hasGLList = false;
             }
         }
 
@@ -116,7 +128,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
             GL11.glPushMatrix();
             GL11.glTranslatef((float) (par2 + x), (float) (par4 + y), (float) (par6 + z));
             this.bindTexture(this.getModelObject().textures[0].material.texture);//ディスプレイリストに入れると生成重い
-            GLHelper.callList(tileEntity.glList);
+            GLHelper.callList(tileEntity.glLists[this.currentRailIndex]);
             GL11.glPopMatrix();
         }
     }

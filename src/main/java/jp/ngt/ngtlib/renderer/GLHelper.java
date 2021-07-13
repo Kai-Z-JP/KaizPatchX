@@ -13,6 +13,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -72,6 +73,20 @@ public final class GLHelper {
     public static DisplayList generateGLList() {
         LOCKER.lock();
         DisplayList list = new DisplayList(GL11.glGenLists(1));
+        INSTANCE.activeGLLists.add(list);
+        LOCKER.unlock();
+        return list;
+    }
+
+    public static DisplayList generateGLList(@Nullable DisplayList par1) {
+        LOCKER.lock();
+        int value;
+        if (par1 != null && par1.value > 0 && GL11.glIsList(par1.value)) {
+            value = par1.value;
+        } else {
+            value = GL11.glGenLists(1);
+        }
+        DisplayList list = new DisplayList(value);
         INSTANCE.activeGLLists.add(list);
         LOCKER.unlock();
         return list;

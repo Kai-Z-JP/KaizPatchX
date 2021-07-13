@@ -3,11 +3,14 @@ package jp.ngt.rtm.rail;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRailClient;
+import jp.ngt.rtm.rail.util.RailProperty;
 import jp.ngt.rtm.render.RailPartsRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class RenderLargeRail extends TileEntitySpecialRenderer {
@@ -37,7 +40,12 @@ public class RenderLargeRail extends TileEntitySpecialRenderer {
         try {
             ModelSetRailClient modelSet = (ModelSetRailClient) core.getProperty().getModelSet();
             RailPartsRenderer renderer = (RailPartsRenderer) modelSet.model.renderer;
-            renderer.renderRail(core, par2, par4, par6, par8);
+            renderer.renderRail(core, 0, par2, par4, par6, par8);
+            IntStream.range(0, core.subRails.size()).forEach(i -> {
+                RailProperty property = core.subRails.get(i);
+                RailPartsRenderer subRenderer = (RailPartsRenderer) ((ModelSetRailClient) property.getModelSet()).model.renderer;
+                subRenderer.renderRail(core, i + 1, par2, par4, par6, par8);
+            });
         } catch (ClassCastException ignored) {
         }
 

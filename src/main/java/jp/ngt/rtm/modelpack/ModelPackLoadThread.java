@@ -139,8 +139,9 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
             return name.endsWith(".json") && name.startsWith("Model");
         });
 
-        List<File> fileList1 = TextureManager.INSTANCE.loadTextures(this);
-        List<File> fileList2 = TextureManager.INSTANCE.loadRailRoadSigns(this);
+        List<File> signBoards = TextureManager.INSTANCE.loadTextures(this);
+        List<File> railRoadSigns = TextureManager.INSTANCE.loadRailRoadSigns(this);
+        List<File> flags = TextureManager.INSTANCE.loadFlags(this);
 
         this.setValue(0, 4, "Registering All Models");
         this.setMaxValue(1, fileList0.size(), "");
@@ -172,8 +173,9 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
                 }
             })).collect(Collectors.toList());
 
-            TextureManager.INSTANCE.registerTextures(this, fileList1, executor, list);
-            TextureManager.INSTANCE.registerRailRoadSigns(this, fileList2, executor, list);
+            TextureManager.INSTANCE.registerTextures(this, signBoards, executor, list, TextureManager.TexturePropertyType.SignBoard);
+            TextureManager.INSTANCE.registerTextures(this, flags, executor, list, TextureManager.TexturePropertyType.Flag);
+            TextureManager.INSTANCE.registerRailRoadSigns(this, railRoadSigns, executor, list);
         } finally {
             executor.shutdown();
         }

@@ -27,28 +27,26 @@ public final class TextureManager {
         });
     }
 
-    public void registerTextures(IProgressWatcher par1, List<File> fileList, ExecutorService executor, List<Future<?>> list) {
-        Arrays.stream(TexturePropertyType.values()).filter(tpt -> tpt.useJson).forEach(tpt -> {
-            Map<String, TextureProperty> map = new HashMap<>();
-            this.allTextureMap.put(tpt, map);
-            par1.addMaxValue(1, fileList.size());
-            fileList.forEach(file -> list.add(executor.submit(() -> {
-                {
-                    String json = NGTJson.readFromJson(file);
-                    try {
-                        TextureProperty property = (TextureProperty) NGTJson.getObjectFromJson(json, tpt.type);
-                        if (property != null) {
-                            property.init();
-                            map.put(property.texture, property);
-                            par1.addValue(1, property.texture);
+    public void registerTextures(IProgressWatcher par1, List<File> fileList, ExecutorService executor, List<Future<?>> list, TexturePropertyType type) {
+        Map<String, TextureProperty> map = new HashMap<>();
+        this.allTextureMap.put(type, map);
+        par1.addMaxValue(1, fileList.size());
+        fileList.forEach(file -> list.add(executor.submit(() -> {
+            {
+                String json = NGTJson.readFromJson(file);
+                try {
+                    TextureProperty property = (TextureProperty) NGTJson.getObjectFromJson(json, type.type);
+                    if (property != null) {
+                        property.init();
+                        map.put(property.texture, property);
+                        par1.addValue(1, property.texture);
 //						NGTLog.debug("Register Texture : %s (%s)", property.texture, tpt.toString());
-                        }
-                    } catch (Exception e) {
-                        throw new NGTFileLoadException(String.format("[TextureManager] Failed to load : %s", file.getName()), e);
                     }
+                } catch (Exception e) {
+                    throw new NGTFileLoadException(String.format("[TextureManager] Failed to load : %s", file.getName()), e);
                 }
-            })));
-        });
+            }
+        })));
     }
 
     public List<File> loadRailRoadSigns(IProgressWatcher par1) {
@@ -56,6 +54,14 @@ public final class TextureManager {
         return NGTFileLoader.findFile((file) -> {
             String name = file.getName();
             return name.startsWith("rrs_") && name.endsWith(".png");
+        });
+    }
+
+    public List<File> loadFlags(IProgressWatcher par1) {
+        par1.setValue(0, 3, "Loading Flag");
+        return NGTFileLoader.findFile((file) -> {
+            String name = file.getName();
+            return name.startsWith("Flag_") && name.endsWith(".json");
         });
     }
 
@@ -70,7 +76,6 @@ public final class TextureManager {
             map.put(prop.texture, prop);
             par1.addValue(1, name);
         })));
-
     }
 
     public <T extends TextureProperty> T getProperty(TexturePropertyType type, String key) {

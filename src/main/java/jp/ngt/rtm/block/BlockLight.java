@@ -1,9 +1,12 @@
 package jp.ngt.rtm.block;
 
+import jp.ngt.ngtlib.util.PermissionManager;
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityLight;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -49,5 +52,13 @@ public class BlockLight extends BlockMachineBase {
     protected void updateBlockState(World world, int x, int y, int z) {
         TileEntityLight tile = (TileEntityLight) world.getTileEntity(x, y, z);
         tile.isGettingPower = world.isBlockIndirectlyGettingPowered(x, y, z);
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
+        if (world.isRemote || PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_ORNAMENT)) {
+            return super.removedByPlayer(world, player, x, y, z, willHarvest);
+        }
+        return false;
     }
 }

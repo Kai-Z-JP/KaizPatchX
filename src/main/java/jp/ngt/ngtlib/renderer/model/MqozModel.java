@@ -7,6 +7,7 @@ import net.minecraftforge.client.model.ModelFormatException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @SideOnly(Side.CLIENT)
@@ -19,8 +20,13 @@ public class MqozModel extends MqoModel {
     protected void init(InputStream[] is) throws ModelFormatException {
         ZipInputStream zis = new ZipInputStream(is[0]);
         try {
-            zis.getNextEntry();//zip内にmqoは1つとして処理
-            super.init(new InputStream[]{zis});
+            ZipEntry zEntry;
+            while ((zEntry = zis.getNextEntry()) != null) {
+                if (zEntry.getName().endsWith("mqo")) {
+                    super.init(new InputStream[]{zis});
+                    break;
+                }
+            }
             zis.close();
         } catch (IOException e) {
             throw new ModelFormatException("Exception on reading MQOZ.", e);

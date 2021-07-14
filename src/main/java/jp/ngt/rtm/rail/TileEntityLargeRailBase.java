@@ -171,33 +171,48 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
     }
 
     private float[] getBlockHeights(int x, int y, int z, float defaultHeight) {
-        RailMap rm = this.getRailMap(null);
-        if (rm != null) {
-            float[] fa = new float[]{defaultHeight, defaultHeight, defaultHeight, defaultHeight};
-            for (int i = 0; i < fa.length; ++i) {
-                int x0 = x + ((i == 1 || i == 2) ? 1 : 0);
-                int z0 = z + ((i == 0 || i == 1) ? 1 : 0);
+        //RailMap rm = this.getRailMap(null);
+        TileEntityLargeRailCore core = this.getRailCore();
+        if (core == null) {
+            return null;
+        }
+
+        RailMap[] rms = core.getAllRailMaps();
+        if (rms == null) {
+            return null;
+        }
+
+        float[] fa = new float[]{defaultHeight, defaultHeight, defaultHeight, defaultHeight};
+        for (int i = 0; i < fa.length; ++i) {
+            int x0 = x + ((i == 1 || i == 2) ? 1 : 0);
+            int z0 = z + ((i == 0 || i == 1) ? 1 : 0);
+            double distanceSq = Double.MAX_VALUE;
+
+            for (RailMap rm : rms) {
                 int index = rm.getNearlestPoint(SPLIT, x0, z0);
                 if (index < 0) {
                     index = 0;
                 }
 
                 double[] rpos = rm.getRailPos(SPLIT, index);
-                double height = rm.getRailHeight(SPLIT, index);
-                float yaw = rm.getRailRotation(SPLIT, index);
-                float cant = rm.getCant(SPLIT, index);
+                double dSq2 = NGTMath.getDistanceSq(x0, z0, rpos[1], rpos[0]);
+                if (dSq2 < distanceSq) {
+                    distanceSq = dSq2;
 
-                float yaw2 = (float) NGTMath.toDegrees(Math.atan2(rpos[1] - x0, rpos[0] - z0));
-                //最も近いレール上の点からの距離
-                double len = Math.sqrt((rpos[1] - x0) * (rpos[1] - x0) + (rpos[0] - z0) * (rpos[0] - z0));
-                //レールYawに対するベクトル角により左右位置を判断
-                boolean dirFlag = MathHelper.wrapAngleTo180_float(yaw2 - yaw) > 0.0F;
-                double h2 = NGTMath.sin(cant) * len * (dirFlag ? -1.0F : 1.0F);
-                fa[i] += (float) (height - (double) y + h2 - 0.0625);
+                    double height = rm.getRailHeight(SPLIT, index);
+                    float yaw = rm.getRailRotation(SPLIT, index);
+                    float cant = rm.getCant(SPLIT, index);
+                    float yaw2 = (float) NGTMath.toDegrees(Math.atan2(rpos[1] - x0, rpos[0] - z0));
+                    //最も近いレール上の点からの距離
+                    double len = Math.sqrt((rpos[1] - x0) * (rpos[1] - x0) + (rpos[0] - z0) * (rpos[0] - z0));
+                    //レールYawに対するベクトル角により左右位置を判断
+                    boolean dirFlag = MathHelper.wrapAngleTo180_float(yaw2 - yaw) > 0.0F;
+                    double h2 = NGTMath.sin(cant) * len * (dirFlag ? -1.0F : 1.0F);
+                    fa[i] = (float) (height - (double) y + h2);
+                }
             }
-            return fa;
         }
-        return null;
+        return fa;
     }
 
     /**

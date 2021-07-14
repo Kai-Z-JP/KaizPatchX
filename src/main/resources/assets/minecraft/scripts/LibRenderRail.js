@@ -1,54 +1,3 @@
-var renderClass = "jp.ngt.rtm.render.RailPartsRenderer";
-importPackage(Packages.org.lwjgl.opengl);
-importPackage(Packages.jp.ngt.rtm.render);
-importPackage(Packages.jp.ngt.rtm.rail.util);
-
-TONG_MOVE = 0.35;
-TONG_POS = 1.0 / 10.0;
-HALF_GAUGE = 0.5647;
-/**レール長で割る*/
-YAW_RATE = 450.0;
-
-function init(par1, par2) {
-    staticParts = renderer.registerParts(new Parts("base", "ballast"));
-    fixtureL = renderer.registerParts(new Parts("springL", "boltL"));
-    fixtureR = renderer.registerParts(new Parts("springR", "boltR"));
-    leftParts = renderer.registerParts(new Parts("railL", "sideL"));
-    rightParts = renderer.registerParts(new Parts("railR", "sideR"));
-    tongFL = renderer.registerParts(new Parts("L0"));
-    tongBL = renderer.registerParts(new Parts("L1"));
-    tongFR = renderer.registerParts(new Parts("R0"));
-    tongBR = renderer.registerParts(new Parts("R1"));
-}
-
-function renderRailStatic(tileEntity, posX, posY, posZ, par8, pass) {
-    renderer.renderStaticParts(tileEntity, posX, posY, posZ);
-}
-
-function renderRailDynamic(tileEntity, posX, posY, posZ, par8, pass) {
-    if (renderer.isSwitchRail(tileEntity)) {
-        renderRailDynamic2(tileEntity, posX, posY, posZ);
-    }
-}
-
-function shouldRenderObject(tileEntity, objName, len, pos) {
-    if (renderer.isSwitchRail(tileEntity))//分岐レール
-    {
-        //可動部パーツは除外
-        if (staticParts.containsName(objName)) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return staticParts.containsName(objName)
-            || leftParts.containsName(objName)
-            || rightParts.containsName(objName)
-            || fixtureL.containsName(objName)
-            || fixtureR.containsName(objName);
-    }
-}
-
 function renderRailDynamic2(tileEntity, par2, par4, par6) {
     if (tileEntity.getSwitch() == null) {
         return;
@@ -57,7 +6,7 @@ function renderRailDynamic2(tileEntity, par2, par4, par6) {
     GL11.glPushMatrix();
     var rp = tileEntity.getRailPositions()[0];
     var x = rp.posX - rp.blockX;
-    var y = rp.posY - rp.blockY + 0.0625;
+    var y = rp.posY - rp.blockY - 0.0625;
     var z = rp.posZ - rp.blockZ;
     GL11.glTranslatef(par2 + x, par4 + y, par6 + z);
 
@@ -80,8 +29,7 @@ function renderPoint(tileEntity, point) {
         var halfMax = Math.floor(max / 2);
         var startIndex = point.mainDirIsPositive ? 0 : halfMax;
         var endIndex = point.mainDirIsPositive ? halfMax : max;
-        renderer.renderRailMapStatic(tileEntity, rm, max, startIndex, endIndex,
-            leftParts, rightParts, fixtureR, fixtureL);
+        renderer.renderRailMapStatic(tileEntity, rm, max, startIndex, endIndex, leftParts, rightParts);
     } else {
         var tongIndex = Math.floor(point.rmMain.getLength() * 2.0 * TONG_POS);//どの位置を末端モデルで描画
         var move = point.getMovement() * TONG_MOVE;
@@ -106,6 +54,7 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
     var endIndex = par3 ? halfMax : max;
 
     var origPos = rms.getRailPos(max, 0);
+    var origHeight = rms.getRailHeight(max, 0);
     var startPos = tileEntity.getStartPoint();
     var revXZ = RailPosition.REVISION[tileEntity.getRailPositions()[0].direction];
     //当RailMapのレール全体の始点に対する移動差分
@@ -120,25 +69,26 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
     for (var i = startIndex; i <= endIndex; ++i) {
         var p1 = rms.getRailPos(max, i);
         var x0 = moveX + (p1[1] - origPos[1]);
+        var y0 = rms.getRailHeight(max, i) - origHeight;
         var z0 = moveZ + (p1[0] - origPos[0]);
         var yaw = rms.getRailRotation(max, i);
+        var pitch = rms.getRailPitch(max, i);
         var brightness = renderer.getBrightness(
             renderer.getWorld(tileEntity),
             p1[1], renderer.getY(tileEntity), p1[0]);
 
         GL11.glPushMatrix();
-        GL11.glTranslatef(x0, 0.0, z0);
+        GL11.glTranslatef(x0, y0, z0);
         GL11.glRotatef(yaw, 0.0, 1.0, 0.0);
+        GL11.glRotatef(-pitch, 1.0, 0.0, 0.0);
         renderer.setBrightness(brightness);
 
         //分岐してない側のレール
         //開始位置が逆の場合は左右反対側のパーツを描画
         if ((par3 && dir == RailDir.LEFT) || (!par3 && dir == RailDir.RIGHT)) {
             rightParts.render(renderer);
-            fixtureR.render(renderer);
         } else {
             leftParts.render(renderer);
-            fixtureL.render(renderer);
         }
 
         //トング部分の離れ度合い(0.0-1.0)
@@ -158,7 +108,6 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
                     tongBL.render(renderer);//トングレール
                 } else if (i > tongIndex) {
                     leftParts.render(renderer);//リードレール
-                    fixtureL.render(renderer);
                 }
             } else//終点を共有
             {
@@ -166,7 +115,6 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
                     tongFR.render(renderer);//トングレール
                 } else if (i < max - tongIndex) {
                     rightParts.render(renderer);//リードレール
-                    fixtureR.render(renderer);
                 }
             }
         } else//dir == RailDir.RIGHT
@@ -177,7 +125,6 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
                     tongBR.render(renderer);//トングレール
                 } else if (i > tongIndex) {
                     rightParts.render(renderer);//リードレール
-                    fixtureR.render(renderer);
                 }
             } else//終点を共有
             {
@@ -185,7 +132,6 @@ function renderRailMapDynamic(tileEntity, rms, dir, par3, move, tongIndex) {
                     tongFL.render(renderer);//トングレール
                 } else if (i < max - tongIndex) {
                     leftParts.render(renderer);//リードレール
-                    fixtureL.render(renderer);
                 }
             }
         }

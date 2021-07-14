@@ -8,6 +8,7 @@ import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
@@ -395,7 +396,8 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     /*---------------------------------------------------------------------------------------------------------------------------------------*/
 
     public static <R extends PartsRenderer> R getRendererWithScript(ResourceLocation par1, String... args) throws ReflectiveOperationException {
-        ScriptEngine se = ScriptUtil.doScript(par1);
+        String text = ModelPackManager.INSTANCE.getScript(par1.getResourcePath());
+        ScriptEngine se = ScriptUtil.doScript(text);
         String s = (String) ScriptUtil.getScriptField(se, "renderClass");
         Class clazz = Launch.classLoader.loadClass(s);
         Constructor<R> constructor = clazz.getConstructor(String[].class);

@@ -280,7 +280,8 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     }
 
     public RailMap[] getAllRailMaps() {
-        return new RailMap[]{this.getRailMap(null)};
+        RailMap rm = this.getRailMap(null);
+        return rm != null ? new RailMap[]{rm} : null;
     }
 
     @Override

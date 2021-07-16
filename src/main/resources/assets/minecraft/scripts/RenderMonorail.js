@@ -23,8 +23,9 @@ function renderRailDynamic(tileEntity, posX, posY, posZ, par8, pass) {
         GL11.glPushMatrix();
         var rp = tileEntity.getRailPositions()[0];
         var x = rp.posX - rp.blockX;
+        var y = rp.posY - rp.blockY - 0.0625;
         var z = rp.posZ - rp.blockZ;
-        GL11.glTranslatef(posX + x, posY, posZ + z);
+        GL11.glTranslatef(posX + x, posY + y, posZ + z);
 
         renderer.bindTexture(renderer.getModelObject().textures[0].material.texture);
 
@@ -63,6 +64,7 @@ function renderPointDynamic(tileEntity, point) {
     var pmEnd = point.rmMain.getRailPos(max, max);
     var pbEnd = point.rmBranch.getRailPos(max, max);
 
+    var origHeight = point.rmMain.getRailHeight(max, 0);
     var startPos = tileEntity.getStartPoint();
     var revXZ = RailPosition.REVISION[tileEntity.getRailPositions()[0].direction];
     //レール全体の始点からの移動差分
@@ -95,6 +97,7 @@ function renderPointDynamic(tileEntity, point) {
         var move = point.getMovement();
         var moveInv = 1.0 - move;
         var x0 = moveX + (pmn[1] * moveInv + pbn[1] * move);
+        var y0 = point.rmMain.getRailHeight(max, i) - origHeight;
         var z0 = moveZ + (pmn[0] * moveInv + pbn[0] * move);
         var yawm = NGTMath.normalizeAngle(point.rmMain.getRailRotation(max, im) + (point.mainDirIsPositive ? 0.0 : 180.0));
         var yawb = NGTMath.normalizeAngle(point.rmBranch.getRailRotation(max, ib) + (point.branchDirIsPositive ? 0.0 : 180.0));
@@ -105,6 +108,7 @@ function renderPointDynamic(tileEntity, point) {
             yawdif += 360.0;
         }
         var yaw = yawm + yawdif * move;
+        var pitch = point.rmMain.getRailPitch(max, i);
 
         var brightness = renderer.getBrightness(
             renderer.getWorld(tileEntity),
@@ -113,8 +117,9 @@ function renderPointDynamic(tileEntity, point) {
             Math.round(renderer.getZ(tileEntity) + z0));
 
         GL11.glPushMatrix();
-        GL11.glTranslatef(x0, 0.0, z0);
+        GL11.glTranslatef(x0, y0, z0);
         GL11.glRotatef(yaw, 0.0, 1.0, 0.0);
+        GL11.glRotatef(-pitch, 1.0, 0.0, 0.0);
         renderer.setBrightness(brightness);
         allParts.render(renderer);
         GL11.glPopMatrix();

@@ -50,14 +50,15 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
             boolean s3 = nbt.getBoolean("switch3");
 
             byte switchType = nbt.getByte("type");
-            this.railPositions = new RailPosition[switchType == 0 ? 3 : 4];
-            this.railPositions[0] = this.getRP(xa1[0], ya1[0], za1[0], ba1[0], s1);
-            this.railPositions[1] = this.getRP(xa1[1], ya1[1], za1[1], ba1[1], s2);
-            this.railPositions[2] = this.getRP(xa1[2], ya1[2], za1[2], ba1[2], s3);
+            RailPosition[] railPositions = new RailPosition[switchType == 0 ? 3 : 4];
+            railPositions[0] = this.getRP(xa1[0], ya1[0], za1[0], ba1[0], s1);
+            railPositions[1] = this.getRP(xa1[1], ya1[1], za1[1], ba1[1], s2);
+            railPositions[2] = this.getRP(xa1[2], ya1[2], za1[2], ba1[2], s3);
             if (switchType != 0) {
                 boolean s4 = nbt.getBoolean("switch4");
-                this.railPositions[3] = this.getRP(xa1[3], ya1[3], za1[3], ba1[3], s4);
+                railPositions[3] = this.getRP(xa1[3], ya1[3], za1[3], ba1[3], s4);
             }
+            this.railPositions = railPositions;
         }
     }
 

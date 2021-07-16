@@ -189,6 +189,9 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
             double distanceSq = Double.MAX_VALUE;
 
             for (RailMap rm : rms) {
+                if (rm == null) {
+                    return null;
+                }
                 int index = rm.getNearlestPoint(SPLIT, x0, z0);
                 if (index < 0) {
                     index = 0;

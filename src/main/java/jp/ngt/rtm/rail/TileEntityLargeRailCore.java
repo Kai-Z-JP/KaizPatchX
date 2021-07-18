@@ -7,13 +7,13 @@ import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMRail;
+import jp.ngt.rtm.event.RTMTickHandlerClient;
 import jp.ngt.rtm.item.ItemRail;
 import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailPosition;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -45,9 +45,6 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 
     @SideOnly(Side.CLIENT)
     public DisplayList[] glLists;
-
-    @SideOnly(Side.CLIENT)
-    public DisplayList railBlocks;
     /**
      * レールを再描画するかどうか(明るさ変更等)
      */
@@ -146,11 +143,11 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     }
 
     public boolean shouldRender(TileEntityLargeRailBase tileEntity) {
-        return this.lastRenderTime == Minecraft.getSystemTime() && this.lastRenderTileEntity != tileEntity;
+        return this.lastRenderTime != RTMTickHandlerClient.renderTickCount || this.lastRenderTileEntity == tileEntity;
     }
 
     public void setTickRender(TileEntityLargeRailBase tileEntity) {
-        this.lastRenderTime = Minecraft.getSystemTime();
+        this.lastRenderTime = RTMTickHandlerClient.renderTickCount;
         this.lastRenderTileEntity = tileEntity;
     }
 
@@ -216,9 +213,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         if (this.glLists != null) {
             Arrays.stream(this.glLists).forEach(GLHelper::deleteGLList);
         }
-        GLHelper.deleteGLList(this.railBlocks);
         this.glLists = new DisplayList[this.subRails.size() + 1];
-        this.railBlocks = null;
     }
 
 

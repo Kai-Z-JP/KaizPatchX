@@ -27,7 +27,7 @@ public class RenderLargeRail extends TileEntitySpecialRenderer {
     private void renderTileEntityLargeRail(TileEntityLargeRailBase tileEntity, double par2, double par4, double par6, float par8) {
         TileEntityLargeRailCore core = tileEntity.getRailCore();
 
-        if (core == null || !core.isLoaded() || core.shouldRender(tileEntity)) {
+        if (core == null || !core.isLoaded() || !core.shouldRender(tileEntity)) {
             return;
         }
         core.setTickRender(tileEntity);

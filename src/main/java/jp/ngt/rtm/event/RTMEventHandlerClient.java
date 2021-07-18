@@ -12,15 +12,20 @@ import jp.ngt.rtm.entity.npc.EntityNPC;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.gui.GuiIngameCustom;
 import jp.ngt.rtm.gui.camera.Camera;
+import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.sound.RTMSoundHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @SideOnly(Side.CLIENT)
 public final class RTMEventHandlerClient {
@@ -56,32 +61,32 @@ public final class RTMEventHandlerClient {
         event.newfov = RTMCore.proxy.getFov(event.entity, event.fov);
     }
 
-//    @SubscribeEvent
-//    public void onRenderWorldBlocks(RenderWorldEvent.Post event)//WorldRenderer.updateRenderer()
-//    {
-//        if (event.pass == 0)//1はたまにしか呼ばれない
-//        {
-//            List list = NGTUtilClient.getMinecraft().renderGlobal.tileEntities;
-//            for (Object o : list) {
-//                TileEntity tile = (TileEntity) o;
-//                if (tile instanceof TileEntityLargeRailCore) {
-//                    TileEntityLargeRailCore rail = ((TileEntityLargeRailCore) tile);
-//                    if (!rail.isLoaded()) {
-//                        continue;
-//                    }
-//                    int[] size = rail.getRailSize();
-//                    boolean flag1 = size[0] < event.renderer.posX + 16 && size[3] >= event.renderer.posX;
-//                    boolean flag2 = size[1] < event.renderer.posY + 16 && size[4] >= event.renderer.posY;
-//                    boolean flag3 = size[2] < event.renderer.posZ + 16 && size[5] >= event.renderer.posZ;
-//                    if (flag1 && flag2 && flag3) {
-//                        if (rail.glLists != null && Arrays.stream(rail.glLists).filter(Objects::nonNull).anyMatch(GLHelper::isValid)) {
-//                            rail.shouldRerenderRail = true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @SubscribeEvent
+    public void onRenderWorldBlocks(RenderWorldEvent.Post event)//WorldRenderer.updateRenderer()
+    {
+        if (event.pass == 0)//1はたまにしか呼ばれない
+        {
+            List list = NGTUtilClient.getMinecraft().renderGlobal.tileEntities;
+            for (Object o : list) {
+                TileEntity tile = (TileEntity) o;
+                if (tile instanceof TileEntityLargeRailCore) {
+                    TileEntityLargeRailCore rail = ((TileEntityLargeRailCore) tile);
+                    if (!rail.isLoaded()) {
+                        continue;
+                    }
+                    int[] size = rail.getRailSize();
+                    boolean flag1 = size[0] < event.renderer.posX + 16 && size[3] >= event.renderer.posX;
+                    boolean flag2 = size[1] < event.renderer.posY + 16 && size[4] >= event.renderer.posY;
+                    boolean flag3 = size[2] < event.renderer.posZ + 16 && size[5] >= event.renderer.posZ;
+                    if (flag1 && flag2 && flag3) {
+                        if (rail.glLists != null && Arrays.stream(rail.glLists).filter(Objects::nonNull).anyMatch(GLHelper::isValid)) {
+                            rail.shouldRerenderRail = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onLoadSound(SoundLoadEvent event) {

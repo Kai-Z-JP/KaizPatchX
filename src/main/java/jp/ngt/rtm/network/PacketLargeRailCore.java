@@ -124,6 +124,7 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
             }
             //tile0.createRailMap();
             tile0.getRailMap(null).getRailBlockList(RailProperty.readFromNBT(message.property)).forEach(pos -> world.markBlockForUpdate(pos[0], pos[1], pos[2]));
+            tile0.shouldRerenderRail = true;
         }
         return null;
     }

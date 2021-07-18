@@ -19,6 +19,8 @@ import org.lwjgl.opengl.Display;
  */
 @SideOnly(Side.CLIENT)
 public final class RTMTickHandlerClient {
+    public static long renderTickCount = 0;
+
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event)//Minecraft.runGameLoop()
     {
@@ -31,6 +33,8 @@ public final class RTMTickHandlerClient {
             }
 
             RenderMirror.INSTANCE.onRenderTickEnd();
+
+            renderTickCount++;
         }
     }
 

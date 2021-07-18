@@ -219,6 +219,9 @@ rtm.key=RealTrainMod
 rtm.horn=Гудок
 rtm.chime=Проиграть уведомление
 rtm.ats=Остановка уведомлений
+key.rtm.chime_next=Проиграть следующее уведомление
+key.rtm.chime_prev=Проиграть предыдущее уведомление
+key.rtm.eb=Аварийный тормоз
 
 item.rtm:installedObject.21.name=Лестница
 item.rtm:installedObject.22.name=Путепровод

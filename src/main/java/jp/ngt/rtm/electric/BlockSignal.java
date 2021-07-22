@@ -2,6 +2,7 @@ package jp.ngt.rtm.electric;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
@@ -50,7 +51,16 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (world.isRemote) {
-            player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
+            if (NGTUtil.isEquippedItem(player, RTMItem.itemSignal)) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                return true;
+            }
+
+            //NGTUtil.isEquippedItem(player, RTMItem.crowbar))
+            if (player.isSneaking()) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
+                return true;
+            }
         }
         return true;
     }

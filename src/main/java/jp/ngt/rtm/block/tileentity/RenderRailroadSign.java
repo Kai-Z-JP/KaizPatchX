@@ -17,6 +17,10 @@ public class RenderRailroadSign extends TileEntitySpecialRenderer {
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4, (float) par6 + 0.5F);
 
+        GL11.glTranslatef(tileEntity.getOffsetX(), 0.0F, 0.0F);
+        GL11.glTranslatef(0.0F, tileEntity.getOffsetY(), 0.0F);
+        GL11.glTranslatef(0.0F, 0.0F, tileEntity.getOffsetZ());
+
         GL11.glPushMatrix();
         float f0 = 1.25F;
         boolean flipVertical = tileEntity.getWorldObj().getBlock(tileEntity.xCoord, tileEntity.yCoord + 1, tileEntity.zCoord) != Blocks.air;

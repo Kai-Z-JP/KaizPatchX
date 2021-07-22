@@ -19,6 +19,9 @@ public class RenderSignal extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4, (float) par6 + 0.5F);
 
+        GL11.glTranslatef(tileEntity.getOffsetX(), 0.0F, 0.0F);
+        GL11.glTranslatef(0.0F, tileEntity.getOffsetY(), 0.0F);
+        GL11.glTranslatef(0.0F, 0.0F, tileEntity.getOffsetZ());
         float dir = tileEntity.getBlockDirection();
         GL11.glRotatef(dir, 0.0F, 1.0F, 0.0F);
         int pass = MinecraftForgeClient.getRenderPass();

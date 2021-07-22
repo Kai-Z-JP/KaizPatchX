@@ -1,5 +1,6 @@
 package jp.ngt.rtm.block;
 
+import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityRailroadSign;
@@ -54,6 +55,10 @@ public class BlockRailroadSign extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (world.isRemote) {
+            if (NGTUtil.isEquippedItem(player, RTMItem.itemRailroadSign)) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                return true;
+            }
             player.openGui(RTMCore.instance, RTMCore.guiIdSelectTexture, world, x, y, z);
         }
         return true;

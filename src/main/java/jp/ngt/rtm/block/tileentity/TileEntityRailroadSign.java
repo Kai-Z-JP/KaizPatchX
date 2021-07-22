@@ -102,6 +102,12 @@ public class TileEntityRailroadSign extends TileEntityPlaceable implements IText
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        return AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 2, this.zCoord + 1);
+        return AxisAlignedBB.getBoundingBox(
+                this.xCoord + this.getOffsetX(),
+                this.yCoord + this.getOffsetY(),
+                this.zCoord + this.getOffsetZ(),
+                this.xCoord + 1 + this.getOffsetX(),
+                this.yCoord + 2 + this.getOffsetY(),
+                this.zCoord + 1 + this.getOffsetZ());
     }
 }

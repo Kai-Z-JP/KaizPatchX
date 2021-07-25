@@ -91,21 +91,9 @@ public final class NGTRenderHelper {
         IRenderer tessellator = PolygonRenderer.INSTANCE;
         tessellator.startDrawing(mode);
         List<GroupObject> list = model.getGroupObjects();
-        for (GroupObject group : list) {
-            boolean b;
-            if (parts == null || parts.length == 0) {
-                b = true;
-            } else {
-                b = except;
-                if (Arrays.stream(parts).anyMatch(part -> group.name.equals(part))) {
-                    b = !except;
-                }
-            }
-
-            if (b) {
-                group.faces.stream().filter(face -> face.materialId == matId).forEach(face -> addFace(face, tessellator, smoothing));
-            }
-        }
+        list.stream()
+                .filter(group -> parts == null || parts.length == 0 || Arrays.stream(parts).anyMatch(part -> group.name.equals(part)) != except)
+                .forEach(group -> group.faces.stream().filter(face -> face.materialId == matId).forEach(face -> addFace(face, tessellator, smoothing)));
         tessellator.draw();
     }
 

@@ -106,7 +106,7 @@ jar {
 
     from(rootDir) {
         include 'README.md'
-        include 'LICENSE'
+        include 'LICENCE'
     }
 }
 

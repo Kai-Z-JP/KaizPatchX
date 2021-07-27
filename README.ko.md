@@ -8,7 +8,7 @@
 [![DLCountLatest](https://img.shields.io/github/downloads/Kai-Z-JP/KaizPatchX/latest/total)](https://github.com/Kai-Z-JP/KaizPatchX/releases/latest)
 
 ## 이것은
-KaizPatch는NGTLib・RTM・MCTE의 비공식 개조판입니다.
+KaizPatch는 NGTLib・RTM・MCTE의 비공식 개조판입니다.
 
 ## 주의사항
 
@@ -24,10 +24,10 @@ KaizPatch는NGTLib・RTM・MCTE의 비공식 개조판입니다.
 
 ## 도입 방법
 
-0. 모든 데이터의 백업을 해 두세요.\
-1. NGTLib, RTM, MCTE을 삭제해 주세요.\
-2. KaizPatch를 넣어 주세요.\
-3. 기존 월드를 불러올 경우에는 영어로 뭔가 OK?라고 물어볼텐데, 잘 이해한 다음에 OK를 눌러주세요.\
+0. 모든 데이터의 백업을 해 두세요.
+1. NGTLib, RTM, MCTE을 삭제해 주세요.
+2. KaizPatch를 넣어 주세요.
+3. 기존 월드를 불러올 경우에는 영어로 뭔가 OK?라고 물어볼텐데, 잘 이해한 다음에 OK를 눌러주세요.
 4. 끝！
 
 ## 이식된 기능
@@ -54,11 +54,11 @@ KaizPatch는NGTLib・RTM・MCTE의 비공식 개조판입니다.
 - 가속도, 감속도 커스텀
   ```
   놋치 단수의 최고속도(놋치 단 수를 여기서 결정)
-  "maxSpeed": [ 1단, 2단, 이하 무한(notDisplayCab가 false인 경우는 5단까지만) ],
+  "maxSpeed": [ 1단, 2단, 이하 무한(notDisplayCab가 false인 경우는 5단 고정) ],
   가속도
-  "accelerateions": [ 1단, 2단, 이하 무한(notDisplayCab가 false인 경우는 5단까지만) maxSpeed의 값과 같은 사양],
+  "accelerateions": [ 1단, 2단, 이하 무한(notDisplayCab가 false인 경우는 5단 고정) maxSpeed의 값과 같은 사양],
   감속도(브레이크 단 수를 여기서 결정)
-  "deccelerations": [타성(0), -1단, -2단, 이하 무한(notDisplayCab가 false인 경우는 -8단까지만)],
+  "deccelerations": [타성(0), -1단, -2단, 이하 무한(notDisplayCab가 false인 경우는 -8단 고정)],
   ```
 - 건널목 차단기, 신호기, 선로전환기, 조명, 개찰기, 차막이, 차량 모델을 모델, DataMap별 스포이트
 - 건널목 차단기, 신호기, 선로전환기, 조명, 표지 모델을 Shift키를 누르면서 설치하면 회전시킬 수 있음

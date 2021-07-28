@@ -251,7 +251,7 @@ public final class ModelPackManager {
         }
 
         //インデントないと"//"以降全てコメント扱い
-        String rawScript = NGTText.append(NGTText.readText(this.getResource(fileName)), true);
+        String rawScript = NGTText.getText(this.getResource(fileName), true);
         while (true) {
             Matcher matcher = SC_INCLUDE.matcher(rawScript);
             if (matcher.find()) {

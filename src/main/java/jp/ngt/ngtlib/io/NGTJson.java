@@ -2,22 +2,14 @@ package jp.ngt.ngtlib.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import jp.kaiz.kaizpatch.util.MCFileUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 public final class NGTJson {
     public static String readFromJson(File file) {
-        String sb = "";
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(NGTFileLoader.getInputStreamFromFile(file)))) {
-            sb = br.lines().collect(Collectors.joining());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb;
+        return MCFileUtil.readText(file);
     }
 
     public static void writeToJson(String json, File file) {

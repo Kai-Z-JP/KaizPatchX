@@ -19,7 +19,11 @@ import net.minecraftforge.client.model.ModelFormatException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,22 +39,22 @@ public final class ModelPackManager {
     /**
      * 全ModelSet
      */
-    private final Map<String, Map<String, ModelSetBase>> allModelSetMap = new HashMap<>();
+    private final Map<String, Map<String, ModelSetBase>> allModelSetMap = new ConcurrentHashMap<>();
     /**
      * SMPで使用可能なModelSet
      */
-    private final Map<String, Map<String, ModelSetBase>> smpModelSetMap = new HashMap<>();
-    private final Map<String, TypeEntry> typeMap = new HashMap<>();
-    private final Map<String, ModelSetBase> dummyMap = new HashMap<>();
+    private final Map<String, Map<String, ModelSetBase>> smpModelSetMap = new ConcurrentHashMap<>();
+    private final Map<String, TypeEntry> typeMap = new ConcurrentHashMap<>();
+    private final Map<String, ModelSetBase> dummyMap = new ConcurrentHashMap<>();
     /**
      * モデルファイルのキャッシュ
      */
-    private final Map<String, IModelNGT> modelFileMap = new HashMap<>();
-    private final Map<String, Map<String, ResourceLocation>> resourceMap = new HashMap<>();
+    private final Map<String, IModelNGT> modelFileMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, ResourceLocation>> resourceMap = new ConcurrentHashMap<>();
     /**
      * Scriptキャッシュ
      */
-    private final Map<String, String> scriptCache = new HashMap<>(64);
+    private final Map<String, String> scriptCache = new ConcurrentHashMap<>(64);
 
     private ModelPackManager() {
     }
@@ -61,8 +65,8 @@ public final class ModelPackManager {
     public void registerType(String type, Class<? extends ModelConfig> cfg, Class<? extends ModelSetBase> set) {
         TypeEntry entry = new TypeEntry(cfg, set);
         this.typeMap.put(type, entry);
-        this.allModelSetMap.put(type, new HashMap<>());
-        this.smpModelSetMap.put(type, new HashMap<>());
+        this.allModelSetMap.put(type, new ConcurrentHashMap<>());
+        this.smpModelSetMap.put(type, new ConcurrentHashMap<>());
         ModelSetBase dummy = this.getNewModelSet(entry, new Class[]{});
         this.dummyMap.put(type, dummy);
     }
@@ -226,7 +230,7 @@ public final class ModelPackManager {
     public ResourceLocation getResource(String domain, String path) {
         Map<String, ResourceLocation> map = this.resourceMap.get(domain);
         if (map == null) {
-            map = new HashMap<>();
+            map = new ConcurrentHashMap<>();
             this.resourceMap.put(domain, map);
         } else if (map.containsKey(path)) {
             return map.get(path);

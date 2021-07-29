@@ -1,5 +1,6 @@
 package jp.ngt.ngtlib.io;
 
+import jp.kaiz.kaizpatch.util.MCFileUtil;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
@@ -15,20 +16,24 @@ import java.util.zip.ZipFile;
 
 public final class NGTText {
     public static String getText(ResourceLocation resource, boolean indention) throws IOException {
-        List<String> list = readText(resource);
-        return append(list, indention);
+        return MCFileUtil.readText(resource, indention);
     }
 
+    @Deprecated
     public static List<String> readText(ResourceLocation resource) throws IOException {
-        return readTextL(NGTFileLoader.getInputStream(resource), "");
+        return MCFileUtil.readTextList(resource);
+    }
+
+    public static List<String> readText(ResourceLocation resource, String encoding) throws IOException {
+        return MCFileUtil.readTextList(resource);
     }
 
     public static String readText(File file, boolean indention, String encoding) throws IOException {
-        return append(readText(file, encoding), indention);
+        return MCFileUtil.readText(file, indention);
     }
 
     public static List<String> readText(File file, String encoding) throws IOException {
-        return readTextL(NGTFileLoader.getInputStreamFromFile(file), encoding);
+        return MCFileUtil.readTextList(file);
     }
 
     /**

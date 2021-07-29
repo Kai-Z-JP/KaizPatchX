@@ -65,7 +65,7 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         this.sound_Horn = this.getSoundResource(cfg.sound_Horn);
 
         if (cfg.soundScriptPath != null) {
-            this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getResource(cfg.soundScriptPath));
+            this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath));
         }
     }
 

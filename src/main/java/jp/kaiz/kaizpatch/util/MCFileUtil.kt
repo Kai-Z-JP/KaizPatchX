@@ -21,7 +21,11 @@ class MCFileUtil {
         }
 
         private fun readText(inputStream: InputStream, indention: Boolean = false): String {
-            val byteArray = inputStream.readBytes()
+            var byteArray: ByteArray
+            run {
+                @Synchronized
+                byteArray = inputStream.readBytes()
+            }
             return String(byteArray)
                 .let { if ("�" in it) String(byteArray, Charset.forName("MS932")) else it }
                 .let { if (!indention) it.replace(System.lineSeparator(), "") else it }

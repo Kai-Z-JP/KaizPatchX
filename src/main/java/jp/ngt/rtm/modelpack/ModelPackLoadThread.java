@@ -16,11 +16,10 @@ import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * モデルパックのロードを行う, Client/Server共通
@@ -135,14 +134,14 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
     private void loadModelFromConfig() {
         this.setValue(0, 1, "Loading Train Models");
         Pattern pattern = Pattern.compile("Model.*\\.json");
-        List<File> fileList0 = NGTFileLoader.findFile(file -> pattern.matcher(file.getName()).matches());
+        List<File> fileList = NGTFileLoader.findFile(file -> pattern.matcher(file.getName()).matches());
 
         List<File> signBoards = TextureManager.INSTANCE.loadTextures(this);
         List<File> railRoadSigns = TextureManager.INSTANCE.loadRailRoadSigns(this);
         List<File> flags = TextureManager.INSTANCE.loadFlags(this);
 
         this.setValue(0, 4, "Registering All Models");
-        this.setMaxValue(1, fileList0.size(), "");
+        this.setMaxValue(1, fileList.size(), "");
 
         ExecutorService executor;
         switch (RTMCore.loadSpeed) {
@@ -156,35 +155,34 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
                 executor = Executors.newFixedThreadPool(Math.max(Runtime.getRuntime().availableProcessors() / 3, 1));
                 break;
         }
-        List<Future<?>> list;
         try {
-            list = fileList0.stream().map(file -> executor.submit(() -> {
-                String json = NGTJson.readFromJson(file);
-                String type = file.getName().split("_")[0];
-                try {
-                    String s = ModelPackManager.INSTANCE.registerModelset(type, json);
-                    this.addValue(1, s);
-                } catch (ModelPackException e) {
-                    throw e;//そのまま投げる
-                } catch (Throwable e) {
-                    throw new ModelPackException("Can't load model", file.getAbsolutePath(), e);
-                }
-            })).collect(Collectors.toList());
+            fileList.stream()
+                    .map(file -> (Runnable) () -> {
+                        String json = NGTJson.readFromJson(file);
+                        String type = file.getName().split("_")[0];
+                        try {
+                            String s = ModelPackManager.INSTANCE.registerModelset(type, json);
+                            this.addValue(1, s);
+                        } catch (ModelPackException e) {
+                            throw e;//そのまま投げる
+                        } catch (Throwable e) {
+                            throw new ModelPackException("Can't load model", file.getAbsolutePath(), e);
+                        }
+                    })
+                    .forEach(executor::submit);
 
-            TextureManager.INSTANCE.registerTextures(this, signBoards, executor, list, TextureManager.TexturePropertyType.SignBoard);
-            TextureManager.INSTANCE.registerTextures(this, flags, executor, list, TextureManager.TexturePropertyType.Flag);
-            TextureManager.INSTANCE.registerRailRoadSigns(this, railRoadSigns, executor, list);
+            TextureManager.INSTANCE.registerTextures(this, signBoards, executor, TextureManager.TexturePropertyType.SignBoard);
+            TextureManager.INSTANCE.registerTextures(this, flags, executor, TextureManager.TexturePropertyType.Flag);
+            TextureManager.INSTANCE.registerRailRoadSigns(this, railRoadSigns, executor);
         } finally {
             executor.shutdown();
         }
 
-        list.parallelStream().forEach(future -> {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new ModelPackException("Can't load model", future.toString(), e);
-            }
-        });
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getCause());
+        }
     }
 
     @Override
@@ -242,6 +240,8 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
             this.bars[id].setValue(i);
             if (label != null && label.length() > 0) {
                 this.labels[id].setText(label);
+                this.bars[id].setStringPainted(true);
+                this.bars[id].setString(String.format("%d/%d", this.count, this.maxValue[id]));
             }
         }
     }

@@ -21,10 +21,8 @@ public final class TextureManager {
 
     public List<File> loadTextures(IProgressWatcher par1) {
         par1.setValue(0, 2, "Loading Textures");
-        return NGTFileLoader.findFile((file) -> {
-            String name = file.getName();
-            return name.startsWith("SignBoard") && name.endsWith(".json");
-        });
+        Pattern pattern = Pattern.compile("SignBoard.*\\.json");
+        return NGTFileLoader.findFile((file) -> pattern.matcher(file.getName()).matches());
     }
 
     public void registerTextures(IProgressWatcher par1, List<File> fileList, ExecutorService executor, List<Future<?>> list, TexturePropertyType type) {
@@ -51,18 +49,14 @@ public final class TextureManager {
 
     public List<File> loadRailRoadSigns(IProgressWatcher par1) {
         par1.setValue(0, 3, "Loading RailroadSign");
-        return NGTFileLoader.findFile((file) -> {
-            String name = file.getName();
-            return name.startsWith("rrs_") && name.endsWith(".png");
-        });
+        Pattern pattern = Pattern.compile("rrs_.*\\.png");
+        return NGTFileLoader.findFile((file) -> pattern.matcher(file.getName()).matches());
     }
 
     public List<File> loadFlags(IProgressWatcher par1) {
         par1.setValue(0, 3, "Loading Flag");
-        return NGTFileLoader.findFile((file) -> {
-            String name = file.getName();
-            return name.startsWith("Flag_") && name.endsWith(".json");
-        });
+        Pattern pattern = Pattern.compile("Flag_.*\\.json");
+        return NGTFileLoader.findFile((file) -> pattern.matcher(file.getName()).matches());
     }
 
     public void registerRailRoadSigns(IProgressWatcher par1, List<File> fileList, ExecutorService executor, List<Future<?>> list) {

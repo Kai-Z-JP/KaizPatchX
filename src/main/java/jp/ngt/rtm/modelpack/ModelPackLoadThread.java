@@ -134,10 +134,8 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
 
     private void loadModelFromConfig() {
         this.setValue(0, 1, "Loading Train Models");
-        List<File> fileList0 = NGTFileLoader.findFile((file) -> {
-            String name = file.getName();
-            return name.endsWith(".json") && name.startsWith("Model");
-        });
+        Pattern pattern = Pattern.compile("Model.*\\.json");
+        List<File> fileList0 = NGTFileLoader.findFile(file -> pattern.matcher(file.getName()).matches());
 
         List<File> signBoards = TextureManager.INSTANCE.loadTextures(this);
         List<File> railRoadSigns = TextureManager.INSTANCE.loadRailRoadSigns(this);

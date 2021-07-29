@@ -242,6 +242,8 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
             this.bars[id].setValue(i);
             if (label != null && label.length() > 0) {
                 this.labels[id].setText(label);
+                this.bars[id].setStringPainted(true);
+                this.bars[id].setString(String.format("%d/%d", this.count, this.maxValue[id]));
             }
         }
     }

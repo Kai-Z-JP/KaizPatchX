@@ -6,14 +6,18 @@ import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
 public final class TextureManager {
     public static final TextureManager INSTANCE = new TextureManager();
 
-    private final Map<TexturePropertyType, Map<String, TextureProperty>> allTextureMap = new HashMap<>();
+    private final Map<TexturePropertyType, Map<String, TextureProperty>> allTextureMap = new ConcurrentHashMap<>();
     //private final Map<TexturePropertyType, Map<String, TextureProperty>> smpTextureMap = new HashMap<TexturePropertyType, Map<String, TextureProperty>>();
 
     private TextureManager() {
@@ -26,7 +30,7 @@ public final class TextureManager {
     }
 
     public void registerTextures(IProgressWatcher par1, List<File> fileList, ExecutorService executor, TexturePropertyType type) {
-        Map<String, TextureProperty> map = new HashMap<>();
+        Map<String, TextureProperty> map = new ConcurrentHashMap<>();
         this.allTextureMap.put(type, map);
         par1.addMaxValue(1, fileList.size());
         fileList.stream()
@@ -60,7 +64,7 @@ public final class TextureManager {
     }
 
     public void registerRailRoadSigns(IProgressWatcher par1, List<File> fileList, ExecutorService executor) {
-        Map<String, TextureProperty> map = new HashMap<>();
+        Map<String, TextureProperty> map = new ConcurrentHashMap<>();
         this.allTextureMap.put(TexturePropertyType.RRS, map);
         par1.addMaxValue(1, fileList.size());
         //			NGTLog.debug("Register Texture : %s (RRS)", name);

@@ -6,10 +6,7 @@ import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
@@ -33,7 +30,7 @@ public final class TextureManager {
         Map<String, TextureProperty> map = new ConcurrentHashMap<>();
         this.allTextureMap.put(type, map);
         par1.addMaxValue(1, fileList.size());
-        fileList.stream()
+        fileList.stream().filter(Objects::nonNull)
                 .map(file -> (Runnable) () -> {
                     String json = NGTJson.readFromJson(file);
                     try {

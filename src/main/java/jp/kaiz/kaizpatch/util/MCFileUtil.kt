@@ -20,6 +20,9 @@ class MCFileUtil {
             return readText(NGTFileLoader.getInputStream(resource), indention)
         }
 
+        private val LINE_SEPARATOR = System.getProperty("line.separator")
+        private val LINE_SEPARATOR_PATTERN = Regex("\r\n|[\n\r\u2028\u2029\u0085]")
+
         private fun readText(inputStream: InputStream, indention: Boolean = false): String {
             var byteArray: ByteArray
             run {
@@ -27,8 +30,8 @@ class MCFileUtil {
                 byteArray = inputStream.readBytes()
             }
             return String(byteArray)
-                .let { if ("�" in it) String(byteArray, Charset.forName("MS932")) else it }
-                .let { if (!indention) it.replace(System.lineSeparator(), "") else it }
+                .let { if ("\ufffd" in it) String(byteArray, Charset.forName("MS932")) else it }
+                .replace(LINE_SEPARATOR_PATTERN, if (indention) LINE_SEPARATOR else "")
         }
 
         @JvmStatic

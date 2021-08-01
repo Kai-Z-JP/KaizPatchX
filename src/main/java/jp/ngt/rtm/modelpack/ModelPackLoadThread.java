@@ -16,6 +16,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -156,7 +157,7 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
                 break;
         }
         try {
-            fileList.stream()
+            fileList.stream().filter(Objects::nonNull)
                     .map(file -> (Runnable) () -> {
                         String json = NGTJson.readFromJson(file);
                         String type = file.getName().split("_")[0];

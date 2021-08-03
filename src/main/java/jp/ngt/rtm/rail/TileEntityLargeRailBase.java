@@ -211,7 +211,7 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
                     //レールYawに対するベクトル角により左右位置を判断
                     boolean dirFlag = MathHelper.wrapAngleTo180_float(yaw2 - yaw) > 0.0F;
                     double h2 = NGTMath.sin(cant) * len * (dirFlag ? -1.0F : 1.0F);
-                    fa[i] = (float) (height - (double) y + h2);
+                    fa[i] += (float) (height - (double) y + h2 - 0.0625);
                 }
             }
         }

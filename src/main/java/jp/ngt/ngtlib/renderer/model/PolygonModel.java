@@ -4,12 +4,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.IRenderer;
 import jp.ngt.ngtlib.renderer.NGTTessellator;
+import kotlin.Pair;
 import net.minecraftforge.client.model.ModelFormatException;
 import org.lwjgl.opengl.GL11;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.SequenceInputStream;
+import java.lang.ref.SoftReference;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,12 +71,67 @@ public abstract class PolygonModel implements IModelNGT {
 
     //https://qiita.com/penguinshunya/items/353bb1c555f337b0cf6d
     private void loadModel(InputStream inputStream) {
+        Pair<Charset, InputStream> pair = detectCharset(inputStream);
+        inputStream = pair.component2();
+        
         //readLine()より若干早い
-        try (Stream<String> stream = new BufferedReader(new InputStreamReader(inputStream)).lines()) {
+        try (Stream<String> stream = new BufferedReader(new InputStreamReader(inputStream, pair.component1())).lines()) {
             stream.forEach(this::preParse);
         }
         this.postInit();
         //String s = Files.lines(Paths.get(path), Charset.forName("UTF-8")).collect(Collectors.joining(System.getProperty("line.separator")));
+    }
+
+    // allocating huge array makes GC many times so cache them
+    // but the buffer will be not necessary after finish loading models,
+    // so it should be weak/soft reference.
+    private static final ThreadLocal<SoftReference<byte[]>> buffer = new ThreadLocal<>();
+
+    // windows-31j: Shift_JIS with Microsoft Extension. Also known as Microsoft Code Page 932
+    private static final Charset[] tryingCharsets = new Charset[] {
+            StandardCharsets.UTF_8,
+            Charset.forName("windows-31j"),
+    };
+
+    private static byte[] getBuffer() {
+        SoftReference<byte[]> ref = buffer.get();
+        byte[] bytes = ref == null ? null : ref.get();
+        if (bytes == null) {
+            // 4 Mi bytes
+            buffer.set(new SoftReference<>(bytes = new byte[1024 * 1024]));
+        }
+        return bytes;
+    }
+
+    // TODO: test
+    private static Pair<Charset, InputStream> detectCharset(InputStream inputStream) {
+        byte[] buf = getBuffer();
+        int c = 0;
+        try {
+            // read bytes fully to buf.
+            int i;
+            while ((i = inputStream.read(buf, c, buf.length - c)) != -1) {
+                c += i;
+                if (c == buf.length)
+                    break;
+            }
+        } catch (IOException e) {
+            throw new ModelFormatException("On read file for charset detection", e);
+        }
+        // empty: any charset should return empty string so use default one
+        if (c == 0) return new Pair<>(Charset.defaultCharset(), inputStream);
+        InputStream returnInputStream = new SequenceInputStream(new ByteArrayInputStream(buf, 0, c), inputStream);
+        for (Charset tryingCharset : tryingCharsets) {
+            String s = new String(buf, 0, c, tryingCharset);
+            // trim last few chars to not make error for last bytes
+            s = s.substring(0, s.length() - 10);
+            
+            // No U+FFFD should mean no decoding error.
+            if (s.indexOf('\ufffd') == -1)
+                return new Pair<>(tryingCharset, returnInputStream);
+        }
+        // no charsets are valid: use UTF8
+        return new Pair<>(StandardCharsets.UTF_8, returnInputStream);
     }
 
     //https://kujirahand.com/blog/index.php?Java%E3%81%A7%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E6%96%B9%E6%B3%95%E3%81%A7%E3%81%A9%E3%82%8C%E3%81%8C%E4%B8%80%E7%95%AA%E9%80%9F%E3%81%84

@@ -62,6 +62,10 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
         return this.connections.stream().filter(connection -> connection.x == x && connection.y == y && connection.z == z).findFirst().orElse(null);
     }
 
+    public List<Connection> getConnnectionList() {
+        return this.connections;
+    }
+
     public List<Connection> getConnectionList() {
         return this.connections;
     }

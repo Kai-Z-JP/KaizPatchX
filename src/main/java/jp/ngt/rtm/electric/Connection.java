@@ -34,17 +34,9 @@ public class Connection {
         this.wireName = par5;
     }
 
-    public static List<Connection> readListFromNBT(NBTTagCompound nbt, World world) {
+    public static List<Connection> readListFromNBT(NBTTagCompound nbt) {
         NBTTagList tagList = nbt.getTagList("connections", 10);
-        List<Connection> connectionList = IntStream.range(0, tagList.tagCount()).mapToObj(tagList::getCompoundTagAt).map(Connection::readFromNBT).collect(Collectors.toList());
-        if (world != null) {
-            connectionList.forEach(connection -> connection.setTileEntity(world));
-        }
-        return connectionList;
-    }
-
-    public void setTileEntity(World world) {
-        this.connectedObject = world.getTileEntity(x, y, z);
+        return IntStream.range(0, tagList.tagCount()).mapToObj(tagList::getCompoundTagAt).map(Connection::readFromNBT).collect(Collectors.toList());
     }
 
     public static Connection readFromNBT(NBTTagCompound nbt) {

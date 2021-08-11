@@ -34,7 +34,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityCustom {
 
         List<Connection> prevConnections = this.connections;
         this.connections = new ArrayList<>();
-        this.connections.addAll(Connection.readListFromNBT(nbt, this.getWorldObj()));
+        this.connections.addAll(Connection.readListFromNBT(nbt));
 
         if (this.getWorldObj() != null && this.getWorldObj().isRemote) {
             //新規Conのみ登録

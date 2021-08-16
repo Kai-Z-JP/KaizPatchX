@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public final class PermissionManager {
     public static final PermissionManager INSTANCE = new PermissionManager();
+    private static final String ALL = "-all";
 
     private final File saveDir;
     private final File saveFile;
@@ -118,7 +119,8 @@ public final class PermissionManager {
         if (this.isOp(player)) {
             return true;//シングル or OP
         } else {
-            if (this.getPlayerList(category).contains(player.getCommandSenderName())) {
+            List<String> players = this.getPlayerList(category);
+            if (players.contains(player.getCommandSenderName()) || players.contains(ALL)) {
                 return true;
             } else {
                 return false;

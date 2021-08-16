@@ -1,5 +1,6 @@
 package jp.ngt.ngtlib.io;
 
+import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader;
 import jp.ngt.ngtlib.NGTCore;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import net.minecraft.util.ResourceLocation;
@@ -261,20 +262,7 @@ public final class NGTFileLoader {
     }
 
     public static InputStream getInputStream(ResourceLocation par1) throws IOException {
-        if (!NGTCore.proxy.isServer()) {
-            return NGTUtilClient.getMinecraft().getResourceManager().getResource(par1).getInputStream();
-        } else//Server用, ResourceManagerが使えないため
-        {
-            int index = par1.getResourcePath().lastIndexOf("/");
-            String fileName = par1.getResourcePath().substring(index + 1);
-            List<File> list = NGTFileLoader.findFile((file) -> file.getName().equals(fileName));
-            if (list.isEmpty()) {
-                throw new FileNotFoundException("On get stream : " + fileName);
-            }
-            File file = list.get(0);
-            //return new FileInputStream(file);
-            return getInputStreamFromFile(file);
-        }
+        return NGTCore.proxy.isServer() ? FIXFileLoader.INSTANCE.getInputStream(par1) : NGTUtilClient.getMinecraft().getResourceManager().getResource(par1).getInputStream();
     }
 
     public static InputStream getInputStreamFromFile(File file) throws IOException {

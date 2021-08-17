@@ -32,39 +32,16 @@ public class CommandRTM extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] s) {
-        EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
+        EntityPlayerMP player = commandSender instanceof EntityPlayerMP ? (EntityPlayerMP) commandSender : null;
+
         if (s.length >= 1) {
-            if (s[0].equalsIgnoreCase("use1122marker")) {
+            if (s[0].equalsIgnoreCase("use1122marker") && player != null) {
                 RTMCore.NETWORK_WRAPPER.sendTo(new PacketNotice(PacketNotice.Side_CLIENT, "use1122marker," + (s.length == 2 ? Boolean.parseBoolean(s[1]) : "flip")), player);
                 return;
-            }
-        }
-
-        if (s.length == 2) {
-            if (s[0].equalsIgnoreCase("flySpeed")) {
-                float speed = MathHelper.clamp_float(Float.parseFloat(s[1]), 0, 10);
-                RTMCore.NETWORK_WRAPPER.sendTo(new PacketNotice(PacketNotice.Side_CLIENT, "flySpeed," + speed), player);
-                return;
-            }
-
-            int state = Integer.parseInt(s[1]);
-
-            double d0 = 16.0D;
-            List<Entity> list = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - d0, player.posY - d0, player.posZ - d0, player.posX + d0, player.posY + d0, player.posZ + d0));
-            list.stream().filter(EntityTrainBase.class::isInstance).map(EntityTrainBase.class::cast).forEach(train -> {
-                if (s[0].equalsIgnoreCase("door")) {
-                    train.setTrainStateData(TrainStateType.State_Door.id, (byte) state);
-                } else if (s[0].equalsIgnoreCase("pan")) {
-                    train.setTrainStateData(TrainStateType.State_Pantograph.id, (byte) state);
-                } else if (s[0].equalsIgnoreCase("speed")) {
-                    train.setSpeed(state / 72.0f);
-                }
-            });
-        } else {
-            if (s[0].equalsIgnoreCase("delAllTrain")) {
+            } else if (s[0].equalsIgnoreCase("delAllTrain")) {
                 int countTrain = 0;
                 int countEntity = 0;
-                List<Entity> list = player.worldObj.loadedEntityList;
+                List<Entity> list = commandSender.getEntityWorld().loadedEntityList;
                 for (Entity entity0 : list) {
                     Entity entity1;
                     if (entity0 instanceof EntityTrainBase) {
@@ -83,9 +60,31 @@ public class CommandRTM extends CommandBase {
                 }
                 int countFormation = FormationManager.getInstance().clearFormations();
 
-                player.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
-                player.addChatMessage(new ChatComponentText("Deleted " + countEntity + "entities."));
-                player.addChatMessage(new ChatComponentText("Deleted " + countFormation + "formations."));
+                commandSender.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
+                commandSender.addChatMessage(new ChatComponentText("Deleted " + countEntity + "entities."));
+                commandSender.addChatMessage(new ChatComponentText("Deleted " + countFormation + "formations."));
+            }
+
+            if (s.length == 2 && player != null) {
+                if (s[0].equalsIgnoreCase("flySpeed")) {
+                    float speed = MathHelper.clamp_float(Float.parseFloat(s[1]), 0, 10);
+                    RTMCore.NETWORK_WRAPPER.sendTo(new PacketNotice(PacketNotice.Side_CLIENT, "flySpeed," + speed), player);
+                    return;
+                }
+
+                int state = Integer.parseInt(s[1]);
+
+                double d0 = 16.0D;
+                List<Entity> list = commandSender.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(player.posX - d0, player.posY - d0, player.posZ - d0, player.posX + d0, player.posY + d0, player.posZ + d0));
+                list.stream().filter(EntityTrainBase.class::isInstance).map(EntityTrainBase.class::cast).forEach(train -> {
+                    if (s[0].equalsIgnoreCase("door")) {
+                        train.setTrainStateData(TrainStateType.State_Door.id, (byte) state);
+                    } else if (s[0].equalsIgnoreCase("pan")) {
+                        train.setTrainStateData(TrainStateType.State_Pantograph.id, (byte) state);
+                    } else if (s[0].equalsIgnoreCase("speed")) {
+                        train.setSpeed(state / 72.0f);
+                    }
+                });
             }
         }
     }

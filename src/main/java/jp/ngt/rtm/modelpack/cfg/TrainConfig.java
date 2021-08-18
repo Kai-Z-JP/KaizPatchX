@@ -99,6 +99,9 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
     public float rollVariationCoefficient;
     public float rollWidthCoefficient;
 
+    public boolean useVariableAcceleration;
+    public boolean useVariableDeceleration;
+
     @Override
     public void init() {
         super.init();
@@ -152,6 +155,11 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
         if (this.jointDelay == null) {
             float f0 = 1.9F;
             this.jointDelay = new float[][]{{0.0F, f0}, {0.0F, f0}};
+        }
+
+        if (this.serverScriptPath == null) {
+            this.useVariableAcceleration = false;
+            this.useVariableDeceleration = false;
         }
     }
 

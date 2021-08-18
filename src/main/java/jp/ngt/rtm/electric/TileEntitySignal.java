@@ -161,7 +161,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
                 this.yCoord + this.getOffsetY(),
                 this.zCoord + this.getOffsetZ(),
                 this.xCoord + 1 + this.getOffsetX(),
-                this.yCoord + 1 + this.getOffsetY(),
+                this.yCoord + 2 + this.getOffsetY(),
                 this.zCoord + 1 + this.getOffsetZ());
     }
     @Override

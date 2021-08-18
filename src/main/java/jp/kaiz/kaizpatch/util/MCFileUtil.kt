@@ -24,11 +24,7 @@ class MCFileUtil {
         private val LINE_SEPARATOR_PATTERN = Regex("\r\n|[\n\r\u2028\u2029\u0085]")
 
         private fun readText(inputStream: InputStream, indention: Boolean = false): String {
-            var byteArray: ByteArray
-            run {
-                @Synchronized
-                byteArray = inputStream.readBytes()
-            }
+            val byteArray = inputStream.readBytes()
             return String(byteArray)
                 .let { if ("\ufffd" in it) String(byteArray, Charset.forName("MS932")) else it }
                 .replace(LINE_SEPARATOR_PATTERN, if (indention) LINE_SEPARATOR else "")

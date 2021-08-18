@@ -188,7 +188,7 @@ public class EntityBogie extends Entity implements Lockable {
         this.movingYaw = MathHelper.wrapAngleTo180_float(this.rotationYaw + (this.isFront() ? 0.0F : 180.0F));
 
         double px = this.posX + (double) NGTMath.sin(this.movingYaw) * (double) speed;
-        double py = this.posY - 1;
+        double py = this.posY;
         double pz = this.posZ + (double) NGTMath.cos(this.movingYaw) * (double) speed;
 
         if (!this.resetRailObj(px, py, pz)) {

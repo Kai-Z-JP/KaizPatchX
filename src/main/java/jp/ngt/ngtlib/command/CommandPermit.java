@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,8 @@ public class CommandPermit extends CommandBase {
             return args[0].length() == 0 ? commandList : commandList.stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
         } else if (args.length == 2) {
             if (args[0].equals("add") || args[0].equals("remove")) {
-                List<String> playerList = ((List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList).stream().map(EntityPlayer::getCommandSenderName).collect(Collectors.toList());
+                List<String> playerList = ((List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList).stream().map(EntityPlayer::getCommandSenderName).collect(Collectors.toCollection(ArrayList::new));
+                playerList.add("-all");
                 return args[1].length() == 0 ? playerList : playerList.stream().filter(s -> s.startsWith(args[1])).collect(Collectors.toList());
             }
         } else if (args.length == 3) {

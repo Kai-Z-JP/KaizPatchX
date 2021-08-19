@@ -94,11 +94,6 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
         }
     }
 
-    @Override
-    public boolean shouldRender(TileEntityLargeRailBase tileEntity) {
-        return tileEntity instanceof TileEntityTurnTableCore;
-    }
-
     public float getRotation() {
         return this.rotation;
     }

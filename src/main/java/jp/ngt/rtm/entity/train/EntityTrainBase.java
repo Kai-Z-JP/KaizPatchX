@@ -141,6 +141,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             nbt.setLong("FormationId", this.formation.id);
             nbt.setByte("EntryPos", entry.entryId);
             nbt.setByte("EntryDir", entry.dir);
+            nbt.setInteger("FormationSize", this.formation.size());
         }
     }
 
@@ -159,9 +160,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         long id = nbt.getLong("FormationId");
         byte pos = nbt.getByte("EntryPos");
         byte dir = nbt.getByte("EntryDir");
+        int size = nbt.getInteger("FormationSize");
         Formation f0 = FormationManager.getInstance().getFormation(id);
         if (f0 == null) {
-            this.formation = FormationManager.getInstance().createNewFormation(this);
+            if (nbt.hasKey("FormationId")) {
+                this.formation = FormationManager.getInstance().createNewFormation(this, id, pos, dir, size);
+            } else {
+                this.formation = FormationManager.getInstance().createNewFormation(this);
+            }
         } else {
             this.formation = f0;
             f0.setTrain(this, pos, dir);

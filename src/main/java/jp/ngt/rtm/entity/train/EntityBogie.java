@@ -3,6 +3,7 @@ package jp.ngt.rtm.entity.train;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
+import jp.ngt.ngtlib.math.BezierCurve;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.ngtlib.protection.Lockable;
@@ -279,23 +280,16 @@ public class EntityBogie extends Entity implements Lockable {
             {
             } else//新しいレール上に移動
             {
-                RailMap railMap;
+                this.currentRailObj = coreObj;
                 if (coreObj instanceof TileEntityLargeRailSwitchCore) {
                     TileEntityLargeRailSwitchCore switchObj = (TileEntityLargeRailSwitchCore) coreObj;
-                    railMap = switchObj.getSwitch().getNearestPoint(this).getActiveRailMap(this.worldObj);
+                    this.currentRailMap = switchObj.getSwitch().getNearestPoint(this).getActiveRailMap(this.worldObj);
                 } else {
-                    railMap = coreObj.getRailMap(this);
+                    this.currentRailMap = coreObj.getRailMap(this);
                 }
-
-                if (this.currentRailMap != null && !this.currentRailMap.canConnect(railMap)) {
-                    return true;
-                }
-
-                this.currentRailObj = coreObj;
-                this.currentRailMap = railMap;
-                this.split = (int) (this.currentRailMap.getLength() * (double) SPLIT_VALUE);
+                this.split = (int) (this.currentRailMap.getLength() * (double) BezierCurve.QUANTIZE);
                 this.prevPosIndex = -1;
-                this.onChangeRail(px, py, pz);
+                this.onChangeRail(coreObj);
             }
 
             return true;
@@ -305,9 +299,8 @@ public class EntityBogie extends Entity implements Lockable {
     /**
      * 別レールに移動した際呼び出し
      */
-    protected void onChangeRail(double px, double py, double pz) {
-        TileEntityLargeRailBase railObj = TileEntityLargeRailBase.getRailFromCoordinates(this.worldObj, px, py, pz);
-        this.reverbSound = railObj.isReberbSound();
+    protected void onChangeRail(TileEntityLargeRailCore newRail) {
+        this.reverbSound = newRail.isReberbSound();
         TrainConfig cfg = this.getTrain().getModelSet().getConfig();
         if (!cfg.muteJointSound) {
             this.jointIndex = 0;

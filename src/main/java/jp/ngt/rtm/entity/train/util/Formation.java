@@ -42,6 +42,7 @@ public class Formation {
         long fid = nbt.getLong("FormationId");
         int num = nbt.getInteger("Size");
         Formation formation = new Formation(fid, num);
+        formation.direction = nbt.getByte("Direction");
 
         if (withEntries) {
             NBTTagList tagList = nbt.getTagList("Entries", 10);
@@ -61,6 +62,7 @@ public class Formation {
     public void writeToNBT(NBTTagCompound nbt, boolean withEntries) {
         nbt.setLong("FormationId", this.id);
         nbt.setInteger("Size", this.entries.length);
+        nbt.setByte("Direction", this.direction);
 
         if (withEntries) {
             NBTTagList tagList = new NBTTagList();
@@ -101,9 +103,7 @@ public class Formation {
      */
     public void setTrain(EntityTrainBase par1, int par3, int par5) {
         this.setEntry(new FormationEntry(par1, par3, par5), par3);
-        if (!par1.worldObj.isRemote) {
-            this.sendPacket();
-        }
+        this.sendPacket();
     }
 
     @SideOnly(Side.CLIENT)
@@ -317,8 +317,10 @@ public class Formation {
         return Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).anyMatch(train -> train.getBogie(0) == bogie || train.getBogie(1) == bogie);
     }
 
-    private void sendPacket() {
-        RTMCore.NETWORK_WRAPPER.sendToAll(new PacketFormation(this));
+    public void sendPacket() {
+        if (NGTUtil.isServer()) {
+            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketFormation(this));
+        }
     }
 
     public boolean isFrontCar(EntityTrainBase train) {

@@ -21,30 +21,26 @@ public class RenderLargeRail extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        this.renderTileEntityLargeRail((TileEntityLargeRailBase) tileEntity, d0, d1, d2, f);
+        this.renderTileEntityLargeRail((TileEntityLargeRailCore) tileEntity, d0, d1, d2, f);
     }
 
-    private void renderTileEntityLargeRail(TileEntityLargeRailBase tileEntity, double par2, double par4, double par6, float par8) {
-        TileEntityLargeRailCore core = tileEntity.getRailCore();
-
-        if (core == null || !core.isLoaded() || !core.shouldRender(tileEntity)) {
+    private void renderTileEntityLargeRail(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6, float par8) {
+        if (!tileEntity.isLoaded()) {
             return;
         }
-        core.setTickRender(tileEntity);
 
         GL11.glPushMatrix();
-        GL11.glTranslatef(core.xCoord - tileEntity.xCoord, core.yCoord - tileEntity.yCoord, core.zCoord - tileEntity.zCoord);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_CULL_FACE);
 
         try {
-            ModelSetRailClient modelSet = (ModelSetRailClient) core.getProperty().getModelSet();
+            ModelSetRailClient modelSet = (ModelSetRailClient) tileEntity.getProperty().getModelSet();
             RailPartsRenderer renderer = (RailPartsRenderer) modelSet.model.renderer;
-            renderer.renderRail(core, 0, par2, par4, par6, par8);
-            IntStream.range(0, core.subRails.size()).forEach(i -> {
-                RailProperty property = core.subRails.get(i);
+            renderer.renderRail(tileEntity, 0, par2, par4, par6, par8);
+            IntStream.range(0, tileEntity.subRails.size()).forEach(i -> {
+                RailProperty property = tileEntity.subRails.get(i);
                 RailPartsRenderer subRenderer = (RailPartsRenderer) ((ModelSetRailClient) property.getModelSet()).model.renderer;
-                subRenderer.renderRail(core, i + 1, par2, par4, par6, par8);
+                subRenderer.renderRail(tileEntity, i + 1, par2, par4, par6, par8);
             });
         } catch (ClassCastException ignored) {
         }

@@ -7,7 +7,6 @@ import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMRail;
-import jp.ngt.rtm.event.RTMTickHandlerClient;
 import jp.ngt.rtm.item.ItemRail;
 import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.RailMap;
@@ -140,15 +139,6 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         {
             this.railmap = new RailMap(this.railPositions[0], this.railPositions[1]);
         }
-    }
-
-    public boolean shouldRender(TileEntityLargeRailBase tileEntity) {
-        return this.lastRenderTime != RTMTickHandlerClient.renderTickCount || this.lastRenderTileEntity == tileEntity;
-    }
-
-    public void setTickRender(TileEntityLargeRailBase tileEntity) {
-        this.lastRenderTime = RTMTickHandlerClient.renderTickCount;
-        this.lastRenderTileEntity = tileEntity;
     }
 
     /**

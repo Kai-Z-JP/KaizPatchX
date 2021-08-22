@@ -15,6 +15,8 @@ public final class ScriptUtil {
 
 
     private static void init() {
+        System.setProperty("nashorn.args", "--language=es6");
+
         LaunchClassLoader loader = Launch.classLoader;
         loader.addClassLoaderExclusion("javax.");
         loader.addClassLoaderExclusion("jdk.nashorn.");

@@ -37,7 +37,7 @@ public final class ScriptUtil {
         if (SEM == null) {
             init();
         }
-        ScriptEngine se = SEM.getScriptEngine("--language=es6");
+        ScriptEngine se = SEM.getScriptEngine("-doe", "--language=es6");
         try {
             if (se.toString().contains("Nashorn")) {
                 //Java8ではimportPackage()が使えないので、その対策

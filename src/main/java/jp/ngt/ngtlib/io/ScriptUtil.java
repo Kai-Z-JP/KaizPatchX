@@ -1,24 +1,24 @@
 package jp.ngt.ngtlib.io;
 
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.ResourceLocation;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
 
 public final class ScriptUtil {
-    private static ScriptEngineManager SEM;
+    private static NashornScriptEngineFactory SEM;
 
 
     private static void init() {
         LaunchClassLoader loader = Launch.classLoader;
         loader.addClassLoaderExclusion("javax.");
         loader.addClassLoaderExclusion("jdk.nashorn.");
-        SEM = new ScriptEngineManager(null);
+        SEM = new NashornScriptEngineFactory();
     }
 
     /**
@@ -37,7 +37,7 @@ public final class ScriptUtil {
         if (SEM == null) {
             init();
         }
-        ScriptEngine se = SEM.getEngineByName("javascript");
+        ScriptEngine se = SEM.getScriptEngine("-doe", "--language=es6");
         try {
             if (se.toString().contains("Nashorn")) {
                 //Java8ではimportPackage()が使えないので、その対策

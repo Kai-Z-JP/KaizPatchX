@@ -1,7 +1,7 @@
 package jp.ngt.rtm.rail.util;
 
 public enum MarkerState {
-    DISTANCE, GRID, LINE1, LINE2, ANCHOR21;
+    FIT_NEIGHBOR, DISTANCE, GRID, LINE1, LINE2, ANCHOR21;
 
     private int bitMask() {
         return 1 << ordinal();

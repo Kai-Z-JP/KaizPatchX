@@ -79,11 +79,11 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
             int buttonColor = 61440;
             float buttonWidth = 2.8F;
             float buttonHeight = 0.5F;
-            float guiHeight = (buttonHeight + 0.1F) * 5.0F + 0.1F;
+            float guiHeight = (buttonHeight + 0.1F) * 6.0F + 0.1F;
             float startY = 0.5F;
             float startX = -(buttonWidth + 0.2F) / 2.0F;
             marker.gui = (new InternalGUI(startX, startY, buttonWidth + 0.2F, guiHeight)).setColor(65535);
-            marker.buttons = new InternalButton[5];
+            marker.buttons = new InternalButton[6];
             startX += 0.1F;
             startY += 0.1F;
             marker.buttons[0] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.ANCHOR21));
@@ -95,6 +95,8 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
             marker.buttons[3] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.GRID));
             startY += buttonHeight + 0.1F;
             marker.buttons[4] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.DISTANCE));
+            startY += buttonHeight + 0.1F;
+            marker.buttons[5] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.FIT_NEIGHBOR));
             IntStream.range(0, marker.buttons.length).forEach(i -> marker.gui.addButton(marker.buttons[i]));
         }
         marker.buttons[0].setText(marker.getStateString(MarkerState.ANCHOR21), 16777215, 0.05F);
@@ -102,6 +104,7 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
         marker.buttons[2].setText(marker.getStateString(MarkerState.LINE1), 16777215, 0.05F);
         marker.buttons[3].setText(marker.getStateString(MarkerState.GRID), 16777215, 0.05F);
         marker.buttons[4].setText(marker.getStateString(MarkerState.DISTANCE), 16777215, 0.05F);
+        marker.buttons[5].setText(marker.getStateString(MarkerState.FIT_NEIGHBOR), 16777215, 0.05F);
         GL11.glPushMatrix();
         float y = 0.5F;
         if (marker.getState(MarkerState.LINE1)) {
@@ -313,7 +316,7 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
                 float cantLimit = 80.0F;
                 float cant = (pitchDif < -cantLimit) ? -cantLimit : (Math.min(pitchDif, cantLimit));
                 RailPosition neighborRP = getNeighborRail(marker);
-                if (neighborRP != null && marker.fitNeighbor) {
+                if (neighborRP != null && marker.getState(MarkerState.FIT_NEIGHBOR)) {
                     cant = -neighborRP.cantEdge;
                 }
                 rp.cantEdge = cant;
@@ -389,14 +392,14 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
                 float length = (float) (dx / MathHelper.sin(dirRad));
                 float yaw = NGTMath.toDegrees(dirRad);
                 if (curElm == MarkerElement.HORIZONTIAL) {
-                    if (neighborRP != null && marker.fitNeighbor) {
+                    if (neighborRP != null && marker.getState(MarkerState.FIT_NEIGHBOR)) {
                         yaw = MathHelper.wrapAngleTo180_float(neighborRP.anchorYaw + 180.0F);
                     }
                     rp.anchorYaw = yaw;
                     rp.anchorLengthHorizontal = length;
                 } else if (curElm == MarkerElement.VERTICAL) {
                     float pitch = MathHelper.wrapAngleTo180_float(yaw - rp.anchorYaw);
-                    if (neighborRP != null && marker.fitNeighbor) {
+                    if (neighborRP != null && marker.getState(MarkerState.FIT_NEIGHBOR)) {
                         pitch = -neighborRP.anchorPitch;
                     } else if (fitOpposite) {
                         double dy = targetVec.yCoord - rp.posY;

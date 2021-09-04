@@ -7,6 +7,7 @@ import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.util.RenderUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -22,21 +23,22 @@ public class RenderSeat extends Render {
         GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 
         RenderUtil.enableCustomLighting(0, 0.0F, 2.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-        this.renderSeat(entity);
+        this.renderSeat(entity, par9);
         RenderUtil.disableCustomLighting(0);
 
         GL11.glPopMatrix();
     }
 
-    private void renderSeat(EntityFloor entity) {
+    private void renderSeat(EntityFloor entity, float partialTick) {
         byte seatType = entity.getSeatType();
         if (entity.getVehicle() == null) {
             RTMCore.proxy.renderMissingModel();
         } else if (seatType == 1 || seatType == 3) {
             //Light[] lights = entity.getTrain().getTrainModelSet().getConfig().interiorLights;
 
-            GL11.glRotatef(entity.rotationYaw, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(-entity.rotationPitch, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(entity.getVehicle().prevRotationYaw + MathHelper.wrapAngleTo180_float(entity.getVehicle().rotationYaw - entity.getVehicle().prevRotationYaw) * partialTick, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(entity.getVehicle().prevRotationPitch + MathHelper.wrapAngleTo180_float(entity.getVehicle().rotationPitch - entity.getVehicle().prevRotationPitch) * partialTick, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(entity.getVehicle().prevRotationRoll + MathHelper.wrapAngleTo180_float(entity.getVehicle().rotationRoll - entity.getVehicle().prevRotationRoll) * partialTick, 0.0F, 0.0F, 1.0F);
             GL11.glScalef(1.0F, -1.0F, -1.0F);
 
             this.bindTexture(texture);

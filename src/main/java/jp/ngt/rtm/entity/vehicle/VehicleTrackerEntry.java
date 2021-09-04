@@ -73,15 +73,15 @@ public class VehicleTrackerEntry extends EntityTrackerEntry {
                     //this.lastYaw = packet.trainYaw;
                     //this.lastPitch = packet.trainPitch;
                     this.ridingEntity = false;
-                    par1.forEach(player -> RTMCore.NETWORK_WRAPPER.sendTo(packet, (EntityPlayerMP) player));
-//                    RTMCore.NETWORK_WRAPPER.sendToAll(packet);
+//                    par1.forEach(player -> RTMCore.NETWORK_WRAPPER.sendTo(packet, (EntityPlayerMP) player));
+                    RTMCore.NETWORK_WRAPPER.sendToAll(packet);
                 } else if (this.myEntity instanceof EntityVehicle) {
                     PacketVehicleMovement packet = new PacketVehicleMovement(this.myEntity);
                     this.lastScaledXPosition = packet.trainX;
                     this.lastScaledYPosition = packet.trainY;
                     this.lastScaledZPosition = packet.trainZ;
-                    par1.forEach(player -> RTMCore.NETWORK_WRAPPER.sendTo(packet, (EntityPlayerMP) player));
-//                    RTMCore.NETWORK_WRAPPER.sendToAll(packet);
+//                    par1.forEach(player -> RTMCore.NETWORK_WRAPPER.sendTo(packet, (EntityPlayerMP) player));
+                    RTMCore.NETWORK_WRAPPER.sendToAll(packet);
 
                     this.motionX = this.myEntity.motionX;
                     this.motionY = this.myEntity.motionY;

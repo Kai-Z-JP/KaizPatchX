@@ -21,7 +21,7 @@ public final class RTMEntity {
     private static final short RANGE = 1024;//trackingRange->EntityTrackerで設定される
 
     public static void init(Object mod) {
-        EntityRegistry.registerModEntity(EntityFloor.class, "RTM.E.Floor", getNextId(), mod, RANGE, FREQ_VEHICLE, false);
+        EntityRegistry.registerModEntity(EntityFloor.class, "RTM.E.Floor", getNextId(), mod, RANGE, 60, false);
         EntityRegistry.registerModEntity(EntityBogie.class, "RTM.E.Bogie", getNextId(), mod, RANGE, FREQ_VEHICLE, false);
         EntityRegistry.registerModEntity(EntityMotorman.class, "RTM.E.Motorman", getNextId(), mod, RANGE, 3, true);
         EntityRegistry.registerModEntity(EntityATC.class, "RTM.E.ATC", getNextId(), mod, 160, FREQ_INSTALLED, false);

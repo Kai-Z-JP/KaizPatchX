@@ -71,6 +71,7 @@ public class TileEntityMarker extends TileEntity {
         this.markerState = MarkerState.LINE1.set(this.markerState, false);
         this.markerState = MarkerState.LINE2.set(this.markerState, false);
         this.markerState = MarkerState.ANCHOR21.set(this.markerState, false);
+        this.markerState = MarkerState.FIT_NEIGHBOR.set(this.markerState, true);
     }
 
     @Override

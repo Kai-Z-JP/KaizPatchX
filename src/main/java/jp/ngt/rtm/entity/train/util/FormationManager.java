@@ -100,4 +100,10 @@ public final class FormationManager {
         formation.setTrain(par1, 0, 0);
         return formation;
     }
+
+    public Formation createNewFormation(EntityTrainBase par1, long id, byte pos, byte dir, int size) {
+        Formation formation = new Formation(id, size);
+        formation.setTrain(par1, pos, dir);
+        return formation;
+    }
 }

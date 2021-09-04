@@ -111,7 +111,7 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 
     public int getNotch() {
         Formation formation = this.theTrain.getFormation();
-        return formation == null ? 0 : formation.getNotch();
+        return formation == null ? this.theTrain.isControlCar() ? this.theTrain.getNotch() : 0 : formation.getNotch();
     }
 
     public byte getState(int id) {

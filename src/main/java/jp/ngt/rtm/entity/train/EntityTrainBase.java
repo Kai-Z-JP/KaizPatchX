@@ -513,7 +513,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         if (this.isControlCar()) {
             if (isBrakeDisabled && !this.worldObj.isRemote) {
                 ModelSetVehicleBase<TrainConfig> set = this.getModelSet();
-                float acceleration = TrainSpeedManager.getAcceleration(notch, Math.abs(speed), set.getConfig());
+                float acceleration = TrainSpeedManager.getAcceleration(this, notch, Math.abs(speed), set.getConfig());
                 TrainState dir = this.getTrainState(10);
                 if ((dir == TrainState.Direction_Back && speed > 0) || (dir == TrainState.Direction_Front && speed < 0)) {
                     acceleration = Math.abs(acceleration);

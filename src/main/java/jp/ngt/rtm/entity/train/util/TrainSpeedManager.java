@@ -1,11 +1,13 @@
 package jp.ngt.rtm.entity.train.util;
 
+import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 
 public final class TrainSpeedManager {
     private static final float[] BRAKE = {-0.0005F, -0.001F, -0.0015F, -0.002F, -0.0025F, -0.003F, -0.0035F, -0.01F};
 
-    public static float getAcceleration(int notch, float prevSpeed, TrainConfig cfg) {
+    public static float getAcceleration(EntityTrainBase train, int notch, float prevSpeed, TrainConfig cfg) {
         if (notch == 0) {
             return 0.0F;
         } else if (notch > 0) {
@@ -13,16 +15,34 @@ public final class TrainSpeedManager {
             if (prevSpeed >= cfg.maxSpeed[Math.min(cfg.maxSpeed.length - 1, notch)]) {
                 return 0.0F;
             } else {
-                return cfg.accelerateions[Math.min(cfg.accelerateions.length - 1, notch)];
+                if (cfg.useVariableAcceleration) {
+                    Object obj = ScriptUtil.doScriptIgnoreError(
+                            train.getModelSet().serverSE,
+                            "getAcceleration",
+                            train,
+                            prevSpeed);
+                    return obj != null ? Float.parseFloat(obj.toString()) : 0.0f;
+                } else {
+                    return cfg.accelerateions[Math.min(cfg.accelerateions.length - 1, notch)];
+                }
             }
         } else {
             notch = -(notch + 1);
-            float decceleration = cfg.deccelerations[Math.min(cfg.deccelerations.length - 1, notch + 1)];
-            float absSpeed = Math.abs(prevSpeed);
-            if (absSpeed + decceleration < 0.0F) {
-                return -absSpeed;
+            float deceleration;
+            if (cfg.useVariableDeceleration) {
+                Object obj = ScriptUtil.doScriptIgnoreError(
+                        train.getModelSet().serverSE,
+                        "getDeceleration",
+                        train,
+                        prevSpeed);
+                deceleration = obj != null ? Float.parseFloat(obj.toString()) : 0.0f;
+            } else {
+                deceleration = cfg.deccelerations[Math.min(cfg.deccelerations.length - 1, notch + 1)];
             }
-            return decceleration;
+            if (prevSpeed + deceleration < 0.0F) {
+                return -prevSpeed;
+            }
+            return deceleration;
         }
     }
 

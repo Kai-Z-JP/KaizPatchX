@@ -16,12 +16,17 @@ import jp.ngt.rtm.event.RTMEventHandler;
 import jp.ngt.rtm.gui.RTMGuiHandler;
 import jp.ngt.rtm.item.ItemBucketLiquid;
 import jp.ngt.rtm.world.RTMChunkManager;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import paulscode.sound.SoundSystemConfig;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Mod(modid = RTMCore.MODID, name = "RealTrainMod", version = RTMCore.VERSION)
 public final class RTMCore {
@@ -213,6 +218,39 @@ public final class RTMCore {
     public void handleServerStarting(FMLServerStartingEvent event) {
         RTMCommand.init(event);
         WireManager.INSTANCE.clear();
+    }
+
+    public static void registerMapping(Item item, String name) {
+        itemMap.put(MODID + ':' + name, item);
+    }
+
+    public static void registerMapping(Block block, String name) {
+        blockMap.put(MODID + ':' + name, block);
+        Item itemForBlock = Item.getItemFromBlock(block);
+        if (itemForBlock != null) {
+            registerMapping(itemForBlock, name);
+        }
+    }
+
+    private static Map<String, Item> itemMap = new HashMap<>();
+    private static Map<String, Block> blockMap = new HashMap<>();
+
+    @EventHandler
+    public void handleMissingMapping(FMLMissingMappingsEvent event) {
+        for (FMLMissingMappingsEvent.MissingMapping mapping : event.get()) {
+            switch (mapping.type) {
+                case BLOCK:
+                    Block mappedBlock = blockMap.get(mapping.name);
+                    if (mappedBlock != null)
+                        mapping.remap(mappedBlock);
+                    break;
+                case ITEM:
+                    Item mappedItem = itemMap.get(mapping.name);
+                    if (mappedItem != null)
+                        mapping.remap(mappedItem);
+                    break;
+            }
+        }
     }
 
     private static short guiId;

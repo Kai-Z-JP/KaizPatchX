@@ -44,13 +44,20 @@ public final class RTMRail {
             largeRailSlopeCore[i] = (new BlockLargeRailSlopeCore(i)).setBlockName("rtm:LRLCore." + i).setBlockTextureName(railTexture[i]);
         });
 
-        GameRegistry.registerBlock(largeRailBase0, "rtm:LRBase");
-        GameRegistry.registerBlock(largeRailCore0, "rtm:LRCore");
-        GameRegistry.registerBlock(largeRailSwitchBase0, "rtm:LRSBase");
-        GameRegistry.registerBlock(largeRailSwitchCore0, "rtm:LRSCore");
-        GameRegistry.registerBlock(largeRailSlopeBase0, "rtm:LRLBase");
-        GameRegistry.registerBlock(largeRailSlopeCore0, "rtm:LRLCore");
-        GameRegistry.registerBlock(TURNTABLE_CORE, "rtm:turntable_core");
+        GameRegistry.registerBlock(largeRailBase0, "LRBase");
+        GameRegistry.registerBlock(largeRailCore0, "LRCore");
+        GameRegistry.registerBlock(largeRailSwitchBase0, "LRSBase");
+        GameRegistry.registerBlock(largeRailSwitchCore0, "LRSCore");
+        GameRegistry.registerBlock(largeRailSlopeBase0, "LRLBase");
+        GameRegistry.registerBlock(largeRailSlopeCore0, "LRLCore");
+        GameRegistry.registerBlock(TURNTABLE_CORE, "turntable_core");
+        RTMCore.registerMapping(largeRailBase0, "rtm:LRBase");
+        RTMCore.registerMapping(largeRailCore0, "rtm:LRCore");
+        RTMCore.registerMapping(largeRailSwitchBase0, "rtm:LRSBase");
+        RTMCore.registerMapping(largeRailSwitchCore0, "rtm:LRSCore");
+        RTMCore.registerMapping(largeRailSlopeBase0, "rtm:LRLBase");
+        RTMCore.registerMapping(largeRailSlopeCore0, "rtm:LRLCore");
+        RTMCore.registerMapping(TURNTABLE_CORE, "rtm:turntable_core");
 
         //インスタンス使いまわして登録は不可
         IntStream.range(0, railTexture.length).forEach(i -> {

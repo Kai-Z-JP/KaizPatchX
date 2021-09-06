@@ -7,6 +7,7 @@ import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader;
 import jp.ngt.ngtlib.util.PermissionManager;
@@ -18,6 +19,7 @@ import jp.ngt.rtm.item.ItemBucketLiquid;
 import jp.ngt.rtm.world.RTMChunkManager;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -218,6 +220,26 @@ public final class RTMCore {
     public void handleServerStarting(FMLServerStartingEvent event) {
         RTMCommand.init(event);
         WireManager.INSTANCE.clear();
+    }
+
+    public static void registerRtmPrefixed(Item item, String name) {
+        GameRegistry.registerItem(item, removePrefix(name));
+        registerMapping(item, name);
+    }
+
+    public static void registerRtmPrefixed(Block block, String name) {
+        GameRegistry.registerBlock(block, removePrefix(name));
+        registerMapping(block, name);
+    }
+
+    public static void registerRtmPrefixed(Block block, Class<? extends ItemBlock> itemclass, String name) {
+        GameRegistry.registerBlock(block, itemclass, removePrefix(name));
+        registerMapping(block, name);
+    }
+
+    private static String removePrefix(String name) {
+        assert name.startsWith("rtm:");
+        return name.substring("rtm:".length());
     }
 
     public static void registerMapping(Item item, String name) {

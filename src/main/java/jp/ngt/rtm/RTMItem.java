@@ -113,28 +113,17 @@ public final class RTMItem {
 
         camera = (new ItemCamera()).setUnlocalizedName("rtm:camera").setTextureName("rtm:camera").setCreativeTab(CreativeTabRTM.tabRTMTools);
 
-        GameRegistry.registerItem(bogie, "bogie");
-        GameRegistry.registerItem(installedObject, "installedObject");
-        GameRegistry.registerItem(material, "material");
-        GameRegistry.registerItem(crowbar, "crowbar");
-        GameRegistry.registerItem(itemtrain, "itemTrain");
-        GameRegistry.registerItem(itemMotorman, "itemMotorman");
-        GameRegistry.registerItem(itemCargo, "itemCargo");
-        GameRegistry.registerItem(itemRailroadSign, "itemRailroadSign");
-        GameRegistry.registerItem(ticket, "ticket");
-        GameRegistry.registerItem(ticketBook, "ticketBook");
-        GameRegistry.registerItem(icCard, "icCard");
-        RTMCore.registerMapping(bogie, "rtm:bogie");
-        RTMCore.registerMapping(installedObject, "rtm:installedObject");
-        RTMCore.registerMapping(material, "rtm:material");
-        RTMCore.registerMapping(crowbar, "rtm:crowbar");
-        RTMCore.registerMapping(itemtrain, "rtm:itemTrain");
-        RTMCore.registerMapping(itemMotorman, "rtm:itemMotorman");
-        RTMCore.registerMapping(itemCargo, "rtm:itemCargo");
-        RTMCore.registerMapping(itemRailroadSign, "rtm:itemRailroadSign");
-        RTMCore.registerMapping(ticket, "rtm:ticket");
-        RTMCore.registerMapping(ticketBook, "rtm:ticketBook");
-        RTMCore.registerMapping(icCard, "rtm:icCard");
+        RTMCore.registerRtmPrefixed(bogie, "rtm:bogie");
+        RTMCore.registerRtmPrefixed(installedObject, "rtm:installedObject");
+        RTMCore.registerRtmPrefixed(material, "rtm:material");
+        RTMCore.registerRtmPrefixed(crowbar, "rtm:crowbar");
+        RTMCore.registerRtmPrefixed(itemtrain, "rtm:itemTrain");
+        RTMCore.registerRtmPrefixed(itemMotorman, "rtm:itemMotorman");
+        RTMCore.registerRtmPrefixed(itemCargo, "rtm:itemCargo");
+        RTMCore.registerRtmPrefixed(itemRailroadSign, "rtm:itemRailroadSign");
+        RTMCore.registerRtmPrefixed(ticket, "rtm:ticket");
+        RTMCore.registerRtmPrefixed(ticketBook, "rtm:ticketBook");
+        RTMCore.registerRtmPrefixed(icCard, "rtm:icCard");
         GameRegistry.registerItem(itemLargeRail, "itemLargeRail");
         GameRegistry.registerItem(itemSignal, "itemSignal");
         GameRegistry.registerItem(itemLinePole, "itemLinePole");
@@ -160,24 +149,16 @@ public final class RTMItem {
         GameRegistry.registerItem(bullet, "bullet");
         GameRegistry.registerItem(nvd, "nvd");
 
-        GameRegistry.registerItem(bucketLiquid, "bucketLiquid");
-        GameRegistry.registerItem(iron_hacksaw, "ironHacksaw");
-        GameRegistry.registerItem(steel_ingot, "ingotSteel");
-        GameRegistry.registerItem(paddle, "paddle");
-        GameRegistry.registerItem(coke, "coke");
-        GameRegistry.registerItem(bellows, "bellows");
-        GameRegistry.registerItem(itemPipe, "itemPipe");
-        RTMCore.registerMapping(bucketLiquid, "rtm:bucketLiquid");
-        RTMCore.registerMapping(iron_hacksaw, "rtm:ironHacksaw");
-        RTMCore.registerMapping(steel_ingot, "rtm:ingotSteel");
-        RTMCore.registerMapping(paddle, "rtm:paddle");
-        RTMCore.registerMapping(coke, "rtm:coke");
-        RTMCore.registerMapping(bellows, "rtm:bellows");
-        RTMCore.registerMapping(itemPipe, "rtm:itemPipe");
+        RTMCore.registerRtmPrefixed(bucketLiquid, "rtm:bucketLiquid");
+        RTMCore.registerRtmPrefixed(iron_hacksaw, "rtm:ironHacksaw");
+        RTMCore.registerRtmPrefixed(steel_ingot, "rtm:ingotSteel");
+        RTMCore.registerRtmPrefixed(paddle, "rtm:paddle");
+        RTMCore.registerRtmPrefixed(coke, "rtm:coke");
+        RTMCore.registerRtmPrefixed(bellows, "rtm:bellows");
+        RTMCore.registerRtmPrefixed(itemPipe, "rtm:itemPipe");
         GameRegistry.registerItem(paintTool, "paint_tool");
 
-        GameRegistry.registerItem(camera, "camera");
-        RTMCore.registerMapping(camera, "rtm:camera");
+        RTMCore.registerRtmPrefixed(camera, "rtm:camera");
 
         OreDictionary.registerOre("ingotSteel", new ItemStack(steel_ingot, 1, 0));
         OreDictionary.registerOre("fuelCoke", new ItemStack(coke, 1, 0));

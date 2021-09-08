@@ -44,13 +44,13 @@ public final class RTMRail {
             largeRailSlopeCore[i] = (new BlockLargeRailSlopeCore(i)).setBlockName("rtm:LRLCore." + i).setBlockTextureName(railTexture[i]);
         });
 
-        GameRegistry.registerBlock(largeRailBase0, "rtm:LRBase");
-        GameRegistry.registerBlock(largeRailCore0, "rtm:LRCore");
-        GameRegistry.registerBlock(largeRailSwitchBase0, "rtm:LRSBase");
-        GameRegistry.registerBlock(largeRailSwitchCore0, "rtm:LRSCore");
-        GameRegistry.registerBlock(largeRailSlopeBase0, "rtm:LRLBase");
-        GameRegistry.registerBlock(largeRailSlopeCore0, "rtm:LRLCore");
-        GameRegistry.registerBlock(TURNTABLE_CORE, "rtm:turntable_core");
+        RTMCore.registerRtmPrefixed(largeRailBase0, "rtm:LRBase");
+        RTMCore.registerRtmPrefixed(largeRailCore0, "rtm:LRCore");
+        RTMCore.registerRtmPrefixed(largeRailSwitchBase0, "rtm:LRSBase");
+        RTMCore.registerRtmPrefixed(largeRailSwitchCore0, "rtm:LRSCore");
+        RTMCore.registerRtmPrefixed(largeRailSlopeBase0, "rtm:LRLBase");
+        RTMCore.registerRtmPrefixed(largeRailSlopeCore0, "rtm:LRLCore");
+        RTMCore.registerRtmPrefixed(TURNTABLE_CORE, "rtm:turntable_core");
 
         //インスタンス使いまわして登録は不可
         IntStream.range(0, railTexture.length).forEach(i -> {

@@ -77,9 +77,12 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
 
         ByteBufUtils.writeTag(buffer, this.property);
         buffer.writeByte(this.type);
-
-        buffer.writeByte(this.railPositions.length);
-        Arrays.stream(this.railPositions).forEach(rp -> ByteBufUtils.writeTag(buffer, rp.writeToNBT()));
+        if (this.railPositions == null) {
+            buffer.writeByte(0);
+        } else {
+            buffer.writeByte(this.railPositions.length);
+            Arrays.stream(this.railPositions).forEach(rp -> ByteBufUtils.writeTag(buffer, rp.writeToNBT()));
+        }
     }
 
     @Override

@@ -183,7 +183,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
             }
 
             if (!this.floorLoaded) {
-                this.setupFloors(this.myModelSet);
+                this.setupFloors();
             }
 
             Entity passenger = this.riddenByEntity;
@@ -352,14 +352,19 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
     /**
      * Server Only
      */
-    private void setupFloors(ModelSetVehicleBase<T> par1)//getModelSetでループしないように
-    {
+    private void setupFloors() {
         this.vehicleFloors.stream().filter(Objects::nonNull).forEach(Entity::setDead);
 
         this.vehicleFloors.clear();
 
-        for (int i = 0; i < par1.getConfig().getSlotPos().length; ++i) {
-            float[] fa = par1.getConfig().getSlotPos()[i];
+        ModelSetVehicleBase<T> par1 = this.getModelSet();
+
+        if (par1 == null) {
+            return;
+        }
+
+        this.floorLoaded = true;
+        for (float[] fa : par1.getConfig().getSlotPos()) {
             EntityFloor floor = new EntityFloor(this.worldObj, this, new float[]{fa[0], fa[1], fa[2]}, (byte) fa[3]);
             if (this.worldObj.spawnEntityInWorld(floor)) {
                 this.vehicleFloors.add(floor);
@@ -368,7 +373,6 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
                 break;
             }
         }
-        this.floorLoaded = true;
     }
 
     @Override

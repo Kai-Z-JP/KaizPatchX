@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
+import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +25,7 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
     private ItemStack selectedItem;
     @SideOnly(Side.CLIENT)
     private EntityPlayer selectedPlayer;
+    private ModelSetBase myModelSet;
 
     public ItemWithModel() {
         super();
@@ -109,7 +111,10 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
 
     @Override
     public ModelSetBase getModelSet() {
-        return null;
+        if (this.myModelSet == null || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
+            this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
+        }
+        return this.myModelSet;
     }
 
     @Override
@@ -119,7 +124,7 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
 
     public ResourceState getModelState(ItemStack itemStack) {
         ResourceState state = new ResourceState(this);
-        if (itemStack.hasTagCompound()) {
+        if (itemStack.getTagCompound().hasKey("State")) {
             state.readFromNBT(itemStack.getTagCompound().getCompoundTag("State"));
         } else {
             NBTTagCompound nbt = new NBTTagCompound();

@@ -2,10 +2,16 @@ package jp.ngt.ngtlib.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.util.NGTUtilClient;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.RenderHelper;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +19,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public abstract class GuiScreenCustom extends GuiScreen {
     protected int xSize, ySize;
-    protected List<GuiTextField> textFields = new ArrayList<>();
+    protected List<GuiTextFieldCustom> textFields = new ArrayList<>();
     protected GuiTextField currentTextField;
     protected List<GuiSlotCustom> slotList = new ArrayList<>();
 
@@ -27,7 +33,7 @@ public abstract class GuiScreenCustom extends GuiScreen {
         return this.buttonList;
     }
 
-    public List<GuiTextField> getTextFields() {
+    public List<GuiTextFieldCustom> getTextFields() {
         return this.textFields;
     }
 
@@ -37,7 +43,7 @@ public abstract class GuiScreenCustom extends GuiScreen {
     }
 
     protected GuiTextFieldCustom setTextField(int xPos, int yPos, int w, int h, String text) {
-        GuiTextFieldCustom field = new GuiTextFieldCustom(this.fontRendererObj, xPos, yPos, w, h);
+        GuiTextFieldCustom field = new GuiTextFieldCustom(this.fontRendererObj, xPos, yPos, w, h, this);
         field.setMaxStringLength(32767);
         field.setFocused(false);
         field.setText(text);
@@ -95,7 +101,9 @@ public abstract class GuiScreenCustom extends GuiScreen {
 
         this.slotList.forEach(slot -> slot.drawScreen(par1, par2, par3));
 
-        this.textFields.forEach(GuiTextField::drawTextBox);
+        int mouseX = Mouse.getEventX() * this.width / NGTUtilClient.getMinecraft().displayWidth;
+        int mouseY = this.height - Mouse.getEventY() * this.height / NGTUtilClient.getMinecraft().displayHeight - 1;
+        this.textFields.forEach(field -> field.drawTextBox(mouseX, mouseY));
 
         this.drawGuiContainerForegroundLayer(par1, par2);
 
@@ -125,5 +133,26 @@ public abstract class GuiScreenCustom extends GuiScreen {
         } catch (NumberFormatException e) {
             return defaultVal;
         }
+    }
+
+    @Override
+    public void drawHoveringText(List textLines, int x, int y, FontRenderer font) {
+        super.drawHoveringText(textLines, x, y, font);
+    }
+
+    public static void drawHoveringTextS(List<String> textLines, int x, int y, GuiScreen screen) {
+        FontRenderer fontRenderer = NGTUtilClient.getMinecraft().fontRenderer;
+        if (screen instanceof GuiScreenCustom) {
+            ((GuiScreenCustom) screen).drawHoveringText(textLines, x, y, fontRenderer);
+        } else if (screen instanceof GuiContainerCustom) {
+            ((GuiContainerCustom) screen).drawHoveringText(textLines, x, y, fontRenderer);
+        }
+
+        //以降で描画するボタンの明るさを変えないように
+        itemRender.zLevel = 0.0F;
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
     }
 }

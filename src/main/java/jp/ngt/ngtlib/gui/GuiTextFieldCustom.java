@@ -11,6 +11,9 @@ import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SideOnly(Side.CLIENT)
 public class GuiTextFieldCustom extends GuiTextField {
     protected final FontRenderer fontRenderer;
@@ -33,15 +36,19 @@ public class GuiTextFieldCustom extends GuiTextField {
     protected int disabledColor = 0x707070;
     protected boolean visible = true;
 
+    private final GuiScreen screen;
+    private final List<String> tips = new ArrayList<>();
     protected boolean isDisplayMode;
 
-    public GuiTextFieldCustom(FontRenderer par1, int x, int y, int w, int h) {
+    public GuiTextFieldCustom(FontRenderer par1, int x, int y, int w, int h, GuiScreen pScr) {
         super(par1, x, y, w, h);
         this.fontRenderer = par1;
         this.xPosition = x;
         this.yPosition = y;
         this.width = w;
         this.height = h;
+
+        this.screen = pScr;
     }
 
     public void setDisplayMode(boolean par1) {
@@ -347,6 +354,15 @@ public class GuiTextFieldCustom extends GuiTextField {
         }
     }
 
+    public void drawTextBox(int mouseX, int mouseY) {
+        this.drawTextBox();
+
+        boolean hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        if (hovered && !this.tips.isEmpty()) {
+            GuiScreenCustom.drawHoveringTextS(this.tips, mouseX, mouseY, this.screen);
+        }
+    }
+
     @Override
     public void drawTextBox() {
         if (this.isDisplayMode) {
@@ -570,5 +586,10 @@ public class GuiTextFieldCustom extends GuiTextField {
     @Override
     public void setVisible(boolean p_146189_1_) {
         this.visible = p_146189_1_;
+    }
+
+    public GuiTextFieldCustom addTips(String par1) {
+        this.tips.add(par1);
+        return this;
     }
 }

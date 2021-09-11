@@ -2,6 +2,7 @@ package jp.ngt.ngtlib.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -84,5 +85,10 @@ public abstract class GuiContainerCustom extends GuiContainer {
         if (this.currentTextField != null) {
             this.currentTextField.updateCursorCounter();
         }
+    }
+
+    @Override
+    public void drawHoveringText(List textLines, int x, int y, FontRenderer font) {
+        super.drawHoveringText(textLines, x, y, font);
     }
 }

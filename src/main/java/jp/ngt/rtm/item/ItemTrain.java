@@ -122,7 +122,7 @@ public class ItemTrain extends ItemWithModel {
         this.icons[1] = register.registerIcon("rtm:itemEC");
         this.icons[2] = register.registerIcon("rtm:itemFC");
         this.icons[3] = register.registerIcon("rtm:itemTC");
-        this.testIcon = register.registerIcon("rtm:itemEC");
+        this.testIcon = register.registerIcon("rtm:itemTestTrain");
     }
 
     @Override

@@ -3,12 +3,14 @@ package jp.ngt.rtm.modelpack.modelset;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig;
+import jp.ngt.rtm.modelpack.state.DataFormatter;
 import net.minecraft.util.ResourceLocation;
 
 import javax.script.ScriptEngine;
 
 public abstract class ModelSetBase<T extends ModelConfig> {
     protected final T cfg;
+    public final DataFormatter dataFormatter;
     private final boolean isDummyModel;
 
     public ScriptEngine serverSE;
@@ -18,11 +20,13 @@ public abstract class ModelSetBase<T extends ModelConfig> {
      */
     public ModelSetBase() {
         this.cfg = this.getDummyConfig();
+        this.dataFormatter = new DataFormatter();
         this.isDummyModel = true;
     }
 
     public ModelSetBase(T par1) {
         this.cfg = par1;
+        this.dataFormatter = new DataFormatter();
         this.isDummyModel = false;
 
         if (this.cfg.serverScriptPath != null) {

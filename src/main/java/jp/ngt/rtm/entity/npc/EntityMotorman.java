@@ -10,7 +10,6 @@ import jp.ngt.rtm.entity.ai.EntityAIDriveWithMacro;
 import jp.ngt.rtm.entity.ai.EntityAIDrivingWithDiagram;
 import jp.ngt.rtm.entity.ai.EntityAIDrivingWithSignal;
 import jp.ngt.rtm.entity.npc.macro.TrainCommand;
-import jp.ngt.rtm.modelpack.modelset.ModelSetNPC;
 import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -134,10 +133,5 @@ public class EntityMotorman extends EntityNPC {
     @Override
     public boolean isMotorman() {
         return true;
-    }
-
-    @Override
-    public ModelSetNPC getModelSet() {
-        return null;
     }
 }

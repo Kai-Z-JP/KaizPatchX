@@ -2,7 +2,9 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.gui.GuiButtonCustom;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
+import jp.ngt.ngtlib.renderer.NGTTessellator;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
@@ -25,6 +27,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.Project;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -38,9 +42,12 @@ public class GuiSelectModel extends GuiScreenCustom {
     private List<ModelSetBase> modelListAll;
     private List<ModelSetBase> modelListSelect;
     private GuiButtonSelectModel[] selectButtons;
-    private GuiTextField argField;
+    private GuiTextField nameField;
+    protected GuiTextField argField;
     private GuiTextField searchField;
+    private GuiButtonCustom colorButton;
 
+    private int modelColor;
     private int currentScroll;
     private boolean wasClicking;
 
@@ -67,12 +74,24 @@ public class GuiSelectModel extends GuiScreenCustom {
     public void initGui() {
         super.initGui();
 
-        this.searchField = this.setTextField(this.width - 120, 5, 100, 20, "");
+        this.buttonList.clear();
+
         ResourceState state = this.selector.getResourceState();
         state.getResourceSet();//arg初期化
-        this.argField = this.setTextField(this.width - 120, 30, 100, 20, state.getArg());
+        this.nameField = this.setTextField(this.width - 205, 5, 120, 20, state.getName()).addTips("Custom Name");
+        this.argField = this.setTextField(this.width - 205, 30, 100, 20, state.getArg()).addTips("Custom Parameters");
+        this.searchField = this.setTextField(this.width - 80, 5, 60, 20, "").addTips("Search Box");
+        this.modelColor = state.color;
+        this.colorButton = this.addButton(new GuiButtonCustom(10000, this.width - 80, 30, 40, 20, "0xFFFFFF", this)).addTips("Select Color");
+        this.setColorToButton(this.modelColor);
+        this.addButton(new GuiButtonCustom(10001, this.width - 105, 30, 20, 20, " ", this)).addTips("DataMap");
 
         this.resetModelList();
+    }
+
+    protected <T extends GuiButton> T addButton(T buttonIn) {
+        this.buttonList.add(buttonIn);
+        return buttonIn;
     }
 
     /**
@@ -92,8 +111,6 @@ public class GuiSelectModel extends GuiScreenCustom {
         //名前順にソート
         this.modelListSelect.sort(Comparator.comparing(o -> o.getConfig().getName()));
 
-        this.buttonList.clear();
-
         int i0 = (this.height / 2) - 16;
         this.selectButtons = new GuiButtonSelectModel[this.modelListSelect.size()];
         IntStream.range(0, this.selectButtons.length).forEach(i -> {
@@ -108,7 +125,20 @@ public class GuiSelectModel extends GuiScreenCustom {
         });
         this.resetButtonPos();
 
-        this.buttonList.add(new GuiButton(900, this.width + 36, this.height - 20, 100, 20, "cansel"));
+        this.buttonList.add(new GuiButton(900, this.width + 36, this.height - 20, 100, 20, "cancel"));
+    }
+
+    private void setColorToButton(int color) {
+        this.colorButton.displayString = "0x" + Integer.toHexString(color);
+    }
+
+    private void resetColor() {
+        try {
+            this.modelColor = Integer.decode(this.colorButton.displayString);
+            this.selector.getResourceState().color = this.modelColor;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -118,6 +148,7 @@ public class GuiSelectModel extends GuiScreenCustom {
         if (this.modelListSelect.size() > 0) {
             this.drawScrollBar(par2, par3);
         }
+        this.drawColorPallet();
     }
 
     @Override
@@ -137,9 +168,25 @@ public class GuiSelectModel extends GuiScreenCustom {
             this.scroll(i1);
         }
 
+        float z = this.zLevel;
+        this.zLevel = -1000.0F;//モデルプレビューの後ろが切れないように
         this.drawDefaultBackground();
+        this.zLevel = z;
 
         super.drawScreen(par1, par2, par3);
+    }
+
+    private void drawColorPallet() {
+        NGTTessellator tessellator = NGTTessellator.instance;
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque_I(this.modelColor);
+        tessellator.addVertex(this.width - 20, 50, this.zLevel);
+        tessellator.addVertex(this.width - 20, 30, this.zLevel);
+        tessellator.addVertex(this.width - 40, 30, this.zLevel);
+        tessellator.addVertex(this.width - 40, 50, this.zLevel);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     private void drawScrollBar(int mouseX, int mouseY) {
@@ -196,18 +243,23 @@ public class GuiSelectModel extends GuiScreenCustom {
         super.keyTyped(par1, par2);
 
         this.resetModelList();
+        this.resetColor();
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 900) {
+        if (button.id == 10900) {
             if (this.selector.closeGui(null, null)) {
                 this.mc.displayGuiScreen(null);
             }
-        }
-
-        if (button.id < this.modelListSelect.size()) {
+        } else if (button.id == 10000) {
+            this.openColorChooser();
+        } else if (button.id == 10001) {
+            this.openDataMapEditor();
+        } else if (button.id < this.modelListSelect.size()) {
             ResourceState state = this.selector.getResourceState();
+            state.color = this.modelColor;
+            state.setName(this.nameField.getText());
             state.setArg(this.argField.getText(), true);
             String s = this.modelListSelect.get(button.id).getConfig().getName();
             if (this.selector.closeGui(s, state)) {
@@ -215,6 +267,31 @@ public class GuiSelectModel extends GuiScreenCustom {
                 this.mc.displayGuiScreen(null);
             }
         }
+    }
+
+    private void openColorChooser() {
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setBounds(20, 20, 450, 400);
+        frame.setTitle("Select Color");
+
+        JColorChooser chooser = new JColorChooser(new Color(this.modelColor));
+        chooser.getSelectionModel().addChangeListener((event) -> {
+            int color = chooser.getColor().getRGB() & 0xFFFFFF;//ARGB
+            this.setColorToButton(color);
+            this.resetColor();
+        });
+        frame.getContentPane().add(chooser, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+    }
+
+    private void openDataMapEditor() {
+        DataMapEditor editor = new DataMapEditor(this);
+    }
+
+    protected boolean saveData(ResourceState state) {
+        return this.selector.closeGui(state.getName(), state);
     }
 
     @Override

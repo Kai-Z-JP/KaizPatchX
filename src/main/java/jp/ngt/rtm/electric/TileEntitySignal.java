@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntitySignal extends TileEntityPlaceable implements IProvideElectricity, IModelSelector {
@@ -24,12 +25,16 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
     private Block renderBlock;
     private final ScriptExecuter executer = new ScriptExecuter();
 
+    private TileEntity origTileEntity;
     private ModelSetSignal myModelSet;
     private int signalLevel = 0;
     public int tick;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
+        if (!nbt.hasKey("blockDir")) {
+            return;
+        }
         super.readFromNBT(nbt);
         this.blockDirection = nbt.getInteger("blockDir");
         this.signalLevel = nbt.getInteger("Signal");
@@ -40,6 +45,10 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
 
         if (this.worldObj != null && this.worldObj.isRemote) {
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);//描画の更新
+        }
+
+        if (nbt.hasKey("BaseBlockData")) {
+            this.origTileEntity = TileEntity.createAndLoadEntity(nbt.getCompoundTag("BaseBlockData"));
         }
     }
 
@@ -52,6 +61,12 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         String s = Block.blockRegistry.getNameForObject(this.renderBlock);
         nbt.setString("blockName", s == null ? "" : s);
         nbt.setTag("State", this.getResourceState().writeToNBT());
+
+        if (this.origTileEntity != null) {
+            NBTTagCompound nbt2 = new NBTTagCompound();
+            this.origTileEntity.writeToNBT(nbt2);
+            nbt.setTag("BaseBlockData", nbt2);
+        }
     }
 
     @Override
@@ -90,13 +105,18 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
      * @param par1 元のブロック
      * @param par2 信号機の設置されてる面
      */
-    public void setSignalProperty(String name, Block par1, int par2, EntityPlayer player) {
+    public void setSignalProperty(String name, Block par1, int par2, EntityPlayer player, TileEntity tileEntity) {
         this.renderBlock = par1;
+        this.origTileEntity = tileEntity;
         this.blockDirection = par2;
         this.modelName = name;
         this.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
         this.sendPacket();
         this.markDirty();
+    }
+
+    public TileEntity getOrigTileEntity() {
+        return this.origTileEntity;
     }
 
     @SideOnly(Side.CLIENT)
@@ -120,6 +140,22 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
             return RTMBlock.linePole;
         }
         return this.renderBlock;
+    }
+
+    /**
+     * Block破壊時呼び出し
+     */
+    public void setOrigBlock() {
+        Block block = this.getRenderBlock();
+        int meta = this.getBlockMetadata();
+        this.getWorldObj().setBlock(this.xCoord, this.yCoord, this.zCoord, block, meta, 3);
+
+        TileEntity tile = this.getWorldObj().getTileEntity(this.xCoord, this.yCoord, this.zCoord);
+        if (this.origTileEntity != null && tile != null) {
+            NBTTagCompound nbt = new NBTTagCompound();
+            this.origTileEntity.writeToNBT(nbt);
+            tile.readFromNBT(nbt);
+        }
     }
 
     public ModelSetSignal getModelSet() {
@@ -164,6 +200,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
                 this.yCoord + 2 + this.getOffsetY(),
                 this.zCoord + 1 + this.getOffsetZ());
     }
+
     @Override
     public String getModelType() {
         return "ModelSignal";

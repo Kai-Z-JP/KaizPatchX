@@ -75,7 +75,7 @@ public class BlockLinePole extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return RTMBlock.renderIdLinePole;
+        return -1;
     }
 
     @Override

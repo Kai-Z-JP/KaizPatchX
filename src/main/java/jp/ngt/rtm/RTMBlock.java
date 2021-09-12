@@ -74,7 +74,7 @@ public final class RTMBlock {
     public static Block plant_ornament;
 
     public static short renderIdVariableBlock;
-    public static short renderIdLinePole;
+    public static short renderIdSignalBase;
     public static short renderIdLiquid;
     public static short renderIdScaffold;
     public static short renderIdScaffoldStairs;
@@ -101,7 +101,7 @@ public final class RTMBlock {
 
     public static void init() {
         renderIdVariableBlock = (short) NGTUtil.getNewRenderType();
-        renderIdLinePole = (short) NGTUtil.getNewRenderType();
+        renderIdSignalBase = (short) NGTUtil.getNewRenderType();
         renderIdLiquid = (short) NGTUtil.getNewRenderType();
         renderIdScaffold = (short) NGTUtil.getNewRenderType();
         renderIdScaffoldStairs = (short) NGTUtil.getNewRenderType();

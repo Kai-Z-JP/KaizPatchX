@@ -13,7 +13,6 @@ import jp.ngt.rtm.gui.ContainerTrainControlPanel;
 import jp.ngt.rtm.modelpack.ModelPackUploadThread;
 import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.rail.TileEntityMarker;
-import jp.ngt.rtm.sound.SpeakerSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -76,8 +75,6 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
                 if (tile instanceof TileEntityMarker) {
                     ((TileEntityMarker) tile).updateMarkerRM(player);
                 }
-            } else if (msg.startsWith("speaker")) {
-                SpeakerSounds.getInstance(true).onGetPacket(msg, true);
             }
         }
         return null;

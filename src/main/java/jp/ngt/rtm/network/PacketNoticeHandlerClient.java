@@ -11,7 +11,6 @@ import jp.ngt.rtm.entity.train.parts.EntityArtillery;
 import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.rail.TileEntityMarker;
 import jp.ngt.rtm.rail.TileEntityTurnTableCore;
-import jp.ngt.rtm.sound.SpeakerSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -65,8 +64,6 @@ public class PacketNoticeHandlerClient implements IMessageHandler<PacketNotice, 
                 RTMCore.marker.setValue(use1122marker);
                 RTMCore.cfg.save();
                 NGTUtil.getClientPlayer().addChatMessage(new ChatComponentText("Config: use1122marker = " + use1122marker));
-            } else if (msg.startsWith("speaker")) {
-                SpeakerSounds.getInstance(false).onGetPacket(msg, false);
             } else if (msg.startsWith("flySpeed")) {
                 String[] sa0 = msg.split(",");
                 float speed = Float.parseFloat(sa0[1]);

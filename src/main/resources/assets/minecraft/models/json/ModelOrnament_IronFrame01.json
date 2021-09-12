@@ -1,0 +1,19 @@
+{
+  "name": "IronFrame01",
+  "model": {
+    "modelFile": "Model_IronFrame.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/linepole.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderConnectablePole.js"
+  },
+  "buttonTexture": "textures/ornament/button_IronFrame01.png",
+  "ornamentType": "Pole",
+  "useCustomColor": true,
+  "doCulling": true,
+  "smoothing": true
+}

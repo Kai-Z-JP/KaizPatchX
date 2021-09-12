@@ -3,12 +3,12 @@ package jp.ngt.rtm.block.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.block.OrnamentType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntityFluorescent extends TileEntity {
+public class TileEntityFluorescent extends TileEntityOrnament {
     private int count = 0;
     public byte dirF;
 
@@ -43,12 +43,10 @@ public class TileEntityFluorescent extends TileEntity {
     public void updateEntity() {
         super.updateEntity();
 
-        if (this.getBlockMetadata() == 2) {
-            ++this.count;
-            if (this.count == 3) {
-                //明るさ更新
-                this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);
-                this.count = 0;
+        if (this.worldObj != null && !this.worldObj.isRemote) {
+            int meta = this.getBlockMetadata();
+            if (meta >= 2 && this.getModelName().equals(this.getDefaultName())) {
+                this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
             }
         }
     }
@@ -63,5 +61,15 @@ public class TileEntityFluorescent extends TileEntity {
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
+    }
+
+    @Override
+    public OrnamentType getOrnamentType() {
+        return OrnamentType.Lamp;
+    }
+
+    @Override
+    protected String getDefaultName() {
+        return "Fluorescent01";
     }
 }

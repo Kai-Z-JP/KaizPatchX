@@ -4,20 +4,24 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.rtm.RTMBlock;
+import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityScaffold;
 import jp.ngt.rtm.block.tileentity.TileEntityScaffoldStairs;
+import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -63,7 +67,7 @@ public class BlockScaffoldStairs extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(par3List::add);
+//        IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(par3List::add);
     }
 
     @Override
@@ -157,17 +161,18 @@ public class BlockScaffoldStairs extends BlockContainer {
      * @return なし:0,  足場Z:1, 足場X:2, 階段:3, 立方体:4
      */
     public static byte getConnectionType(IBlockAccess world, int x, int y, int z, byte dir) {
-        Block block0 = world.getBlock(x, y, z);
-        Block block1 = world.getBlock(x, y - 1, z);
+        Block block = world.getBlock(x, y, z);
+        Block blockD = world.getBlock(x, y - 1, z);
+        Block blockU = world.getBlock(x, y + 1, z);
 
-        if (block0 == RTMBlock.scaffold) {
+        if (block == RTMBlock.scaffold) {
             TileEntity tile = world.getTileEntity(x, y, z);
             if (tile instanceof TileEntityScaffold) {
                 boolean b0 = ((TileEntityScaffold) tile).getDir() == 0;
                 return (byte) (b0 ? 1 : 2);
             }
             return 0;
-        } else if (block0 == RTMBlock.scaffoldStairs || block1 == RTMBlock.scaffoldStairs) {
+        } else if (block == RTMBlock.scaffoldStairs) {
             TileEntity tile = world.getTileEntity(x, y, z);
             if (tile instanceof TileEntityScaffoldStairs) {
                 if (((TileEntityScaffoldStairs) tile).getDir() == dir) {
@@ -175,10 +180,28 @@ public class BlockScaffoldStairs extends BlockContainer {
                 }
             }
             return 0;
-        } else if (block0.isOpaqueCube()) {
-            return 4;
-        } else {
+        } else if (blockD == RTMBlock.scaffoldStairs) {
+            TileEntity tile = world.getTileEntity(x, y - 1, z);
+            if (tile instanceof TileEntityScaffoldStairs) {
+                if (((TileEntityScaffoldStairs) tile).getDir() == dir) {
+                    return 3;
+                }
+            }
             return 0;
+        } else if (blockU == RTMBlock.scaffoldStairs) {
+            TileEntity tile = world.getTileEntity(x, y + 1, z);
+            if (tile instanceof TileEntityScaffoldStairs) {
+                if (((TileEntityScaffoldStairs) tile).getDir() == dir) {
+                    return 3;
+                }
+            }
+            return 0;
+        } else {
+            if (block.isOpaqueCube()) {
+                return 4;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -190,12 +213,40 @@ public class BlockScaffoldStairs extends BlockContainer {
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
-        return this.getItem(meta);
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityScaffoldStairs) {
+            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
+            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.STAIR.id);
+            ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityScaffoldStairs) tileEntity).getModelName());
+            ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityScaffoldStairs) tileEntity).getResourceState());
+            return itemStack;
+        }
+        return null;
     }
 
     private ItemStack getItem(int damage) {
         return new ItemStack(Item.getItemFromBlock(this), 1, damage);
+    }
+
+
+    @Override
+    public void onEntityWalking(World world, int x, int y, int z, Entity entity) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileEntityScaffoldStairs) {
+            jp.ngt.ngtlib.math.Vec3 vec = ((TileEntityScaffoldStairs) tile).getMotionVec();
+            BlockScaffold.addVecToEntity(entity, vec);
+        }
+    }
+
+    //net/minecraft/world/World.java:2552 1.7.10では無理
+    @Override
+    public void velocityToAddToEntity(World world, int x, int y, int z, Entity entity, Vec3 motion) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileEntityScaffoldStairs) {
+            jp.ngt.ngtlib.math.Vec3 vec = ((TileEntityScaffoldStairs) tile).getMotionVec();
+            BlockScaffold.addVecToEntity(entity, vec);
+            motion.addVector(vec.getX(), vec.getY(), vec.getZ());
+        }
     }
 }

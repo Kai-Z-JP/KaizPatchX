@@ -8,6 +8,7 @@ import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import net.minecraft.client.renderer.Tessellator;
@@ -214,6 +215,10 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
         return (int) ((System.currentTimeMillis() / 1000L) % 86400L);
     }
 
+    public long getSystemTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
     /**
      * @return 0~24
      */
@@ -223,6 +228,14 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 
     public int getSystemMinute() {
         return CALENDAR.get(Calendar.MINUTE);
+    }
+
+    public int getSystemSecond() {
+        return CALENDAR.get(Calendar.SECOND);
+    }
+
+    public int getSystemMillisecond() {
+        return CALENDAR.get(Calendar.MILLISECOND);
     }
 
     public Object getData(int id) {
@@ -392,6 +405,13 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     }
 
     public abstract World getWorld(T entity);
+
+    public int getColor(T entity) {
+        if (entity instanceof IModelSelector) {
+            return ((IModelSelector) entity).getResourceState().color;
+        }
+        return 0;
+    }
 
     /*---------------------------------------------------------------------------------------------------------------------------------------*/
 

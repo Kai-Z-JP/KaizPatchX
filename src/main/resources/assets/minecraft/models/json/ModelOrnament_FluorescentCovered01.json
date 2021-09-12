@@ -1,0 +1,19 @@
+{
+  "name": "FluorescentCovered01",
+  "model": {
+    "modelFile": "Model_FluorescentCovered.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/fluorescent.png",
+        "Light, AlphaBlend"
+      ]
+    ],
+    "rendererPath": "scripts/RenderFluorescentCovered.js"
+  },
+  "buttonTexture": "textures/ornament/button_FluorescentCovered01.png",
+  "ornamentType": "Lamp",
+  "useCustomColor": true,
+  "doCulling": true,
+  "smoothing": true
+}

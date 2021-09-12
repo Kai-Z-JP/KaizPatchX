@@ -1,0 +1,19 @@
+{
+  "name": "Fluorescent01",
+  "model": {
+    "modelFile": "Model_Fluorescent.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/fluorescent.png",
+        "Light"
+      ]
+    ],
+    "rendererPath": "scripts/RenderFluorescent.js"
+  },
+  "buttonTexture": "textures/ornament/button_Fluorescent01.png",
+  "ornamentType": "Lamp",
+  "useCustomColor": true,
+  "doCulling": true,
+  "smoothing": true
+}

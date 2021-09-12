@@ -14,7 +14,8 @@ import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.ngtlib.util.PackInfo;
 import jp.ngt.ngtlib.util.VersionChecker;
-import jp.ngt.rtm.block.*;
+import jp.ngt.rtm.block.RenderBlockLiquid;
+import jp.ngt.rtm.block.RenderVariableBlock;
 import jp.ngt.rtm.block.tileentity.*;
 import jp.ngt.rtm.electric.*;
 import jp.ngt.rtm.entity.*;
@@ -93,7 +94,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicle.class, RenderVehicleBase.INSTANCE);
         RenderingRegistry.registerEntityRenderingHandler(EntityNPC.class, new RenderNPC());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluorescent.class, new RenderFluorescent());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluorescent.class, new RenderFluorescent());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailNormalCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSwitchCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSlopeCore.class, RenderLargeRail.INSTANCE);
@@ -115,17 +116,21 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLight.class, RenderMachine.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpeaker.class, RenderMachine.INSTANCE);
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe.class, new RenderPipe());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe.class, new RenderPipe());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConverterCore.class, new RenderConverter());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityScaffoldStairs.class, RenderBlockScaffoldStairs.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaint.class, new RenderPaint());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlag.class, new RenderFlag());
 
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluorescent.class, new RenderOrnament<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe.class, new RenderOrnament<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityScaffoldStairs.class, new RenderOrnament<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityScaffold.class, new RenderOrnament<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPole.class, new RenderOrnament<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlantOrnament.class, new RenderOrnament<>());
+
         RenderingRegistry.registerBlockHandler(new RenderVariableBlock());
-        RenderingRegistry.registerBlockHandler(new RenderBlockLinePole());
+//        RenderingRegistry.registerBlockHandler(new RenderBlockLinePole());
         RenderingRegistry.registerBlockHandler(new RenderBlockLiquid());
-        RenderingRegistry.registerBlockHandler(new RenderBlockScaffold());
-        RenderingRegistry.registerBlockHandler(RenderBlockScaffoldStairs.INSTANCE);
         RenderingRegistry.registerBlockHandler(new RenderBlockLargeRail());
 
         MinecraftForge.EVENT_BUS.register(new RTMEventHandlerClient(Minecraft.getMinecraft()));
@@ -143,6 +148,7 @@ public class ClientProxy extends CommonProxy {
         ModelPackManager.INSTANCE.registerType("ModelMachine", MachineConfig.class, ModelSetMachineClient.class);
         ModelPackManager.INSTANCE.registerType("ModelWire", WireConfig.class, ModelSetWireClient.class);
         ModelPackManager.INSTANCE.registerType("ModelConnector", ConnectorConfig.class, ModelSetConnectorClient.class);
+        ModelPackManager.INSTANCE.registerType("ModelOrnament", OrnamentConfig.class, ModelSetOrnamentClient.class);
 
         ModelPackLoadThread thread = new ModelPackLoadThread(Side.CLIENT);
         thread.start();

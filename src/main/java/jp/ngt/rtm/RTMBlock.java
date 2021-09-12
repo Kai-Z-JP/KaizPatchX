@@ -71,6 +71,7 @@ public final class RTMBlock {
     public static Block paint;
     public static Block flag;
     public static Block effect;
+    public static Block plant_ornament;
 
     public static short renderIdVariableBlock;
     public static short renderIdLinePole;
@@ -158,6 +159,8 @@ public final class RTMBlock {
 
         effect = (new BlockEffect()).setBlockName("rtm:effect").setBlockTextureName("rtm:effect").setCreativeTab(CreativeTabRTM.tabRTMTools);
 
+        plant_ornament = (new BlockPlant()).setBlockName("plant_ornament");
+
         RTMRail.init();
 
         RTMCore.registerRtmPrefixed(marker, "rtm:marker");
@@ -211,6 +214,8 @@ public final class RTMBlock {
 
         GameRegistry.registerBlock(effect, "effect");
 
+        GameRegistry.registerBlock(plant_ornament, "plant_ornament");
+
         GameRegistry.registerTileEntity(TileEntityFluorescent.class, "fluorescent");
         GameRegistry.registerTileEntity(TileEntityInsulator.class, "TEInsulator");
         GameRegistry.registerTileEntity(TileEntitySignal.class, "TESignal");
@@ -245,5 +250,8 @@ public final class RTMBlock {
         GameRegistry.registerTileEntity(TileEntityFlag.class, "TEFlag");
 
         GameRegistry.registerTileEntity(TileEntityEffect.class, "TEEffect");
+
+        GameRegistry.registerTileEntity(TileEntityPlantOrnament.class, "TEPlantOrnament");
+        GameRegistry.registerTileEntity(TileEntityPole.class, "TEPole");
     }
 }

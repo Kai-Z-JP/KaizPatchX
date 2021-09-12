@@ -4,14 +4,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.block.tileentity.TileEntityPole;
+import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -20,9 +25,8 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
 
-public class BlockLinePole extends Block {
+public class BlockLinePole extends BlockContainer {
     @SideOnly(Side.CLIENT)
     private IIcon[] icon;
     @SideOnly(Side.CLIENT)
@@ -32,6 +36,20 @@ public class BlockLinePole extends Block {
         super(Material.rock);
         this.setHardness(2.0F);
         this.setResistance(10.0F);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        return new TileEntityPole();
+    }
+
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z) {
+        if (world != null && !world.isRemote) {
+            if (world.getTileEntity(x, y, z) == null) {
+                world.setTileEntity(x, y, z, new TileEntityPole());
+            }
+        }
     }
 
     @Override
@@ -79,9 +97,16 @@ public class BlockLinePole extends Block {
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
-        return this.getItem(meta);
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityPole) {
+            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
+            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.LINEPOLE.id);
+            ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityPole) tileEntity).getModelName());
+            ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityPole) tileEntity).getResourceState());
+            return itemStack;
+        }
+        return null;
     }
 
     private ItemStack getItem(int damage) {
@@ -94,10 +119,10 @@ public class BlockLinePole extends Block {
 
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-        if (this == RTMBlock.linePole) {
-        } else {
-            IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(list::add);
-        }
+//        if (this == RTMBlock.linePole) {
+//        } else {
+//            IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(list::add);
+//        }
     }
 
     @SideOnly(Side.CLIENT)

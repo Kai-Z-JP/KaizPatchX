@@ -1,0 +1,31 @@
+{
+  "name": "Banana",
+  "model": {
+    "modelFile": "banana.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/banana.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/ornament/button_Banana.png",
+  "ornamentType": "Plant",
+  "doCulling": true,
+  "smoothing": true,
+  "offset": [
+    0.0,
+    -0.5,
+    0.0
+  ],
+  "renderAABB": [
+    -4.5,
+    0.0,
+    -4.5,
+    5.5,
+    10.0,
+    5.5
+  ],
+  "minRandomScale": 0.75
+}

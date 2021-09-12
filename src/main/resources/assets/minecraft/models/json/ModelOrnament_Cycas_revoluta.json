@@ -1,0 +1,32 @@
+{
+  "name": "Cycas_revoluta",
+  "model": {
+    "modelFile": "palm.mqoz",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/cycas.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderPalm.js"
+  },
+  "buttonTexture": "textures/ornament/button_cycas.png",
+  "ornamentType": "Plant",
+  "doCulling": true,
+  "smoothing": true,
+  "offset": [
+    0.0,
+    -0.5,
+    0.0
+  ],
+  "renderAABB": [
+    -4.5,
+    0.0,
+    -4.5,
+    5.5,
+    10.0,
+    5.5
+  ],
+  "minRandomScale": 0.5
+}

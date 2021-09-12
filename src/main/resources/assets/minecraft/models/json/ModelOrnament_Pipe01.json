@@ -1,0 +1,19 @@
+{
+  "name": "Pipe01",
+  "model": {
+    "modelFile": "Model_Pipe.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/iron.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderPipe.js"
+  },
+  "buttonTexture": "textures/ornament/button_Pipe01.png",
+  "ornamentType": "Pipe",
+  "useCustomColor": true,
+  "doCulling": true,
+  "smoothing": true
+}

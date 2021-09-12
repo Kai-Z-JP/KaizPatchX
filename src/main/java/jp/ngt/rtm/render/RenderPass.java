@@ -6,6 +6,7 @@ public enum RenderPass {
     LIGHT(2),
     LIGHT_FRONT(3),
     LIGHT_BACK(4),
+    OUTLINE(253),
     GUI(254),
     PICK(255);
 

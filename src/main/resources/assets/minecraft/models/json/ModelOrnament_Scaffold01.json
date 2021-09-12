@@ -1,0 +1,27 @@
+{
+  "name": "Scaffold01",
+  "model": {
+    "modelFile": "Model_Scaffold.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/iron.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderScaffold.js"
+  },
+  "buttonTexture": "textures/ornament/button_Scaffold01.png",
+  "ornamentType": "Scaffold",
+  "useCustomColor": true,
+  "doCulling": true,
+  "smoothing": true,
+  "renderAABB": [
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    2.0,
+    1.0
+  ]
+}

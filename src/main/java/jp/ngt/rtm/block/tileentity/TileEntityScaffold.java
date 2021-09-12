@@ -29,11 +29,9 @@ public class TileEntityScaffold extends TileEntityOrnament {
         super.updateEntity();
         if (this.worldObj != null && !this.worldObj.isRemote && this.getResourceState().color == 0x000000) {
             int meta = this.getBlockMetadata();
-            if (meta != 0) {
-                this.getResourceState().color = this.getBlockType().getRenderColor(meta);
-                this.markDirty();
-                this.sendPacket();
-            }
+            this.getResourceState().color = this.getBlockType().getRenderColor(meta);
+            this.markDirty();
+            this.sendPacket();
         }
     }
 

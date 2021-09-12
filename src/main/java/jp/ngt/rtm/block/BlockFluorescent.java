@@ -1,10 +1,11 @@
 package jp.ngt.rtm.block;
 
-import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityFluorescent;
+import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -66,23 +67,19 @@ public class BlockFluorescent extends BlockContainer {
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        if (world.getBlockMetadata(x, y, z) == 2) {
-            switch (NGTMath.RANDOM.nextInt(4)) {
-                case 0:
-                    return 0;
-                case 1:
-                    return 4;
-                case 2:
-                    return 8;
-                case 3:
-                    return 12;
-            }
-        }
         return 15;
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-        return this.getItem(world.getBlockMetadata(x, y, z));
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityFluorescent) {
+            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
+            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.FLUORESCENT.id);
+            ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityFluorescent) tileEntity).getModelName());
+            ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityFluorescent) tileEntity).getResourceState());
+            return itemStack;
+        }
+        return null;
     }
 }

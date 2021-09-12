@@ -1,0 +1,28 @@
+{
+  "name": "EscalatorFlat",
+  "model": {
+    "modelFile": "escalator_flat.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/escalator.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderEscalatorFlat.js"
+  },
+  "buttonTexture": "textures/ornament/button_EscalatorFlat.png",
+  "ornamentType": "Scaffold",
+  "conveyorSpeed": 0.025,
+  "useCustomColor": false,
+  "doCulling": true,
+  "smoothing": true,
+  "renderAABB": [
+    -1.0,
+    0.0,
+    -1.0,
+    2.0,
+    2.0,
+    2.0
+  ]
+}

@@ -12,6 +12,18 @@ public class TileEntityCustom extends TileEntity {
         this.zCoord = z;
     }
 
+    public int getX() {
+        return this.xCoord;
+    }
+
+    public int getY() {
+        return this.yCoord;
+    }
+
+    public int getZ() {
+        return this.zCoord;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {

@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.rtm.RTMBlock;
+import jp.ngt.rtm.block.OrnamentType;
 import jp.ngt.rtm.block.tileentity.*;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
 import jp.ngt.rtm.electric.*;
@@ -13,6 +14,7 @@ import jp.ngt.rtm.entity.EntityInstalledObject;
 import jp.ngt.rtm.entity.EntityTrainDetector;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
 import jp.ngt.rtm.modelpack.cfg.MachineConfig;
+import jp.ngt.rtm.modelpack.cfg.OrnamentConfig;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import jp.ngt.rtm.rail.util.RailMap;
 import net.minecraft.block.Block;
@@ -72,10 +74,11 @@ public class ItemInstalledObject extends ItemWithModel {
                 return true;
             }
 
-            if (meta <= 2 || type == IstlObjType.FLUORESCENT_COVERED) {
+            if (type == IstlObjType.FLUORESCENT) {
+                block = RTMBlock.fluorescent;
                 int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 if (player.canPlayerEdit(par4, par5, par6, par7, itemStack) && world.isAirBlock(par4, par5, par6)) {
-                    world.setBlock(par4, par5, par6, RTMBlock.fluorescent, meta, 2);
+                    world.setBlock(par4, par5, par6, block, 0, 2);
                     byte dir = 0;
                     switch (par7) {
                         case 0:
@@ -107,8 +110,25 @@ public class ItemInstalledObject extends ItemWithModel {
                     }
                     TileEntityFluorescent tile = (TileEntityFluorescent) world.getTileEntity(par4, par5, par6);
                     tile.setDir(dir);
-                    block = RTMBlock.fluorescent;
+                    tile.setModelName(this.getModelName(itemStack));
+                    tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                 }
+            } else if (type == IstlObjType.PLANT) {
+                block = RTMBlock.plant_ornament;
+                world.setBlock(par4, par5, par6, block, 0, 3);
+                TileEntityPlantOrnament tile = (TileEntityPlantOrnament) world.getTileEntity(par4, par5, par6);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            } else if (type == IstlObjType.PIPE) {
+                block = RTMBlock.pipe;
+                world.setBlock(par4, par5, par6, block, 0, 3);
+                TileEntityPipe tile = (TileEntityPipe) world.getTileEntity(par4, par5, par6);
+                tile.setAttachedSide((byte) par7);
+                tile.refresh();
+                //world.notifyBlockOfStateChange(new BlockPos(x, y, z), block);
+                world.notifyBlocksOfNeighborChange(par4, par5, par6, block);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             } else if (type == IstlObjType.CROSSING) {
                 if (par7 == 1) {
                     world.setBlock(par4, par5, par6, RTMBlock.crossingGate, 0, 3);
@@ -131,6 +151,12 @@ public class ItemInstalledObject extends ItemWithModel {
                 if (par7 == 1 && setEntityOnRail(world, new EntityBumpingPost(world), par4, par5 - 1, par6, player, itemStack)) {
                     block = Blocks.stone;
                 }
+            } else if (type == IstlObjType.LINEPOLE) {
+                block = RTMBlock.linePole;
+                world.setBlock(par4, par5, par6, block, 0, 3);
+                TileEntityPole tile = (TileEntityPole) world.getTileEntity(par4, par5, par6);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             } else if (type == IstlObjType.POINT) {
                 if (par7 == 1) {
                     world.setBlock(par4, par5, par6, RTMBlock.point, 0, 3);
@@ -169,6 +195,20 @@ public class ItemInstalledObject extends ItemWithModel {
                 tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
                 tile.setTexture("textures/flag/flag_RTM3Anniversary.png");
                 block = RTMBlock.flag;
+            } else if (type == IstlObjType.STAIR) {
+                block = RTMBlock.scaffoldStairs;
+                world.setBlock(par4, par5, par6, block, 0, 3);
+                block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
+                TileEntityScaffoldStairs tile = (TileEntityScaffoldStairs) world.getTileEntity(par4, par5, par6);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            } else if (type == IstlObjType.SCAFFOLD) {
+                block = RTMBlock.scaffold;
+                world.setBlock(par4, par5, par6, block, 0, 3);
+                block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
+                TileEntityScaffold tile = (TileEntityScaffold) world.getTileEntity(par4, par5, par6);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             } else if (type == IstlObjType.ATC) {
                 if (par7 == 1 && this.setEntityOnRail(world, new EntityATC(world), par4, par5 - 1, par6, player, itemStack)) {
                     block = Blocks.stone;
@@ -269,11 +309,11 @@ public class ItemInstalledObject extends ItemWithModel {
     public void registerIcons(IIconRegister register) {
         IIcon missing = register.registerIcon("ngtlib.missing");
         this.icons = new IIcon[25];
-        this.icons[IstlObjType.FLUORESCENT_GLASS.id] = register.registerIcon("rtm:fluorescent");
-        this.icons[IstlObjType.FLUORESCENT_DIAMOND.id] = register.registerIcon("rtm:fluorescent");
-        this.icons[IstlObjType.FLUORESCENT_BROKEN.id] = register.registerIcon("rtm:fluorescent");
+        this.icons[IstlObjType.FLUORESCENT.id] = register.registerIcon("rtm:fluorescent");
+        this.icons[IstlObjType.PLANT.id] = register.registerIcon("rtm:plant");
+        this.icons[2] = missing;
         this.icons[IstlObjType.INSULATOR.id] = register.registerIcon("rtm:insulator");
-        this.icons[IstlObjType.FLUORESCENT_COVERED.id] = register.registerIcon("rtm:fluorescent");
+        this.icons[IstlObjType.PIPE.id] = register.registerIcon("rtm:itemPipe");
         this.icons[IstlObjType.CROSSING.id] = register.registerIcon("rtm:crossing");
         this.icons[6] = missing;
         this.icons[7] = missing;
@@ -283,15 +323,15 @@ public class ItemInstalledObject extends ItemWithModel {
         this.icons[IstlObjType.TRAIN_DETECTOR.id] = register.registerIcon("rtm:itemTrainDetector");
         this.icons[IstlObjType.TURNSTILE.id] = register.registerIcon("rtm:itemTurnstile");
         this.icons[IstlObjType.BUMPING_POST.id] = register.registerIcon("rtm:itemBumpingPost");
-        this.icons[14] = missing;
+        this.icons[IstlObjType.LINEPOLE.id] = register.registerIcon("rtm:itemLinePole_0");
         this.icons[15] = missing;
         this.icons[IstlObjType.POINT.id] = register.registerIcon("rtm:point");
         this.icons[IstlObjType.SIGNBOARD.id] = register.registerIcon("rtm:itemSignBoard");
         this.icons[IstlObjType.TICKET_VENDOR.id] = register.registerIcon("rtm:item_ticket_vendor");
         this.icons[IstlObjType.LIGHT.id] = register.registerIcon("rtm:lightBlock");
         this.icons[IstlObjType.FLAG.id] = register.registerIcon("rtm:flag");
-        this.icons[21] = missing;
-        this.icons[22] = missing;
+        this.icons[IstlObjType.STAIR.id] = register.registerIcon("rtm:stair");
+        this.icons[IstlObjType.SCAFFOLD.id] = register.registerIcon("rtm:scaffold");
         this.icons[IstlObjType.SPEAKER.id] = register.registerIcon("rtm:speaker");
         this.icons[24] = missing;
     }
@@ -312,14 +352,13 @@ public class ItemInstalledObject extends ItemWithModel {
     }
 
     public enum IstlObjType {
-        FLUORESCENT_GLASS(0, "", "", ""),
-        FLUORESCENT_DIAMOND(1, "", "", ""),
-        FLUORESCENT_BROKEN(2, "", "", ""),
+        FLUORESCENT(0, OrnamentConfig.TYPE, OrnamentType.Lamp.toString(), "Fluorescent01"),
+        PLANT(1, OrnamentConfig.TYPE, OrnamentType.Plant.toString(), "Tree01"),
         /**
          * 碍子
          */
         INSULATOR(3, ConnectorConfig.TYPE, "Relay", "Insulator01"),
-        FLUORESCENT_COVERED(4, "", "", ""),
+        PIPE(4, OrnamentConfig.TYPE, OrnamentType.Pipe.toString(), "Pipe01"),
         /**
          * 遮断器
          */
@@ -336,13 +375,14 @@ public class ItemInstalledObject extends ItemWithModel {
          * 車止め
          */
         BUMPING_POST(13, MachineConfig.TYPE, MachineType.BumpingPost.toString(), "BumpingPost_Type2"),
+        LINEPOLE(14, OrnamentConfig.TYPE, OrnamentType.Pole.toString(), "LinePole01"),
         POINT(16, MachineConfig.TYPE, MachineType.Point.toString(), "Point01M"),
         SIGNBOARD(17, "", "", ""),
         TICKET_VENDOR(18, MachineConfig.TYPE, MachineType.Vendor.toString(), "Vendor01"),
         LIGHT(19, MachineConfig.TYPE, MachineType.Light.toString(), "SearchLight01"),
         FLAG(20, "", "", ""),
-        //		STAIR(21, "", "", ""),
-//		SCAFFOLD(22, "", "", ""),
+        STAIR(21, OrnamentConfig.TYPE, OrnamentType.Stair.toString(), "ScaffoldStair01"),
+        SCAFFOLD(22, OrnamentConfig.TYPE, OrnamentType.Scaffold.toString(), "Scaffold01"),
         SPEAKER(23, MachineConfig.TYPE, MachineType.Speaker.toString(), "Speaker01"),
         //		MECHANISM(24, "", "", ""),
         NONE(-1, "", "", "");

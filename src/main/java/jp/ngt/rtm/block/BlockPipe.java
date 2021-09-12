@@ -62,7 +62,7 @@ public class BlockPipe extends BlockContainer {
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         super.onNeighborBlockChange(world, x, y, z, block);
         TileEntityPipe tile = (TileEntityPipe) world.getTileEntity(x, y, z);
-        tile.searchConnection();
+        tile.refresh();
     }
 
     public List<BlockSet> setLiquid(World world, int x, int y, int z, int fromX, int fromY, int fromZ, List<BlockSet> list, int count) {

@@ -1,0 +1,32 @@
+{
+  "name": "Cyathea_spinulosa",
+  "model": {
+    "modelFile": "palm.mqoz",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/cyathea.png",
+        "AlphaBlend"
+      ]
+    ],
+    "rendererPath": "scripts/RenderPalm.js"
+  },
+  "buttonTexture": "textures/ornament/button_cyathea.png",
+  "ornamentType": "Plant",
+  "doCulling": true,
+  "smoothing": true,
+  "offset": [
+    0.0,
+    -0.5,
+    0.0
+  ],
+  "renderAABB": [
+    -4.5,
+    0.0,
+    -4.5,
+    5.5,
+    10.0,
+    5.5
+  ],
+  "minRandomScale": 0.75
+}

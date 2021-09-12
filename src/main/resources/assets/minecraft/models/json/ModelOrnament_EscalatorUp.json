@@ -1,0 +1,28 @@
+{
+  "name": "EscalatorUp",
+  "model": {
+    "modelFile": "escalator.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/escalator.png",
+        ""
+      ]
+    ],
+    "rendererPath": "scripts/RenderEscalatorUp.js"
+  },
+  "buttonTexture": "textures/ornament/button_EscalatorUp.png",
+  "ornamentType": "Stair",
+  "conveyorSpeed": 0.025,
+  "useCustomColor": false,
+  "doCulling": true,
+  "smoothing": true,
+  "renderAABB": [
+    -1.0,
+    0.0,
+    -1.0,
+    2.0,
+    2.0,
+    2.0
+  ]
+}

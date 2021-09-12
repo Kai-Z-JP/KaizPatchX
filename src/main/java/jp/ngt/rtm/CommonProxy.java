@@ -36,6 +36,7 @@ public class CommonProxy {
         ModelPackManager.INSTANCE.registerType("ModelMachine", MachineConfig.class, ModelSetMachine.class);
         ModelPackManager.INSTANCE.registerType("ModelWire", WireConfig.class, ModelSetWire.class);
         ModelPackManager.INSTANCE.registerType("ModelConnector", ConnectorConfig.class, ModelSetConnector.class);
+        ModelPackManager.INSTANCE.registerType("ModelOrnament", OrnamentConfig.class, ModelSetOrnament.class);
 
         ModelPackLoadThread thread = new ModelPackLoadThread(Side.SERVER);
         thread.start();

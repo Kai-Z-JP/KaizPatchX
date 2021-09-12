@@ -1,0 +1,31 @@
+{
+  "name": "Tree01",
+  "model": {
+    "modelFile": "wood01.mqo",
+    "textures": [
+      [
+        "default",
+        "textures/ornament/wood01.png",
+        ""
+      ]
+    ]
+  },
+  "buttonTexture": "textures/ornament/button_Tree01.png",
+  "ornamentType": "Plant",
+  "doCulling": true,
+  "smoothing": true,
+  "offset": [
+    0.0,
+    -0.5,
+    0.0
+  ],
+  "renderAABB": [
+    -10.0,
+    0.0,
+    -10.0,
+    11.0,
+    15.0,
+    11.0
+  ],
+  "minRandomScale": 0.75
+}

@@ -1,8 +1,7 @@
-//ngt5479
+#ngt5479
 tile.rtm:ironPillar.name=鉄柱
 tile.rtm:marker.name=マーカー
 tile.rtm:markerSwitch.name=分岐用マーカー
-tile.rtm:markerSlope.name=坂用マーカー
 tile.rtm:powerUnit.name=電源装置
 tile.rtm:trainWorkBench.0.name=RTM専用作業台
 tile.rtm:trainWorkBench.1.name=レール用作業台
@@ -25,11 +24,11 @@ tile.rtm:movingMachine.name=移動装置
 tile.rtm:effect.name=バリアブロック
 
 item.rtm:bogie.0.name=台車
-item.rtm:installedObject.0.name=ガラスの蛍光灯
-item.rtm:installedObject.1.name=ダイヤの蛍光灯
-item.rtm:installedObject.2.name=壊れた蛍光灯
+item.rtm:installedObject.0.name=蛍光灯
+item.rtm:installedObject.1.name=植物
+item.rtm:installedObject.2.name=
 item.rtm:installedObject.3.name=碍子
-item.rtm:installedObject.4.name=カバー付き蛍光灯
+item.rtm:installedObject.4.name=パイプ
 item.rtm:installedObject.5.name=遮断機
 item.rtm:installedObject.6.name=
 item.rtm:installedObject.7.name=
@@ -39,13 +38,15 @@ item.rtm:installedObject.10.name=ATC
 item.rtm:installedObject.11.name=列車検知器
 item.rtm:installedObject.12.name=改札機
 item.rtm:installedObject.13.name=車止め
-item.rtm:installedObject.14.name=
+item.rtm:installedObject.14.name=架線柱
 item.rtm:installedObject.15.name=
 item.rtm:installedObject.16.name=転轍機
 item.rtm:installedObject.17.name=看板
 item.rtm:installedObject.18.name=券売機
 item.rtm:installedObject.19.name=照明
 item.rtm:installedObject.20.name=旗
+item.rtm:installedObject.21.name=階段
+item.rtm:installedObject.22.name=足場
 item.rtm:installedObject.23.name=スピーカー
 item.rtm:material.0.name=シャフト
 item.rtm:material.1.name=車輪

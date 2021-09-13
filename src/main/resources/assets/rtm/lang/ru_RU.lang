@@ -1,4 +1,4 @@
-//IgorKhydyakov, ArtemiyDanilin(Trollebas)
+#IgorKhydyakov, ArtemiyDanilin(Trollebas)
 tile.rtm:ironPillar.name=Железный столб
 tile.rtm:marker.name=Маркер
 tile.rtm:markerSwitch.name=Стрелочный маркер
@@ -25,11 +25,11 @@ tile.rtm:movingMachine.name=Движущий механизм
 tile.rtm:effect.name=Барьер
 
 item.rtm:bogie.0.name=Тележка
-item.rtm:installedObject.0.name=Стеклянная флуоресцентная лампа
-item.rtm:installedObject.1.name=Алмазная флуоресцентная лампа
-item.rtm:installedObject.2.name=Повреждённая флуоресцентная лампа
+item.rtm:installedObject.0.name=флуоресцентная лампа
+item.rtm:installedObject.1.name=Дерево
+item.rtm:installedObject.2.name=
 item.rtm:installedObject.3.name=Изолятор
-item.rtm:installedObject.4.name=Закрытая флуоресцентная лампа
+item.rtm:installedObject.4.name=Труба
 item.rtm:installedObject.5.name=Шлагбаум
 item.rtm:installedObject.6.name=Железнодорожная табличка
 item.rtm:installedObject.7.name=Светофор
@@ -39,15 +39,15 @@ item.rtm:installedObject.10.name=АУПС
 item.rtm:installedObject.11.name=Датчик поезда
 item.rtm:installedObject.12.name=Турникет
 item.rtm:installedObject.13.name=Путевое заграждение
-item.rtm:installedObject.14.name=Опора контактной сети 
-item.rtm:installedObject.15.name=Тест перевод 2
+item.rtm:installedObject.14.name=Опора
+item.rtm:installedObject.15.name=
 item.rtm:installedObject.16.name=Стрелочный перевод
 item.rtm:installedObject.17.name=Вывеска
 item.rtm:installedObject.18.name=Билетный автомат
 item.rtm:installedObject.19.name=Лампа
 item.rtm:installedObject.20.name=Флаг
-item.rtm:installedObject.21.name=
-item.rtm:installedObject.22.name=
+item.rtm:installedObject.21.name=Путепроводная лестница
+item.rtm:installedObject.22.name=Путепровод
 item.rtm:installedObject.23.name=Громкоговоритель
 item.rtm:material.0.name=Вал
 item.rtm:material.1.name=Колесо
@@ -222,9 +222,6 @@ rtm.ats=Остановка уведомлений
 key.rtm.chime_next=Проиграть следующее уведомление
 key.rtm.chime_prev=Проиграть предыдущее уведомление
 key.rtm.eb=Аварийный тормоз
-
-item.rtm:installedObject.21.name=Лестница
-item.rtm:installedObject.22.name=Путепровод
 
 gui.npc.buy=Купить
 gui.npc.register=Регистрация

@@ -202,7 +202,7 @@ public class RenderBlockLinePole implements ISimpleBlockRenderingHandler {
 
     @Override
     public int getRenderId() {
-        return RTMBlock.renderIdLinePole;
+        return RTMBlock.renderIdSignalBase;
     }
 
     private void setBlockColor(IBlockAccess world, int x, int y, int z, Block block) {

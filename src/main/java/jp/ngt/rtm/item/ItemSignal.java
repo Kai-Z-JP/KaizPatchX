@@ -49,13 +49,19 @@ public class ItemSignal extends ItemWithModel {
             }
 
             int meta = world.getBlockMetadata(par4, par5, par6);
+
+            TileEntity origTile = null;
+            if (target.hasTileEntity(meta)) {
+                origTile = world.getTileEntity(par4, par5, par6);
+            }
+
             world.setBlock(par4, par5, par6, RTMBlock.signal, meta, 3);
 
             TileEntity tile = world.getTileEntity(par4, par5, par6);
             if (tile instanceof TileEntitySignal) {
                 TileEntitySignal teSignal = ((TileEntitySignal) tile);
                 int dir = par7 == 2 ? 2 : (par7 == 4 ? 3 : (par7 == 3 ? 0 : 1));
-                teSignal.setSignalProperty(this.getModelName(itemStack), target, dir, player);
+                teSignal.setSignalProperty(this.getModelName(itemStack), target, dir, player, origTile);
                 flag = true;
             }
 

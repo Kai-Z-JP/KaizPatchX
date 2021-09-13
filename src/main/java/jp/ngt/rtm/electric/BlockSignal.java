@@ -40,7 +40,7 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
 
     @Override
     public int getRenderType() {
-        return RTMBlock.renderIdLinePole;
+        return RTMBlock.renderIdSignalBase;
     }
 
     @Override
@@ -68,9 +68,8 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         if (!world.isRemote) {
-            Block block = this.getRenderBlock(world, x, y, z);
-            int meta = world.getBlockMetadata(x, y, z);
-            world.setBlock(x, y, z, block, meta, 3);
+            TileEntitySignal tile = (TileEntitySignal) world.getTileEntity(x, y, z);
+            tile.setOrigBlock();
             if (!player.capabilities.isCreativeMode) {
                 this.dropBlockAsItem(world, x, y, z, new ItemStack(RTMItem.itemSignal, 1, 0));
             }

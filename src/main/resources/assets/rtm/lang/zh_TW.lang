@@ -1,8 +1,7 @@
-//YihGe一哥
+#YihGe一哥
 tile.rtm:ironPillar.name=鐵柱
 tile.rtm:marker.name=鐵道標記
 tile.rtm:markerSwitch.name=分叉標記
-tile.rtm:markerSlope.name=上坡標記
 tile.rtm:powerUnit.name=電源設備
 tile.rtm:trainWorkBench.0.name=RTM工作台
 tile.rtm:trainWorkBench.1.name=鐵道工作台
@@ -25,11 +24,11 @@ tile.rtm:movingMachine.name=限界標示儀
 tile.rtm:effect.name=屏障
 
 item.rtm:bogie.0.name=轉向架
-item.rtm:installedObject.0.name=玻璃日光燈
-item.rtm:installedObject.1.name=鑽石日光燈
-item.rtm:installedObject.2.name=壞的日光燈
+item.rtm:installedObject.0.name=日光燈
+item.rtm:installedObject.1.name=植物
+item.rtm:installedObject.2.name=
 item.rtm:installedObject.3.name=礙子(絕緣體)
-item.rtm:installedObject.4.name=遮罩日光燈
+item.rtm:installedObject.4.name=鋼管
 item.rtm:installedObject.5.name=遮斷器
 item.rtm:installedObject.6.name=
 item.rtm:installedObject.7.name=
@@ -39,13 +38,15 @@ item.rtm:installedObject.10.name=ATC
 item.rtm:installedObject.11.name=列車感應器
 item.rtm:installedObject.12.name=自動驗票機
 item.rtm:installedObject.13.name=止衝擋
-item.rtm:installedObject.14.name=自動售票機
-item.rtm:installedObject.15.name=自動轉轍器
+item.rtm:installedObject.14.name=架線柱子
+item.rtm:installedObject.15.name=
 item.rtm:installedObject.16.name=轉轍器
 item.rtm:installedObject.17.name=看板告示牌
 item.rtm:installedObject.18.name=售票機
 item.rtm:installedObject.19.name=照明燈
 item.rtm:installedObject.20.name=旗子
+item.rtm:installedObject.21.name=鷹架梯
+item.rtm:installedObject.22.name=鷹架板
 item.rtm:material.0.name=軸
 item.rtm:material.1.name=輪
 item.rtm:material.2.name=引擎

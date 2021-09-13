@@ -1,8 +1,7 @@
-//ngt5479
+#ngt5479
 tile.rtm:ironPillar.name=Iron Pillar
 tile.rtm:marker.name=Marker
 tile.rtm:markerSwitch.name=Marker Switch
-tile.rtm:markerSlope.name=Marker Slope
 tile.rtm:powerUnit.name=PowerUnit
 tile.rtm:trainWorkBench.0.name=RTM Workbench
 tile.rtm:trainWorkBench.1.name=Rail Workbench
@@ -25,11 +24,11 @@ tile.rtm:movingMachine.name=Moving Machine
 tile.rtm:effect.name=Barrier Block
 
 item.rtm:bogie.0.name=Bogie
-item.rtm:installedObject.0.name=Glass Fluorescent
-item.rtm:installedObject.1.name=Diamond Fluorescent
-item.rtm:installedObject.2.name=Broken Fluorescent
+item.rtm:installedObject.0.name=Fluorescent
+item.rtm:installedObject.1.name=Plant
+item.rtm:installedObject.2.name=
 item.rtm:installedObject.3.name=Insulator
-item.rtm:installedObject.4.name=Covered Fluorescent
+item.rtm:installedObject.4.name=Pipe
 item.rtm:installedObject.5.name=Crossing Gate
 item.rtm:installedObject.6.name=
 item.rtm:installedObject.7.name=
@@ -39,13 +38,15 @@ item.rtm:installedObject.10.name=ATC
 item.rtm:installedObject.11.name=Train Detector
 item.rtm:installedObject.12.name=Turnstile
 item.rtm:installedObject.13.name=BumpingPost
-item.rtm:installedObject.14.name=
+item.rtm:installedObject.14.name=Line Pole
 item.rtm:installedObject.15.name=
 item.rtm:installedObject.16.name=Point
 item.rtm:installedObject.17.name=Signboard
-item.rtm:installedObject.18.name=
+item.rtm:installedObject.18.name=Ticket Vendor
 item.rtm:installedObject.19.name=Light
 item.rtm:installedObject.20.name=Flag
+item.rtm:installedObject.21.name=Stair
+item.rtm:installedObject.22.name=Scaffold
 item.rtm:installedObject.23.name=Speaker
 item.rtm:material.0.name=Shaft
 item.rtm:material.1.name=Wheel

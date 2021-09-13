@@ -1,11 +1,7 @@
-//tartaric_acid(1.7.10.31)
+#tartaric_acid(1.7.10.31)
 tile.rtm:ironPillar.name=铁柱
 tile.rtm:marker.name=铁轨标记
 tile.rtm:markerSwitch.name=分叉标记
-tile.rtm:markerSlope.name=坡道标记 (62.5‰)
-tile.rtm:markerSlope.4.name=坡道标记 (125‰)
-tile.rtm:markerSlope.8.name=上坡标记 (250‰)
-tile.rtm:markerSlope.12.name=坡道标记 (500‰)
 tile.rtm:powerUnit.name=电源设备
 tile.rtm:trainWorkBench.0.name=RTM专用工作台
 tile.rtm:trainWorkBench.1.name=铁轨工作台
@@ -26,11 +22,11 @@ tile.rtm:signalConverter.3.name=信号变换器 (灯信号-1)
 tile.rtm:movingMachine.name=移动装置
 
 item.rtm:bogie.0.name=底架
-item.rtm:installedObject.0.name=玻璃日光灯
-item.rtm:installedObject.1.name=钻石日光灯
-item.rtm:installedObject.2.name=坏的日光灯
+item.rtm:installedObject.0.name=日光灯
+item.rtm:installedObject.1.name=植物
+item.rtm:installedObject.2.name=
 item.rtm:installedObject.3.name=绝缘体
-item.rtm:installedObject.4.name=雨遮日光灯
+item.rtm:installedObject.4.name=管道
 item.rtm:installedObject.5.name=断路闸
 item.rtm:installedObject.6.name=
 item.rtm:installedObject.7.name=
@@ -40,11 +36,15 @@ item.rtm:installedObject.10.name=ATC
 item.rtm:installedObject.11.name=列车检测器
 item.rtm:installedObject.12.name=自动检票口
 item.rtm:installedObject.13.name=轨道终点牌
-item.rtm:installedObject.14.name=
-item.rtm:installedObject.15.name=转辙器
+item.rtm:installedObject.14.name=架线柱
+item.rtm:installedObject.15.name=
 item.rtm:installedObject.16.name=转辙器
 item.rtm:installedObject.17.name=看板
 item.rtm:installedObject.18.name=自动售票机
+item.rtm:installedObject.19.name=大灯
+item.rtm:installedObject.20.name=旗
+item.rtm:installedObject.21.name=楼梯
+item.rtm:installedObject.22.name=脚手架
 item.rtm:material.0.name=车轴
 item.rtm:material.1.name=车轮
 item.rtm:material.2.name=柴油发动机

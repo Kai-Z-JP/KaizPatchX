@@ -18,6 +18,7 @@ public class DataMapEditor extends JFrame {
 
     private final GuiSelectModel parentGui;
     private final Map<String, IDataFilter> filterMap = new HashMap<>();
+    private final DataFormatter formatter = new DataFormatter();
 
     public DataMapEditor(GuiSelectModel gui) {
         this.parentGui = gui;
@@ -42,7 +43,7 @@ public class DataMapEditor extends JFrame {
         int i = 0;
         for (Entry<String, DataEntry> entry : map.entrySet()) {
             rowData[i++] = new String[]{entry.getKey(), entry.getValue().getType().key, entry.getValue().toString()};
-            IDataFilter filter = state.getResourceSet().dataFormatter.getFilter(entry.getKey());
+            IDataFilter filter = formatter.getFilter(entry.getKey());
             if (filter != null) {
                 this.filterMap.put(entry.getKey(), filter);
             }
@@ -105,7 +106,6 @@ public class DataMapEditor extends JFrame {
             this.setFont(font);
             this.setRowHeight(fontSize);
 
-            DataFormatter formatter = DataMapEditor.this.parentGui.selector.getResourceState().getResourceSet().dataFormatter;
             String[][] array = new String[rowData.length][];
             for (int i = 0; i < array.length; ++i) {
                 String[] suggestions = formatter.getSuggestions(rowData[i][0]);

@@ -6,6 +6,7 @@ import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.block.OrnamentType;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -29,7 +30,7 @@ public class TileEntityScaffold extends TileEntityOrnament {
         super.updateEntity();
         if (this.worldObj != null && !this.worldObj.isRemote && this.getResourceState().color == 0x000000) {
             int meta = this.getBlockMetadata();
-            this.getResourceState().color = this.getBlockType().getRenderColor(meta);
+            this.getResourceState().color = MapColor.getMapColorForBlockColored(meta).colorValue;
             this.markDirty();
             this.sendPacket();
         }

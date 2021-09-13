@@ -122,6 +122,11 @@ public abstract class TileEntityOrnament extends TileEntityCustom implements IMo
         }
     }
 
+    public void setModelNameNoSync(String par1) {
+        this.modelName = par1;
+        this.myModelSet = null;
+    }
+
     @Override
     public String getSubType() {
         return this.getOrnamentType().toString();

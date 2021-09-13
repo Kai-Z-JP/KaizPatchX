@@ -6,6 +6,7 @@ import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
+import jp.ngt.rtm.block.tileentity.TileEntityPole;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.ScriptExecuter;
@@ -80,6 +81,14 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
 
         if (!this.getWorldObj().isRemote) {
             this.executer.execScript(this);
+
+            if (this.renderBlock == RTMBlock.linePole && this.origTileEntity == null) {
+                TileEntityPole tileEntity = new TileEntityPole();
+                String modelName = TileEntityPole.getFixedModelName(this.getBlockMetadata());
+                tileEntity.setModelNameNoSync(modelName);
+                this.origTileEntity = tileEntity;
+                this.sendPacket();
+            }
         }
     }
 

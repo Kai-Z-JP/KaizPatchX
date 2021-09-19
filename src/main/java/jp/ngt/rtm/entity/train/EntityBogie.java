@@ -3,7 +3,6 @@ package jp.ngt.rtm.entity.train;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
-import jp.ngt.ngtlib.math.BezierCurve;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.ngtlib.protection.Lockable;
@@ -280,14 +279,21 @@ public class EntityBogie extends Entity implements Lockable {
             {
             } else//新しいレール上に移動
             {
-                this.currentRailObj = coreObj;
+                RailMap railMap;
                 if (coreObj instanceof TileEntityLargeRailSwitchCore) {
                     TileEntityLargeRailSwitchCore switchObj = (TileEntityLargeRailSwitchCore) coreObj;
-                    this.currentRailMap = switchObj.getSwitch().getNearestPoint(this).getActiveRailMap(this.worldObj);
+                    railMap = switchObj.getSwitch().getNearestPoint(this).getActiveRailMap(this.worldObj);
                 } else {
-                    this.currentRailMap = coreObj.getRailMap(this);
+                    railMap = coreObj.getRailMap(this);
                 }
-                this.split = (int) (this.currentRailMap.getLength() * (double) BezierCurve.QUANTIZE);
+
+                if (this.currentRailMap != null && !this.currentRailMap.canConnect(railMap)) {
+                    return true;
+                }
+
+                this.currentRailObj = coreObj;
+                this.currentRailMap = railMap;
+                this.split = (int) (this.currentRailMap.getLength() * (double) SPLIT_VALUE);
                 this.prevPosIndex = -1;
                 this.onChangeRail(coreObj);
             }
@@ -467,6 +473,11 @@ public class EntityBogie extends Entity implements Lockable {
         if (!this.worldObj.isRemote) {
             if (!this.tracked) {
                 this.tracked = VehicleTrackerEntry.trackingVehicle(this);
+            }
+            if (this.currentRailObj != null) {
+                this.currentRailObj.colliding = true;
+            } else {
+                this.resetRailObj(this.posX, this.posY, this.posZ);
             }
         }
     }

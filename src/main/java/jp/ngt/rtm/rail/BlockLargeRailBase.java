@@ -211,16 +211,6 @@ public class BlockLargeRailBase extends BlockContainer {
                     });
                 }
             }
-        } else {
-            if (entity instanceof EntityTrainBase) {
-                TileEntity tile0 = world.getTileEntity(x, y, z);
-                if (tile0 instanceof TileEntityLargeRailBase) {
-                    TileEntityLargeRailCore tile = ((TileEntityLargeRailBase) tile0).getRailCore();
-                    if (tile != null) {
-                        tile.colliding = true;
-                    }
-                }
-            }
         }
     }
 

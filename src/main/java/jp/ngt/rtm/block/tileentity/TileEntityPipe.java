@@ -3,7 +3,6 @@ package jp.ngt.rtm.block.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.BlockUtil;
-import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.block.OrnamentType;
 import net.minecraft.block.Block;
@@ -47,10 +46,18 @@ public class TileEntityPipe extends TileEntityOrnament {
         if (this.connection.length < 6) {
             this.connection = new byte[6];
         }
+
+        if (this.getModelName().isEmpty()) {
+            this.setModelName("Pipe01_Connectable");
+        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
+        if (this.getModelName().isEmpty()) {
+            this.setModelName("Pipe01_Connectable");
+        }
+
         super.writeToNBT(nbt);
 //        nbt.setByte("dir", this.direction);
         nbt.setByteArray("connection", this.connection);
@@ -63,19 +70,6 @@ public class TileEntityPipe extends TileEntityOrnament {
         this.searchConnection();
         this.sendPacket();
         this.markDirty();
-    }
-
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
-
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            int meta = this.getBlockMetadata();
-            if (meta == 1 && this.getModelName().equals(this.getDefaultName())) {
-
-                this.setModelName("Pipe01_Connectable");
-            }
-        }
     }
 
     public byte getDirection() {

@@ -26,9 +26,6 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         String s = nbt.getString("ModelName");
-        if (s == null || s.isEmpty()) {
-            s = this.getDefaultName();
-        }
         this.setModelName(s);
         this.state.readFromNBT(nbt.getCompoundTag("State"));
         this.attachedSide = nbt.getByte("AttachedSide");

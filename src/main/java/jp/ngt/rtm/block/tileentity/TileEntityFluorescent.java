@@ -19,10 +19,22 @@ public class TileEntityFluorescent extends TileEntityOrnament {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         this.dirF = nbt.getByte("dir");
+        if (this.hasWorldObj() && this.getModelName().isEmpty()) {
+            int meta = this.getBlockMetadata();
+            if (meta >= 2) {
+                this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
+            }
+        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
+        if (this.hasWorldObj() && this.getModelName().isEmpty()) {
+            int meta = this.getBlockMetadata();
+            if (meta >= 2) {
+                this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
+            }
+        }
         super.writeToNBT(nbt);
         nbt.setByte("dir", this.dirF);
     }
@@ -40,18 +52,6 @@ public class TileEntityFluorescent extends TileEntityOrnament {
     public Packet getDescriptionPacket() {
         NGTUtil.sendPacketToClient(this);
         return null;
-    }
-
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
-
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            int meta = this.getBlockMetadata();
-            if (meta >= 2 && this.getModelName().equals(this.getDefaultName())) {
-                this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
-            }
-        }
     }
 
     @Override

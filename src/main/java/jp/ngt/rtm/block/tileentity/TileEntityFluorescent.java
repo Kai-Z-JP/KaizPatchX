@@ -2,11 +2,14 @@ package jp.ngt.rtm.block.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.block.OrnamentType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 
 public class TileEntityFluorescent extends TileEntityOrnament {
     private int count = 0;
@@ -49,12 +52,6 @@ public class TileEntityFluorescent extends TileEntityOrnament {
                 this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
             }
         }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public double getMaxRenderDistanceSquared() {
-        return NGTUtil.getChunkLoadDistanceSq();
     }
 
     @Override

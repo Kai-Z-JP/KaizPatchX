@@ -2,7 +2,7 @@ package jp.ngt.rtm.block.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.block.TileEntityCustom;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
@@ -52,6 +52,12 @@ public abstract class TileEntityOrnament extends TileEntityCustom implements IMo
     public Packet getDescriptionPacket() {
         this.sendPacket();
         return null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return NGTUtil.getChunkLoadDistanceSq();
     }
 
     public byte getAttachedSide() {

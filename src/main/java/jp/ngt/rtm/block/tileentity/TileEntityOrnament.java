@@ -2,7 +2,7 @@ package jp.ngt.rtm.block.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.block.TileEntityCustom;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
-public abstract class TileEntityOrnament extends TileEntityCustom implements IModelSelectorWithType {
+public abstract class TileEntityOrnament extends TileEntityPlaceable implements IModelSelectorWithType {
     private final ResourceState state = new ResourceState(this);
     private String modelName = "";
     private ModelSetOrnament myModelSet;
@@ -26,9 +26,6 @@ public abstract class TileEntityOrnament extends TileEntityCustom implements IMo
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         String s = nbt.getString("ModelName");
-        if (s == null || s.isEmpty()) {
-            s = this.getDefaultName();
-        }
         this.setModelName(s);
         this.state.readFromNBT(nbt.getCompoundTag("State"));
         this.attachedSide = nbt.getByte("AttachedSide");
@@ -52,6 +49,12 @@ public abstract class TileEntityOrnament extends TileEntityCustom implements IMo
     public Packet getDescriptionPacket() {
         this.sendPacket();
         return null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return NGTUtil.getChunkLoadDistanceSq();
     }
 
     public byte getAttachedSide() {

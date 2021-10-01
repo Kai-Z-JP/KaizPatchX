@@ -7,38 +7,21 @@ import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.RTMMaterial;
 import jp.ngt.rtm.block.tileentity.TileEntityPipe;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Random;
 
-public class BlockPipe extends BlockContainer {
+public class BlockPipe extends BlockOrnamentBase {
     public BlockPipe() {
         super(RTMMaterial.fireproof);
         this.setLightOpacity(0);
         this.setHardness(2.0F);
         this.setResistance(10.0F);
         this.setStepSound(RTMBlock.soundTypeMetal2);
-    }
-
-    @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    @Override
-    public int getRenderType() {
-        return -1;
     }
 
     @Override
@@ -121,12 +104,6 @@ public class BlockPipe extends BlockContainer {
     @Override
     public int getHarvestLevel(int metadata) {
         return 0;
-    }
-
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-        int meta = world.getBlockMetadata(x, y, z);
-        return this.getItem(meta);
     }
 
     private ItemStack getItem(int damage) {

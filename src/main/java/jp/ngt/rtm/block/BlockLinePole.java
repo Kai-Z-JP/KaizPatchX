@@ -5,32 +5,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityPole;
-import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.Random;
 
-public class BlockLinePole extends BlockContainer {
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icon;
-    @SideOnly(Side.CLIENT)
-    private IIcon icon_top;
+public class BlockLinePole extends BlockOrnamentBase {
 
     public BlockLinePole() {
         super(Material.rock);
@@ -53,16 +40,6 @@ public class BlockLinePole extends BlockContainer {
     }
 
     @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    @Override
     public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity) {
         return true;
     }
@@ -71,11 +48,6 @@ public class BlockLinePole extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
         return true;
-    }
-
-    @Override
-    public int getRenderType() {
-        return -1;
     }
 
     @Override
@@ -96,63 +68,12 @@ public class BlockLinePole extends BlockContainer {
         world.setBlock(x, y, z, this, meta, 3);
     }
 
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityPole) {
-            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
-            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.LINEPOLE.id);
-            ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityPole) tileEntity).getModelName());
-            ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityPole) tileEntity).getResourceState());
-            return itemStack;
-        }
-        return null;
-    }
-
     private ItemStack getItem(int damage) {
         if (this == RTMBlock.linePole) {
             return new ItemStack(RTMItem.itemLinePole, 1, damage);
         } else {
             return new ItemStack(RTMBlock.framework, 1, damage);
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-//        if (this == RTMBlock.linePole) {
-//        } else {
-//            IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(list::add);
-//        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
-        if (this == RTMBlock.linePole) {
-            return (par1 == 0 || par1 == 1) ? this.icon_top : this.blockIcon;
-        } else {
-            return this.blockIcon;
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister register) {
-        if (this == RTMBlock.linePole) {
-            this.icon = new IIcon[4];
-            this.icon[0] = register.registerIcon("rtm:linePoleBase_0");
-            this.icon[1] = register.registerIcon("rtm:linePoleBase_1");
-            this.icon[2] = register.registerIcon("rtm:linePoleBase_0");
-            this.icon[3] = register.registerIcon("rtm:linePoleBase_3");
-            this.icon_top = register.registerIcon("rtm:linePole_top");
-            this.blockIcon = register.registerIcon("rtm:linePole_side");
-        } else {
-            this.blockIcon = register.registerIcon("rtm:framework");
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public IIcon getLinePoleIcon(int meta) {
-        meta = MathHelper.clamp_int(meta, 0, 3);
-        return this.icon[meta];
     }
 
     @Override

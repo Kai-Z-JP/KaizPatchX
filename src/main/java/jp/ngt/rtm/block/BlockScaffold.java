@@ -5,29 +5,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.RTMBlock;
-import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityScaffold;
-import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class BlockScaffold extends BlockContainer {
+public class BlockScaffold extends BlockOrnamentBase {
     public BlockScaffold() {
         super(Material.rock);
         this.setStepSound(RTMBlock.soundTypeMetal2);
@@ -37,37 +31,15 @@ public class BlockScaffold extends BlockContainer {
     }
 
     @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
         return true;
     }
 
     @Override
-    public int getRenderType() {
-        return RTMBlock.renderIdScaffold;
-    }
-
-    @Override
     public TileEntity createNewTileEntity(World world, int par2) {
         return new TileEntityScaffold();
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-//        IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(list::add);
-    }
-
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemstack) {
         int meta = itemstack.getItemDamage();
@@ -176,19 +148,6 @@ public class BlockScaffold extends BlockContainer {
         if (!world.isRemote) {
             this.dropBlockAsItem(world, x, y, z, this.getItem(par5));
         }
-    }
-
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityScaffold) {
-            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
-            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.SCAFFOLD.id);
-            ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityScaffold) tileEntity).getModelName());
-            ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityScaffold) tileEntity).getResourceState());
-            return itemStack;
-        }
-        return null;
     }
 
     private ItemStack getItem(int damage) {

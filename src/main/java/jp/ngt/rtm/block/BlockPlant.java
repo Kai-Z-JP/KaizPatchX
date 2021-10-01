@@ -1,13 +1,12 @@
 package jp.ngt.rtm.block;
 
 import jp.ngt.rtm.block.tileentity.TileEntityPlantOrnament;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockPlant extends BlockContainer {
+public class BlockPlant extends BlockOrnamentBase {
     public BlockPlant() {
         super(Material.plants);
     }
@@ -15,16 +14,6 @@ public class BlockPlant extends BlockContainer {
     @Override
     public TileEntity createNewTileEntity(World world, int par2) {
         return new TileEntityPlantOrnament();
-    }
-
-    @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public int getRenderType() {
-        return -1;
     }
 
     @Override

@@ -4,23 +4,17 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.rtm.RTMBlock;
-import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityScaffold;
 import jp.ngt.rtm.block.tileentity.TileEntityScaffoldStairs;
-import jp.ngt.rtm.item.ItemInstalledObject;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -28,7 +22,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class BlockScaffoldStairs extends BlockContainer {
+public class BlockScaffoldStairs extends BlockOrnamentBase {
     /**
      * @param par1 階段の元のブロック
      */
@@ -40,34 +34,14 @@ public class BlockScaffoldStairs extends BlockContainer {
     }
 
     @Override
-    public boolean isOpaqueCube() {
-        return false;
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
-        return false;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
         return true;
     }
 
     @Override
-    public int getRenderType() {
-        return RTMBlock.renderIdScaffoldStairs;
-    }
-
-    @Override
     public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
         return new TileEntityScaffoldStairs();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-//        IntStream.range(0, 16).mapToObj(i -> new ItemStack(par1, 1, i)).forEach(par3List::add);
     }
 
     @Override
@@ -210,19 +184,6 @@ public class BlockScaffoldStairs extends BlockContainer {
         if (!world.isRemote) {
             this.dropBlockAsItem(world, x, y, z, this.getItem(par5));
         }
-    }
-
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityScaffoldStairs) {
-            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
-            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.STAIR.id);
-            ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityScaffoldStairs) tileEntity).getModelName());
-            ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityScaffoldStairs) tileEntity).getResourceState());
-            return itemStack;
-        }
-        return null;
     }
 
     private ItemStack getItem(int damage) {

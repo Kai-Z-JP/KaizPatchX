@@ -3,10 +3,9 @@ package jp.ngt.ngtlib.block;
 import jp.ngt.ngtlib.math.NGTMath;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 
-public abstract class TileEntityPlaceable extends TileEntity {
+public abstract class TileEntityPlaceable extends TileEntityCustom {
     private float offsetX, offsetY, offsetZ, rotation;
 
     @Override

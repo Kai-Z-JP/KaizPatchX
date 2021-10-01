@@ -69,4 +69,13 @@ public class TileEntityFluorescent extends TileEntityOrnament {
     protected String getDefaultName() {
         return "Fluorescent01";
     }
+
+    @Override
+    public void setRotation(EntityPlayer player, float rotationInterval, boolean synch) {
+        int yaw = MathHelper.floor_double(NGTMath.normalizeAngle(-player.rotationYaw + 180.0D + (rotationInterval / 2.0D)) / (double) rotationInterval);
+        if (this.dirF >= 4) {
+            yaw -= 90;
+        }
+        this.setRotation((float) yaw * rotationInterval, synch);
+    }
 }

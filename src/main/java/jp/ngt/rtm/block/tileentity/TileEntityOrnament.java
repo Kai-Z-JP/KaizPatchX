@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
-public abstract class TileEntityOrnament extends TileEntityCustom implements IModelSelectorWithType {
+public abstract class TileEntityOrnament extends TileEntityPlaceable implements IModelSelectorWithType {
     private final ResourceState state = new ResourceState(this);
     private String modelName = "";
     private ModelSetOrnament myModelSet;

@@ -110,6 +110,7 @@ public class ItemInstalledObject extends ItemWithModel {
                     }
                     TileEntityFluorescent tile = (TileEntityFluorescent) world.getTileEntity(par4, par5, par6);
                     tile.setDir(dir);
+                    tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
                     tile.setModelName(this.getModelName(itemStack));
                     tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                 }
@@ -117,6 +118,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 block = RTMBlock.plant_ornament;
                 world.setBlock(par4, par5, par6, block, 0, 3);
                 TileEntityPlantOrnament tile = (TileEntityPlantOrnament) world.getTileEntity(par4, par5, par6);
+                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             } else if (type == IstlObjType.PIPE) {
@@ -405,6 +407,10 @@ public class ItemInstalledObject extends ItemWithModel {
 
         public static IstlObjType getType(MachineType machineType) {
             return Arrays.stream(IstlObjType.values()).filter(type -> type.subType.equals(machineType.toString())).findFirst().orElse(NONE);
+        }
+
+        public static IstlObjType getType(OrnamentType ornamentType) {
+            return Arrays.stream(IstlObjType.values()).filter(type -> type.subType.equals(ornamentType.toString())).findFirst().orElse(NONE);
         }
     }
 }

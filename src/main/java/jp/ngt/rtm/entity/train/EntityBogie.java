@@ -307,10 +307,13 @@ public class EntityBogie extends Entity implements Lockable {
      */
     protected void onChangeRail(TileEntityLargeRailCore newRail) {
         this.reverbSound = newRail.isReberbSound();
-        TrainConfig cfg = this.getTrain().getModelSet().getConfig();
-        if (!cfg.muteJointSound) {
-            this.jointIndex = 0;
-            this.playJointSound();
+        EntityTrainBase train = this.getTrain();
+        if (train != null) {
+            TrainConfig cfg = train.getModelSet().getConfig();
+            if (!cfg.muteJointSound) {
+                this.jointIndex = 0;
+                this.playJointSound();
+            }
         }
     }
 

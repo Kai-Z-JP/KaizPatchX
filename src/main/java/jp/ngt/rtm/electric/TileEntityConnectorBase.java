@@ -26,7 +26,12 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        String name = nbt.getString("ModelName");
+        String name;
+        if (nbt.hasKey("ModelName") || !this.hasWorldObj()) {
+            name = nbt.getString("ModelName");
+        } else {
+            name = this.getDefaultName();
+        }
         this.setModelName(name);
         this.getResourceState().readFromNBT(nbt.getCompoundTag("State"));
     }
@@ -34,6 +39,9 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
+        if (this.getModelName().isEmpty() && this.hasWorldObj()) {
+            this.setModelName(this.getDefaultName());
+        }
         nbt.setString("ModelName", this.modelName);
         nbt.setTag("State", this.getResourceState().writeToNBT());
     }

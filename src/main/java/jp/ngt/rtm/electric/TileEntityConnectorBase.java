@@ -95,6 +95,8 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
                 vec = vec.rotateAroundY(90.0F);
                 break;
         }
+        vec = vec.add(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
+        vec = vec.rotateAroundY(this.getRotation());
         this.wirePos = vec;
     }
 

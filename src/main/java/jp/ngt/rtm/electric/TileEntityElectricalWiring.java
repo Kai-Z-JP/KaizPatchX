@@ -1,6 +1,6 @@
 package jp.ngt.rtm.electric;
 
-import jp.ngt.ngtlib.block.TileEntityCustom;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public abstract class TileEntityElectricalWiring extends TileEntityCustom {
+public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
     protected List<Connection> connections = new ArrayList<>();
 
     public boolean isActivated;

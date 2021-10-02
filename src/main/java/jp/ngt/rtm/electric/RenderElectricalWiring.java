@@ -38,6 +38,8 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
     protected void renderConnector(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 0.5F, (float) par6 + 0.5F);
+        GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
+        GL11.glRotatef(tileEntity.getRotation(), 0.0F, 1.0F, 0.0F);
         ModelSetConnectorClient modelSet = (ModelSetConnectorClient) tileEntity.getModelSet();
         ConnectorConfig cfg = modelSet.getConfig();
         int meta = tileEntity.getBlockMetadata() % 6;

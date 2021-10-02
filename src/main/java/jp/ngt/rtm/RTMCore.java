@@ -105,6 +105,7 @@ public final class RTMCore {
     public static Property marker;
     public static boolean use1122Marker;
     public static int loadSpeed;
+    public static boolean expandPlayableSoundCount;
     public static Configuration cfg;
 
     public static final int PacketSize = 512;
@@ -149,10 +150,11 @@ public final class RTMCore {
             Property blockPro2 = cfg.get("Block", "mirror render frequency", 1);
             blockPro2.comment = "Frequency of rendering mirror. (1 : Full tick)";
 
-
             marker = cfg.get("Marker", "Use like 1.12", false);
             Property fastLoadProperty = cfg.get("Load", "ModelPack load speed", 2);
             fastLoadProperty.comment = "1:Slow 2:Default 3:Fast";
+            Property expandPlayableSoundCountProperty = cfg.get("Sound", "Expand playable sound count", true,
+                    "expands the count of playable sound count at the same time. this may cause compatibility issue with Immersive Vehicles.");
 
             loadSpeed = fastLoadProperty.getInt();
             trainSoundVol = (float) soundPro1.getInt() / 100.0F;
@@ -169,6 +171,7 @@ public final class RTMCore {
             mirrorTextureSize = blockPro1.getInt();
             mirrorRenderingFrequency = (byte) blockPro2.getInt();
             use1122Marker = marker.getBoolean();
+            expandPlayableSoundCount = expandPlayableSoundCountProperty.getBoolean();
         } catch (Exception e) {
             FMLLog.log(Level.ERROR, e, "Error Message");
         } finally {
@@ -189,7 +192,7 @@ public final class RTMCore {
         ForgeChunkManager.setForcedChunkLoadingCallback(this, RTMChunkManager.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RTMChunkManager.INSTANCE);
 
-        if (event.getSide() == Side.CLIENT) {
+        if (event.getSide() == Side.CLIENT && expandPlayableSoundCount) {
             SoundSystemConfig.setNumberNormalChannels(1024);
             SoundSystemConfig.setNumberStreamingChannels(32);
         }

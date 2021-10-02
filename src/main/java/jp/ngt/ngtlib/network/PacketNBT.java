@@ -98,7 +98,7 @@ public class PacketNBT implements IMessage {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
             if (tileEntity != null) {
                 tileEntity.readFromNBT(this.nbtData);
-                if (world.isRemote) {
+                if (!world.isRemote) {
                     tileEntity.markDirty();//セーブする
                 }
             }

@@ -1,6 +1,9 @@
 package jp.ngt.rtm.electric;
 
+import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.item.ItemInstalledObject;
 import jp.ngt.rtm.item.ItemWithModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -19,8 +22,25 @@ public abstract class BlockElectricalWiring extends BlockContainer implements IB
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (world.isRemote) {
+            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
+                ItemStack itemStack = player.getCurrentEquippedItem();
+                ItemInstalledObject itemInst = (ItemInstalledObject) player.getCurrentEquippedItem().getItem();
+                TileEntityConnectorBase connector = (TileEntityConnectorBase) world.getTileEntity(x, y, z);
+                if (connector.getSubType().equals(itemInst.getSubType(itemStack))) {
+                    player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                    return true;
+                }
+            }
             return true;
         } else {
+            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
+                ItemStack itemStack = player.getCurrentEquippedItem();
+                ItemInstalledObject itemInst = (ItemInstalledObject) player.getCurrentEquippedItem().getItem();
+                TileEntityConnectorBase connector = (TileEntityConnectorBase) world.getTileEntity(x, y, z);
+                if (connector.getSubType().equals(itemInst.getSubType(itemStack))) {
+                    return true;
+                }
+            }
             TileEntityElectricalWiring tile = (TileEntityElectricalWiring) world.getTileEntity(x, y, z);
             return tile.onRightClick(player);
         }

@@ -53,6 +53,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,7 @@ public class ClientProxy extends CommonProxy {
 
         ModelPackLoadThread thread = new ModelPackLoadThread(Side.CLIENT);
         thread.start();
+        ImageIO.scanForPlugins();
     }
 
     private void versionCheck() {

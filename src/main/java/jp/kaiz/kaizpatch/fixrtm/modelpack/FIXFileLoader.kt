@@ -77,7 +77,7 @@ object FIXFileLoader {
         } catch (e: NoClassDefFoundError) {
             CrashReport.makeCrashReport(
                 e,
-                "Please use preload-newer-kotlin\n" +
+                "Please try preload-newer-kotlin. The mod may fix this crash.\n" +
                         "(https://github.com/anatawa12/preload-newer-kotlin/releases/latest)"
             )
                 .apply { makeCategory("Initialization") }

@@ -6,7 +6,6 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.RailMapSlope;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityLargeRailSlopeCore extends TileEntityLargeRailCore {
     private byte slopeType;
@@ -52,18 +51,6 @@ public class TileEntityLargeRailSlopeCore extends TileEntityLargeRailCore {
     @Override
     public void updateEntity() {
         super.updateEntity();
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    protected AxisAlignedBB getRenderAABB() {
-        int[] size = this.getRailSize();
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(size[0] - 1, size[1], size[2] - 1, size[3] + 2, size[4] + 2, size[5] + 2);
-        if (aabb.maxX - aabb.minX <= 3 && aabb.maxZ - aabb.minZ <= 3) {
-            return null;
-        }
-
-        return aabb;
     }
 
     @Override

@@ -25,8 +25,6 @@ import java.util.List;
 
 public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     public boolean breaking;
-    private long lastRenderTime;
-    private TileEntityLargeRailBase lastRenderTileEntity;
     protected boolean isCollidedTrain = false;
     public boolean colliding = false;
     private int signal = 0;
@@ -275,21 +273,21 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         return NGTUtil.getChunkLoadDistanceSq();
     }
 
-//	@Override
-//	@SideOnly(Side.CLIENT)
-//	public AxisAlignedBB getRenderBoundingBox() {
-//		if (!this.isLoaded()) {
-//			return INFINITE_EXTENT_AABB;
-//		}
-//
-//		if (this.renderAABB == null) {
-//			this.renderAABB = this.getRenderAABB();
-//			if (this.renderAABB == null) {
-//				return INFINITE_EXTENT_AABB;
-//			}//ぬるぽ回避
-//		}
-//		return this.renderAABB;
-//	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        if (!this.isLoaded()) {
+            return INFINITE_EXTENT_AABB;
+        }
+
+        if (this.renderAABB == null) {
+            this.renderAABB = this.getRenderAABB();
+            if (this.renderAABB == null) {
+                return INFINITE_EXTENT_AABB;
+            }//ぬるぽ回避
+        }
+        return this.renderAABB;
+    }
 
     /**
      * レールの描画用AABBを取得<br>
@@ -298,7 +296,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     @SideOnly(Side.CLIENT)
     protected AxisAlignedBB getRenderAABB() {
         int[] size = this.getRailSize();
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(size[0] - 1, size[1], size[2] - 1, size[3] + 2, size[4] + 2, size[5] + 2);
+        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(size[0] - 3.5, size[1] - 10, size[2] - 3.5, size[3] + 5.5, size[4] + 2, size[5] + 5.5);
         if (aabb.maxX - aabb.minX <= 3 && aabb.maxZ - aabb.minZ <= 3) {
             return null;
         }

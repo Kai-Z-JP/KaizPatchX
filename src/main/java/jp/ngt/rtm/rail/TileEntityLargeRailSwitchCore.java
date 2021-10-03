@@ -7,7 +7,6 @@ import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 
 import java.util.ArrayList;
@@ -145,17 +144,6 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
             return this.getSwitch().getAllRailMap();
         }
         return null;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    protected AxisAlignedBB getRenderAABB() {
-        int[] size = this.getRailSize();
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(size[0] - 1, size[1], size[2] - 1, size[3] + 2, size[4] + 2, size[5] + 2);
-        if (aabb.maxX - aabb.minX <= 3 && aabb.maxZ - aabb.minZ <= 3) {
-            return null;
-        }
-        return aabb;
     }
 
     @Override

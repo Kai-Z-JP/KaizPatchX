@@ -2,7 +2,6 @@ package jp.ngt.ngtlib.io;
 
 import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader;
 import jp.ngt.ngtlib.NGTCore;
-import jp.ngt.ngtlib.util.NGTUtilClient;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
@@ -262,7 +261,7 @@ public final class NGTFileLoader {
     }
 
     public static InputStream getInputStream(ResourceLocation par1) throws IOException {
-        return NGTCore.proxy.isServer() ? FIXFileLoader.INSTANCE.getInputStream(par1) : NGTUtilClient.getMinecraft().getResourceManager().getResource(par1).getInputStream();
+        return FIXFileLoader.INSTANCE.getInputStream(par1);
     }
 
     public static InputStream getInputStreamFromFile(File file) throws IOException {

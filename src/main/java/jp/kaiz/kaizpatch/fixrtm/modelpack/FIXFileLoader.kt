@@ -7,6 +7,8 @@ package jp.kaiz.kaizpatch.fixrtm.modelpack
 import jp.kaiz.kaizpatch.fixrtm.directoryDigestBaseStream
 import jp.kaiz.kaizpatch.fixrtm.util.DigestUtils
 import jp.ngt.ngtlib.io.NGTFileLoader
+import jp.ngt.rtm.RTMCore
+import net.minecraft.crash.CrashReport
 import net.minecraft.util.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import java.io.File
@@ -72,6 +74,15 @@ object FIXFileLoader {
                     throw e
                 }
             }
+        } catch (e: NoClassDefFoundError) {
+            CrashReport.makeCrashReport(
+                e,
+                "Please use preload-newer-kotlin\n" +
+                        "(https://github.com/anatawa12/preload-newer-kotlin/releases/latest)"
+            )
+                .apply { makeCategory("Initialization") }
+                .let { RTMCore.proxy.reportCrash(it) }
+            throw e
         } catch (e: Throwable) {
             logger.error("trying to construct model pack: ${file.name}", e)
             return null

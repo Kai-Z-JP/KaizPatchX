@@ -119,7 +119,7 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
 
     public ResourceState getModelState(ItemStack itemStack) {
         ResourceState state = new ResourceState(this);
-        if (itemStack.getTagCompound().hasKey("State")) {
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("State")) {
             state.readFromNBT(itemStack.getTagCompound().getCompoundTag("State"));
         } else {
             NBTTagCompound nbt;

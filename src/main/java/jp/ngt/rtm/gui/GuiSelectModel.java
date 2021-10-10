@@ -98,6 +98,9 @@ public class GuiSelectModel extends GuiScreenCustom {
      * 入力されたキーワードを含むモデルを抽出
      */
     private void resetModelList() {
+        if (this.selectButtons != null) {
+            this.buttonList.removeAll(Arrays.asList(this.selectButtons));
+        }
         this.modelListSelect.clear();
         this.currentScroll = 0;
 
@@ -125,7 +128,7 @@ public class GuiSelectModel extends GuiScreenCustom {
         });
         this.resetButtonPos();
 
-        this.buttonList.add(new GuiButton(900, this.width + 36, this.height - 20, 100, 20, "cancel"));
+        this.buttonList.add(new GuiButton(10900, this.width + 36, this.height - 20, 100, 20, "cancel"));
     }
 
     private void setColorToButton(int color) {

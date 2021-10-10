@@ -30,6 +30,7 @@ import org.lwjgl.util.glu.Project;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -163,12 +164,14 @@ public class GuiSelectModel extends GuiScreenCustom {
 
     @Override
     public void drawScreen(int par1, int par2, float par3) {
-        this.wasClicking = Mouse.isButtonDown(0);
         boolean clickIsAvailable = par1 < this.width && par1 >= this.width - 16;
-        if (this.wasClicking && clickIsAvailable) {
+        if (Mouse.isButtonDown(0) && (this.wasClicking || clickIsAvailable)) {
+            this.wasClicking = true;
             int mouseY = par2 < 8 ? 8 : (Math.min(par2, this.height));
             int i1 = MathHelper.floor_float((float) mouseY * (float) (this.modelListSelect.size() + 1) / (float) (this.height - 16));
             this.scroll(i1);
+        } else {
+            this.wasClicking = false;
         }
 
         float z = this.zLevel;

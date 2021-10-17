@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.util.NGTUtil;
-import jp.ngt.rtm.RTMCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -77,7 +76,8 @@ public class TileEntityEffect extends TileEntity {
     }
 
     public boolean shouldUpdateAsAtomicBomb() {
-        return this.getBlockMetadata() == RTMCore.ATOMIC_BOM_META;
+//        return this.getBlockMetadata() == RTMCore.ATOMIC_BOM_META;
+        return false;
     }
 
     private void doExplosion(double flameSize, double blastSize) {

@@ -345,6 +345,9 @@ public class EntityBogie extends Entity implements Lockable {
     }
 
     private TileEntityLargeRailCore getRail(double px, double py, double pz) {
+        int x = MathHelper.floor_double(px);
+        int z = MathHelper.floor_double(pz);
+        this.worldObj.getChunkProvider().loadChunk(x >> 4, z >> 4);
         TileEntityLargeRailBase railObj = TileEntityLargeRailBase.getRailFromCoordinates(this.worldObj, px, py, pz);
         if (railObj == null) {
             this.errorLog(px, pz, "Rail not found > x:%s z:%s");

@@ -35,7 +35,7 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
         }
 
         int signal = this.theTrain.getSignal();
-        if (Math.abs(this.theTrain.getSpeed()) > 0.0F) {
+        if (this.theTrain.isControlCar() && Math.abs(this.theTrain.getSpeed()) > 0.0F) {
             switch (signal) {
                 case 1:
                     if (this.currentSignal != 1) {

@@ -74,7 +74,10 @@ public class TileEntityFluorescent extends TileEntityOrnament {
     public void setRotation(EntityPlayer player, float rotationInterval, boolean synch) {
         int yaw = MathHelper.floor_double(NGTMath.normalizeAngle(-player.rotationYaw + 180.0D + (rotationInterval / 2.0D)) / (double) rotationInterval);
         if (this.dirF >= 4) {
-            yaw -= 90;
+            yaw += 90 / rotationInterval;
+        }
+        if (this.dirF == 1 || this.dirF == 7) {
+            yaw += 180 / rotationInterval;
         }
         this.setRotation((float) yaw * rotationInterval, synch);
     }

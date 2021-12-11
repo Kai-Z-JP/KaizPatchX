@@ -1,5 +1,8 @@
 package jp.ngt.rtm.modelpack.modelset;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig;
@@ -14,6 +17,11 @@ public abstract class ModelSetBase<T extends ModelConfig> {
     private final boolean isDummyModel;
 
     public ScriptEngine serverSE;
+
+    @SideOnly(Side.CLIENT)
+    public ScriptEngine guiSE;
+    @SideOnly(Side.CLIENT)
+    public ResourceLocation guiTexture;
 
     /**
      * ダミー用
@@ -31,6 +39,11 @@ public abstract class ModelSetBase<T extends ModelConfig> {
 
         if (this.cfg.serverScriptPath != null) {
             this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath));
+        }
+
+        if (FMLCommonHandler.instance().getSide().isClient() && this.cfg.guiScriptPath != null) {
+            this.guiSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath));
+            this.guiTexture = ModelPackManager.INSTANCE.getResource(this.cfg.guiTexture);
         }
     }
 

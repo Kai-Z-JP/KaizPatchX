@@ -35,6 +35,9 @@ public abstract class ModelConfig {
 
     public String serverScriptPath;
 
+    public String guiScriptPath;
+    public String guiTexture;
+
     public float[] renderAABB;
 
     /**

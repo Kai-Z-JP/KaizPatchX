@@ -2,9 +2,12 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.ClientProxy;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
+import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.gui.camera.Camera;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
@@ -42,7 +45,7 @@ public class GuiIngameCustom extends GuiScreen {
             this.setScale(event.resolution);
 
             if (this.mc.thePlayer.ridingEntity instanceof EntityTrainBase) {
-                this.renderTrainGui((EntityTrainBase) this.mc.thePlayer.ridingEntity);
+                this.renderVehicleGui((EntityTrainBase) this.mc.thePlayer.ridingEntity);
             } else if (this.mc.thePlayer.ridingEntity instanceof EntityArtillery) {
                 this.renderArtilleryGui((EntityArtillery) this.mc.thePlayer.ridingEntity);
             }
@@ -74,7 +77,7 @@ public class GuiIngameCustom extends GuiScreen {
         //fontrenderer.drawStringWithShadow("viewX : " + RenderManager.instance.playerViewX, 2, 12, 16777215);
     }
 
-    private void renderTrainGui(EntityTrainBase train) {
+    private void renderDefaultTrainGui(EntityTrainBase train) {
         FontRenderer fontrenderer = this.mc.fontRenderer;
         ModelSetVehicleBase<TrainConfig> model = train.getModelSet();
         if (model != null && !model.getConfig().notDisplayCab) {
@@ -99,6 +102,19 @@ public class GuiIngameCustom extends GuiScreen {
             fontrenderer.drawStringWithShadow("Signal : " + train.getSignal(), 2, this.height - 30, 16777215);
             fontrenderer.drawStringWithShadow("Time : " + this.getWorldTime(), 2, this.height - 20, 16777215);
             fontrenderer.drawStringWithShadow("Time : " + this.getTime(), 2, this.height - 10, 16777215);
+        }
+    }
+
+    private void renderVehicleGui(EntityVehicleBase vehicle) {
+        ModelSetVehicleBase modelSet = (ModelSetVehicleBase) vehicle.getResourceState().getResourceSet();
+        if (modelSet != null && !modelSet.getConfig().notDisplayCab) {
+            NGTUtilClient.bindTexture(modelSet.guiTexture != null ? modelSet.guiTexture : tex_cab);
+
+            if (modelSet.guiSE != null) {
+                ScriptUtil.doScriptIgnoreError(modelSet.guiSE, "renderGui", vehicle, this);
+            } else if (vehicle instanceof EntityTrainBase) {
+                this.renderDefaultTrainGui((EntityTrainBase) vehicle);
+            }
         }
     }
 

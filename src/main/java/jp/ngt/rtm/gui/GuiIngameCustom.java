@@ -81,7 +81,6 @@ public class GuiIngameCustom extends GuiScreen {
         FontRenderer fontrenderer = this.mc.fontRenderer;
         ModelSetVehicleBase<TrainConfig> model = train.getModelSet();
         if (model != null && !model.getConfig().notDisplayCab) {
-            this.mc.getTextureManager().bindTexture(tex_cab);
             int k = this.width / 2;
             this.drawTexturedModalRect(k - 208, this.height - 48, 0, 0, 416, 48);
             this.drawMeterAndLever(train);

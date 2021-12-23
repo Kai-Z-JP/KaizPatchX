@@ -81,6 +81,8 @@ public class GuiIngameCustom extends GuiScreen {
         FontRenderer fontrenderer = this.mc.fontRenderer;
         ModelSetVehicleBase<TrainConfig> model = train.getModelSet();
         if (model != null && !model.getConfig().notDisplayCab) {
+            NGTUtilClient.bindTexture(model.guiTexture != null ? model.guiTexture : tex_cab);
+
             int k = this.width / 2;
             this.drawTexturedModalRect(k - 208, this.height - 48, 0, 0, 416, 48);
             this.drawMeterAndLever(train);
@@ -106,14 +108,11 @@ public class GuiIngameCustom extends GuiScreen {
 
     private void renderVehicleGui(EntityVehicleBase vehicle) {
         ModelSetVehicleBase modelSet = (ModelSetVehicleBase) vehicle.getResourceState().getResourceSet();
-        if (modelSet != null && !modelSet.getConfig().notDisplayCab) {
+        if (modelSet != null && modelSet.guiSE != null) {
             NGTUtilClient.bindTexture(modelSet.guiTexture != null ? modelSet.guiTexture : tex_cab);
-
-            if (modelSet.guiSE != null) {
-                ScriptUtil.doScriptIgnoreError(modelSet.guiSE, "renderGui", vehicle, this);
-            } else if (vehicle instanceof EntityTrainBase) {
-                this.renderDefaultTrainGui((EntityTrainBase) vehicle);
-            }
+            ScriptUtil.doScriptIgnoreError(modelSet.guiSE, "renderGui", vehicle, this);
+        } else if (vehicle instanceof EntityTrainBase) {
+            this.renderDefaultTrainGui((EntityTrainBase) vehicle);
         }
     }
 

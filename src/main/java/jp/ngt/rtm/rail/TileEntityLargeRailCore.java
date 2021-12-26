@@ -10,6 +10,7 @@ import jp.ngt.rtm.RTMRail;
 import jp.ngt.rtm.item.ItemRail;
 import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.RailMap;
+import jp.ngt.rtm.rail.util.RailMapBasic;
 import jp.ngt.rtm.rail.util.RailPosition;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
@@ -135,7 +136,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     public void createRailMap() {
         if (this.isLoaded())//同期ができてない状態でのRailMapの生成を防ぐ
         {
-            this.railmap = new RailMap(this.railPositions[0], this.railPositions[1]);
+            this.railmap = new RailMapBasic(this.railPositions[0], this.railPositions[1]);
         }
     }
 

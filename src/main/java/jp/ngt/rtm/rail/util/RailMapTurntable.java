@@ -4,7 +4,7 @@ import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.math.StraightLine;
 import jp.ngt.ngtlib.math.Vec3;
 
-public final class RailMapTurntable extends RailMap {
+public final class RailMapTurntable extends RailMapBasic {
     public final int centerX, centerY, centerZ, radius;
     private float rotation;
 
@@ -79,9 +79,9 @@ public final class RailMapTurntable extends RailMap {
     }
 
     @Override
-    public float getRailRotation(int par1, int par2) {
+    public float getRailYaw(int par1, int par2) {
         this.recreateLine();
-        return super.getRailRotation(par1, par2);
+        return super.getRailYaw(par1, par2);
     }
 
     @Override

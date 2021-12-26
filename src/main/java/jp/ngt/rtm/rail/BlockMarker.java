@@ -206,7 +206,7 @@ public class BlockMarker extends BlockContainer {
      * y0 <= y1でなければならない
      */
     private boolean createRail0(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
-        RailMap railMap = new RailMap(start, end);
+        RailMap railMap = new RailMapBasic(start, end);
 
         if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
             //railMap.setRail(world, RTMRail.largeRailBase[shape[0]], x0, y0, z0);

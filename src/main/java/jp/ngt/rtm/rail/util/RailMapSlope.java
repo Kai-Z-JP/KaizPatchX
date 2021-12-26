@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class RailMapSlope extends RailMap {
+public class RailMapSlope extends RailMapBasic {
     private final float dirDeg;
     private final byte slopeType;
 
@@ -108,7 +108,7 @@ public class RailMapSlope extends RailMap {
     }
 
     @Override
-    public float getRailRotation(int par1, int par2) {
+    public float getRailYaw(int par1, int par2) {
         return this.dirDeg;
     }
 

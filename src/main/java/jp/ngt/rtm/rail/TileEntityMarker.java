@@ -217,7 +217,7 @@ public class TileEntityMarker extends TileEntity {
             RailPosition rp0 = this.getMarkerRP(list.get(0));
             RailPosition rp1 = this.getMarkerRP(list.get(1));
             if (rp0 != null && rp1 != null) {
-                RailMap rm = new RailMap(rp0, rp1);
+                RailMap rm = new RailMapBasic(rp0, rp1);
                 this.railMaps = new RailMap[]{rm};
             }
         } else {

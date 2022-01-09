@@ -1,6 +1,5 @@
 package jp.ngt.rtm.rail.util;
 
-import jp.ngt.ngtlib.io.NGTLog;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -60,11 +59,6 @@ public final class RailMaker {
             if (type.init(switchList, normalList)) {
                 return type;
             }
-        }
-
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            RailPosition rp = this.rpList.get(0);
-            NGTLog.sendChatMessageToAll("message.rail.switch_type", rp.blockX, rp.blockY, rp.blockZ);
         }
 
         return null;

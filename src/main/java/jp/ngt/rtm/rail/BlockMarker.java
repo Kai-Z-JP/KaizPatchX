@@ -2,6 +2,7 @@ package jp.ngt.rtm.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.*;
@@ -192,7 +193,7 @@ public class BlockMarker extends BlockContainer {
                     return this.createTurntable(world, list.get(0), list.get(1), prop, makeRail, isCreative);
                 }
                 if (list.size() > 0) {
-                    return this.createRail1(world, x, y, z, list, prop, makeRail, isCreative);
+                    return this.createRail1(world, x, y, z, player, list, prop, makeRail, isCreative);
                 }
             } else if (type == 2) {
                 return this.createRail2(world, x, y, z, prop, makeRail, isCreative);
@@ -244,10 +245,11 @@ public class BlockMarker extends BlockContainer {
      *
      * @param list {x, y, z}
      */
-    private boolean createRail1(World world, int x, int y, int z, List<RailPosition> list, RailProperty prop, boolean makeRail, boolean isCreative) {
+    private boolean createRail1(World world, int x, int y, int z, EntityPlayer player, List<RailPosition> list, RailProperty prop, boolean makeRail, boolean isCreative) {
         RailMaker railMaker = new RailMaker(world, list);
         SwitchType st = railMaker.getSwitch();
         if (st == null) {
+            NGTLog.sendChatMessage(player, "message.rail.switch_type");
             return false;
         }
         RailMapSwitch[] arrayOfRailMapSwitch = st.getAllRailMap();

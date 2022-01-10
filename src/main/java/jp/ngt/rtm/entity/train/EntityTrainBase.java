@@ -976,9 +976,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             int i = this.getNotch();
             if (this.setNotch(i + par2)) {
                 driver.worldObj.playSoundAtEntity(driver, "rtm:train.lever", 1.0F, 1.0F);
-                if (i < 0 && par2 > 0 && !this.worldObj.isRemote) {
-                    this.playBrakeReleaseSound(i == -1);
-                }
                 return true;
             }
         }
@@ -992,6 +989,9 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                 int prevNotch = this.getNotch();
                 if (prevNotch != par1) {
                     this.setByteToDataWatcher(TrainStateType.State_Notch.id, (byte) par1);
+                    if (prevNotch < 0 && par1 - prevNotch > 0 && !this.worldObj.isRemote) {
+                        this.playBrakeReleaseSound(par1 >= 0);
+                    }
                     return true;
                 }
             }

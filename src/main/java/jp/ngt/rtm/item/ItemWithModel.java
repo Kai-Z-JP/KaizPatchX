@@ -47,6 +47,12 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         list.add(EnumChatFormatting.GRAY + getModelName(itemStack));
+        if (this.getModelState(itemStack).getDataMap().getEntries().size() > 0) {
+            list.add(EnumChatFormatting.DARK_PURPLE + "(+DataMap)");
+        }
+        if (ItemWithModel.hasOffset(itemStack)) {
+            list.add(EnumChatFormatting.DARK_PURPLE + "(+Offset)");
+        }
     }
 
     protected abstract String getModelType(ItemStack itemStack);

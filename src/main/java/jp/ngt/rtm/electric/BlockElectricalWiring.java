@@ -1,5 +1,6 @@
 package jp.ngt.rtm.electric;
 
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
 public abstract class BlockElectricalWiring extends BlockContainer implements IBlockConnective {
     protected BlockElectricalWiring(Material material) {
@@ -60,6 +62,9 @@ public abstract class BlockElectricalWiring extends BlockContainer implements IB
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof TileEntityConnectorBase) {
             ((ItemWithModel) RTMItem.installedObject).setModelName(itemStack, ((TileEntityConnectorBase) tileEntity).getModelName());
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                ItemWithModel.copyOffsetToItemStack((TileEntityPlaceable) tileEntity, itemStack);
+            }
         }
         return itemStack;
     }

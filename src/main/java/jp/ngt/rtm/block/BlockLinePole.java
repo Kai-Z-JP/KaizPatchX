@@ -2,18 +2,23 @@ package jp.ngt.rtm.block;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityPole;
+import jp.ngt.rtm.item.ItemWithModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
 import java.util.Random;
 
@@ -100,5 +105,17 @@ public class BlockLinePole extends BlockOrnamentBase {
     public static boolean isConnected(IBlockAccess world, int x, int y, int z, boolean connectOther) {
         Block block = world.getBlock(x, y, z);
         return block == RTMBlock.linePole || block == RTMBlock.framework || block == RTMBlock.signal || (connectOther && block.isOpaqueCube());
+    }
+
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+        ItemStack itemStack = super.getPickBlock(target, world, x, y, z, player);
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+        if (itemStack != null && tileEntity instanceof TileEntityPlaceable && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+            ItemWithModel.copyOffsetToItemStack((TileEntityPlaceable) tileEntity, itemStack);
+        }
+
+        return itemStack;
     }
 }

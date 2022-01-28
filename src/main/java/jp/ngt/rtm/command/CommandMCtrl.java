@@ -93,10 +93,12 @@ public class CommandMCtrl extends CommandBase {
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length <= 2) {
             //入力されている文字列と先頭一致
-            if (args[args.length - 1].length() == 0) {
-                return subCommandsList.get(args.length - 1);
+            int i = args.length - 1;
+            if (args[i].length() == 0) {
+                return subCommandsList.get(i);
+            } else {
+                return subCommandsList.get(i).stream().filter(s -> s.startsWith(args[i])).collect(Collectors.toList());
             }
-            return subCommandsList.get(args.length - 1).stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
         }
         return null;
     }

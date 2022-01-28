@@ -910,12 +910,23 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         return ba.length < 16 ? new byte[16] : ba;
     }
 
+    private byte clampTrainStateData(int id, byte data) {
+        TrainStateType trainStateType = TrainState.getStateType(id);
+        if (trainStateType == TrainStateType.State_Notch) {
+            TrainConfig cfg = this.getModelSet().getConfig();
+            return NGTMath.clamp(data, (byte) -(cfg.deccelerations.length - 1), (byte) cfg.maxSpeed.length);
+        } else {
+            return NGTMath.clamp(data, trainStateType.min, trainStateType.max);
+        }
+    }
+
     /**
      * @param par1 : 識別番号(0~15)
      */
     private byte getByteFromDataWatcher(int par1) {
         byte[] ba = this.getByteArray();
-        return ba[par1];
+        byte b = ba[par1];
+        return this.clampTrainStateData(par1, b);
     }
 
     /**
@@ -924,11 +935,13 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      * @param par1 : 識別番号(0~15)
      * @param par2 : data
      */
-    private void setByteToDataWatcher(int par1, byte par2) {
+    private byte setByteToDataWatcher(int par1, byte par2) {
+        byte data = this.clampTrainStateData(par1, par2);
         byte[] ba = this.getByteArray();
-        ba[par1] = par2;
+        ba[par1] = data;
         String result = Base64.encodeBase64String(ba);
         this.dataWatcher.updateObject(DW_ByteArray, result);
+        return data;
     }
 
     /**
@@ -947,11 +960,11 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     public void setTrainDirection_NoSync(byte par1) {
-        this.setByteToDataWatcher(TrainStateType.State_TrainDir.id, par1);
-        int id2 = 1 - par1;
+        byte data = this.setByteToDataWatcher(TrainStateType.State_TrainDir.id, par1);
+        int id2 = 1 - data;
         if (id2 < 2) {
             if (this.existBogies()) {
-                this.getBogie(par1).setFront(true);
+                this.getBogie(data).setFront(true);
                 this.getBogie(id2).setFront(false);
             }
         }
@@ -984,16 +997,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     public boolean setNotch(int par1) {
         if (this.isControlCar()) {
-            TrainConfig cfg = this.getModelSet().getConfig();
-            if (par1 <= cfg.maxSpeed.length && par1 >= -(cfg.deccelerations.length - 1)) {
-                int prevNotch = this.getNotch();
-                if (prevNotch != par1) {
-                    this.setByteToDataWatcher(TrainStateType.State_Notch.id, (byte) par1);
-                    if (prevNotch < 0 && par1 - prevNotch > 0 && !this.worldObj.isRemote) {
-                        this.playBrakeReleaseSound(par1 >= 0);
-                    }
-                    return true;
+            byte notch = this.clampTrainStateData(TrainStateType.State_Notch.id, (byte) par1);
+            int prevNotch = this.getNotch();
+            if (prevNotch != notch) {
+                this.setByteToDataWatcher(TrainStateType.State_Notch.id, notch);
+                if (prevNotch < 0 && notch - prevNotch > 0 && !this.worldObj.isRemote) {
+                    this.playBrakeReleaseSound(notch >= 0);
                 }
+                return true;
             }
         }
         return false;
@@ -1055,10 +1066,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     public void setTrainStateData(int id, byte data) {
-        TrainStateType stateType = TrainState.getStateType(id);
-        byte b = data < stateType.min ? stateType.max : (data > stateType.max ? stateType.min : data);
         if (this.formation != null) {
-            this.formation.setTrainStateData(id, b, this);
+            this.formation.setTrainStateData(id, data, this);
         }
     }
 

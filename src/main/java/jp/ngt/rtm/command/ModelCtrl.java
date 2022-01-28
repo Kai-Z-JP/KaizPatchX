@@ -9,20 +9,16 @@ import net.minecraft.command.ICommandSender;
 
 public enum ModelCtrl {
     NOTCH(
-            (s) -> {
-                return s.equals("notch");
-            },
-            (obj) -> obj instanceof EntityTrainBase,
+            s -> s.equals("notch"),
+            obj -> obj instanceof EntityTrainBase,
             (target, player, order, value) -> {
                 int notch = Integer.parseInt(value);
                 return ((EntityTrainBase) target).setNotch(notch);
             },
             "mctrl <train> notch <-8 ~ 5>"),
     DIR(
-            (s) -> {
-                return s.equals("dir");
-            },
-            (obj) -> obj instanceof EntityTrainBase,
+            s -> s.equals("dir"),
+            obj -> obj instanceof EntityTrainBase,
             (target, player, order, value) -> {
                 int dir = Integer.parseInt(value);
                 ((EntityTrainBase) target).setTrainDirection(dir);
@@ -30,10 +26,8 @@ public enum ModelCtrl {
             },
             "mctrl <train> dir <0 or 1>"),
     DATA_MAP(
-            (s) -> {
-                return s.startsWith("dm:");
-            },
-            (obj) -> obj instanceof IModelSelector,
+            s -> s.startsWith("dm:"),
+            obj -> obj instanceof IModelSelector,
             (target, player, order, value) -> {
                 String dataName = order.replace("dm:", "");
                 if (!((IModelSelector) target).getResourceState().getDataMap().set(dataName, value, 3)) {
@@ -44,10 +38,8 @@ public enum ModelCtrl {
             },
             "mctrl <?> dm:<data name> <(type)value>"),
     VEHICLE_STATE(
-            (s) -> {
-                return s.startsWith("state:");
-            },
-            (obj) -> obj instanceof EntityTrainBase,
+            s -> s.startsWith("state:"),
+            obj -> obj instanceof EntityTrainBase,
             (target, player, order, value) -> {
                 String dataName = order.replace("state:", "");
                 try {
@@ -123,7 +115,7 @@ public enum ModelCtrl {
 //                return true;
 //            },
 //            "mctrl <artillery> fire <number of bullet>"),
-    NO_FUNC((s) -> false, (obj) -> false, (target, player, order, value) -> false, "");
+    NO_FUNC(s -> false, obj -> false, (target, player, order, value) -> false, "");
 
     public final CommandMatcher matcher;
     public final TargetFilter filter;

@@ -231,6 +231,10 @@ public final class NGTMath {
     }
 
     public static int clamp(int value, int min, int max) {
-        return (value < min) ? min : (Math.min(value, max));
+        return Math.min(max, Math.max(min, value));
+    }
+
+    public static byte clamp(byte value, byte min, byte max) {
+        return (byte) NGTMath.clamp((int) value, min, max);
     }
 }

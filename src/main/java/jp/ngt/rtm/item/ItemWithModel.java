@@ -2,6 +2,7 @@ package jp.ngt.rtm.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
@@ -139,8 +140,54 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
             itemStack.setTagCompound(new NBTTagCompound());
         }
         itemStack.getTagCompound().setTag("State", state.writeToNBT());
-        if (this.selectedPlayer != null) {
-            NGTUtil.sendPacketToServer(this.selectedPlayer, this.selectedItem);
+    }
+
+    public static boolean hasOffset(ItemStack itemStack) {
+        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("yaw");
+    }
+
+    private static float[] getOffset(ItemStack itemStack) {
+        if (itemStack.hasTagCompound()) {
+            NBTTagCompound nbt = itemStack.getTagCompound();
+            float offsetX = nbt.getFloat("offsetX");
+            float offsetY = nbt.getFloat("offsetY");
+            float offsetZ = nbt.getFloat("offsetZ");
+            return new float[]{offsetX, offsetY, offsetZ};
+        } else {
+            return new float[3];
         }
+    }
+
+    private static float getRotation(ItemStack itemStack) {
+        return itemStack.hasTagCompound() ? itemStack.getTagCompound().getFloat("yaw") : 0;
+    }
+
+    private static void setOffset(ItemStack itemStack, float offsetX, float offsetY, float offsetZ) {
+        if (!itemStack.hasTagCompound()) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound nbt = itemStack.getTagCompound();
+        nbt.setFloat("offsetX", offsetX);
+        nbt.setFloat("offsetY", offsetY);
+        nbt.setFloat("offsetZ", offsetZ);
+    }
+
+    private static void setRotation(ItemStack itemStack, float rotation) {
+        if (!itemStack.hasTagCompound()) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound nbt = itemStack.getTagCompound();
+        nbt.setFloat("yaw", rotation);
+    }
+
+    public static void applyOffsetToTileEntity(ItemStack itemStack, TileEntityPlaceable tile) {
+        float[] offset = ItemWithModel.getOffset(itemStack);
+        tile.setOffset(offset[0], offset[1], offset[2], true);
+        tile.setRotation(ItemWithModel.getRotation(itemStack), true);
+    }
+
+    public static void copyOffsetToItemStack(TileEntityPlaceable tileEntity, ItemStack itemStack) {
+        ItemWithModel.setOffset(itemStack, tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
+        ItemWithModel.setRotation(itemStack, tileEntity.getRotation());
     }
 }

@@ -157,6 +157,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 block = RTMBlock.linePole;
                 world.setBlock(par4, par5, par6, block, 0, 3);
                 TileEntityPole tile = (TileEntityPole) world.getTileEntity(par4, par5, par6);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             } else if (type == IstlObjType.POINT) {
@@ -222,6 +223,7 @@ public class ItemInstalledObject extends ItemWithModel {
             } else if (type == IstlObjType.INSULATOR) {
                 world.setBlock(par4, par5, par6, RTMBlock.insulator, par7, 2);
                 TileEntityInsulator tile = (TileEntityInsulator) world.getTileEntity(par4, par5, par6);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                 block = RTMBlock.insulator;
@@ -233,6 +235,7 @@ public class ItemInstalledObject extends ItemWithModel {
                     }
                     world.setBlock(par4, par5, par6, RTMBlock.connector, par7, 2);
                     TileEntityConnector tile = (TileEntityConnector) world.getTileEntity(par4, par5, par6);
+                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                     tile.setModelName(this.getModelName(itemStack));
                     tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                     tile.setConnectionTo(x, y, z, ConnectionType.DIRECT, "");

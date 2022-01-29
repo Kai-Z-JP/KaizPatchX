@@ -6,6 +6,7 @@ import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.block.tileentity.TileEntityScaffold;
+import jp.ngt.rtm.block.tileentity.TileEntityScaffoldStairs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -40,6 +41,7 @@ public class BlockScaffold extends BlockOrnamentBase {
     public TileEntity createNewTileEntity(World world, int par2) {
         return new TileEntityScaffold();
     }
+
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemstack) {
         int meta = itemstack.getItemDamage();
@@ -62,10 +64,10 @@ public class BlockScaffold extends BlockOrnamentBase {
         if (tile instanceof TileEntityScaffold) {
             b0 = ((TileEntityScaffold) tile).getDir() == 0;
         }
-        byte flag0 = BlockScaffold.getConnectionType(world, x + 1, y, z);
-        byte flag1 = BlockScaffold.getConnectionType(world, x - 1, y, z);
-        byte flag2 = BlockScaffold.getConnectionType(world, x, y, z + 1);
-        byte flag3 = BlockScaffold.getConnectionType(world, x, y, z - 1);
+        byte flag0 = BlockScaffold.getConnectionType(world, x + 1, y, z, (byte) 0);
+        byte flag1 = BlockScaffold.getConnectionType(world, x - 1, y, z, (byte) 0);
+        byte flag2 = BlockScaffold.getConnectionType(world, x, y, z + 1, (byte) 1);
+        byte flag3 = BlockScaffold.getConnectionType(world, x, y, z - 1, (byte) 1);
 
         if ((b0 && flag0 == 0) || (!b0 && flag0 == 0 && (flag2 == 1 || flag3 == 1 || flag2 == 3 || flag3 == 3)))//XPos
         {
@@ -140,7 +142,39 @@ public class BlockScaffold extends BlockOrnamentBase {
      * @return なし:0,  足場Z:1, 足場X:2, 階段:3, 立方体:4
      */
     public static byte getConnectionType(IBlockAccess world, int x, int y, int z, byte dir) {
-        return BlockScaffoldStairs.getConnectionType(world, x, y, z, dir);
+        Block block0 = world.getBlock(x, y, z);
+        Block block1 = world.getBlock(x, y - 1, z);
+
+        if (block0 == RTMBlock.scaffold) {
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileEntityScaffold) {
+                boolean b0 = ((TileEntityScaffold) tile).getDir() == 0;
+                return (byte) (b0 ? 1 : 2);
+            }
+            return 0;
+        } else if (block0 == RTMBlock.scaffoldStairs) {
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileEntityScaffoldStairs) {
+                byte stairsDir = ((TileEntityScaffoldStairs) tile).getDir();
+                boolean b0 = dir == 1 ? (stairsDir == 2 || stairsDir == 0) : (stairsDir == 1 || stairsDir == 3);
+                return (byte) (b0 ? 3 : 0);
+            }
+            return 3;
+        } else if (block1 == RTMBlock.scaffoldStairs) {
+            TileEntity tile = world.getTileEntity(x, y - 1, z);
+            if (tile instanceof TileEntityScaffoldStairs) {
+                byte stairsDir = ((TileEntityScaffoldStairs) tile).getDir();
+                boolean b0 = dir == 1 ? (stairsDir == 2 || stairsDir == 0) : (stairsDir == 1 || stairsDir == 3);
+                return (byte) (b0 ? 3 : 0);
+            }
+            return 3;
+        } else {
+            if (block0.isOpaqueCube()) {
+                return 4;
+            } else {
+                return 0;
+            }
+        }
     }
 
     @Override

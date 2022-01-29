@@ -45,7 +45,7 @@ public enum TrainState {
     public enum TrainStateType {
         State_TrainDir(0, "train_dir", 0, 1),
         State_Notch(1, "notch", -8, 5),
-        State_Signal(2, "signal", 0, 127),//6
+        State_Signal(2, "signal", -1, 127),//6
         State_Door(4, "door", 0, 3),
         State_Light(5, "light", 0, 2),
         State_Pantograph(6, "pantograph", 0, 1),

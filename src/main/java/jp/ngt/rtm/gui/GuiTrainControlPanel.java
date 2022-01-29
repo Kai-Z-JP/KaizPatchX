@@ -323,6 +323,59 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             }
             //((ContainerTrainControlPanel)this.inventorySlots).scrollTo(this.currentScroll);
         }
+        if (i != 0) {
+            int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+            int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            int i0 = (i > 0) ? -1 : 1;
+            ((List<GuiButton>) this.buttonList).stream()
+                    .filter(button -> button.mousePressed(this.mc, x, y))
+                    .findFirst()
+                    .ifPresent(button -> {
+                        int id, data, prevData;
+                        if (button.id == 129) {
+                            String[][] announce = (this.modelset.getConfig()).sound_Announcement;
+                            id = 9;
+                            prevData = this.train.getTrainStateData(id);
+                            data = prevData + i0;
+                            if (announce != null && data >= announce.length) {
+                                data = 0;
+                            } else if (announce != null && data < 0) {
+                                data = announce.length - 1;
+                            }
+                        } else if (button.id >= 124 && button.id <= 128) {
+                            id = button.id - 120;
+                            if (button.id == 124) {
+                                id = TrainStateType.State_InteriorLight.id;
+                            }
+                            prevData = this.train.getTrainStateData(id);
+                            data = prevData + i0;
+                        } else if (button.id >= CUSTOM_BUTTOM_ID) {
+                            int index = button.id - CUSTOM_BUTTOM_ID;
+                            String[] sa = this.getCustomButtons()[index];
+                            int val = this.dataValues[index] + i0;
+                            if (val >= sa.length) {
+                                val = 0;
+                            } else if (val < 0) {
+                                val = sa.length - 1;
+                            }
+                            button.func_146113_a(this.mc.getSoundHandler());
+                            button.displayString = sa[val];
+                            this.dataValues[index] = val;
+                            this.onCustomButtonClick(index, val);
+                            return;
+                        } else {
+                            return;
+                        }
+
+                        if (prevData != data) {
+                            TrainStateType stateType = TrainState.getStateType(id);
+                            data = data < stateType.min ? stateType.max : (data > stateType.max ? stateType.min : data);
+                            this.sendTrainState(id, (byte) data);
+                            button.func_146113_a(this.mc.getSoundHandler());
+                            button.displayString = this.getFormattedText(id, (byte) data);
+                        }
+                    });
+        }
     }
 
     @Override

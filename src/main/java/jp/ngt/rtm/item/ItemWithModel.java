@@ -146,6 +146,10 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
             itemStack.setTagCompound(new NBTTagCompound());
         }
         itemStack.getTagCompound().setTag("State", state.writeToNBT());
+
+        if (this.selectedPlayer != null) {
+            NGTUtil.sendPacketToServer(this.selectedPlayer, this.selectedItem);
+        }
     }
 
     public static boolean hasOffset(ItemStack itemStack) {

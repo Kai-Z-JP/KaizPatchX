@@ -185,7 +185,8 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                 int value = this.train.getResourceState().getDataMap().getInt("Button" + i);
                 int x = this.guiLeft + 4 + (i % 3) * (54 + 3);
                 int y = this.guiTop + 4 + (i / 3) * (20 + 4);
-                this.buttonList.add(new GuiButton(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, sa[i][value]));
+                String displayString = sa[i].length > value ? sa[i][value] : "Out of range";
+                this.buttonList.add(new GuiButton(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, displayString));
                 this.dataValues[i] = value;
             });
         } else if (tab == TabTrainControlPanel.TAB_Formation) {

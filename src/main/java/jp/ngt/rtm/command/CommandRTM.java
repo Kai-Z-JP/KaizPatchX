@@ -196,7 +196,7 @@ public class CommandRTM extends CommandBase {
 
     private static final List<String> stateArray = Arrays.asList("door", "pan", "speed");
 
-    private static final List<String> commandList = Arrays.asList("use1122marker", "door", "pan", "speed", "delAllTrain", "flySpeed");
+    private static final List<String> commandList = Arrays.asList("use1122marker", "door", "pan", "speed", "delAllTrain", "flySpeed", "summon");
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {

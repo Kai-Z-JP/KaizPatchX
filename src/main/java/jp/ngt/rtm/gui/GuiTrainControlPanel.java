@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -442,6 +443,30 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    @Override
+    protected void keyTyped(char par1, int par2) {
+        super.keyTyped(par1, par2);
+        if (par2 == Keyboard.KEY_F) {
+
+            int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+            int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            ((List<GuiButton>) this.buttonList).stream()
+                    .filter(button -> button.id >= CUSTOM_BUTTOM_ID)
+                    .filter(button -> button.mousePressed(this.mc, x, y))
+                    .findFirst()
+                    .ifPresent(button -> {
+                        int index = button.id - CUSTOM_BUTTOM_ID;
+                        int val = this.dataValues[index];
+                        Arrays.stream(this.train.getFormation().entries)
+                                .filter(Objects::nonNull)
+                                .map(entry -> entry.train)
+                                .filter(Objects::nonNull)
+                                .forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
+                        button.func_146113_a(this.mc.getSoundHandler());
+                    });
+        }
     }
 
     @Override

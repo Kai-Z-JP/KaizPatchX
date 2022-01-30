@@ -121,57 +121,33 @@ public final class RTMCore {
         cfg = new Configuration(event.getSuggestedConfigurationFile());
         try {
             cfg.load();
-            Property soundPro1 = cfg.get("Sound", "sound train", 100);
-            soundPro1.comment = "Train sound volume. (0 ~ 100)";
-            Property soundPro2 = cfg.get("Sound", "sound crossing gate", 0);
-            soundPro2.comment = "Sound type of crossing gate. (0, 1)";
-            Property soundPro3 = cfg.get("Sound", "sound gun", 100);
-            soundPro3.comment = "Gun sound volume. (0 ~ 100)";
+            trainSoundVol = cfg.get("Sound", "sound train", 100, "Train sound volume. (0 ~ 100)").getInt() / 100.0F;
+            crossingGateSoundType = (byte) cfg.get("Sound", "sound crossing gate", 0, "Sound type of crossing gate. (0, 1)").getInt();
+            gunSoundVol = (float) cfg.get("Sound", "sound gun", 100, "Gun sound volume. (0 ~ 100)").getInt() / 100.0F;
 
-            Property railPro1 = cfg.get("Rail", "GeneratingDistance", 64);
-            railPro1.comment = "Distance for generating a rail. (default:64, recomended max value:256, It depends on server side)";
-            Property railPro2 = cfg.get("Rail", "GeneratingHeight", 8);
-            railPro2.comment = "Height for generating a rail. (default:8, recomended max value:256)";
-            Property railPro3 = cfg.get("Rail", "MarkerDisplayDistance", 100);
-            railPro3.comment = "(default length:100)";
+            railGeneratingDistance = (short) cfg.get("Rail", "GeneratingDistance", 64,
+                    "Distance for generating a rail. (default:64, recomended max value:256, It depends on server side)").getInt();
+            railGeneratingHeight = (short) cfg.get("Rail", "GeneratingHeight", 8,
+                    "Height for generating a rail. (default:8, recomended max value:256)").getInt();
+            markerDisplayDistance = (short) cfg.get("Rail", "MarkerDisplayDistance", 100, "(default length:100)").getInt();
 
-            Property itemPro1 = cfg.get("Item", "Gun Break Block", true);
+            gunBreakBlock = cfg.get("Item", "Gun Break Block", true).getBoolean();
             //itemPro1.comment = "Delete bat";
-            Property entityPro1 = cfg.get("Entity", "delete bat", false);
-            entityPro1.comment = "Delete bat";
-            Property modelPro1 = cfg.get("Model", "use ServerModelPack", false);
-            modelPro1.comment = "Download ModelPacks from Server (or Permit download ModelPacks).";
-            Property modelPro2 = cfg.get("Model", "do smoothing", true);
-            //modelPro2.comment = "";
-            Property modPro1 = cfg.get("Mod", "version check", true);
-            modPro1.comment = "";
-            Property blockPro1 = cfg.get("Block", "mirror texture size", 512);
-            blockPro1.comment = "FrameBuffer size for mirror. (Recomended size : 256~2048)";
-            Property blockPro2 = cfg.get("Block", "mirror render frequency", 1);
-            blockPro2.comment = "Frequency of rendering mirror. (1 : Full tick)";
+            deleteBat = cfg.get("Entity", "delete bat", false, "Delete bat").getBoolean();
+            useServerModelPack = cfg.get("Model", "use ServerModelPack", false,
+                    "Download ModelPacks from Server (or Permit download ModelPacks).").getBoolean();
+            smoothing = cfg.get("Model", "do smoothing", true).getBoolean();
+            versionCheck = cfg.get("Mod", "version check", true).getBoolean();
+            mirrorTextureSize = cfg.get("Block", "mirror texture size", 512,
+                    "FrameBuffer size for mirror. (Recomended size : 256~2048)").getInt();
+            mirrorRenderingFrequency = (byte) cfg.get("Block", "mirror render frequency", 1,
+                    "Frequency of rendering mirror. (1 : Full tick)").getInt();
 
             marker = cfg.get("Marker", "Use like 1.12", false);
-            Property fastLoadProperty = cfg.get("Load", "ModelPack load speed", 2);
-            fastLoadProperty.comment = "1:Slow 2:Default 3:Fast";
-            Property expandPlayableSoundCountProperty = cfg.get("Sound", "Expand playable sound count", true,
-                    "expands the count of playable sound count at the same time. this may cause compatibility issue with Immersive Vehicles.");
-
-            loadSpeed = fastLoadProperty.getInt();
-            trainSoundVol = (float) soundPro1.getInt() / 100.0F;
-            crossingGateSoundType = (byte) soundPro2.getInt();
-            gunSoundVol = (float) soundPro3.getInt() / 100.0F;
-            railGeneratingDistance = (short) railPro1.getInt();
-            railGeneratingHeight = (short) railPro2.getInt();
-            markerDisplayDistance = (short) railPro3.getInt();
-            gunBreakBlock = itemPro1.getBoolean();
-            deleteBat = entityPro1.getBoolean();
-            useServerModelPack = modelPro1.getBoolean();
-            smoothing = modelPro2.getBoolean();
-            versionCheck = modPro1.getBoolean();
-            mirrorTextureSize = blockPro1.getInt();
-            mirrorRenderingFrequency = (byte) blockPro2.getInt();
             use1122Marker = marker.getBoolean();
-            expandPlayableSoundCount = expandPlayableSoundCountProperty.getBoolean();
+            loadSpeed = cfg.get("Load", "ModelPack load speed", 2, "1:Slow 2:Default 3:Fast").getInt();
+            expandPlayableSoundCount = cfg.get("Sound", "Expand playable sound count", true,
+                    "expands the count of playable sound count at the same time. this may cause compatibility issue with Immersive Vehicles.").getBoolean();
         } catch (Exception e) {
             FMLLog.log(Level.ERROR, e, "Error Message");
         } finally {

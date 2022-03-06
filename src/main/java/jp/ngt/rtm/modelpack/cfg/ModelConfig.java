@@ -41,6 +41,12 @@ public abstract class ModelConfig {
     public float[] renderAABB;
 
     /**
+     * 当たり判定に使用するパーツ名
+     * 現状VehicleModelのみ適用
+     */
+    public String[] collisionParts;
+
+    /**
      * Configの初期化時に呼ばれる
      */
     public void init() {

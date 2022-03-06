@@ -3,6 +3,7 @@ package jp.ngt.rtm.modelpack.modelset;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.renderer.model.Material;
 import jp.ngt.ngtlib.renderer.model.TextureSet;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
@@ -67,6 +68,7 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         if (cfg.soundScriptPath != null) {
             this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath));
         }
+        this.finishConstruct();
     }
 
     @Override
@@ -133,5 +135,10 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
     }
 
     protected void renderPartsInGui(Minecraft par1) {
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.vehicleModel.model;
     }
 }

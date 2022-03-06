@@ -1,9 +1,6 @@
 package jp.ngt.rtm.modelpack.modelset;
 
-import jp.ngt.ngtlib.renderer.model.Material;
-import jp.ngt.ngtlib.renderer.model.ModelLoader;
-import jp.ngt.ngtlib.renderer.model.TextureSet;
-import jp.ngt.ngtlib.renderer.model.VecAccuracy;
+import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
 import jp.ngt.rtm.gui.GuiSelectModel;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -29,6 +26,7 @@ public class ModelSetMachineClient extends ModelSetMachine implements IModelSetC
         super(par1);
         this.modelObj = new ModelObject(par1.model, this, null);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        this.finishConstruct();
     }
 
     @Override
@@ -69,5 +67,10 @@ public class ModelSetMachineClient extends ModelSetMachine implements IModelSetC
         GL11.glRotatef(-60.0F, 0.0F, 1.0F, 0.0F);
 
         this.modelObj.render(null, this.getConfig(), 0, 0.0F);
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.modelObj.model;
     }
 }

@@ -2,10 +2,7 @@ package jp.ngt.rtm.modelpack.modelset;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.renderer.model.Material;
-import jp.ngt.ngtlib.renderer.model.ModelLoader;
-import jp.ngt.ngtlib.renderer.model.TextureSet;
-import jp.ngt.ngtlib.renderer.model.VecAccuracy;
+import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
 import jp.ngt.rtm.gui.GuiSelectModel;
@@ -39,6 +36,7 @@ public class ModelSetRailClient extends ModelSetRail implements IModelSetClient 
         PartsRenderer renderer = (!PartsRenderer.validPath(par1.model.rendererPath)) ? new BasicRailPartsRenderer() : null;
         this.model = new ModelObject(par1.model, this, renderer);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        this.finishConstruct();
     }
 
     @Override
@@ -87,5 +85,10 @@ public class ModelSetRailClient extends ModelSetRail implements IModelSetClient 
         ModelObject mo = this.model;
         NGTUtilClient.bindTexture(mo.textures[0].material.texture);
         mo.model.renderAll(false);
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.model.model;
     }
 }

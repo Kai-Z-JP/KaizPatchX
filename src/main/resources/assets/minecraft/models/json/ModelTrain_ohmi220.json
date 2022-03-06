@@ -370,5 +370,31 @@
     "rollSpeedCoefficient": 0.25,
     "rollVariationCoefficient": 0.7,
     "rollWidthCoefficient": 1.25,
-    "tags": "ngt5479 220 ohmi"
+    "tags": "ngt5479 220 ohmi",
+    "collisionParts": [
+        "body_D",
+        "body_W",
+        "window_S",
+        "yaneue",
+        "seat1_1",
+        "seat1_2",
+        "seat1_3",
+        "seat2",
+        "yukasita_L",
+        "yukasita_R",
+        "head_F",
+        "ctrl_F",
+        "window_F",
+        "th_door_F",
+        "con_door_F",
+        "head_B",
+        "ctrl_B",
+        "window_B",
+        "th_door_B",
+        "con_door_B",
+        "door_LF",
+        "door_LB",
+        "door_RF",
+        "door_RB"
+    ]
 }

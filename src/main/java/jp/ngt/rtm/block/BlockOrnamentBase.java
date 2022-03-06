@@ -36,15 +36,9 @@ public abstract class BlockOrnamentBase extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (world.isRemote) {
-            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
-                ItemStack itemStack = player.getCurrentEquippedItem();
-                ItemInstalledObject itemInst = (ItemInstalledObject) player.getCurrentEquippedItem().getItem();
-                TileEntity tileEntity = world.getTileEntity(x, y, z);
-                if (tileEntity instanceof TileEntityOrnament) {
-                    if (((TileEntityOrnament) tileEntity).getOrnamentType().toString().equals(itemInst.getSubType(itemStack))) {
-                        player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
-                    }
-                }
+            if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                return true;
             }
 
             if (player.isSneaking()) {

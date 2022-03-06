@@ -1,5 +1,6 @@
 package jp.ngt.ngtlib.io;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtilClient;
@@ -41,6 +42,9 @@ public final class NGTLog {
      */
     public static void sendChatMessage(ICommandSender player, String message, Object... objects)//ServerCommandManager
     {
+        if (player == null) {
+            player = FMLClientHandler.instance().getClientPlayerEntity();
+        }
         player.addChatMessage(new ChatComponentTranslation(message, objects));
     }
 

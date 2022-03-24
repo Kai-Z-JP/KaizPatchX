@@ -40,6 +40,8 @@ public abstract class ModelConfig {
 
     public float[] renderAABB;
 
+    public String customIconTexture;
+
     /**
      * Configの初期化時に呼ばれる
      */

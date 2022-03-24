@@ -43,9 +43,10 @@ public abstract class BlockOrnamentBase extends BlockContainer {
 
             if (player.isSneaking()) {
                 player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

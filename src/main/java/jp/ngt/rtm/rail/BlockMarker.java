@@ -86,12 +86,8 @@ public class BlockMarker extends BlockContainer {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
         int meta = itemStack.getItemDamage();
-        int playerFacing;
-        if ((this.markerType == 0 || this.markerType == 1) && meta >= 4) {
-            playerFacing = (MathHelper.floor_double(NGTMath.normalizeAngle(entity.rotationYaw + 180.0D) / 90D) & 3);//斜め
-        } else {
-            playerFacing = (MathHelper.floor_double((NGTMath.normalizeAngle(entity.rotationYaw + 180.0D) / 90D) + 0.5D) & 3);
-        }
+        int playerFacing = MathHelper.floor_double(NGTMath.normalizeAngle(entity.rotationYaw + 180.0D) / 45.0D + 0.5D) & 7;
+        playerFacing = playerFacing / 2 + (playerFacing % 2 == 0 ? 0 : 4);
         int i = meta / 4;
         world.setBlock(x, y, z, this, playerFacing + i * 4, 2);
     }
@@ -412,18 +408,8 @@ public class BlockMarker extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-        switch (this.markerType) {
-            case 0:
-            case 1:
-                list.add(new ItemStack(par1, 1, 0));
-                list.add(new ItemStack(par1, 1, 4));
-                break;
-            case 2:
-                list.add(new ItemStack(par1, 1, 0));
-                list.add(new ItemStack(par1, 1, 4));
-                list.add(new ItemStack(par1, 1, 8));
-                list.add(new ItemStack(par1, 1, 12));
-                break;
+        if (this.markerType == 0 || this.markerType == 1) {
+            list.add(new ItemStack(par1, 1, 0));
         }
     }
 

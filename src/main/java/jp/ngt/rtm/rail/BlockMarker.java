@@ -188,7 +188,7 @@ public class BlockMarker extends BlockContainer {
                 if (list.size() == 2 && list.stream().allMatch(rp -> rp.switchType == 1)) {
                     return this.createTurntable(world, list.get(0), list.get(1), prop, makeRail, isCreative);
                 }
-                if (list.size() > 0) {
+                if (list.size() >= 3) {
                     return this.createRail1(world, x, y, z, player, list, prop, makeRail, isCreative);
                 }
             } else if (type == 2) {
@@ -411,6 +411,11 @@ public class BlockMarker extends BlockContainer {
         if (this.markerType == 0 || this.markerType == 1) {
             list.add(new ItemStack(par1, 1, 0));
         }
+    }
+
+    @Override
+    public String getItemIconName() {
+        return "rtm:marker";
     }
 
     @Override

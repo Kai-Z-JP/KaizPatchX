@@ -74,8 +74,8 @@ public class ResourceState {
     }
 
     public void applyCollison(Entity target, Entity myself, AxisAlignedBB playerAABB, List<AxisAlignedBB> list) {
-        if (this.selector instanceof ModelSetBase) {
-            CollisionObj obj = ((ModelSetBase) this.selector).getCollisionObj();
+        if (this.getResourceSet() != null) {
+            CollisionObj obj = this.getResourceSet().getCollisionObj();
             if (obj != null) {
                 obj.applyCollison(target, myself, playerAABB, list, this.exclusionParts);
             }

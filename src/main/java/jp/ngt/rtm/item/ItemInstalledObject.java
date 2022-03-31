@@ -119,6 +119,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 world.setBlock(par4, par5, par6, block, 0, 3);
                 TileEntityPlantOrnament tile = (TileEntityPlantOrnament) world.getTileEntity(par4, par5, par6);
                 tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             } else if (type == IstlObjType.PIPE) {
@@ -136,6 +137,7 @@ public class ItemInstalledObject extends ItemWithModel {
                     world.setBlock(par4, par5, par6, RTMBlock.crossingGate, 0, 3);
                     TileEntityCrossingGate tile = (TileEntityCrossingGate) world.getTileEntity(par4, par5, par6);
                     tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                     tile.setModelName(this.getModelName(itemStack));
                     tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                     block = RTMBlock.crossingGate;
@@ -146,6 +148,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 world.setBlock(par4, par5, par6, RTMBlock.turnstile, dir, 3);
                 TileEntityTurnstile tile = (TileEntityTurnstile) world.getTileEntity(par4, par5, par6);
                 tile.setRotation(player, 90.0F, true);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                 block = RTMBlock.turnstile;
@@ -165,6 +168,7 @@ public class ItemInstalledObject extends ItemWithModel {
                     world.setBlock(par4, par5, par6, RTMBlock.point, 0, 3);
                     TileEntityPoint tile = (TileEntityPoint) world.getTileEntity(par4, par5, par6);
                     tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
+                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                     tile.setModelName(this.getModelName(itemStack));
                     tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                     block = RTMBlock.point;
@@ -181,6 +185,7 @@ public class ItemInstalledObject extends ItemWithModel {
                     world.setBlock(par4, par5, par6, RTMBlock.ticketVendor, 0, 3);
                     TileEntityTicketVendor tile = (TileEntityTicketVendor) world.getTileEntity(par4, par5, par6);
                     tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                     tile.setModelName(this.getModelName(itemStack));
                     tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                     block = RTMBlock.ticketVendor;
@@ -189,6 +194,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 world.setBlock(par4, par5, par6, RTMBlock.light, par7, 3);
                 TileEntityLight tile = (TileEntityLight) world.getTileEntity(par4, par5, par6);
                 tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                 block = RTMBlock.light;

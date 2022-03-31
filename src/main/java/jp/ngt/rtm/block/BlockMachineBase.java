@@ -1,11 +1,13 @@
 package jp.ngt.rtm.block;
 
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityMachineBase;
 import jp.ngt.rtm.electric.MachineType;
 import jp.ngt.rtm.item.ItemInstalledObject;
+import jp.ngt.rtm.item.ItemWithModel;
 import jp.ngt.rtm.modelpack.cfg.MachineConfig;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -15,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
 public abstract class BlockMachineBase extends BlockContainer {
     protected BlockMachineBase(Material mat) {
@@ -84,6 +87,10 @@ public abstract class BlockMachineBase extends BlockContainer {
             itemStack.setItemDamage(ItemInstalledObject.IstlObjType.getType(machineType).id);
             ((ItemInstalledObject) RTMItem.installedObject).setModelName(itemStack, ((TileEntityMachineBase) tileEntity).getModelName());
             ((ItemInstalledObject) RTMItem.installedObject).setModelState(itemStack, ((TileEntityMachineBase) tileEntity).getResourceState());
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                ItemWithModel.copyOffsetToItemStack((TileEntityPlaceable) tileEntity, itemStack);
+            }
             return itemStack;
         }
         return null;

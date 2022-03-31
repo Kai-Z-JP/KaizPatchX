@@ -178,6 +178,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 TileEntitySignBoard tile = (TileEntitySignBoard) world.getTileEntity(par4, par5, par6);
                 int playerFacing = (MathHelper.floor_double((NGTMath.normalizeAngle(player.rotationYaw + 180.0D) / 90D) + 0.5D) & 3);
                 tile.setDirection((byte) playerFacing);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setTexture("textures/signboard/ngt_a01.png");
                 block = RTMBlock.signboard;
             } else if (type == IstlObjType.TICKET_VENDOR) {

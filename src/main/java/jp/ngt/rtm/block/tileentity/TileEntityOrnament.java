@@ -98,7 +98,7 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
     public ModelSetOrnament getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy()) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelOrnament", this.modelName);
-            if ((this.worldObj == null || !this.worldObj.isRemote) && (this.myModelSet != null && !this.myModelSet.isDummy())) {
+            if (this.worldObj != null && !this.worldObj.isRemote && this.myModelSet != null && !this.myModelSet.isDummy()) {
                 PacketNBT.sendToClient(this);
             }
         }

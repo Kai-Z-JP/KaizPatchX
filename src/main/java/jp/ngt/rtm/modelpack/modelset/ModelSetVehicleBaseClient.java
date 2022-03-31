@@ -31,6 +31,8 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
     public final ResourceLocation sound_Deceleration;
     public final ResourceLocation sound_D_S;
     public final ResourceLocation sound_Horn;
+    public final ResourceLocation sound_ATSChime;
+    public final ResourceLocation sound_ATSBell;
 
     public ScriptEngine se;
 
@@ -47,6 +49,9 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         this.sound_Deceleration = null;
         this.sound_D_S = null;
         this.sound_Horn = null;
+
+        this.sound_ATSChime = null;
+        this.sound_ATSBell = null;
     }
 
     public ModelSetVehicleBaseClient(VehicleBaseConfig cfg) {
@@ -63,6 +68,9 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         this.sound_Deceleration = this.getSoundResource(cfg.sound_Deceleration);
         this.sound_D_S = this.getSoundResource(cfg.sound_D_S);
         this.sound_Horn = this.getSoundResource(cfg.sound_Horn);
+
+        this.sound_ATSChime = this.getSoundResource(cfg.sound_ATSChime == null ? "rtm:train.ats" : cfg.sound_ATSChime);
+        this.sound_ATSBell = this.getSoundResource(cfg.sound_ATSBell == null ? "rtm:train.ats_bell" : cfg.sound_ATSBell);
 
         if (cfg.soundScriptPath != null) {
             this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath));

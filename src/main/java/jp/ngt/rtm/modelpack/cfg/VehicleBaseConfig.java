@@ -56,6 +56,12 @@ public abstract class VehicleBaseConfig extends ModelConfig {
     public String sound_DoorClose;
 
     /**
+     * ATSのサウンド
+     */
+    public String sound_ATSChime;
+    public String sound_ATSBell;
+
+    /**
      * 車内放送 {name, sound}
      */
     public String[][] sound_Announcement;

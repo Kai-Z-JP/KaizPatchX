@@ -57,6 +57,9 @@ public class RenderSignBoard extends TileEntitySpecialRenderer {
             }
         }
 
+        GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
+        GL11.glRotatef(tileEntity.getRotation(), 0.0F, 1.0F, 0.0F);
+
         GL11.glDisable(GL11.GL_LIGHTING);
         Tessellator tessellator = Tessellator.instance;
         this.bindTexture(sbp.getTexture());

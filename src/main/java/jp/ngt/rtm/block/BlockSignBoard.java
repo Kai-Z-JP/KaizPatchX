@@ -1,11 +1,15 @@
 package jp.ngt.rtm.block;
 
 import jp.ngt.ngtlib.block.BlockUtil;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntitySignBoard;
+import jp.ngt.rtm.item.ItemInstalledObject;
+import jp.ngt.rtm.item.ItemWithModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -16,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
 import java.util.Random;
 
@@ -58,8 +63,18 @@ public class BlockSignBoard extends BlockContainer {
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
-        return new ItemStack(RTMItem.installedObject, 1, 17);
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntitySignBoard) {
+            ItemStack itemStack = new ItemStack(RTMItem.installedObject);
+            itemStack.setItemDamage(ItemInstalledObject.IstlObjType.SIGNBOARD.id);
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                ItemWithModel.copyOffsetToItemStack((TileEntityPlaceable) tileEntity, itemStack);
+            }
+            return itemStack;
+        }
+        return null;
     }
 
 	/*@Override
@@ -142,6 +157,14 @@ public class BlockSignBoard extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         if (world.isRemote) {
+            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
+                ItemStack itemStack = player.getCurrentEquippedItem();
+                if (itemStack.getItemDamage() == ItemInstalledObject.IstlObjType.SIGNBOARD.id) {
+                    player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                    return true;
+                }
+            }
+
             player.openGui(RTMCore.instance, RTMCore.guiIdSelectTexture, world, x, y, z);
         }
         return true;

@@ -1,6 +1,6 @@
 # KaizPatch
 
-[English](README.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [한국어](README.ko.md)
+[English](README.en.md) | [日本語](README.md) | [Русский](README.ru.md) | [한국어](README.ko.md)
 
 [![MCVer](https://img.shields.io/badge/Minecraft-1.7.10-brightgreen)](https://www.minecraft.net/)
 [![ForgeVer](https://img.shields.io/badge/Forge-10.13.4.1614-important)](https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.7.10.html)

@@ -50,8 +50,8 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         this.sound_D_S = null;
         this.sound_Horn = null;
 
-        this.sound_ATSChime = null;
-        this.sound_ATSBell = null;
+        this.sound_ATSChime = this.getSoundResource("rtm:train.ats");
+        this.sound_ATSBell = this.getSoundResource("rtm:train.ats_bell");
     }
 
     public ModelSetVehicleBaseClient(VehicleBaseConfig cfg) {

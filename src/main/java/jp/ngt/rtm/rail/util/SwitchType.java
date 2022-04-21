@@ -99,15 +99,10 @@ public abstract class SwitchType {
             super.onBlockChanged(world);
 
             this.activeRails.clear();
-            if (this.railMaps[0].getStartRP().checkRSInput(world)) {
-                this.railMaps[0].setState(false);
-                this.railMaps[1].setState(true);
-                this.activeRails.add(this.railMaps[0]);
-            } else {
-                this.railMaps[0].setState(true);
-                this.railMaps[1].setState(false);
-                this.activeRails.add(this.railMaps[1]);
-            }
+            this.railMaps[0].setState(false);
+            this.railMaps[1].setState(false);
+            RailMapSwitch activeRM = (RailMapSwitch) this.points[0].getActiveRailMap(world);
+            this.activeRails.add(activeRM.setState(true));
         }
 
         @Override
@@ -385,8 +380,8 @@ public abstract class SwitchType {
 
                         if (k >= 2) {
                             this.railMaps = rails;
-                            this.activeRails.add(this.railMaps[0]);
-                            this.activeRails.add(this.railMaps[1]);
+                            this.activeRails.add(this.railMaps[0].setState(true));
+                            this.activeRails.add(this.railMaps[1].setState(true));
 
                             this.points = new Point[4];
                             this.points[0] = new Point(rails[0].startRP, rails[0]);

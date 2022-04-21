@@ -27,7 +27,6 @@ public final class TrainSpeedManager {
                 }
             }
         } else {
-            notch = -(notch + 1);
             float deceleration;
             if (cfg.useVariableDeceleration) {
                 Object obj = ScriptUtil.doScriptIgnoreError(
@@ -37,7 +36,7 @@ public final class TrainSpeedManager {
                         prevSpeed);
                 deceleration = obj != null ? Float.parseFloat(obj.toString()) : 0.0f;
             } else {
-                deceleration = cfg.deccelerations[Math.min(cfg.deccelerations.length - 1, notch + 1)];
+                deceleration = cfg.deccelerations[Math.min(cfg.deccelerations.length - 1, -notch)];
             }
             if (prevSpeed + deceleration < 0.0F) {
                 return -prevSpeed;

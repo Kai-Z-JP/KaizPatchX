@@ -187,7 +187,9 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     }
 
     public void sendPacket() {
-        RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailCore(this, PacketLargeRailCore.TYPE_NORMAL));
+        if ((this.worldObj == null || !this.worldObj.isRemote) && this.isLoaded()) {
+            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailCore(this, PacketLargeRailCore.TYPE_NORMAL));
+        }
     }
 
     @Override

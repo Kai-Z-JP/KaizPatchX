@@ -330,6 +330,9 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         boolean flag = this.myModelSet != null && this.myModelSet.isDummy();
         if (this.myModelSet == null || flag || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
+            if (!this.myModelSet.isDummy()) {
+                this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
+            }
             if (flag && this.myModelSet.isDummy()) {
                 return this.myModelSet;
             }

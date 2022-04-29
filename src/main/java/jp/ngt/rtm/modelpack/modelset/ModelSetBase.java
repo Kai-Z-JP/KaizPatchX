@@ -28,13 +28,13 @@ public abstract class ModelSetBase<T extends ModelConfig> {
      */
     public ModelSetBase() {
         this.cfg = this.getDummyConfig();
-        this.dataFormatter = new DataFormatter();
+        this.dataFormatter = new DataFormatter(this.cfg);
         this.isDummyModel = true;
     }
 
     public ModelSetBase(T par1) {
         this.cfg = par1;
-        this.dataFormatter = new DataFormatter();
+        this.dataFormatter = new DataFormatter(this.cfg);
         this.isDummyModel = false;
 
         if (this.cfg.serverScriptPath != null) {

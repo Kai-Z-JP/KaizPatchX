@@ -30,7 +30,7 @@ public final class DataMap {
 
     private final Map<String, DataEntry> map = new HashMap<>();
     private Object entity;
-    private DataFormatter dataFormatter = new DataFormatter();//ダミー
+    private DataFormatter dataFormatter = new DataFormatter(null);//ダミー
 
     public void setEntity(Object par1) {
         this.entity = par1;

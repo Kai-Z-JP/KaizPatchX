@@ -368,6 +368,9 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
     public ModelSetNPC getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy() || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
+            if (!this.myModelSet.isDummy()) {
+                this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
+            }
             this.myRole = Role.getRole(this.myModelSet.getConfig().role);
             this.myRole.init(this);
         }

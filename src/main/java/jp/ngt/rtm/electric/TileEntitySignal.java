@@ -170,6 +170,9 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
     public ModelSetSignal getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy()) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelSignal", this.modelName);
+            if (!this.myModelSet.isDummy()) {
+                this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
+            }
             if (this.worldObj == null || !this.worldObj.isRemote) {
                 PacketNBT.sendToClient(this);
             }

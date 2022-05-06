@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.7') {
+        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.9') {
             changing = true
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

@@ -3,13 +3,18 @@ package jp.ngt.mcte;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import jp.ngt.mcte.editor.EntityEditor;
 import jp.ngt.mcte.editor.filter.FilterManager;
 import jp.ngt.mcte.network.PacketMCTEKey;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.util.NGTUtil;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
+
+import java.util.List;
+import java.util.Objects;
 
 public class MCTEKeyHandlerClient {
     private static final String CATG_MCTE = "mcte.key";
@@ -45,27 +50,38 @@ public class MCTEKeyHandlerClient {
             } else {
                 this.sendKeyToServer(MCTE.KEY_EditMenu);
             }
-        } else if (keyEditMode.isPressed()) {
-            this.sendKeyToServer(MCTE.KEY_EditMode);
-        } else if (keyUndo.isPressed()) {
-            this.sendKeyToServer(MCTE.KEY_Undo);
-        } else if (keyClear.isPressed()) {
-            this.sendKeyToServer(MCTE.KEY_Clear);
-        } else if (keyDelete.isPressed()) {
-            FilterManager.INSTANCE.execFilter(player, "Delete");
-            NGTLog.sendChatMessage(player, "Delete Blocks");
-        } else if (keyCut.isPressed()) {
-            FilterManager.INSTANCE.execFilter(player, "Cut");
-            NGTLog.sendChatMessage(player, "Cut Blocks");
-        } else if (keyCopy.isPressed()) {
-            FilterManager.INSTANCE.execFilter(player, "Copy");
-            NGTLog.sendChatMessage(player, "Copy Blocks");
-        } else if (keyPaste.isPressed()) {
-            FilterManager.INSTANCE.execFilter(player, "Paste");
-            NGTLog.sendChatMessage(player, "Paste Blocks");
-        } else if (keyFill.isPressed()) {
-            FilterManager.INSTANCE.execFilter(player, "Fill");
-            NGTLog.sendChatMessage(player, "Fill Blocks");
+        }
+        String clientName = player.getCommandSenderName();
+        if (((List<Entity>) NGTUtil.getClientWorld().loadedEntityList).stream()
+                .filter(EntityEditor.class::isInstance)
+                .filter(Entity::isEntityAlive)
+                .map(EntityEditor.class::cast)
+                .map(EntityEditor::getPlayer)
+                .filter(Objects::nonNull)
+                .map(EntityPlayer::getCommandSenderName)
+                .anyMatch(name -> Objects.equals(name, clientName))) {
+            if (keyEditMode.isPressed()) {
+                this.sendKeyToServer(MCTE.KEY_EditMode);
+            } else if (keyUndo.isPressed()) {
+                this.sendKeyToServer(MCTE.KEY_Undo);
+            } else if (keyClear.isPressed()) {
+                this.sendKeyToServer(MCTE.KEY_Clear);
+            } else if (keyDelete.isPressed()) {
+                FilterManager.INSTANCE.execFilter(player, "Delete");
+                NGTLog.sendChatMessage(player, "Delete Blocks");
+            } else if (keyCut.isPressed()) {
+                FilterManager.INSTANCE.execFilter(player, "Cut");
+                NGTLog.sendChatMessage(player, "Cut Blocks");
+            } else if (keyCopy.isPressed()) {
+                FilterManager.INSTANCE.execFilter(player, "Copy");
+                NGTLog.sendChatMessage(player, "Copy Blocks");
+            } else if (keyPaste.isPressed()) {
+                FilterManager.INSTANCE.execFilter(player, "Paste");
+                NGTLog.sendChatMessage(player, "Paste Blocks");
+            } else if (keyFill.isPressed()) {
+                FilterManager.INSTANCE.execFilter(player, "Fill");
+                NGTLog.sendChatMessage(player, "Fill Blocks");
+            }
         }
     }
 

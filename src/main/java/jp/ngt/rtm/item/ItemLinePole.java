@@ -82,9 +82,6 @@ public class ItemLinePole extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for (int j = 0; j < num; ++j) {
-            par3List.add(new ItemStack(par1, 1, j));
-        }
     }
 
     @SideOnly(Side.CLIENT)

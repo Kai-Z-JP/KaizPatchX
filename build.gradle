@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.6.21'
     repositories {
         mavenCentral()
         maven {
@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.7') {
+        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.9') {
             changing = true
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -55,6 +55,7 @@ dependencies {
 }
 
 processResources {
+    duplicatesStrategy 'exclude'
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version

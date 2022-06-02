@@ -191,9 +191,11 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
     }
 
     public static void applyOffsetToTileEntity(ItemStack itemStack, TileEntityPlaceable tile) {
-        float[] offset = ItemWithModel.getOffset(itemStack);
-        tile.setOffset(offset[0], offset[1], offset[2], true);
-        tile.setRotation(ItemWithModel.getRotation(itemStack), true);
+        if (ItemWithModel.hasOffset(itemStack)) {
+            float[] offset = ItemWithModel.getOffset(itemStack);
+            tile.setOffset(offset[0], offset[1], offset[2], true);
+            tile.setRotation(ItemWithModel.getRotation(itemStack), true);
+        }
     }
 
     public static void copyOffsetToItemStack(TileEntityPlaceable tileEntity, ItemStack itemStack) {

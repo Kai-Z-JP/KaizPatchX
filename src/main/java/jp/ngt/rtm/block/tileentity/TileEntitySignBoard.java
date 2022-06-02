@@ -2,6 +2,7 @@ package jp.ngt.rtm.block.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.modelpack.texture.ITextureHolder;
 import jp.ngt.rtm.modelpack.texture.SignBoardProperty;
@@ -9,10 +10,9 @@ import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.modelpack.texture.TextureManager.TexturePropertyType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntitySignBoard extends TileEntity implements ITextureHolder<SignBoardProperty> {
+public class TileEntitySignBoard extends TileEntityPlaceable implements ITextureHolder<SignBoardProperty> {
     private SignBoardProperty property;
     private String textureName = "";
 

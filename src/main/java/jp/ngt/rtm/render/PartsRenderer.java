@@ -42,9 +42,8 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     public int currentMatId;
 
     public int currentPass;
-
-    public ActionParts hittedActionParts;
-
+    public T hittedEntity;
+    protected Map<T, ActionParts> hittedParts = new HashMap<>();
     private int mouseHoldCount;
 
     private int dragStartPos;
@@ -96,9 +95,12 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     public void postRender(T t, boolean smoothing, boolean culling, float par3) {
     }
 
+    /**
+     * @return ヒットしたパーツ (ドラッグ中は選択パーツを保持)
+     */
     private ActionParts selectHits(T t, int hits) {
         if (hits <= 0) {
-            return Mouse.isButtonDown(1) ? this.hittedActionParts : null;
+            return Mouse.isButtonDown(1) ? this.hittedParts.get(t) : null;//右クリック中は選択パーツ保持
         }
 
         int hitIndex = 1;
@@ -117,19 +119,26 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     }
 
     private void checkMouseAction(T t) {
-        if (Mouse.isButtonDown(1)) {
-            if (this.hittedActionParts != null)
-                if (this.hittedActionParts.behavior == ActionType.TOGGLE) {
-                    if (this.mouseHoldCount == 0)
-                        onRightClick(t, this.hittedActionParts);
-                    this.mouseHoldCount++;
-                } else {
-                    int currentPos = (this.hittedActionParts.behavior == ActionType.DRAG_X) ? Mouse.getX() : Mouse.getY();
-                    if (this.mouseHoldCount == 0)
+        if (Mouse.isButtonDown(1))//R_Click
+        {
+            ActionParts parts = this.hittedParts.get(t);
+            if (parts != null && this.hittedEntity == t) {
+                if (parts.behavior == ActionType.TOGGLE) {
+                    if (this.mouseHoldCount == 0) {
+                        this.onRightClick(this.hittedEntity, parts);
+                    }
+                    ++this.mouseHoldCount;
+                } else//DRAG_X or Y
+                {
+                    int currentPos = (parts.behavior == ActionType.DRAG_X) ? Mouse.getX() : Mouse.getY();
+                    if (this.mouseHoldCount == 0) {
                         this.dragStartPos = currentPos;
-                    onRightDrag(t, this.hittedActionParts, currentPos - this.dragStartPos);
-                    this.mouseHoldCount++;
+                    }
+
+                    this.onRightDrag(t, parts, currentPos - this.dragStartPos);
+                    ++this.mouseHoldCount;
                 }
+            }
         } else {
             this.mouseHoldCount = 0;
             this.dragStartPos = 0;
@@ -150,16 +159,28 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
      * @param partialTick
      */
     public void render(T t, int pass, float partialTick) {
-        if (t != null && pass == RenderPass.NORMAL.id && this.currentMatId == 0 && !this.targetsList.isEmpty())
-            render(t, RenderPass.PICK.id, partialTick);
+        //GUI内では行わない、t != nullで判断
+        if (t != null && pass == RenderPass.NORMAL.id && this.currentMatId == 0 && !this.targetsList.isEmpty())//preRenderはvehicleでは呼ばれないので
+        {
+            this.render(t, RenderPass.PICK.id, partialTick);
+        }
+
         this.currentPass = pass;
-        if (pass == RenderPass.PICK.id)
+
+        if (pass == RenderPass.PICK.id) {
             GLHelper.startMousePicking(1.0F);
-        execScriptFunc("render", t, pass, partialTick);
+        }
+
+        this.execScriptFunc("render", t, pass, partialTick);
+
         if (pass == RenderPass.PICK.id) {
             int hits = GLHelper.finishMousePicking();
-            this.hittedActionParts = selectHits(t, hits);
-            checkMouseAction(t);
+            ActionParts parts = this.selectHits(t, hits);
+            if (parts != null) {
+                this.hittedEntity = t;
+            }
+            this.hittedParts.put(t, parts);
+            this.checkMouseAction(t);
         }
     }
 

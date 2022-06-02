@@ -3,6 +3,7 @@ package jp.ngt.rtm;
 import cpw.mods.fml.common.registry.GameRegistry;
 import jp.ngt.ngtlib.block.BlockDummy;
 import jp.ngt.ngtlib.item.ItemBlockCustom;
+import jp.ngt.ngtlib.item.ItemBlockCustomColor;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.block.*;
 import jp.ngt.rtm.block.BlockMirror.MirrorType;
@@ -163,8 +164,8 @@ public final class RTMBlock {
 
         RTMRail.init();
 
-        RTMCore.registerRtmPrefixed(marker, "rtm:marker");
-        RTMCore.registerRtmPrefixed(markerSwitch, "rtm:markerSwitch");
+        RTMCore.registerRtmPrefixed(marker, ItemBlockCustomColor.class, "rtm:marker");
+        RTMCore.registerRtmPrefixed(markerSwitch, ItemBlockCustomColor.class, "rtm:markerSwitch");
 //        RTMCore.registerRtmPrefixed(markerSlope, "rtm:markerSlope");
 
         RTMCore.registerRtmPrefixed(fluorescent, "rtm:fluorescent");

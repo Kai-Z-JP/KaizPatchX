@@ -12,6 +12,7 @@
     "rendererPath": "scripts/RenderConnectablePole.js"
   },
   "buttonTexture": "textures/ornament/button_LinePole02.png",
+  "customIconTexture": "rtm:textures/items/itemLinePole_2.png",
   "ornamentType": "Pole",
   "doCulling": true,
   "smoothing": true

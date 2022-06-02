@@ -528,6 +528,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                     acceleration *= -1;
                 }
 
+                speed += acceleration;
+
                 if (notch >= 0)//ブレーキ解
                 {
                     float deceleration;
@@ -542,9 +544,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                         //-1.0~1.0, 斜面で下方向へ加速
                         deceleration = NGTMath.sin(this.rotationPitch) * f2;
                     }
-                    speed += acceleration - deceleration;
-                } else {
-                    speed += acceleration;
+                    speed -= deceleration;
                 }
 
                 this.setSpeed(speed);

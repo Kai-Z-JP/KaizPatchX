@@ -32,6 +32,7 @@ import jp.ngt.rtm.event.RTMEventHandlerClient;
 import jp.ngt.rtm.event.RTMKeyHandlerClient;
 import jp.ngt.rtm.event.RTMTickHandlerClient;
 import jp.ngt.rtm.gui.camera.Camera;
+import jp.ngt.rtm.item.RenderItemWithModel;
 import jp.ngt.rtm.modelpack.ModelPackLoadThread;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.*;
@@ -51,6 +52,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.imageio.ImageIO;
@@ -133,6 +135,14 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerBlockHandler(new RenderSignalBaseBlock());
         RenderingRegistry.registerBlockHandler(new RenderBlockLiquid());
         RenderingRegistry.registerBlockHandler(new RenderBlockLargeRail());
+
+        MinecraftForgeClient.registerItemRenderer(RTMItem.itemtrain, RenderItemWithModel.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(RTMItem.itemCargo, RenderItemWithModel.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(RTMItem.installedObject, RenderItemWithModel.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(RTMItem.itemLargeRail, RenderItemWithModel.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(RTMItem.itemSignal, RenderItemWithModel.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(RTMItem.itemVehicle, RenderItemWithModel.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(RTMItem.itemWire, RenderItemWithModel.INSTANCE);
 
         MinecraftForge.EVENT_BUS.register(new RTMEventHandlerClient(Minecraft.getMinecraft()));
         MinecraftForge.EVENT_BUS.register(new RTMParticles());

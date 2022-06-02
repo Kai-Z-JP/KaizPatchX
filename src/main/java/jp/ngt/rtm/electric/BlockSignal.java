@@ -2,11 +2,13 @@ package jp.ngt.rtm.electric;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.item.ItemSignal;
+import jp.ngt.rtm.item.ItemWithModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -16,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
 public class BlockSignal extends BlockContainer implements IBlockConnective {
     public BlockSignal() {
@@ -88,6 +91,9 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
         if (tileEntity instanceof TileEntitySignal) {
             ((ItemSignal) RTMItem.itemSignal).setModelName(itemStack, ((TileEntitySignal) tileEntity).getModelName());
             ((ItemSignal) RTMItem.itemSignal).setModelState(itemStack, ((TileEntitySignal) tileEntity).getResourceState());
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+                ItemWithModel.copyOffsetToItemStack((TileEntityPlaceable) tileEntity, itemStack);
+            }
         }
         return itemStack;
     }

@@ -46,9 +46,11 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
                             this.atsSound[1].stop();
                         }
 
-                        this.atsSound[0] = new MovingSoundEntity(bogie, new ResourceLocation("rtm", "train.ats"), true);
+                        ModelSetVehicleBaseClient<TrainConfig> modelSet = (ModelSetVehicleBaseClient<TrainConfig>) this.theTrain.getModelSet();
+
+                        this.atsSound[0] = new MovingSoundEntity(bogie, modelSet.sound_ATSChime, true);
                         this.theSoundHandler.playSound(this.atsSound[0]);
-                        this.atsSound[1] = new MovingSoundEntity(bogie, new ResourceLocation("rtm", "train.ats_bell"), true);
+                        this.atsSound[1] = new MovingSoundEntity(bogie, modelSet.sound_ATSBell, true);
                         this.theSoundHandler.playSound(this.atsSound[1]);
                         this.currentSignal = 1;
                     }

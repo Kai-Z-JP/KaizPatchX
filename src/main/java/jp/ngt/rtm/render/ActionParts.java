@@ -60,7 +60,7 @@ public class ActionParts extends Parts {
         } else {
             super.render(renderer);
         }
-        boolean hit = equals(renderer.hittedActionParts);
+        boolean hit = this.equals(renderer.hittedParts.get(renderer.hittedEntity));
         if (renderer.currentPass == RenderPass.LIGHT.id && hit) {
             int color = Mouse.isButtonDown(1) ? 16744448 : 16777215;
             renderOutline(renderer, color);

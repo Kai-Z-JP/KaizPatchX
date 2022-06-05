@@ -54,12 +54,11 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (world.isRemote) {
-            if (NGTUtil.isEquippedItem(player, RTMItem.itemSignal)) {
+            if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
                 player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
                 return true;
             }
 
-            //NGTUtil.isEquippedItem(player, RTMItem.crowbar))
             if (player.isSneaking()) {
                 player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
                 return true;

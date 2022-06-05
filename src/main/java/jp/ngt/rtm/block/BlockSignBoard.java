@@ -157,12 +157,9 @@ public class BlockSignBoard extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         if (world.isRemote) {
-            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
-                ItemStack itemStack = player.getCurrentEquippedItem();
-                if (itemStack.getItemDamage() == ItemInstalledObject.IstlObjType.SIGNBOARD.id) {
-                    player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
-                    return true;
-                }
+            if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                return true;
             }
 
             player.openGui(RTMCore.instance, RTMCore.guiIdSelectTexture, world, x, y, z);

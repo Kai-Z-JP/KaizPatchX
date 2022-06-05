@@ -127,6 +127,9 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
     public ModelSetMachine getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy()) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelMachine", this.getModelName());
+            if (!this.myModelSet.isDummy()) {
+                this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
+            }
             if (this.worldObj == null || !this.worldObj.isRemote) {
                 PacketNBT.sendToClient(this);
             }

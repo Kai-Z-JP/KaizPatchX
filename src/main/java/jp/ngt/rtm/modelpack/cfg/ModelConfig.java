@@ -1,16 +1,11 @@
 package jp.ngt.rtm.modelpack.cfg;
 
 
-public abstract class ModelConfig {
+public abstract class ModelConfig extends ResourceConfig {
     /**
      * 選択ボタンのテクスチャのパス
      */
     public String buttonTexture;
-
-    /**
-     * 検索用タグ
-     */
-    public String tags;
 
     /**
      * ngto専用
@@ -46,6 +41,8 @@ public abstract class ModelConfig {
      * Configの初期化時に呼ばれる
      */
     public void init() {
+        super.init();
+
         if (this.tags == null) {
             this.tags = "";
         }
@@ -62,11 +59,6 @@ public abstract class ModelConfig {
             this.renderAABB = new float[]{0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F};
         }
     }
-
-    /**
-     * 他のConfigと重複しない名前
-     */
-    public abstract String getName();
 
     /**
      * ModelSetのタイプ

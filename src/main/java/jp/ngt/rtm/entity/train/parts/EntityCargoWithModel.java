@@ -87,6 +87,9 @@ public abstract class EntityCargoWithModel<T extends ModelSetBase> extends Entit
     public T getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy() || !this.myModelSet.getConfig().getName().equals(this.getModelName())) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet(this.getModelType(), this.getModelName());
+            if (!this.myModelSet.isDummy()) {
+                this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
+            }
             this.onSetNewModel(this.myModelSet);
         }
         return this.myModelSet;

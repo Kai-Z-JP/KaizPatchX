@@ -4,7 +4,6 @@ import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
-import jp.ngt.rtm.item.ItemInstalledObject;
 import jp.ngt.rtm.item.ItemWithModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -29,16 +28,12 @@ public abstract class BlockElectricalWiring extends BlockContainer implements IB
             }
             return true;
         } else {
-            if (NGTUtil.isEquippedItem(player, RTMItem.installedObject)) {
-                ItemStack itemStack = player.getCurrentEquippedItem();
-                ItemInstalledObject itemInst = (ItemInstalledObject) player.getCurrentEquippedItem().getItem();
-                TileEntityConnectorBase connector = (TileEntityConnectorBase) world.getTileEntity(x, y, z);
-                if (connector.getSubType().equals(itemInst.getSubType(itemStack))) {
-                    return true;
-                }
+            if (!NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                TileEntityElectricalWiring tile = (TileEntityElectricalWiring) world.getTileEntity(x, y, z);
+                return tile.onRightClick(player);
+            } else {
+                return true;
             }
-            TileEntityElectricalWiring tile = (TileEntityElectricalWiring) world.getTileEntity(x, y, z);
-            return tile.onRightClick(player);
         }
     }
 

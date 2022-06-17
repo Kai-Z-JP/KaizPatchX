@@ -2,7 +2,7 @@ package jp.ngt.rtm.event;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
- import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
@@ -12,6 +12,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
+import jp.ngt.rtm.entity.train.util.TrainState;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityPlane;
 import jp.ngt.rtm.entity.vehicle.EntityVehicle;
@@ -36,8 +37,13 @@ public final class RTMKeyHandlerClient {
     public static final KeyBinding KEY_EB = new KeyBinding("key.rtm.eb", Keyboard.KEY_5, CATG_RTM);
     public static final KeyBinding KEY_CHIME_NEXT = new KeyBinding("key.rtm.chime_next", Keyboard.KEY_RIGHT, CATG_RTM);
     public static final KeyBinding KEY_CHIME_PREV = new KeyBinding("key.rtm.chime_prev", Keyboard.KEY_LEFT, CATG_RTM);
+    public static final KeyBinding KEY_REVERSER_FORWARD = new KeyBinding("key.rtm.reverser_forward", Keyboard.KEY_UP, CATG_RTM);
+    public static final KeyBinding KEY_REVERSER_BACK = new KeyBinding("key.rtm.reverser_back", Keyboard.KEY_DOWN, CATG_RTM);
 
     private boolean sneaking;
+
+    private int countPressingBackTicks = 0;
+    private int countPressingForwardTicks = 0;
 
     private RTMKeyHandlerClient() {
     }
@@ -49,6 +55,8 @@ public final class RTMKeyHandlerClient {
         ClientRegistry.registerKeyBinding(KEY_EB);
         ClientRegistry.registerKeyBinding(KEY_CHIME_NEXT);
         ClientRegistry.registerKeyBinding(KEY_CHIME_PREV);
+        ClientRegistry.registerKeyBinding(KEY_REVERSER_FORWARD);
+        ClientRegistry.registerKeyBinding(KEY_REVERSER_BACK);
     }
 
     public void onTickStart() {
@@ -82,6 +90,26 @@ public final class RTMKeyHandlerClient {
                     this.sendKeyToServer(RTMCore.KEY_SNEAK, "");
                 }
             }
+        } else if (player.isRiding() && player.ridingEntity instanceof EntityTrainBase) {
+            if (mc.gameSettings.keyBindBack.getIsKeyPressed()) {
+                countPressingBackTicks++;
+            } else {
+                countPressingBackTicks = 0;
+            }
+
+            if (mc.gameSettings.keyBindForward.getIsKeyPressed()) {
+                countPressingForwardTicks++;
+            } else {
+                countPressingForwardTicks = 0;
+            }
+
+            if (mc.gameSettings.keyBindBack.isPressed() || countPressingBackTicks > 10) {
+                this.sendKeyToServer(RTMCore.KEY_Forward, "");
+                MacroRecorder.INSTANCE.recNotch(player.worldObj, 1);
+            } else if (mc.gameSettings.keyBindForward.isPressed() || countPressingForwardTicks > 10) {
+                this.sendKeyToServer(RTMCore.KEY_Back, "");
+                MacroRecorder.INSTANCE.recNotch(player.worldObj, -1);
+            }
         }
     }
 
@@ -99,32 +127,7 @@ public final class RTMKeyHandlerClient {
         Minecraft mc = NGTUtilClient.getMinecraft();
         EntityPlayer player = mc.thePlayer;
         Entity riding = player.ridingEntity;
-
-        if (mc.gameSettings.keyBindBack.isPressed()) {
-            if (player.isRiding() && riding instanceof EntityTrainBase) {
-                this.sendKeyToServer(RTMCore.KEY_Forward, "");
-                MacroRecorder.INSTANCE.recNotch(player.worldObj, 1);
-            }
-        } else if (mc.gameSettings.keyBindForward.isPressed()) {
-            if (player.isRiding() && riding instanceof EntityTrainBase) {
-                this.sendKeyToServer(RTMCore.KEY_Back, "");
-                MacroRecorder.INSTANCE.recNotch(player.worldObj, -1);
-            }
-        }
-		/*else if(mc.gameSettings.keyBindLeft.isPressed())
-		{
-			this.sendKeyToServer(RTMCore.KEY_LEFT, "");
-		}
-		else if(mc.gameSettings.keyBindRight.isPressed())
-		{
-			this.sendKeyToServer(RTMCore.KEY_RIGHT, "");
-		}*/
-        else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
-			/*if(player.isRiding() && player.ridingEntity instanceof EntityVehicle)
-			{
-				this.sendKeyToServer(RTMCore.KEY_JUMP, "");
-			}*/
-        } else if (mc.gameSettings.keyBindSneak.getIsKeyPressed()) {
+        if (mc.gameSettings.keyBindSneak.getIsKeyPressed()) {
             if (player.isRiding() && riding instanceof EntityPlane) {
                 if (((EntityPlane) riding).disableUnmount()) {
                     //this.sendKeyToServer(RTMCore.KEY_SNEAK, "");
@@ -153,7 +156,23 @@ public final class RTMKeyHandlerClient {
 
         if (player.isRiding() && (riding instanceof EntityTrainBase)) {
             EntityTrainBase train = (EntityTrainBase) riding;
-            if (KEY_EB.isPressed()) {
+            if (KEY_REVERSER_BACK.isPressed()) {
+                byte data = train.getTrainStateData(TrainStateType.State_Direction.id);
+                if (data < 2) {
+                    player.playSound("rtm:train.lever", 1.0F, 1.0F);
+                    train.syncTrainStateData(TrainStateType.State_Direction.id, ++data);
+                    TrainState state = TrainState.getState(TrainStateType.State_Direction.id, data);
+                    NGTLog.showChatMessage(new ChatComponentText("direction: " + state.stateName));
+                }
+            } else if (KEY_REVERSER_FORWARD.isPressed()) {
+                byte data = train.getTrainStateData(TrainStateType.State_Direction.id);
+                if (data > 0) {
+                    player.playSound("rtm:train.lever", 1.0F, 1.0F);
+                    train.syncTrainStateData(TrainStateType.State_Direction.id, --data);
+                    TrainState state = TrainState.getState(TrainStateType.State_Direction.id, data);
+                    NGTLog.showChatMessage(new ChatComponentText("direction: " + state.stateName));
+                }
+            } else if (KEY_EB.isPressed()) {
                 train.syncTrainStateData(TrainStateType.State_Notch.id, (byte) -(train.getModelSet().getConfig().deccelerations.length - 1));
                 this.playSound(player, RTMCore.KEY_Horn);
                 NGTLog.showChatMessage(new ChatComponentText("Push EB"));
@@ -169,6 +188,30 @@ public final class RTMKeyHandlerClient {
                 i0 = i0 < type.min ? type.max : (i0 > type.max ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
                 NGTLog.showChatMessage(new ChatComponentText("Prev chime"));
+            } else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
+                byte data = train.getTrainStateData(TrainStateType.State_Door.id);
+                boolean dir = train.getTrainDirection() == 0;
+                String side;
+                int mask;
+                if (mc.gameSettings.keyBindRight.isPressed() && mc.gameSettings.keyBindRight.getIsKeyPressed()) {
+                    mask = dir ? 2 : 1;
+                    side = "Right";
+                } else if (mc.gameSettings.keyBindLeft.isPressed() && mc.gameSettings.keyBindLeft.getIsKeyPressed()) {
+                    mask = dir ? 1 : 2;
+                    side = "Left";
+                } else {
+                    return;
+                }
+                data ^= mask;
+                boolean open = (data & mask) == mask;
+                if (open && train.getSpeed() != 0) {
+                    return;
+                }
+                player.addChatMessage(new ChatComponentText(side + " door: " + (open ? "open" : "close")));
+                if (!dir) {
+                    data = (byte) Integer.rotateLeft(data, 1);
+                }
+                train.syncTrainStateData(TrainStateType.State_Door.id, data);
             }
         }
     }

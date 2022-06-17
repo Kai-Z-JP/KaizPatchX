@@ -4,6 +4,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.*;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
+import jp.ngt.rtm.entity.train.util.Formation;
 import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -27,6 +28,7 @@ import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CommandRTM extends CommandBase {
@@ -52,6 +54,17 @@ public class CommandRTM extends CommandBase {
         if (s.length >= 1) {
             if (s[0].equalsIgnoreCase("use1122marker") && player != null) {
                 RTMCore.NETWORK_WRAPPER.sendTo(new PacketNotice(PacketNotice.Side_CLIENT, "use1122marker," + (s.length == 2 ? Boolean.parseBoolean(s[1]) : "flip")), player);
+            } else if (s[0].equalsIgnoreCase("delRidingFormation") && player != null) {
+                Formation formation = ((EntityTrainBase) player.ridingEntity).getFormation();
+                if (player.ridingEntity instanceof EntityTrainBase && formation != null) {
+                    int countTrain = formation.size();
+                    Arrays.stream(formation.entries)
+                            .filter(Objects::nonNull)
+                            .map(entry -> entry.train)
+                            .filter(Objects::nonNull)
+                            .forEach(EntityTrainBase::setDead);
+                    commandSender.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
+                }
             } else if (s[0].equalsIgnoreCase("delAllTrain")) {
                 int countTrain = 0;
                 int countEntity = 0;
@@ -196,7 +209,7 @@ public class CommandRTM extends CommandBase {
 
     private static final List<String> stateArray = Arrays.asList("door", "pan", "speed");
 
-    private static final List<String> commandList = Arrays.asList("use1122marker", "door", "pan", "speed", "delAllTrain", "flySpeed", "summon");
+    private static final List<String> commandList = Arrays.asList("use1122marker", "door", "pan", "speed", "delAllTrain", "delRidingFormation", "flySpeed", "summon");
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {

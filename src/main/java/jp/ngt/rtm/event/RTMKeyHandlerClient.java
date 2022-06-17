@@ -2,7 +2,7 @@ package jp.ngt.rtm.event;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
- import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
@@ -41,6 +41,9 @@ public final class RTMKeyHandlerClient {
     public static final KeyBinding KEY_REVERSER_BACK = new KeyBinding("key.rtm.reverser_back", Keyboard.KEY_DOWN, CATG_RTM);
 
     private boolean sneaking;
+
+    private int countPressingBackTicks = 0;
+    private int countPressingForwardTicks = 0;
 
     private RTMKeyHandlerClient() {
     }
@@ -87,6 +90,26 @@ public final class RTMKeyHandlerClient {
                     this.sendKeyToServer(RTMCore.KEY_SNEAK, "");
                 }
             }
+        } else if (player.isRiding() && player.ridingEntity instanceof EntityTrainBase) {
+            if (mc.gameSettings.keyBindBack.getIsKeyPressed()) {
+                countPressingBackTicks++;
+            } else {
+                countPressingBackTicks = 0;
+            }
+
+            if (mc.gameSettings.keyBindForward.getIsKeyPressed()) {
+                countPressingForwardTicks++;
+            } else {
+                countPressingForwardTicks = 0;
+            }
+
+            if (mc.gameSettings.keyBindBack.isPressed() || countPressingBackTicks > 10) {
+                this.sendKeyToServer(RTMCore.KEY_Forward, "");
+                MacroRecorder.INSTANCE.recNotch(player.worldObj, 1);
+            } else if (mc.gameSettings.keyBindForward.isPressed() || countPressingForwardTicks > 10) {
+                this.sendKeyToServer(RTMCore.KEY_Back, "");
+                MacroRecorder.INSTANCE.recNotch(player.worldObj, -1);
+            }
         }
     }
 
@@ -104,32 +127,7 @@ public final class RTMKeyHandlerClient {
         Minecraft mc = NGTUtilClient.getMinecraft();
         EntityPlayer player = mc.thePlayer;
         Entity riding = player.ridingEntity;
-
-        if (mc.gameSettings.keyBindBack.isPressed()) {
-            if (player.isRiding() && riding instanceof EntityTrainBase) {
-                this.sendKeyToServer(RTMCore.KEY_Forward, "");
-                MacroRecorder.INSTANCE.recNotch(player.worldObj, 1);
-            }
-        } else if (mc.gameSettings.keyBindForward.isPressed()) {
-            if (player.isRiding() && riding instanceof EntityTrainBase) {
-                this.sendKeyToServer(RTMCore.KEY_Back, "");
-                MacroRecorder.INSTANCE.recNotch(player.worldObj, -1);
-            }
-        }
-		/*else if(mc.gameSettings.keyBindLeft.isPressed())
-		{
-			this.sendKeyToServer(RTMCore.KEY_LEFT, "");
-		}
-		else if(mc.gameSettings.keyBindRight.isPressed())
-		{
-			this.sendKeyToServer(RTMCore.KEY_RIGHT, "");
-		}*/
-        else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
-			/*if(player.isRiding() && player.ridingEntity instanceof EntityVehicle)
-			{
-				this.sendKeyToServer(RTMCore.KEY_JUMP, "");
-			}*/
-        } else if (mc.gameSettings.keyBindSneak.getIsKeyPressed()) {
+        if (mc.gameSettings.keyBindSneak.getIsKeyPressed()) {
             if (player.isRiding() && riding instanceof EntityPlane) {
                 if (((EntityPlane) riding).disableUnmount()) {
                     //this.sendKeyToServer(RTMCore.KEY_SNEAK, "");

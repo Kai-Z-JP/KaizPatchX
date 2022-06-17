@@ -12,6 +12,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
+import jp.ngt.rtm.entity.train.util.TrainState;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityPlane;
 import jp.ngt.rtm.entity.vehicle.EntityVehicle;
@@ -36,6 +37,8 @@ public final class RTMKeyHandlerClient {
     public static final KeyBinding KEY_EB = new KeyBinding("key.rtm.eb", Keyboard.KEY_5, CATG_RTM);
     public static final KeyBinding KEY_CHIME_NEXT = new KeyBinding("key.rtm.chime_next", Keyboard.KEY_RIGHT, CATG_RTM);
     public static final KeyBinding KEY_CHIME_PREV = new KeyBinding("key.rtm.chime_prev", Keyboard.KEY_LEFT, CATG_RTM);
+    public static final KeyBinding KEY_REVERSER_FORWARD = new KeyBinding("key.rtm.reverser_forward", Keyboard.KEY_UP, CATG_RTM);
+    public static final KeyBinding KEY_REVERSER_BACK = new KeyBinding("key.rtm.reverser_back", Keyboard.KEY_DOWN, CATG_RTM);
 
     private boolean sneaking;
 
@@ -49,6 +52,8 @@ public final class RTMKeyHandlerClient {
         ClientRegistry.registerKeyBinding(KEY_EB);
         ClientRegistry.registerKeyBinding(KEY_CHIME_NEXT);
         ClientRegistry.registerKeyBinding(KEY_CHIME_PREV);
+        ClientRegistry.registerKeyBinding(KEY_REVERSER_FORWARD);
+        ClientRegistry.registerKeyBinding(KEY_REVERSER_BACK);
     }
 
     public void onTickStart() {
@@ -153,7 +158,23 @@ public final class RTMKeyHandlerClient {
 
         if (player.isRiding() && (riding instanceof EntityTrainBase)) {
             EntityTrainBase train = (EntityTrainBase) riding;
-            if (KEY_EB.isPressed()) {
+            if (KEY_REVERSER_BACK.isPressed()) {
+                byte data = train.getTrainStateData(TrainStateType.State_Direction.id);
+                if (data < 2) {
+                    player.playSound("rtm:train.lever", 1.0F, 1.0F);
+                    train.syncTrainStateData(TrainStateType.State_Direction.id, ++data);
+                    TrainState state = TrainState.getState(TrainStateType.State_Direction.id, data);
+                    NGTLog.showChatMessage(new ChatComponentText("direction: " + state.stateName));
+                }
+            } else if (KEY_REVERSER_FORWARD.isPressed()) {
+                byte data = train.getTrainStateData(TrainStateType.State_Direction.id);
+                if (data > 0) {
+                    player.playSound("rtm:train.lever", 1.0F, 1.0F);
+                    train.syncTrainStateData(TrainStateType.State_Direction.id, --data);
+                    TrainState state = TrainState.getState(TrainStateType.State_Direction.id, data);
+                    NGTLog.showChatMessage(new ChatComponentText("direction: " + state.stateName));
+                }
+            } else if (KEY_EB.isPressed()) {
                 train.syncTrainStateData(TrainStateType.State_Notch.id, (byte) -(train.getModelSet().getConfig().deccelerations.length - 1));
                 this.playSound(player, RTMCore.KEY_Horn);
                 NGTLog.showChatMessage(new ChatComponentText("Push EB"));

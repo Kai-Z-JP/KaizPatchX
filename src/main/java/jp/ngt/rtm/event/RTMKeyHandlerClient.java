@@ -188,6 +188,30 @@ public final class RTMKeyHandlerClient {
                 i0 = i0 < type.min ? type.max : (i0 > type.max ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
                 NGTLog.showChatMessage(new ChatComponentText("Prev chime"));
+            } else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
+                byte data = train.getTrainStateData(TrainStateType.State_Door.id);
+                boolean dir = train.getTrainDirection() == 0;
+                String side;
+                int mask;
+                if (mc.gameSettings.keyBindRight.isPressed() && mc.gameSettings.keyBindRight.getIsKeyPressed()) {
+                    mask = dir ? 2 : 1;
+                    side = "Right";
+                } else if (mc.gameSettings.keyBindLeft.isPressed() && mc.gameSettings.keyBindLeft.getIsKeyPressed()) {
+                    mask = dir ? 1 : 2;
+                    side = "Left";
+                } else {
+                    return;
+                }
+                data ^= mask;
+                boolean open = (data & mask) == mask;
+                if (open && train.getSpeed() != 0) {
+                    return;
+                }
+                player.addChatMessage(new ChatComponentText(side + " door: " + (open ? "open" : "close")));
+                if (!dir) {
+                    data = (byte) Integer.rotateLeft(data, 1);
+                }
+                train.syncTrainStateData(TrainStateType.State_Door.id, data);
             }
         }
     }

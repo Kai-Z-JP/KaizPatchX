@@ -80,6 +80,8 @@ public final class RTMKeyHandlerClient {
 
         Minecraft mc = NGTUtilClient.getMinecraft();
         EntityPlayer player = mc.thePlayer;
+        boolean keyBindBackPressed = mc.gameSettings.keyBindBack.isPressed();
+        boolean keyBindForwardPressed = mc.gameSettings.keyBindForward.isPressed();
         if (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode())) {
             if (player.isRiding() && player.ridingEntity instanceof EntityVehicle) {
                 this.sendKeyToServer(RTMCore.KEY_JUMP, "");
@@ -91,6 +93,7 @@ public final class RTMKeyHandlerClient {
                 }
             }
         } else if (player.isRiding() && player.ridingEntity instanceof EntityTrainBase) {
+            EntityTrainBase train = (EntityTrainBase) player.ridingEntity;
             if (mc.gameSettings.keyBindBack.getIsKeyPressed()) {
                 countPressingBackTicks++;
             } else {
@@ -103,10 +106,12 @@ public final class RTMKeyHandlerClient {
                 countPressingForwardTicks = 0;
             }
 
-            if (mc.gameSettings.keyBindBack.isPressed() || countPressingBackTicks > 10) {
+            if (keyBindBackPressed || countPressingBackTicks > 10) {
+                train.setNotch(train.getNotch() + 1);
                 this.sendKeyToServer(RTMCore.KEY_Forward, "");
                 MacroRecorder.INSTANCE.recNotch(player.worldObj, 1);
-            } else if (mc.gameSettings.keyBindForward.isPressed() || countPressingForwardTicks > 10) {
+            } else if (keyBindForwardPressed || countPressingForwardTicks > 10) {
+                train.setNotch(train.getNotch() - 1);
                 this.sendKeyToServer(RTMCore.KEY_Back, "");
                 MacroRecorder.INSTANCE.recNotch(player.worldObj, -1);
             }

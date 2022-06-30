@@ -127,7 +127,7 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
     public void sendPacket() {
         super.sendPacket();
 
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             RTMCore.NETWORK_WRAPPER.sendToAll(new PacketNotice(PacketNotice.Side_CLIENT, "TT:" + this.getRotation(), this));
         }
     }

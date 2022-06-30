@@ -173,7 +173,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
             if (!this.myModelSet.isDummy()) {
                 this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
             }
-            if (this.worldObj == null || !this.worldObj.isRemote) {
+            if (this.worldObj != null && !this.worldObj.isRemote) {
                 PacketNBT.sendToClient(this);
             }
         }
@@ -227,7 +227,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
     public void setModelName(String par1) {
         this.modelName = par1;
         this.myModelSet = null;
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
             this.sendPacket();
         }

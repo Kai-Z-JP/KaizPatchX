@@ -77,14 +77,16 @@ public class TileEntitySignBoard extends TileEntityPlaceable implements ITexture
         this.textureName = name;
         this.property = null;
 
-        if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.markDirty();
-            this.sendPacket();
-            if (this.worldObj != null) {
-                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);//周りの明るさも変更
+        if (this.worldObj != null) {
+            if (!this.worldObj.isRemote) {
+                this.markDirty();
+                this.sendPacket();
+                if (this.worldObj != null) {
+                    this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);//周りの明るさも変更
+                }
+            } else {
+                this.counter = 0;
             }
-        } else {
-            this.counter = 0;
         }
     }
 

@@ -64,7 +64,7 @@ public class TileEntityFlag extends TileEntityPlaceable implements ITextureHolde
 
     @Override
     public Packet getDescriptionPacket() {
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             this.sendPacket();
         }
         return null;

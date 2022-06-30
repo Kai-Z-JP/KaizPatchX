@@ -102,7 +102,7 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 
     @Override
     public void sendPacket() {
-        if ((this.worldObj == null || !this.worldObj.isRemote) && this.isLoaded()) {
+        if ((this.worldObj != null && !this.worldObj.isRemote) && this.isLoaded()) {
             RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailCore(this, PacketLargeRailCore.TYPE_SWITCH));
         }
     }

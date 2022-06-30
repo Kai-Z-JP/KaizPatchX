@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelector;
@@ -70,6 +71,12 @@ public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelect
             {
                 selector.setModelName(message.modelName);
                 selector.getResourceState().readFromNBT(message.data);
+
+                if (selector instanceof Entity) {
+                    PacketNBT.sendToClient((Entity) selector);
+                } else {
+                    PacketNBT.sendToClient((TileEntity) selector);
+                }
             }
         }
 

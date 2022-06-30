@@ -342,7 +342,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
     }
 
     protected void onModelChanged() {
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             PacketNBT.sendToClient(this);
             this.floorLoaded = false;
         }

@@ -142,7 +142,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
             if (!this.myModelSet.isDummy()) {
                 this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
             }
-            if (this.worldObj == null || !this.worldObj.isRemote) {
+            if (this.worldObj != null && !this.worldObj.isRemote) {
                 PacketNBT.sendToClient(this);
             }
         }
@@ -163,7 +163,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     public void setModelName(String par1) {
         this.modelName = par1;
         this.myModelSet = null;
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
             this.sendPacket();
         }

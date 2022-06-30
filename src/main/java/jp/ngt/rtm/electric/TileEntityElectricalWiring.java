@@ -360,7 +360,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
 
     @Override
     public Packet getDescriptionPacket() {
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             RTMCore.NETWORK_WRAPPER.sendToAll(new PacketWire(this));
         }
         return null;

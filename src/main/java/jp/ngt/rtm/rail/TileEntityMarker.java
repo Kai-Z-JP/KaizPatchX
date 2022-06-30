@@ -19,6 +19,7 @@ import net.minecraft.util.AxisAlignedBB;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TileEntityMarker extends TileEntity {
     private RailPosition rp;
@@ -155,11 +156,13 @@ public class TileEntityMarker extends TileEntity {
         this.displayMode = par1;
         if (this.worldObj.isRemote) {
         } else if (this.getCoreMarker() != null) {
-            for (int[] ia : this.getCoreMarker().markerPosList) {
-                TileEntity tile = this.getWorldObj().getTileEntity(ia[0], ia[1], ia[2]);
-                String message = "marker," + par1;
-                RTMCore.NETWORK_WRAPPER.sendToAll(new PacketNotice(PacketNotice.Side_CLIENT, message, tile));
-            }
+            this.getCoreMarker().markerPosList.stream()
+                    .map(pos -> this.getWorldObj().getTileEntity(pos[0], pos[1], pos[2]))
+                    .filter(Objects::nonNull)
+                    .forEach(tile -> {
+                        String message = "marker," + par1;
+                        RTMCore.NETWORK_WRAPPER.sendToAll(new PacketNotice(PacketNotice.Side_CLIENT, message, tile));
+                    });
         }
     }
 

@@ -266,7 +266,7 @@ public abstract class TileEntitySignalConverter extends TileEntity implements IP
         @Override
         public void setSignalLevel(int par1, int par2) {
             super.setSignalLevel(par1, par2);
-            if (this.worldObj == null || !this.worldObj.isRemote) {
+            if (this.worldObj != null && !this.worldObj.isRemote) {
                 this.updateAntennaList();
             }
         }

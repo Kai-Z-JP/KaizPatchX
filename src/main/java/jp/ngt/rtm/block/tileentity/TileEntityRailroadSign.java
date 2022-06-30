@@ -74,7 +74,7 @@ public class TileEntityRailroadSign extends TileEntityPlaceable implements IText
     public void setTexture(String name) {
         this.textureName = name;
         this.property = null;
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
             this.getDescriptionPacket();
         }
@@ -87,7 +87,7 @@ public class TileEntityRailroadSign extends TileEntityPlaceable implements IText
 
     @Override
     public Packet getDescriptionPacket() {
-        if (this.worldObj == null || !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             NGTUtil.sendPacketToClient(this);
         }
         return null;

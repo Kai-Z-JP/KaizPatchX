@@ -333,17 +333,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                     .findFirst()
                     .ifPresent(button -> {
                         int id, data, prevData;
-                        if (button.id == 129) {
-                            String[][] announce = (this.modelset.getConfig()).sound_Announcement;
-                            id = 9;
-                            prevData = this.train.getTrainStateData(id);
-                            data = prevData + i0;
-                            if (announce != null && data >= announce.length) {
-                                data = 0;
-                            } else if (announce != null && data < 0) {
-                                data = announce.length - 1;
-                            }
-                        } else if (button.id >= 124 && button.id <= 128) {
+                        if (button.id >= 124 && button.id <= 129) {
                             id = button.id - 120;
                             if (button.id == 124) {
                                 id = TrainStateType.State_InteriorLight.id;
@@ -368,12 +358,25 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                             return;
                         }
 
+                        TrainStateType stateType = TrainState.getStateType(id);
+                        int min, max;
+                        if (stateType == TrainStateType.State_Destination) {
+                            String[] rollSignNames = this.modelset.getConfig().rollsignNames;
+                            min = 0;
+                            max = rollSignNames.length - 1;
+                        } else if (stateType == TrainStateType.State_Announcement) {
+                            String[][] announce = this.modelset.getConfig().sound_Announcement;
+                            min = 0;
+                            max = announce.length - 1;
+                        } else {
+                            min = stateType.min;
+                            max = stateType.max;
+                        }
+                        data = data < min ? max : data > max ? min : data;
                         if (prevData != data) {
-                            TrainStateType stateType = TrainState.getStateType(id);
-                            data = data < stateType.min ? stateType.max : (data > stateType.max ? stateType.min : data);
                             this.sendTrainState(id, (byte) data);
                             button.func_146113_a(this.mc.getSoundHandler());
-                            button.displayString = this.getFormattedText(id, (byte) data);
+                            button.displayString = this.getFormattedText(id, (byte) data) + " " + data + "/" + max;
                         }
                     });
         }

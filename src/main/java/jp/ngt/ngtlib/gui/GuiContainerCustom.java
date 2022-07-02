@@ -43,6 +43,15 @@ public abstract class GuiContainerCustom extends GuiContainer {
         return field;
     }
 
+    protected GuiNumberField setNumberField(int xPos, int yPos, int w, int h, String text, boolean allowFloat) {
+        GuiNumberField field = new GuiNumberField(this.fontRendererObj, xPos, yPos, w, h, this, allowFloat);
+        field.setMaxStringLength(32767);
+        field.setFocused(false);
+        field.setText(text);
+        this.textFields.add(field);
+        return field;
+    }
+
     @Override
     protected void mouseClicked(int par1, int par2, int par3) {
         super.mouseClicked(par1, par2, par3);
@@ -62,10 +71,13 @@ public abstract class GuiContainerCustom extends GuiContainer {
 
     @Override
     protected void keyTyped(char par1, int par2) {
-        super.keyTyped(par1, par2);
-
-        if (this.currentTextField != null) {
+        if (par2 == Keyboard.KEY_ESCAPE) {
+            this.mc.displayGuiScreen(null);
+            this.mc.setIngameFocus();
+        } else if (this.currentTextField != null) {
             this.currentTextField.textboxKeyTyped(par1, par2);
+        } else {
+            super.keyTyped(par1, par2);
         }
     }
 

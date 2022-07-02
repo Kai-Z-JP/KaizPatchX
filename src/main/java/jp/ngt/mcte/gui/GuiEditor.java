@@ -2,9 +2,7 @@ package jp.ngt.mcte.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.mcte.MCTE;
-import jp.ngt.mcte.MCTEKeyHandlerClient;
 import jp.ngt.mcte.editor.EntityEditor;
 import jp.ngt.mcte.editor.filter.FilterManager;
 import jp.ngt.mcte.network.PacketEditor;
@@ -17,6 +15,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -58,9 +57,9 @@ public class GuiEditor extends GuiContainerCustom {
         this.buttonList.add(new GuiButton(103, 70, 30, 20, 20, ">"));
         this.buttonList.add(new GuiButton(104, 10, 50, 20, 20, "<"));
         this.buttonList.add(new GuiButton(105, 70, 50, 20, 20, ">"));
-        this.textField_start[0] = this.setTextField(30, 10, 40, 20, String.valueOf(this.editor.getPos(true)[0]));
-        this.textField_start[1] = this.setTextField(30, 30, 40, 20, String.valueOf(this.editor.getPos(true)[1]));
-        this.textField_start[2] = this.setTextField(30, 50, 40, 20, String.valueOf(this.editor.getPos(true)[2]));
+        this.textField_start[0] = this.setNumberField(30, 10, 40, 20, String.valueOf(this.editor.getPos(true)[0]), false);
+        this.textField_start[1] = this.setNumberField(30, 30, 40, 20, String.valueOf(this.editor.getPos(true)[1]), false);
+        this.textField_start[2] = this.setNumberField(30, 50, 40, 20, String.valueOf(this.editor.getPos(true)[2]), false);
 
         this.buttonList.add(new GuiButton(106, 10, 80, 20, 20, "<"));
         this.buttonList.add(new GuiButton(107, 70, 80, 20, 20, ">"));
@@ -68,9 +67,9 @@ public class GuiEditor extends GuiContainerCustom {
         this.buttonList.add(new GuiButton(109, 70, 100, 20, 20, ">"));
         this.buttonList.add(new GuiButton(110, 10, 120, 20, 20, "<"));
         this.buttonList.add(new GuiButton(111, 70, 120, 20, 20, ">"));
-        this.textField_end[0] = this.setTextField(30, 80, 40, 20, String.valueOf(this.editor.getPos(false)[0]));
-        this.textField_end[1] = this.setTextField(30, 100, 40, 20, String.valueOf(this.editor.getPos(false)[1]));
-        this.textField_end[2] = this.setTextField(30, 120, 40, 20, String.valueOf(this.editor.getPos(false)[2]));
+        this.textField_end[0] = this.setNumberField(30, 80, 40, 20, String.valueOf(this.editor.getPos(false)[0]), false);
+        this.textField_end[1] = this.setNumberField(30, 100, 40, 20, String.valueOf(this.editor.getPos(false)[1]), false);
+        this.textField_end[2] = this.setNumberField(30, 120, 40, 20, String.valueOf(this.editor.getPos(false)[2]), false);
 
         this.buttonList.add(new GuiButton(112, this.width - 90, 10, 20, 20, "<"));
         this.buttonList.add(new GuiButton(113, this.width - 30, 10, 20, 20, ">"));
@@ -80,10 +79,10 @@ public class GuiEditor extends GuiContainerCustom {
         this.buttonList.add(new GuiButton(117, this.width - 30, 50, 20, 20, ">"));
         this.buttonList.add(new GuiButton(118, this.width - 90, 70, 20, 20, "<"));
         this.buttonList.add(new GuiButton(119, this.width - 30, 70, 20, 20, ">"));
-        this.textField_clone[0] = this.setTextField(this.width - 70, 10, 40, 20, String.valueOf(this.editor.getCloneBox()[0]));
-        this.textField_clone[1] = this.setTextField(this.width - 70, 30, 40, 20, String.valueOf(this.editor.getCloneBox()[1]));
-        this.textField_clone[2] = this.setTextField(this.width - 70, 50, 40, 20, String.valueOf(this.editor.getCloneBox()[2]));
-        this.textField_clone[3] = this.setTextField(this.width - 70, 70, 40, 20, String.valueOf(this.editor.getCloneBox()[3]));
+        this.textField_clone[0] = this.setNumberField(this.width - 70, 10, 40, 20, String.valueOf(this.editor.getCloneBox()[0]), false);
+        this.textField_clone[1] = this.setNumberField(this.width - 70, 30, 40, 20, String.valueOf(this.editor.getCloneBox()[1]), false);
+        this.textField_clone[2] = this.setNumberField(this.width - 70, 50, 40, 20, String.valueOf(this.editor.getCloneBox()[2]), false);
+        this.textField_clone[3] = this.setNumberField(this.width - 70, 70, 40, 20, String.valueOf(this.editor.getCloneBox()[3]), false);
 
 
         this.buttonList.add(new GuiButton(200, 10, 150, 60, 20, "Fill->"));
@@ -206,19 +205,10 @@ public class GuiEditor extends GuiContainerCustom {
 
     @Override
     protected void keyTyped(char par1, int par2) {
-        if (par2 == 1 || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode() || par2 == MCTEKeyHandlerClient.keyEditMenu.getKeyCode())//1:Esc
-        {
-            this.mc.thePlayer.closeScreen();
-        }
-
-        if (KeyboardUtil.isIntegerKey(par2))//14:Back, 211:Del
-        {
-            this.currentTextField.textboxKeyTyped(par1, par2);
-        }
-
-        if (par2 == 28)//28:Enter
-        {
+        if (par2 == Keyboard.KEY_RETURN) {
             this.sendPacket();
+        } else {
+            super.keyTyped(par1, par2);
         }
     }
 

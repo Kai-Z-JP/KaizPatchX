@@ -291,6 +291,7 @@ public class Formation {
         {
             if (data == TrainState.Direction_Front.data || data == TrainState.Direction_Back.data) {
                 this.controlCar = par2;
+                par2.setTrainDirection(par2.getTrainDirection());
             }
 
             Arrays.stream(this.entries).filter(Objects::nonNull).map(entry -> entry.train).filter(Objects::nonNull).forEach(train -> {

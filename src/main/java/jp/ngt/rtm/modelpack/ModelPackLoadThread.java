@@ -158,18 +158,17 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
         }
         try {
             fileList.stream().filter(Objects::nonNull)
-                    .map(file -> (Runnable) () -> {
+                    .map(file -> new CrashableFutureTask<Void>(() -> {
                         String json = NGTJson.readFromJson(file);
                         String type = file.getName().split("_")[0];
                         try {
                             String s = ModelPackManager.INSTANCE.registerModelset(type, json);
                             this.addValue(1, s);
-                        } catch (ModelPackException e) {
-                            throw e;//そのまま投げる
                         } catch (Throwable e) {
                             throw new ModelPackException("Can't load model", file.getAbsolutePath(), e);
                         }
-                    })
+                        return null;
+                    }))
                     .forEach(executor::submit);
 
             TextureManager.INSTANCE.registerTextures(this, signBoards, executor, TextureManager.TexturePropertyType.SignBoard);

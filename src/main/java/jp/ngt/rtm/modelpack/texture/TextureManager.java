@@ -4,6 +4,7 @@ import jp.ngt.ngtlib.io.IProgressWatcher;
 import jp.ngt.ngtlib.io.NGTFileLoadException;
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
+import jp.ngt.rtm.modelpack.CrashableFutureTask;
 
 import java.io.File;
 import java.util.*;
@@ -30,8 +31,9 @@ public final class TextureManager {
         Map<String, TextureProperty> map = new ConcurrentHashMap<>();
         this.allTextureMap.put(type, map);
         par1.addMaxValue(1, fileList.size());
-        fileList.stream().filter(Objects::nonNull)
-                .map(file -> (Runnable) () -> {
+        fileList.stream()
+                .filter(Objects::nonNull)
+                .map(file -> new CrashableFutureTask<Void>(() -> {
                     String json = NGTJson.readFromJson(file);
                     try {
                         TextureProperty property = (TextureProperty) NGTJson.getObjectFromJson(json, type.type);
@@ -44,7 +46,8 @@ public final class TextureManager {
                     } catch (Exception e) {
                         throw new NGTFileLoadException(String.format("[TextureManager] Failed to load : %s", file.getName()), e);
                     }
-                })
+                    return null;
+                }))
                 .forEach(executor::submit);
     }
 
@@ -67,12 +70,13 @@ public final class TextureManager {
         //			NGTLog.debug("Register Texture : %s (RRS)", name);
         fileList.stream()
                 .map(File::getName)
-                .map(name -> (Runnable) () -> {
+                .map(name -> new CrashableFutureTask<Void>(() -> {
                     RRSProperty prop = new RRSProperty(name);
                     prop.init();
                     map.put(prop.texture, prop);
                     par1.addValue(1, name);
-                })
+                    return null;
+                }))
                 .forEach(executor::submit);
     }
 

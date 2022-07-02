@@ -93,6 +93,15 @@ public abstract class GuiScreenCustom extends GuiScreen {
         if (par2 == Keyboard.KEY_ESCAPE) {
             this.mc.displayGuiScreen(null);
             this.mc.setIngameFocus();
+        } else if (par2 == Keyboard.KEY_TAB) {
+            if (this.currentTextField != null) {
+                this.currentTextField.setFocused(false);
+            }
+            int index = (this.textFields.indexOf(this.currentTextField) + 1) % this.textFields.size();
+            this.currentTextField = this.textFields.get(index);
+            this.currentTextField.setFocused(true);
+            this.currentTextField.setCursorPositionEnd();
+            this.currentTextField.setSelectionPos(0);
         } else if (this.currentTextField != null) {
             this.currentTextField.textboxKeyTyped(par1, par2);
         } else {

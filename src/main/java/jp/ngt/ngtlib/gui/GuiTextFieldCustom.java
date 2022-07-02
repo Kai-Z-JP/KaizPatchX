@@ -503,6 +503,8 @@ public class GuiTextFieldCustom extends GuiTextField {
     @Override
     public void setFocused(boolean par1) {
         if (!this.isDisplayMode) {
+            this.setCursorPositionZero();
+            this.setSelectionPos(this.getCursorPosition());
             if (par1 && !this.isFocused) {
                 this.cursorCounter = 0;
             }

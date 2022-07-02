@@ -34,8 +34,8 @@ public abstract class GuiContainerCustom extends GuiContainer {
         Keyboard.enableRepeatEvents(false);
     }
 
-    protected GuiTextField setTextField(int xPos, int yPos, int w, int h, String text) {
-        GuiTextField field = new GuiTextField(this.fontRendererObj, xPos, yPos, w, h);
+    protected GuiTextFieldCustom setTextField(int xPos, int yPos, int w, int h, String text) {
+        GuiTextFieldCustom field = new GuiTextFieldCustom(this.fontRendererObj, xPos, yPos, w, h, this);
         field.setMaxStringLength(32767);
         field.setFocused(false);
         field.setText(text);
@@ -74,6 +74,15 @@ public abstract class GuiContainerCustom extends GuiContainer {
         if (par2 == Keyboard.KEY_ESCAPE) {
             this.mc.displayGuiScreen(null);
             this.mc.setIngameFocus();
+        } else if (par2 == Keyboard.KEY_TAB) {
+            if (this.currentTextField != null) {
+                this.currentTextField.setFocused(false);
+            }
+            int index = (this.textFields.indexOf(this.currentTextField) + 1) % this.textFields.size();
+            this.currentTextField = this.textFields.get(index);
+            this.currentTextField.setFocused(true);
+            this.currentTextField.setCursorPositionEnd();
+            this.currentTextField.setSelectionPos(0);
         } else if (this.currentTextField != null) {
             this.currentTextField.textboxKeyTyped(par1, par2);
         } else {

@@ -2,7 +2,6 @@ package jp.ngt.rtm.gui.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.gui.GuiTextFieldCustom;
 import jp.ngt.rtm.RTMBlock;
@@ -12,7 +11,6 @@ import jp.ngt.rtm.rail.TileEntityMarker;
 import jp.ngt.rtm.rail.util.RailPosition;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiRailMarker extends GuiScreenCustom {
@@ -45,13 +43,13 @@ public class GuiRailMarker extends GuiScreenCustom {
         //this.buttonViewMode = new GuiButton(100, 30, 20, 40, 20, "Horizontal");
         //this.buttonList.add(this.buttonViewMode);
 
-        this.fieldAncYaw = this.setTextField(this.width - 70, 20, 60, 20, String.valueOf(this.currentRP.anchorYaw));
-        this.fieldAncPitch = this.setTextField(this.width - 70, 50, 60, 20, String.valueOf(this.currentRP.anchorPitch));
-        this.fieldAncH = this.setTextField(this.width - 70, 80, 60, 20, String.valueOf(this.currentRP.anchorLengthHorizontal));
-        this.fieldAncV = this.setTextField(this.width - 70, 110, 60, 20, String.valueOf(this.currentRP.anchorLengthVertical));
-        this.fieldCantCenter = this.setTextField(this.width - 70, 140, 60, 20, String.valueOf(this.currentRP.cantCenter));
-        this.fieldCantEdge = this.setTextField(this.width - 70, 170, 60, 20, String.valueOf(this.currentRP.cantEdge));
-        this.fieldCantRandom = this.setTextField(this.width - 70, 200, 60, 20, String.valueOf(this.currentRP.cantRandom));
+        this.fieldAncYaw = this.setNumberField(this.width - 70, 20, 60, 20, String.valueOf(this.currentRP.anchorYaw), true);
+        this.fieldAncPitch = this.setNumberField(this.width - 70, 50, 60, 20, String.valueOf(this.currentRP.anchorPitch), true);
+        this.fieldAncH = this.setNumberField(this.width - 70, 80, 60, 20, String.valueOf(this.currentRP.anchorLengthHorizontal), true);
+        this.fieldAncV = this.setNumberField(this.width - 70, 110, 60, 20, String.valueOf(this.currentRP.anchorLengthVertical), true);
+        this.fieldCantCenter = this.setNumberField(this.width - 70, 140, 60, 20, String.valueOf(this.currentRP.cantCenter), true);
+        this.fieldCantEdge = this.setNumberField(this.width - 70, 170, 60, 20, String.valueOf(this.currentRP.cantEdge), true);
+        this.fieldCantRandom = this.setNumberField(this.width - 70, 200, 60, 20, String.valueOf(this.currentRP.cantRandom), true);
 
         if (this.marker.getBlockType() == RTMBlock.markerSwitch) {
             this.fieldAncPitch.setEnabled(false);
@@ -89,23 +87,6 @@ public class GuiRailMarker extends GuiScreenCustom {
         }
 
         super.actionPerformed(button);
-    }
-
-    @Override
-    protected void keyTyped(char par1, int par2) {
-        if (par2 == Keyboard.KEY_ESCAPE || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
-            this.mc.thePlayer.closeScreen();
-        }
-
-        if (this.currentTextField != null) {
-            if (KeyboardUtil.isDecimalNumberKey(par2)) {
-                this.currentTextField.textboxKeyTyped(par1, par2);
-            }
-        }
-
-        if (par2 == Keyboard.KEY_RETURN) {
-            //this.updateValues();//GUI閉じるときのみRPの値を更新
-        }
     }
 
     private void updateValues() {

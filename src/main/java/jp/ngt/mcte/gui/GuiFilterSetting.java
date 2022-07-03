@@ -11,7 +11,6 @@ import jp.ngt.ngtlib.gui.GuiTextFieldCustom;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -159,16 +158,6 @@ public class GuiFilterSetting extends GuiScreenCustom {
                 this.initGuiElements(index / 2);
             }
         }
-    }
-
-    @Override
-    protected void keyTyped(char par1, int par2) {
-        if (par2 == Keyboard.KEY_ESCAPE) {
-            this.closeGui();
-            return;
-        }
-
-        super.keyTyped(par1, par2);
     }
 
     protected void closeGui() {

@@ -1,13 +1,11 @@
 package jp.ngt.rtm.gui;
 
-import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.gui.GuiTextFieldCustom;
 import jp.ngt.ngtlib.network.PacketNBT;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import org.lwjgl.input.Keyboard;
 
 public class GuiChangeOffset extends GuiScreenCustom {
     private TileEntityPlaceable tileEntity;
@@ -28,10 +26,10 @@ public class GuiChangeOffset extends GuiScreenCustom {
         this.buttonList.add(new GuiButton(0, this.width / 2 - 105, this.height - 28, 100, 20, I18n.format("gui.done")));
         this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 100, 20, I18n.format("gui.cancel")));
 
-        this.fieldOffsetX = this.setTextField(this.width - 70, 20, 60, 20, String.valueOf(this.tileEntity.getOffsetX()));
-        this.fieldOffsetY = this.setTextField(this.width - 70, 50, 60, 20, String.valueOf(this.tileEntity.getOffsetY()));
-        this.fieldOffsetZ = this.setTextField(this.width - 70, 80, 60, 20, String.valueOf(this.tileEntity.getOffsetZ()));
-        this.fieldRotationYaw = this.setTextField(this.width - 70, 110, 60, 20, String.valueOf(this.tileEntity.getRotation()));
+        this.fieldOffsetX = this.setNumberField(this.width - 70, 20, 60, 20, String.valueOf(this.tileEntity.getOffsetX()), true);
+        this.fieldOffsetY = this.setNumberField(this.width - 70, 50, 60, 20, String.valueOf(this.tileEntity.getOffsetY()), true);
+        this.fieldOffsetZ = this.setNumberField(this.width - 70, 80, 60, 20, String.valueOf(this.tileEntity.getOffsetZ()), true);
+        this.fieldRotationYaw = this.setNumberField(this.width - 70, 110, 60, 20, String.valueOf(this.tileEntity.getRotation()), true);
     }
 
     @Override
@@ -55,23 +53,6 @@ public class GuiChangeOffset extends GuiScreenCustom {
         }
 
         super.actionPerformed(button);
-    }
-
-    @Override
-    protected void keyTyped(char par1, int par2) {
-        if (par2 == Keyboard.KEY_ESCAPE || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
-            this.mc.thePlayer.closeScreen();
-        }
-
-        if (this.currentTextField != null) {
-            if (KeyboardUtil.isDecimalNumberKey(par2)) {
-                this.currentTextField.textboxKeyTyped(par1, par2);
-            }
-        }
-
-        if (par2 == Keyboard.KEY_RETURN) {
-            //this.updateValues();//GUI閉じるときのみRPの値を更新
-        }
     }
 
     private void updateValues() {

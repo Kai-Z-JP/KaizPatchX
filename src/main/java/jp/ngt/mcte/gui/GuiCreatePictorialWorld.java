@@ -2,8 +2,6 @@ package jp.ngt.mcte.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.kaiz.kaizpatch.util.KeyboardUtil;
-import jp.ngt.mcte.MCTEKeyHandlerClient;
 import jp.ngt.mcte.world.WorldData;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.gui.GuiSelect;
@@ -27,6 +25,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
@@ -78,9 +77,9 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
         this.buttonList.add(this.selectButtons[2]);
 
         this.textFields.clear();
-        this.minYTF = this.setTextField(i0, 60, 40, 20, String.valueOf(this.worldData.minY));
-        this.yScaleTF = this.setTextField(i0, 80, 40, 20, String.valueOf(this.worldData.yScale));
-        this.seaLevelTF = this.setTextField(i0, 100, 40, 20, String.valueOf(this.worldData.seaLevel));
+        this.minYTF = this.setNumberField(i0, 60, 40, 20, String.valueOf(this.worldData.minY), false);
+        this.yScaleTF = this.setNumberField(i0, 80, 40, 20, String.valueOf(this.worldData.yScale), true);
+        this.seaLevelTF = this.setNumberField(i0, 100, 40, 20, String.valueOf(this.worldData.seaLevel), false);
         this.currentTextField = this.minYTF;
 
         this.slotList.clear();
@@ -134,18 +133,10 @@ public class GuiCreatePictorialWorld extends GuiScreenCustom {
 
     @Override
     protected void keyTyped(char par1, int par2) {
-        if (par2 == 1 || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode() || par2 == MCTEKeyHandlerClient.keyEditMenu.getKeyCode())//1:Esc
-        {
-            this.mc.thePlayer.closeScreen();
-        }
-
-        if (KeyboardUtil.isIntegerKey(par2))//14:Back, 211:Del
-        {
-            this.currentTextField.textboxKeyTyped(par1, par2);
-        }
-
-        if (par2 == 28) {
+        if (par2 == Keyboard.KEY_RETURN) {
             this.writeTextFieldsToWorldData();
+        } else {
+            super.keyTyped(par1, par2);
         }
     }
 

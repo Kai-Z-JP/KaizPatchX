@@ -2,7 +2,6 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.kaiz.kaizpatch.util.KeyboardUtil;
 import jp.ngt.ngtlib.gui.GuiScreenCustom;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.rtm.RTMCore;
@@ -13,6 +12,7 @@ import jp.ngt.rtm.network.PacketSignalConverter;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiSignalConverter extends GuiScreenCustom {
@@ -47,9 +47,9 @@ public class GuiSignalConverter extends GuiScreenCustom {
         int[] ia = this.tileEntity.getSignalLevel();
         this.textFields.clear();
         this.signalValues = new GuiTextField[this.scType == SignalConverterType.RSOut ? 1 : 2];
-        this.signalValues[0] = this.setTextField(this.width / 2 - 20 + i0, 60, 40, 20, String.valueOf(ia[0]));
+        this.signalValues[0] = this.setNumberField(this.width / 2 - 20 + i0, 60, 40, 20, String.valueOf(ia[0]), false);
         if (this.scType == SignalConverterType.RSIn || this.scType == SignalConverterType.Wireless) {
-            this.signalValues[1] = this.setTextField(this.width / 2 - 20 + i0, 100, 40, 20, String.valueOf(ia[1]));
+            this.signalValues[1] = this.setNumberField(this.width / 2 - 20 + i0, 100, 40, 20, String.valueOf(ia[1]), false);
         }
     }
 
@@ -100,20 +100,10 @@ public class GuiSignalConverter extends GuiScreenCustom {
 
     @Override
     protected void keyTyped(char par1, int par2) {
-        if (par2 == 1 || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode())//1:Esc
-        {
-            this.mc.thePlayer.closeScreen();
-        }
-
-        if (this.currentTextField != null) {
-            if (KeyboardUtil.isIntegerKey(par2))//14:Back, 211:Del
-            {
-                this.currentTextField.textboxKeyTyped(par1, par2);
-            }
-        }
-
-        if (par2 == 28) {
+        if (par2 == Keyboard.KEY_RETURN) {
             this.formatSignalLevel();
+        } else {
+            super.keyTyped(par1, par2);
         }
     }
 

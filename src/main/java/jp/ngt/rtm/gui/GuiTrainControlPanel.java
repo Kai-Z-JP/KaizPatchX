@@ -363,11 +363,11 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                         if (stateType == TrainStateType.State_Destination) {
                             String[] rollSignNames = this.modelset.getConfig().rollsignNames;
                             min = 0;
-                            max = rollSignNames.length - 1;
+                            max = rollSignNames != null ? rollSignNames.length - 1 : 0;
                         } else if (stateType == TrainStateType.State_Announcement) {
                             String[][] announce = this.modelset.getConfig().sound_Announcement;
                             min = 0;
-                            max = announce.length - 1;
+                            max = announce != null ? announce.length - 1 : 0;
                         } else {
                             min = stateType.min;
                             max = stateType.max;

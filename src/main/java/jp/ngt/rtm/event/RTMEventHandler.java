@@ -8,6 +8,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -45,7 +46,7 @@ public final class RTMEventHandler {
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
         if (event.entity instanceof EntityBat) {
-            if (RTMCore.deleteBat) {
+            if (RTMConfig.deleteBat) {
                 event.setCanceled(true);
             }
         }

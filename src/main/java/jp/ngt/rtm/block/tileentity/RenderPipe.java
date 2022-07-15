@@ -7,7 +7,7 @@ import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.VecAccuracy;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -179,7 +179,7 @@ public class RenderPipe extends TileEntitySpecialRenderer {
             this.displayListPipe = GLHelper.generateGLList();
             GLHelper.startCompile(this.displayListPipe);
             IModelNGT model_pipe = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Pipe.mqo"), VecAccuracy.LOW, GL11.GL_QUADS);
-            model_pipe.renderAll(RTMCore.smoothing);
+            model_pipe.renderAll(RTMConfig.smoothing);
             GLHelper.endCompile();
         } else {
             GLHelper.callList(this.displayListPipe);
@@ -191,7 +191,7 @@ public class RenderPipe extends TileEntitySpecialRenderer {
             this.displayListSphere = GLHelper.generateGLList();
             GLHelper.startCompile(this.displayListSphere);
             IModelNGT model_sphere = ModelLoader.loadModel(new ResourceLocation("rtm", "models/Model_Sphere.obj"), VecAccuracy.LOW);
-            model_sphere.renderAll(RTMCore.smoothing);
+            model_sphere.renderAll(RTMConfig.smoothing);
             GLHelper.endCompile();
         } else {
             GLHelper.callList(this.displayListSphere);

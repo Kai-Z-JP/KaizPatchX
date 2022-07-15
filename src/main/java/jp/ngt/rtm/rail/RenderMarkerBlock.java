@@ -2,7 +2,7 @@ package jp.ngt.rtm.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -13,6 +13,6 @@ public class RenderMarkerBlock extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8) {
-        (RTMCore.use1122Marker ? INSTANCE1122 : INSTANCE1710).renderTileEntityMarker((TileEntityMarker) par1TileEntity, par2, par4, par6, par8);
+        (RTMConfig.use1122Marker ? INSTANCE1122 : INSTANCE1710).renderTileEntityMarker((TileEntityMarker) par1TileEntity, par2, par4, par6, par8);
     }
 }

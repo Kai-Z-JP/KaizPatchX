@@ -5,7 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.VecAccuracy;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
 import jp.ngt.rtm.gui.GuiSelectModel;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -76,6 +76,6 @@ public class ModelSetFirearmClient extends ModelSetFirearm implements IModelSetC
         //GL11.glScalef(1.0F, 1.0F, 1.0F);
 
         par1.getTextureManager().bindTexture(this.texture);
-        this.model.renderAll(RTMCore.smoothing);
+        this.model.renderAll(RTMConfig.smoothing);
     }
 }

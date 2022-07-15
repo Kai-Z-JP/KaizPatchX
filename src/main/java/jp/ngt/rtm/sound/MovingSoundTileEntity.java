@@ -2,7 +2,7 @@ package jp.ngt.rtm.sound;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -48,7 +48,7 @@ public class MovingSoundTileEntity extends MovingSound {
     }
 
     public void setVolume(float par1) {
-        float vol = par1 * RTMCore.trainSoundVol;
+        float vol = par1 * RTMConfig.trainSoundVol;
         this.prevVolume = Math.max(vol, 0.0F);
     }
 

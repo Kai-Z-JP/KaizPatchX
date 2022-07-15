@@ -4,6 +4,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.TileEntityMovingMachine;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
@@ -59,10 +60,10 @@ public class PacketNoticeHandlerClient implements IMessageHandler<PacketNotice, 
                 DataMap.receivePacket(msg, message, world, true);
             } else if (msg.startsWith("use1122marker")) {
                 String[] sa0 = msg.split(",");
-                boolean use1122marker = sa0[1].equals("flip") ? !RTMCore.use1122Marker : Boolean.parseBoolean(sa0[1]);
-                RTMCore.use1122Marker = use1122marker;
-                RTMCore.marker.setValue(use1122marker);
-                RTMCore.cfg.save();
+                boolean use1122marker = sa0[1].equals("flip") ? !RTMConfig.use1122Marker : Boolean.parseBoolean(sa0[1]);
+                RTMConfig.use1122Marker = use1122marker;
+                RTMConfig.cfg.get(RTMConfig.CATEGORY_MARKER, "Use like 1.12", false).set(use1122marker);
+                RTMConfig.cfg.save();
                 NGTUtil.getClientPlayer().addChatMessage(new ChatComponentText("Config: use1122marker = " + use1122marker));
             } else if (msg.startsWith("flySpeed")) {
                 String[] sa0 = msg.split(",");

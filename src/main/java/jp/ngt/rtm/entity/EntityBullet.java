@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.NGTCore;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.rtm.RTMBlock;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.item.ItemAmmunition.BulletType;
 import net.minecraft.block.Block;
@@ -435,7 +436,7 @@ public class EntityBullet extends EntityArrow {
             }
         } else {
             if (this.landingBlock != null && this.getCanBreakBlock()) {
-                if (!RTMCore.gunBreakBlock) {
+                if (!RTMConfig.gunBreakBlock) {
                     int meta = this.worldObj.getBlockMetadata(x, y, z);
                     this.worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(this.landingBlock) + (meta << 12));
                 } else if (this.isBreakableBlock(this.getBulletType(), this.landingBlock, x, y, z)) {

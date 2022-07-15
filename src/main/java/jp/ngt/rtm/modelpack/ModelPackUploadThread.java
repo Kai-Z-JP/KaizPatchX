@@ -2,6 +2,7 @@ package jp.ngt.rtm.modelpack;
 
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTLog;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketModelPack;
 
@@ -20,7 +21,7 @@ public class ModelPackUploadThread extends Thread {
     }
 
     public static void startThread() {
-        if (!RTMCore.useServerModelPack) {
+        if (!RTMConfig.useServerModelPack) {
             return;
         }
         ModelPackUploadThread thread = new ModelPackUploadThread();

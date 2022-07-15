@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.ClientProxy;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig.Parts;
 import jp.ngt.rtm.modelpack.modelset.ModelSetFirearmClient;
@@ -68,7 +69,7 @@ public class RenderArtillery extends Render {
     }
 
     private void renderParts(IModelNGT model, Parts parts) {
-        model.renderOnly(RTMCore.smoothing, parts.objects);
+        model.renderOnly(RTMConfig.smoothing, parts.objects);
     }
 
     @Override

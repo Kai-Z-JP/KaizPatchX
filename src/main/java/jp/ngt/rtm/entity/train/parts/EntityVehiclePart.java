@@ -2,7 +2,8 @@ package jp.ngt.rtm.entity.train.parts;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.math.PooledVec3;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import net.minecraft.entity.Entity;
@@ -11,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -51,9 +51,9 @@ public abstract class EntityVehiclePart extends Entity {
     protected void writeEntityToNBT(NBTTagCompound nbt) {
         nbt.setBoolean("Independent", this.isIndependent);
         Vec3 v3 = this.getPartVec();
-        nbt.setFloat("vecX", (float) v3.xCoord);
-        nbt.setFloat("vecY", (float) v3.yCoord);
-        nbt.setFloat("vecZ", (float) v3.zCoord);
+        nbt.setFloat("vecX", (float) v3.getX());
+        nbt.setFloat("vecY", (float) v3.getY());
+        nbt.setFloat("vecZ", (float) v3.getZ());
         if (this.getVehicle() != null) {
             long l0 = 0L;
             long l1 = 0L;
@@ -166,10 +166,10 @@ public abstract class EntityVehiclePart extends Entity {
      */
     public void updatePartPos(EntityVehicleBase vehicle) {
         Vec3 v3 = this.getPartVec();
-        v3.rotateAroundZ(NGTMath.toRadians(-vehicle.rotationRoll));
-        v3.rotateAroundX(NGTMath.toRadians(vehicle.rotationPitch));
-        v3.rotateAroundY(NGTMath.toRadians(vehicle.rotationYaw));
-        this.setPosition(vehicle.posX + v3.xCoord, vehicle.posY + v3.yCoord, vehicle.posZ + v3.zCoord);
+        v3 = v3.rotateAroundZ(-vehicle.rotationRoll);
+        v3 = v3.rotateAroundX(vehicle.rotationPitch);
+        v3 = v3.rotateAroundY(vehicle.rotationYaw);
+        this.setPosition(vehicle.posX + v3.getX(), vehicle.posY + v3.getY(), vehicle.posZ + v3.getZ());
         this.setRotation(vehicle.rotationYaw, vehicle.rotationPitch);
         this.needsUpdatePos = false;
     }
@@ -226,7 +226,7 @@ public abstract class EntityVehiclePart extends Entity {
         float x = this.dataWatcher.getWatchableObjectFloat(21);
         float y = this.dataWatcher.getWatchableObjectFloat(22);
         float z = this.dataWatcher.getWatchableObjectFloat(23);
-        return Vec3.createVectorHelper(x, y, z);
+        return PooledVec3.create(x, y, z);
     }
 
     @Override

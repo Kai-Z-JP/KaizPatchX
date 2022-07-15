@@ -34,6 +34,7 @@ public class RTMConfig {
     public static boolean use1122Marker;
     public static int loadSpeed;
     public static boolean expandPlayableSoundCount;
+    public static boolean markerDistanceMoreRealPosition = true;
 
     public static void init(Configuration config) {
         cfg = config;
@@ -85,6 +86,9 @@ public class RTMConfig {
 
         RTMConfig.loadSpeed = cfg.getInt(
                 "ModelPack load speed", CATEGORY_LOAD, 2, 1, 3, "1:Slow 2:Default 3:Fast");
+
+        RTMConfig.markerDistanceMoreRealPosition = cfg.getBoolean(
+                "markerDistancesMoreRealPosition", CATEGORY_MARKER, true, "shows distance signs of marker at more real position");
 
         cfg.save();
     }

@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.NGTTessellator;
-import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.rail.util.RailMap;
@@ -31,12 +30,12 @@ public abstract class RenderMarkerBlockBase {
     protected void renderDistanceMark(TileEntityMarker marker) {
         GL11.glPushMatrix();
         GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
-        int meta = marker.blockMetadata;
+        int meta = marker.getBlockMetadata();
         Block block = marker.getBlockType();
-        int color = (block == RTMBlock.marker) ? 16711680 : 255;
+        int color = block == RTMBlock.marker ? 0xFF0000 : 0x0000FF;
         float dir = BlockMarker.getMarkerDir(marker.getBlockType(), meta) * 45.0F;
         GL11.glRotatef(dir, 0.0F, 1.0F, 0.0F);
-        GL11.glDisable(3553);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
         float size = 0.4F;
         NGTTessellator tessellator = NGTTessellator.instance;
         tessellator.startDrawingQuads();
@@ -45,25 +44,40 @@ public abstract class RenderMarkerBlockBase {
                 IntStream.rangeClosed(-1, 1)
                         .mapToObj(k -> moveZ * k)
                         .forEach(moveX -> {
-                            tessellator.addVertex(-size + moveX, 0.0F, size + moveZ);
-                            tessellator.addVertex(-size + moveX, 0.0F, -size + moveZ);
-                            tessellator.addVertex(size + moveX, 0.0F, -size + moveZ);
-                            tessellator.addVertex(size + moveX, 0.0F, size + moveZ);
+                            if (!RTMConfig.markerDistanceMoreRealPosition) {
+                                tessellator.addVertex(-size + moveX, 0.0F, size + moveZ);
+                                tessellator.addVertex(-size + moveX, 0.0F, -size + moveZ);
+                                tessellator.addVertex(size + moveX, 0.0F, -size + moveZ);
+                                tessellator.addVertex(size + moveX, 0.0F, size + moveZ);
+                            } else {
+                                tessellator.addVertex(-0.4F + moveX, 0.0F, -0.4F + moveZ);
+                                tessellator.addVertex(-0.4F + moveX, 0.0F, -0.6F + moveZ);
+                                tessellator.addVertex(0.4F + moveX, 0.0F, -0.6F + moveZ);
+                                tessellator.addVertex(0.4F + moveX, 0.0F, -0.4F + moveZ);
+                                tessellator.addVertex(-0.1F + moveX, 0.0F, -0.1F + moveZ);
+                                tessellator.addVertex(-0.1F + moveX, 0.0F, -0.9F + moveZ);
+                                tessellator.addVertex(0.1F + moveX, 0.0F, -0.9F + moveZ);
+                                tessellator.addVertex(0.1F + moveX, 0.0F, -0.1F + moveZ);
+                            }
                         }));
         tessellator.draw();
-        GL11.glEnable(3553);
-        FontRenderer fontRenderer = NGTUtilClient.getMinecraft().fontRenderer;
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        FontRenderer fontRenderer = RenderManager.instance.getFontRenderer();
         for (int j = 0; j < this.displayStrings.length; j++) {
             float moveZ = (j + 1) * 10.0F;
             for (int k = -1; k <= 1; k++) {
                 float moveX = moveZ * k;
                 GL11.glPushMatrix();
-                GL11.glTranslatef(moveX, 0.0F, moveZ);
-                GL11.glRotatef(-(RenderManager.instance).playerViewY - dir, 0.0F, 1.0F, 0.0F);
+                if (!RTMConfig.markerDistanceMoreRealPosition) {
+                    GL11.glTranslatef(moveX, 0.0F, moveZ);
+                } else {
+                    GL11.glTranslatef(moveX, 0.0F, moveZ - 0.5F);
+                }
+                GL11.glRotatef(-RenderManager.instance.playerViewY - dir, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(-0.25F, -0.25F, 0.25F);
                 String s = this.displayStrings[j];
-                int i0 = fontRenderer.getStringWidth(s) / 2;
-                fontRenderer.drawString(s, -i0 / 2, -10, color);
+                int stringWidth = fontRenderer.getStringWidth(s);
+                fontRenderer.drawString(s, -stringWidth / 2, -10, color);
                 GL11.glPopMatrix();
             }
         }

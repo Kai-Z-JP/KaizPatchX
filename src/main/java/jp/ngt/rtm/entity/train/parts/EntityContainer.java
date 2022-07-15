@@ -1,6 +1,8 @@
 package jp.ngt.rtm.entity.train.parts;
 
 import jp.ngt.ngtlib.item.ItemUtil;
+import jp.ngt.ngtlib.math.PooledVec3;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
@@ -16,7 +18,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import java.util.stream.IntStream;
@@ -136,16 +137,20 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
 
     @Override
     public Vec3 getPartVec() {
-        ContainerConfig cfg = this.getModelSet().getConfig();
+        //コンストラクタ呼び出し時はstateがnull
+        if (this.getResourceState() == null) {
+            this.needsUpdatePos = true;
+            return jp.ngt.ngtlib.math.Vec3.ZERO;
+        }
+
+        ContainerConfig cfg = (ContainerConfig) this.getResourceState().getResourceSet().getConfig();
         CargoPos cp = CargoPos.getCargoPos(cfg.containerLength);
         float zPos = cp.zPos[this.getCargoId()];
         if (zPos == 20.0F) {
             zPos = 0.0F;
         }
-        float x = this.dataWatcher.getWatchableObjectFloat(21);
-        float y = this.dataWatcher.getWatchableObjectFloat(22);
-        float z = zPos;
-        return Vec3.createVectorHelper(x, y, z);
+        Vec3 vec = super.getPartVec();
+        return PooledVec3.create(vec.getX(), vec.getY(), zPos);
     }
 
     @Override

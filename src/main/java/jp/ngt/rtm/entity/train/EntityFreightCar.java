@@ -3,6 +3,7 @@ package jp.ngt.rtm.entity.train;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.parts.*;
 import jp.ngt.rtm.item.ItemCargo;
+import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -141,7 +142,8 @@ public class EntityFreightCar extends EntityTrainBase implements IInventory {
 
         if (damage == 0 || damage == 1) {
             EntityCargoWithModel entity = (EntityCargoWithModel) cargo;
-            if (entity.getModelName().length() == 0) {
+            ResourceState state = entity.getResourceState();
+            if (state.getResourceSet().isDummy()) {
                 entity.setModelName(entity.getDefaultName());
             }
         }

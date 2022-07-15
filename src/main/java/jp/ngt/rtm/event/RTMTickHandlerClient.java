@@ -1,5 +1,6 @@
 package jp.ngt.rtm.event;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
@@ -7,6 +8,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.RenderMirror;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
@@ -53,6 +55,13 @@ public final class RTMTickHandlerClient {
             } else if (event.phase == Phase.END) {
                 RTMKeyHandlerClient.INSTANCE.onTickEnd();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (event.modID.equals(RTMCore.MODID)) {
+            RTMConfig.syncConfig();
         }
     }
 }

@@ -4,7 +4,7 @@ import jp.ngt.ngtlib.block.EnumFace;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.NGTUtilClient;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.block.BlockMirror.MirrorType;
 import jp.ngt.rtm.util.DummyRenderer;
 import jp.ngt.rtm.util.DummyViewer;
@@ -55,7 +55,7 @@ public class MirrorObject {
         this.type = par3;
 
         this.dummyViewer = new DummyViewer(world, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-        int size = RTMCore.mirrorTextureSize;
+        int size = RTMConfig.mirrorTextureSize;
         this.buffer = new Framebuffer(size, size, true);
         this.buffer.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
         this.renderGlobal = new SubRenderGlobal(this);
@@ -100,7 +100,7 @@ public class MirrorObject {
 
         ++tick;
 
-        if (tick == RTMCore.mirrorRenderingFrequency) {
+        if (tick == RTMConfig.mirrorRenderingFrequency) {
             tick = 0;
             float f0 = TIMER.renderPartialTicks;
 

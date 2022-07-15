@@ -2,7 +2,7 @@ package jp.ngt.rtm.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.entity.EntityBullet;
 import jp.ngt.rtm.entity.npc.EntityDummyPlayer;
@@ -119,7 +119,7 @@ public class ItemGun extends Item {
                 bullet = new EntityBullet(world, player, this.gunType.speed, this.gunType.bulletType);
             }
             world.spawnEntityInWorld(bullet);
-            world.playSoundEffect(player.posX, player.posY, player.posZ, "rtm:item.gun", RTMCore.gunSoundVol, 1.0F);
+            world.playSoundEffect(player.posX, player.posY, player.posZ, "rtm:item.gun", RTMConfig.gunSoundVol, 1.0F);
 
             if (!player.capabilities.isCreativeMode) {
                 int damage = this.gunType.bulletType.id * 4 + 2;

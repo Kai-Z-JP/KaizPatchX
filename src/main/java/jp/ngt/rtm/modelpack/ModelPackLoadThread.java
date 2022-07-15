@@ -5,6 +5,7 @@ import jp.ngt.ngtlib.io.IProgressWatcher;
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
 import jp.ngt.ngtlib.io.NGTLog;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.network.PacketModelPack;
@@ -107,7 +108,7 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
     private void runThread() throws InterruptedException {
         this.setMaxValue(0, 8, "");
 
-        if (this.threadSide == Side.CLIENT && RTMCore.useServerModelPack) {
+        if (this.threadSide == Side.CLIENT && RTMConfig.useServerModelPack) {
             this.setText(0, "Waiting for connecting to Server");
             this.setText(1, "You can start game");
 
@@ -145,7 +146,7 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
         this.setMaxValue(1, fileList.size(), "");
 
         ExecutorService executor;
-        switch (RTMCore.loadSpeed) {
+        switch (RTMConfig.loadSpeed) {
             case 1:
                 executor = Executors.newSingleThreadExecutor();
                 break;

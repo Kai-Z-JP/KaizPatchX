@@ -144,10 +144,10 @@ public class BlockMarker extends BlockContainer {
         RailProperty prop = this.hasRail(player, makeRail);
         if (prop != null) {
             int type = this.markerType;
-            int dis1 = RTMCore.railGeneratingDistance;
+            int dis1 = RTMConfig.railGeneratingDistance;
             int dis2 = dis1 * 2;
             int dis3 = dis1 * dis1;
-            int hei1 = RTMCore.railGeneratingHeight;
+            int hei1 = RTMConfig.railGeneratingHeight;
             int hei2 = hei1 * 2;
             boolean isCreative = player == null || player.capabilities.isCreativeMode;
 

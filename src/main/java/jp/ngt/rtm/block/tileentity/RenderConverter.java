@@ -5,7 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.PolygonModel;
 import jp.ngt.ngtlib.renderer.model.VecAccuracy;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -26,11 +26,11 @@ public class RenderConverter extends TileEntitySpecialRenderer {
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4, (float) par6 + 0.5F);
         this.bindTexture(textures[tileEntity.getMode()]);
         GL11.glRotatef((float) -tileEntity.getDirection() * 90.0F, 0.0F, 1.0F, 0.0F);
-        this.model.renderPart(RTMCore.smoothing, "dai");
+        this.model.renderPart(RTMConfig.smoothing, "dai");
         GL11.glRotatef(tileEntity.getPitch(), 1.0F, 0.0F, 0.0F);
-        this.model.renderPart(RTMCore.smoothing, "jiku");
-        this.model.renderPart(RTMCore.smoothing, "body1");
-        this.model.renderPart(RTMCore.smoothing, "body2");
+        this.model.renderPart(RTMConfig.smoothing, "jiku");
+        this.model.renderPart(RTMConfig.smoothing, "body1");
+        this.model.renderPart(RTMConfig.smoothing, "body2");
         GL11.glPopMatrix();
     }
 

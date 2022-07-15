@@ -8,7 +8,7 @@ import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.VecAccuracy;
 import jp.ngt.ngtlib.util.NGTUtilClient;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -91,7 +91,7 @@ public class RenderEffect extends TileEntitySpecialRenderer {
             float f0 = (float) (par1.tickCount % 100) + par5;
             GL11.glTranslatef(0.0F, -f0 * 0.01F, 0.0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            this.sphere.renderAll(RTMCore.smoothing);
+            this.sphere.renderAll(RTMConfig.smoothing);
             GL11.glMatrixMode(GL11.GL_TEXTURE);
             GL11.glLoadIdentity();
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -122,12 +122,12 @@ public class RenderEffect extends TileEntitySpecialRenderer {
 
             GL11.glPushMatrix();
             GL11.glScalef(size1, size1, size1);
-            this.model.renderPart(RTMCore.smoothing, "objC");
+            this.model.renderPart(RTMConfig.smoothing, "objC");
             GL11.glPopMatrix();
 
             GL11.glPushMatrix();
             GL11.glScalef(size1, size2, size1);
-            this.model.renderPart(RTMCore.smoothing, "objB");
+            this.model.renderPart(RTMConfig.smoothing, "objB");
             GL11.glPopMatrix();
 
             GL11.glPushMatrix();
@@ -136,9 +136,9 @@ public class RenderEffect extends TileEntitySpecialRenderer {
             GL11.glColor4f(color2, color2, color2, color2);
             float f2 = (float) (par1.tickCount % 2880) * 0.125F;
             GL11.glRotatef(f2, 0.0F, 1.0F, 0.0F);
-            this.model.renderPart(RTMCore.smoothing, "objD_1");
+            this.model.renderPart(RTMConfig.smoothing, "objD_1");
             GL11.glRotatef(-f2 * 2.0F, 0.0F, 1.0F, 0.0F);
-            this.model.renderPart(RTMCore.smoothing, "objD_2");
+            this.model.renderPart(RTMConfig.smoothing, "objD_2");
             GL11.glPopMatrix();
 
             GL11.glMatrixMode(GL11.GL_TEXTURE);
@@ -151,7 +151,7 @@ public class RenderEffect extends TileEntitySpecialRenderer {
             GL11.glTranslatef(0.0F, -f3, 0.0F);
             GL11.glScalef(size1, size1, size1);
             GL11.glColor4f(color, color, color, color);
-            this.model.renderPart(RTMCore.smoothing, "objA");
+            this.model.renderPart(RTMConfig.smoothing, "objA");
             GL11.glPopMatrix();
 
             this.bindTexture(tex_R);
@@ -166,7 +166,7 @@ public class RenderEffect extends TileEntitySpecialRenderer {
             GL11.glTranslatef(0.0F, 0.5F, 0.0F);
             for (String partName : partNames) {
                 GL11.glColor4f(color, color, color, color2);
-                this.ring.renderPart(RTMCore.smoothing, partName);
+                this.ring.renderPart(RTMConfig.smoothing, partName);
                 color2 *= 0.75F;
             }
             GL11.glPopMatrix();

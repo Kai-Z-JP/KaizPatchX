@@ -167,7 +167,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void versionCheck() {
-        if (!RTMCore.versionCheck) {
+        if (!RTMConfig.versionCheck) {
             return;
         }
 

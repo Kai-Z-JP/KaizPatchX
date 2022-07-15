@@ -6,7 +6,7 @@ import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.NGTTessellator;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.RTMBlock;
-import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailPosition;
 import net.minecraft.block.Block;
@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public abstract class RenderMarkerBlockBase {
-    protected final String[] displayStrings = new String[RTMCore.markerDisplayDistance / 10];
+    protected final String[] displayStrings = new String[RTMConfig.markerDisplayDistance / 10];
 
     public RenderMarkerBlockBase() {
         IntStream.range(0, this.displayStrings.length).forEach(i -> this.displayStrings[i] = (i + 1) * 10 + "m");

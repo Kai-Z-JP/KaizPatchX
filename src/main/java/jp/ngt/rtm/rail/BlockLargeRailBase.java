@@ -6,7 +6,6 @@ import jp.ngt.ngtlib.block.BlockUtil;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
-import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.RTMMaterial;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
@@ -140,12 +139,9 @@ public class BlockLargeRailBase extends BlockContainer {
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof TileEntityLargeRailBase) {
-            ItemStack itemStack = new ItemStack(RTMItem.itemLargeRail);
             TileEntityLargeRailCore coreTile = ((TileEntityLargeRailBase) tileEntity).getRailCore();
             if (coreTile != null) {
-                RailProperty property = coreTile.getProperty();
-                ItemRail.writePropToItem(property, itemStack);
-                return itemStack;
+                return ItemRail.copyItemFromRail(coreTile);
             }
         }
         return null;

@@ -24,6 +24,8 @@ public abstract class SwitchType {
      */
     public abstract boolean init(List<RailPosition> switchList, List<RailPosition> normalList);
 
+    public abstract String getName();
+
     /**
      * ブロック更新時に呼ばれる
      */
@@ -108,6 +110,11 @@ public abstract class SwitchType {
         @Override
         public RailMap getRailMap(Entity entity) {
             return this.points[0].getActiveRailMap(entity.worldObj);
+        }
+
+        @Override
+        public String getName() {
+            return "Simple";
         }
     }
 
@@ -197,6 +204,11 @@ public abstract class SwitchType {
 				if(a2 > 90.0F){a2 = 180.0F - 90.0F;}
 				return a1 < a2 ? map1 : map2;*/
             }
+        }
+
+        @Override
+        public String getName() {
+            return "Crossover";
         }
     }
 
@@ -354,6 +366,11 @@ public abstract class SwitchType {
             }
             return map;
         }
+
+        @Override
+        public String getName() {
+            return "Scissors Crossing";
+        }
     }
 
     /****************************************************************************************************/
@@ -422,6 +439,11 @@ public abstract class SwitchType {
             double d1 = entity.getDistanceSq(pos1[1], 0.0D, pos1[0]);
             double d2 = entity.getDistanceSq(pos2[1], 0.0D, pos2[0]);
             return d1 < d2 ? map1 : map2;
+        }
+
+        @Override
+        public String getName() {
+            return "Diamond Crossing";
         }
     }
 }

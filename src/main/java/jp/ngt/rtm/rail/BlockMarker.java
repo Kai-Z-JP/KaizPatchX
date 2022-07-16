@@ -65,23 +65,11 @@ public class BlockMarker extends BlockContainer {
     public void dropBlockAsItemWithChance(World world, int x, int y, int z, int par5, float par6, int par7) {
     }
 
-	/*@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
-    {
-		this.setBlockBoundsBasedOnState(world, x, y, z);
-		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    public static int getFacing(EntityLivingBase placer, boolean isDiagonal) {
+        int playerFacing = MathHelper.floor_double(NGTMath.normalizeAngle(placer.rotationYaw + 180.0D) / 45.0D + 0.5D) & 7;
+        playerFacing = playerFacing / 2 + (playerFacing % 2 == 0 ? 0 : 4);
+        return playerFacing;
     }
-
-	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
-    {
-		TileEntity tile = blockAccess.getTileEntity(x, y, z);
-		if(tile instanceof TileEntityMarker)
-		{
-			int height = ((TileEntityMarker)tile).getHeight();
-			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, (float)height * 0.0625F, 1.0F);
-		}
-    }*/
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
@@ -168,7 +156,7 @@ public class BlockMarker extends BlockContainer {
                             .map(TileEntityMarker::getMarkerRP)
                             .orElse(null);
                     if (rpS != null && rpE != null) {
-                        return this.createRail0(world, rpS, rpE, prop, makeRail, isCreative);
+                        return createRail0(world, rpS, rpE, prop, makeRail, isCreative);
                     }
                 }
             } else if (type == 1) {
@@ -186,23 +174,38 @@ public class BlockMarker extends BlockContainer {
                 }
 
                 if (list.size() == 2 && list.stream().allMatch(rp -> rp.switchType == 1)) {
-                    return this.createTurntable(world, list.get(0), list.get(1), prop, makeRail, isCreative);
+                    return createTurntable(world, list.get(0), list.get(1), prop, makeRail, isCreative);
                 }
                 if (list.size() >= 3) {
-                    return this.createRail1(world, x, y, z, player, list, prop, makeRail, isCreative);
+                    return createRail1(world, x, y, z, player, list, prop, makeRail, isCreative);
                 }
-            } else if (type == 2) {
-                return this.createRail2(world, x, y, z, prop, makeRail, isCreative);
             }
         }
         return false;
     }
 
+
+    public static boolean createRail(World world, int x, int y, int z, List<RailPosition> rps, RailProperty prop, boolean makeRail, boolean isCreative) {
+
+        rps = rps.stream().sorted(Comparator.comparingInt(o -> o.blockY)).collect(Collectors.toList());
+        if (rps.size() == 2) {
+            if (rps.stream().allMatch(rp -> rp.switchType == 1)) {
+                return createTurntable(world, rps.get(0), rps.get(1), prop, makeRail, isCreative);
+            } else {
+                createRail0(world, rps.get(0), rps.get(1), prop, makeRail, isCreative);
+            }
+        } else if (rps.size() > 2) {
+            createRail1(world, x, y, z, null, rps, prop, makeRail, isCreative);
+        }
+        return false;
+    }
+
+
     /**
      * 通常のレール<br>
      * y0 <= y1でなければならない
      */
-    private boolean createRail0(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
+    private static boolean createRail0(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
         RailMap railMap = new RailMapBasic(start, end);
 
         if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
@@ -241,11 +244,13 @@ public class BlockMarker extends BlockContainer {
      *
      * @param list {x, y, z}
      */
-    private boolean createRail1(World world, int x, int y, int z, EntityPlayer player, List<RailPosition> list, RailProperty prop, boolean makeRail, boolean isCreative) {
+    private static boolean createRail1(World world, int x, int y, int z, EntityPlayer player, List<RailPosition> list, RailProperty prop, boolean makeRail, boolean isCreative) {
         RailMaker railMaker = new RailMaker(world, list);
         SwitchType st = railMaker.getSwitch();
         if (st == null) {
-            NGTLog.sendChatMessage(player, "message.rail.switch_type");
+            if (player != null) {
+                NGTLog.sendChatMessage(player, "message.rail.switch_type");
+            }
             return false;
         }
         RailMapSwitch[] arrayOfRailMapSwitch = st.getAllRailMap();
@@ -285,49 +290,7 @@ public class BlockMarker extends BlockContainer {
         return true;
     }
 
-    /**
-     * 坂レール
-     */
-    private boolean createRail2(World world, int x0, int y0, int z0, RailProperty prop, boolean makeRail, boolean isCreative) {
-        int meta = world.getBlockMetadata(x0, y0, z0);
-        byte dir0 = BlockMarker.getMarkerDir(RTMBlock.markerSlope, meta);
-        byte dir1 = (byte) ((dir0 + 4) & 7);
-        double d0 = meta < 4 ? 15.0D : (meta < 8 ? 7.0D : (meta < 12 ? 3.0D : 1.0D));
-        float f0 = NGTMath.toRadians((float) dir0 * 45.0F);
-        int x1 = x0 + MathHelper.floor_double(MathHelper.sin(f0) * d0);
-        int z1 = z0 + MathHelper.floor_double(MathHelper.cos(f0) * d0);
-        byte type = (byte) (meta < 4 ? 0 : (meta < 8 ? 1 : (meta < 12 ? 2 : 3)));
-
-        RailPosition rp0 = new RailPosition(x0, y0, z0, dir0);
-        RailPosition rp1 = new RailPosition(x1, y0, z1, dir1);
-        RailMapSlope railMap = new RailMapSlope(rp0, rp1, type);
-
-        if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
-            railMap.setRail(world, RTMRail.largeRailSlopeBase0, x0, y0, z0, prop);
-
-            world.setBlock(x0, y0, z0, RTMRail.largeRailSlopeCore0, 0, 2);
-            TileEntityLargeRailSlopeCore tile = (TileEntityLargeRailSlopeCore) world.getTileEntity(x0, y0, z0);
-            tile.setRailPositions(new RailPosition[]{rp0, rp1});
-            tile.setProperty(prop);
-            tile.setSlopeType(type);
-            tile.setStartPoint(x0, y0, z0);
-
-            tile.createRailMap();
-            tile.sendPacket();
-            return true;
-        } else {
-            TileEntity tile = world.getTileEntity(x0, y0, z0);
-            if (tile instanceof TileEntityMarker) {
-                List<int[]> list = new ArrayList<>();
-                list.add(new int[]{x0, y0, z0});
-                list.add(new int[]{x1, y0, z1});
-                ((TileEntityMarker) tile).setMarkersPos(list);
-            }
-            return false;
-        }
-    }
-
-    private boolean createTurntable(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
+    private static boolean createTurntable(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
         int cx = 0;
         int cy = start.blockY;
         int cz = 0;

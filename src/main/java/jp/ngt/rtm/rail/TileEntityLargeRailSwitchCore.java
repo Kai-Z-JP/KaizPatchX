@@ -165,4 +165,14 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
         }
         return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
     }
+
+    @Override
+    public String getRailShapeName() {
+        SwitchType st = this.getSwitch();
+        int[] box = this.getRailSize();
+        return "Type:Switch " + st.getName() + ", " +
+                "X:" + (box[3] - box[0]) + ", " +
+                "Y:" + (box[4] - box[1]) + ", " +
+                "Z:" + (box[5] - box[2]);
+    }
 }

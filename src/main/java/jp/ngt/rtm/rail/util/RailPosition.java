@@ -30,7 +30,7 @@ public class RailPosition {
     /**
      * ブロックとしての向き 0~7
      */
-    public final byte direction;
+    public byte direction;
     /**
      * 0~15
      */

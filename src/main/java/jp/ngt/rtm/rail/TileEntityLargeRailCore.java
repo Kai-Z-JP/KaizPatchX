@@ -360,4 +360,9 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         Arrays.stream(this.railPositions).forEach(rp -> rp.movePos(difX, difY, difZ));
         super.setPos(x, y, z, prevX, prevY, prevZ);
     }
+
+    /**
+     * レール形状の説明を取得(アイテム表示用)
+     */
+    public abstract String getRailShapeName();
 }

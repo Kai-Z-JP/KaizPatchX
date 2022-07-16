@@ -109,6 +109,31 @@ public abstract class RenderMarkerBlockBase {
         }
 
         GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, z);
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        FontRenderer fontRenderer = RenderManager.instance.getFontRenderer();
+        for (RailMap rm : tileEntity.getRailMaps()) {
+            GL11.glPushMatrix();
+            int split = (int) (rm.getLength() * 4.0D);
+            double[] pos = rm.getRailPos(split, split / 2);
+            float x0 = (float) (pos[1] - tileEntity.getMarkerRP().posX);
+            float y0 = (float) ((rm.getStartRP().posY + rm.getEndRP().posY) / 2 - tileEntity.getMarkerRP().posY);
+            float z0 = (float) (pos[0] - tileEntity.getMarkerRP().posZ);
+            GL11.glTranslatef(x0, y0, z0);
+            GL11.glScalef(-0.05F, -0.05F, -0.05F);
+            GL11.glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
+            String s = String.valueOf((float) Math.round(rm.getLength() * 10000) / 10000);
+            int stringWidth = fontRenderer.getStringWidth(s);
+            fontRenderer.drawString(s, -stringWidth / 2, -10, 0x00EE00);
+            GL11.glPopMatrix();
+        }
+
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+        GL11.glPopMatrix();
     }
 
     protected void renderGrid(TileEntityMarker marker) {

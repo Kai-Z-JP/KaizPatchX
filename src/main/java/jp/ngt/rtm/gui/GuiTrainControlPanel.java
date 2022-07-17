@@ -376,7 +376,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                         if (prevData != data) {
                             this.sendTrainState(id, (byte) data);
                             button.func_146113_a(this.mc.getSoundHandler());
-                            button.displayString = this.getFormattedText(id, (byte) data) + " " + data + "/" + max;
+                            button.displayString = this.getFormattedText(id, (byte) data);
                         }
                     });
         }

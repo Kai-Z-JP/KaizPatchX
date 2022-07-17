@@ -19,8 +19,6 @@ import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.item.ItemTrain;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
-import jp.ngt.rtm.modelpack.modelset.ModelSetTrain;
-import jp.ngt.rtm.modelpack.modelset.ModelSetTrainClient;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.network.PacketNotice;
 import jp.ngt.rtm.network.PacketSetTrainState;
@@ -465,14 +463,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     protected void playBrakeReleaseSound(boolean isStrong) {
-        String sound;
-        if (this.getModelSet() instanceof ModelSetTrain) {
-            ModelSetTrain modelSet = (ModelSetTrain) this.getModelSet();
-            sound = isStrong ? modelSet.sound_brakeRelease_s : modelSet.sound_brakeRelease_w;
-        } else {
-            ModelSetTrainClient modelSet = (ModelSetTrainClient) this.getModelSet();
-            sound = isStrong ? modelSet.sound_brakeRelease_s : modelSet.sound_brakeRelease_w;
-        }
+        TrainConfig config = this.getModelSet().getConfig();
+        String sound = isStrong ? config.sound_BrakeRelease : config.sound_BrakeRelease2;
 
         if (sound != null) {
             String[] sa = sound.split(":");

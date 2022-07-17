@@ -124,6 +124,9 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
             }
         }
 
+        this.sound_BrakeRelease = this.fixSoundPath(this.sound_BrakeRelease);
+        this.sound_BrakeRelease2 = this.fixSoundPath(this.sound_BrakeRelease2);
+
         if (this.bogiePos == null) {
             this.bogiePos = new float[][]{{0.0F, 0.0F, 7.125F}, {0.0F, 0.0F, -7.125F}};
         }

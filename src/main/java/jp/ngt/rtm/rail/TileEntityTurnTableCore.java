@@ -8,6 +8,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.util.BogieController.UpdateFlag;
 import jp.ngt.rtm.network.PacketNotice;
+import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailMapTurntable;
 import jp.ngt.rtm.rail.util.RailPosition;
 import net.minecraft.nbt.NBTTagCompound;
@@ -132,14 +133,12 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
         }
     }
 
-//    @Override
-//    public String getRailShapeName() {
-//        RailMap map = this.getRailMap(null);
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("Type:TurnTable, ");
-//        sb.append("X:").append(map.getEndRP().blockX - map.getStartRP().blockX).append(", ");
-//        sb.append("Y:").append(map.getEndRP().blockY - map.getStartRP().blockY).append(", ");
-//        sb.append("Z:").append(map.getEndRP().blockZ - map.getStartRP().blockZ);
-//        return sb.toString();
-//    }
+    @Override
+    public String getRailShapeName() {
+        RailMap map = this.getRailMap(null);
+        return "Type:TurnTable, " +
+                "X:" + (map.getEndRP().blockX - map.getStartRP().blockX) + ", " +
+                "Y:" + (map.getEndRP().blockY - map.getStartRP().blockY) + ", " +
+                "Z:" + (map.getEndRP().blockZ - map.getStartRP().blockZ);
+    }
 }

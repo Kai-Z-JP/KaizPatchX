@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketLargeRailCore;
+import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailMapSlope;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -70,5 +71,15 @@ public class TileEntityLargeRailSlopeCore extends TileEntityLargeRailCore {
         int minZ = Math.min(startZ, endZ);
         int maxZ = Math.max(startZ, endZ);
         return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
+    }
+
+
+    @Override
+    public String getRailShapeName() {
+        RailMap map = this.getRailMap(null);
+        return "Type:Normal, " +
+                "X:" + (map.getEndRP().blockX - map.getStartRP().blockX) + ", " +
+                "Y:" + (map.getEndRP().blockY - map.getStartRP().blockY) + ", " +
+                "Z:" + (map.getEndRP().blockZ - map.getStartRP().blockZ);
     }
 }

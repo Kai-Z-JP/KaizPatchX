@@ -2,6 +2,8 @@ package jp.ngt.rtm.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.math.PooledVec3;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
@@ -12,6 +14,7 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import jp.ngt.rtm.rail.BlockMarker;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
+import jp.ngt.rtm.rail.util.RailPosition;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,9 +25,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRail extends ItemWithModel {
@@ -41,22 +46,22 @@ public class ItemRail extends ItemWithModel {
         }
         if (!world.isRemote && PermissionManager.INSTANCE.hasPermission(player, RTMCore.EDIT_RAIL)) {
             TileEntity tile = world.getTileEntity(x, y, z);
-            if (!(tile instanceof TileEntityLargeRailBase)) {
-                return true;
-            }
+            if (tile instanceof TileEntityLargeRailBase) {
+                TileEntityLargeRailCore core = ((TileEntityLargeRailBase) tile).getRailCore();
+                if (core != null) {
+                    RailProperty property = ItemRail.getProperty(itemStack);
+                    if (property != null) {
+                        if (player.isSneaking()) {
+                            core.replaceRail(property);
+                        } else {
+                            core.addSubRail(property);
+                        }
+                    }
 
-            TileEntityLargeRailCore core = ((TileEntityLargeRailBase) tile).getRailCore();
-            if (core == null) {
-                return true;
-            }
-
-            RailProperty property = ItemRail.getProperty(itemStack);
-            if (property != null) {
-                if (player.isSneaking()) {
-                    core.replaceRail(property);
-                } else {
-                    core.addSubRail(property);
                 }
+            } else {
+                this.placeRail(world, x, y + 1, z, itemStack, player);
+                return true;
             }
         }
         return true;
@@ -159,5 +164,67 @@ public class ItemRail extends ItemWithModel {
     @Override
     protected String getDefaultModelName(ItemStack itemStack) {
         return "1067mm_Wood";
+    }
+
+    private static List<RailPosition> getRPFromItem(ItemStack stack) {
+        List<RailPosition> list = new ArrayList<>();
+        NBTTagCompound nbt = stack.getTagCompound();
+        if (nbt != null) {
+            byte size = nbt.getByte("Size");
+            for (int i = 0; i < size; ++i) {
+                list.add(RailPosition.readFromNBT(nbt.getCompoundTag("RP" + i)));
+            }
+        }
+        return list;
+    }
+
+    private static void setRPToItem(ItemStack stack, RailPosition[] rps) {
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound nbt = stack.getTagCompound();
+
+        nbt.setByte("Size", (byte) rps.length);
+        for (int i = 0; i < rps.length; ++i) {
+            nbt.setTag("RP" + i, rps[i].writeToNBT());
+        }
+    }
+
+    public static ItemStack copyItemFromRail(TileEntityLargeRailCore core) {
+        ItemStack stack = ItemRail.getRailItem(core.getProperty());
+        RailPosition[] rps = core.getRailPositions();
+        setRPToItem(stack, rps);
+        String shape = core.getRailShapeName();
+        stack.getTagCompound().setString("ShapeName", shape);
+        return stack;
+    }
+
+    private boolean placeRail(World world, int x, int y, int z, ItemStack stack, EntityPlayer player) {
+        List<RailPosition> rps = getRPFromItem(stack);
+        if (!rps.isEmpty()) {
+            int dir = -BlockMarker.getFacing(player, false) * 2 + 4;//90刻みへ変換
+            RailPosition topRP = rps.get(0);//分岐RP前提、BlockMarkerで並べ替え
+            int difDir = dir - topRP.direction;
+            int origX = topRP.blockX;
+            int origY = topRP.blockY;
+            int origZ = topRP.blockZ;
+            for (RailPosition rp : rps) {
+                double dif2X = (rp.blockX + 0.5D) - (origX + 0.5D);
+                double dif2Y = (rp.blockY + 0.5D) - (origY + 0.5D);
+                double dif2Z = (rp.blockZ + 0.5D) - (origZ + 0.5D);
+                Vec3 vec = PooledVec3.create(dif2X, dif2Y, dif2Z);
+                vec = vec.rotateAroundY(difDir * 45.0F);
+                rp.blockX = MathHelper.floor_double(x + 0.5D + vec.getX());//整数座標で計算するとずれる
+                rp.blockY = MathHelper.floor_double(y + 0.5D + vec.getY());
+                rp.blockZ = MathHelper.floor_double(z + 0.5D + vec.getZ());
+                rp.direction = (byte) ((rp.direction + difDir + 8) & 7);
+                rp.anchorYaw = MathHelper.wrapAngleTo180_float(rp.anchorYaw + difDir * 45.0F);
+                rp.init();
+            }
+            RailProperty state = ItemRail.getProperty(stack);
+            boolean isCreative = player.capabilities.isCreativeMode;
+            return BlockMarker.createRail(world, x, y, z, rps, state, true, isCreative);
+        }
+        return false;
     }
 }

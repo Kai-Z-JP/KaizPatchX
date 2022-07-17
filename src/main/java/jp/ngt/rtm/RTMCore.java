@@ -35,7 +35,7 @@ import java.util.Map;
 public final class RTMCore {
     public static final String MODID = "RTM";
     public static final String NAME = "RealTrainMod";
-    public static final String VERSION = "1.7.10.41_KaizPatchX1.5.0";
+    public static final String VERSION = "1.7.10.41_KaizPatchX1.5.1";
 
     @Instance(MODID)
     public static RTMCore instance;

@@ -3,6 +3,8 @@ package jp.ngt.ngtlib.protection;
 import jp.ngt.ngtlib.NGTCore;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.network.PacketProtection;
+import jp.ngt.rtm.RTMItem;
+import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -57,7 +59,9 @@ public class ProtectionManager {
 
     public boolean rightClickObject(EntityPlayer player, Object target) {
         NBTTagCompound nbt = this.getKeyNBT(player);
-        if (nbt != null) {
+        if (target instanceof TileEntityLargeRailBase && player.getHeldItem() != null && player.getHeldItem().getItem() == RTMItem.itemtrain) {
+            return false;
+        } else if (nbt != null) {
             return this.useKey(player, nbt, target);
         } else {
             return this.getLockState(player, target, KEY_UNEDITABLE);

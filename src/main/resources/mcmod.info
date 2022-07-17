@@ -1,18 +1,53 @@
 [
-{
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": [
-    "ExampleDude"
-  ],
-  "credits": "The Forge and FML guys, for making this example",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "NGTLib",
+    "name": "NGTLib",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": [
+      "ngt5479"
+    ],
+    "credits": "Shin504, IgorKhydyakov",
+    "requiredMods": [
+      "Forge"
+    ],
+    "parent": "",
+    "dependencies": []
+  },
+  {
+    "modid": "RTM",
+    "name": "RealTrainMod",
+    "logoFile": "logo.png",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": [
+      "ngt5479"
+    ],
+    "credits": "onabe, maikura_de_go, izumi, KWES-Link, I'sZako, gepponkoku, Shin504, IgorKhydyakov",
+    "requiredMods": [
+      "Forge",
+      "NGTLib"
+    ],
+    "parent": "",
+    "dependencies": []
+  },
+  {
+    "modid": "MCTE",
+    "name": "MCTerrainEditor",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": [
+      "ngt5479"
+    ],
+    "credits": "",
+    "requiredMods": [
+      "Forge",
+      "NGTLib"
+    ],
+    "parent": "",
+    "dependencies": []
+  }
 ]

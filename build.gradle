@@ -77,7 +77,7 @@ processResources {
 tasks.withType(Jar) { compileJava.options.encoding = 'UTF-8' }
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
+    from sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
 

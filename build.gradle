@@ -20,7 +20,7 @@ buildscript {
 
 configurations {
     embed
-    compile.extendsFrom(embed)
+    api.extendsFrom(embed)
 }
 
 apply plugin: 'forge'
@@ -95,11 +95,11 @@ targetCompatibility = "1.8"
 //}
 
 jar {
-    configurations.embed.each { dep ->
-        from(project.zipTree(dep)) {
-            exclude 'META-INF', 'META-INF/versions/**', 'META-INF/maven/**'
-        }
-    }
+//    configurations.embed.each { dep ->
+//        from(project.zipTree(dep)) {
+//            exclude 'META-INF', 'META-INF/versions/**', 'META-INF/maven/**'
+//        }
+//    }
 
     from(rootDir) {
         include 'README.md'

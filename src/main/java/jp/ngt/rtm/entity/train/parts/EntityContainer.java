@@ -74,7 +74,9 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
             });
 
             NBTTagCompound itemNBT = this.itemCargo.hasTagCompound() ? this.itemCargo.getTagCompound() : new NBTTagCompound();
-            itemNBT.setTag("Items", tagList);
+            if (tagList.tagCount() != 0) {
+                itemNBT.setTag("Items", tagList);
+            }
             itemNBT.setString("ModelName", this.getModelName());
             this.itemCargo.setTagCompound(itemNBT);
         }

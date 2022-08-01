@@ -3,10 +3,7 @@ package jp.ngt.rtm.item;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.rtm.entity.train.parts.EntityArtillery;
-import jp.ngt.rtm.entity.train.parts.EntityCargo;
-import jp.ngt.rtm.entity.train.parts.EntityContainer;
-import jp.ngt.rtm.entity.train.parts.EntityTie;
+import jp.ngt.rtm.entity.train.parts.*;
 import jp.ngt.rtm.modelpack.cfg.ContainerConfig;
 import jp.ngt.rtm.modelpack.cfg.FirearmConfig;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -62,7 +59,7 @@ public class ItemCargo extends ItemWithModel {
                 ++par4;
             }
 
-            ItemStack itemstack = itemStack.copy();
+            ItemStack itemstack = itemStack.splitStack(1);
             int damage = itemstack.getItemDamage();
             EntityCargo cargo = this.createCargoEntity(world, itemstack, par4, par5, par6, damage);
             float rotationInterval = 15.0F;
@@ -71,14 +68,12 @@ public class ItemCargo extends ItemWithModel {
             cargo.setPositionAndRotation((double) par4 + 0.5D, par5, (double) par6 + 0.5D, yawF, 0.0F);
             cargo.readCargoFromItem();
 
-            if (damage == 1 && ((EntityArtillery) cargo).getModelName().isEmpty()) {
-                ((EntityArtillery) cargo).setModelName(getModelName(itemstack));
-            } else if (damage == 0 && ((EntityContainer) cargo).getModelName().isEmpty()) {
-                ((EntityContainer) cargo).setModelName(getModelName(itemstack));
+            if (cargo instanceof EntityCargoWithModel) {
+                EntityCargoWithModel cwm = (EntityCargoWithModel) cargo;
+                cwm.getResourceState().readFromNBT(this.getModelState(itemstack).writeToNBT());
             }
 
             world.spawnEntityInWorld(cargo);
-            --itemStack.stackSize;
         }
         return true;
     }

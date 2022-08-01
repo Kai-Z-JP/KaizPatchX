@@ -20,6 +20,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> implements IInventory {
@@ -113,13 +115,26 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
         ItemStack itemstack = player.inventory.getCurrentItem();
         if (this.isIndependent && itemstack != null) {
             if (itemstack.getItem() instanceof ItemCargo && itemstack.getItemDamage() == 0) {
-                ModelSetContainer set = this.getModelSet();
-                EntityCargo cargo = new EntityContainer(this.worldObj, itemstack.copy(), 0, 0, 0);
-                cargo.setPositionAndRotation(this.posX, this.posY + set.getConfig().containerHeight, this.posZ, this.rotationYaw, 0.0F);
+                double d0 = 1.5D;
+                double d1 = 256.0D;
+                AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY, this.posZ - d0, this.posX + d0, this.posY + d1, this.posZ + d0);
+                EntityContainer topEntity = ((List<EntityContainer>) this.worldObj.getEntitiesWithinAABBExcludingEntity(player, aabb, EntityCargo.class::isInstance))
+                        .stream()
+                        .filter(entity -> entity.isIndependent)
+                        .max(Comparator.comparingDouble(e -> e.posY))
+                        .orElse(this);
+
+                ModelSetContainer set = topEntity.getModelSet();
+                EntityCargo cargo = new EntityContainer(this.worldObj, itemstack.splitStack(1), 0, 0, 0);
+                cargo.setPositionAndRotation(topEntity.posX, topEntity.posY + set.getConfig().containerHeight, topEntity.posZ, topEntity.rotationYaw, 0.0F);
+
+                cargo.readCargoFromItem();
                 if (!this.worldObj.isRemote) {
                     this.worldObj.spawnEntityInWorld(cargo);
+
+                    EntityCargoWithModel cwm = (EntityCargoWithModel) cargo;
+                    cwm.getResourceState().readFromNBT(((ItemCargo) itemstack.getItem()).getModelState(itemstack).writeToNBT());
                 }
-                --itemstack.stackSize;
                 return true;
             } else if (itemstack.getItem() instanceof ItemCrowbar) {
                 this.attackEntityFrom(DamageSource.anvil, 0.0F);

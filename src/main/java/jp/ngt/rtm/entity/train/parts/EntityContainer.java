@@ -8,8 +8,10 @@ import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.item.ItemCargo;
 import jp.ngt.rtm.item.ItemCrowbar;
+import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ContainerConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetContainer;
+import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -118,24 +120,29 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
         if (this.isIndependent && itemstack != null) {
             if (itemstack.getItem() instanceof ItemCargo && itemstack.getItemDamage() == 0) {
                 double d0 = 1.5D;
-                double d1 = 256.0D;
-                AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY, this.posZ - d0, this.posX + d0, this.posY + d1, this.posZ + d0);
-                EntityContainer topEntity = ((List<EntityContainer>) this.worldObj.getEntitiesWithinAABBExcludingEntity(player, aabb, EntityCargo.class::isInstance))
+                double d1 = this.getModelSet().getConfig().containerHeight;
+                ItemCargo itemCargo = (ItemCargo) itemstack.getItem();
+                double d2 = ((ContainerConfig) ModelPackManager.INSTANCE.getModelSet(itemCargo.getModelType(itemstack), itemCargo.getModelName(itemstack)).getConfig()).containerHeight;
+                AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY + d1, this.posZ - d0, this.posX + d0, this.posY + d1 + d2, this.posZ + d0);
+                EntityCargo topEntity = ((List<EntityContainer>) this.worldObj.getEntitiesWithinAABBExcludingEntity(player, aabb, EntityCargo.class::isInstance))
                         .stream()
                         .filter(entity -> entity.isIndependent)
                         .max(Comparator.comparingDouble(e -> e.posY))
                         .orElse(this);
 
-                ModelSetContainer set = topEntity.getModelSet();
-                EntityCargo cargo = new EntityContainer(this.worldObj, itemstack.splitStack(1), 0, 0, 0);
-                cargo.setPositionAndRotation(topEntity.posX, topEntity.posY + set.getConfig().containerHeight, topEntity.posZ, topEntity.rotationYaw, 0.0F);
+                if (topEntity != this) {
+                    return topEntity.interactFirst(player);
+                }
+
+                EntityCargoWithModel<ModelSetContainer> cargo = new EntityContainer(this.worldObj, itemstack.splitStack(1), 0, 0, 0);
+                cargo.setPositionAndRotation(this.posX, this.posY + d1, this.posZ, this.rotationYaw, 0.0F);
 
                 cargo.readCargoFromItem();
                 if (!this.worldObj.isRemote) {
                     this.worldObj.spawnEntityInWorld(cargo);
 
-                    EntityCargoWithModel cwm = (EntityCargoWithModel) cargo;
-                    cwm.getResourceState().readFromNBT(((ItemCargo) itemstack.getItem()).getModelState(itemstack).writeToNBT());
+                    ResourceState itemState = itemCargo.getModelState(itemstack);
+                    cargo.getResourceState().readFromNBT(itemState.writeToNBT());
                 }
                 return true;
             } else if (itemstack.getItem() instanceof ItemCrowbar) {

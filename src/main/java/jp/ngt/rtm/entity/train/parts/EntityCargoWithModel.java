@@ -1,7 +1,9 @@
 package jp.ngt.rtm.entity.train.parts;
 
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
+import jp.ngt.rtm.item.ItemWithModel;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
@@ -9,6 +11,7 @@ import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public abstract class EntityCargoWithModel<T extends ModelSetBase> extends EntityCargo implements IModelSelector {
@@ -104,4 +107,20 @@ public abstract class EntityCargoWithModel<T extends ModelSetBase> extends Entit
     }
 
     public abstract String getDefaultName();
+
+    @Override
+    public ItemStack getPickedResult(MovingObjectPosition target) {
+        if (target.entityHit instanceof EntityCargoWithModel) {
+            EntityCargoWithModel<?> cargo = (EntityCargoWithModel<?>) target.entityHit;
+            ItemStack itemStack = this.getItem();
+            ((ItemWithModel) RTMItem.itemCargo).setModelName(itemStack, cargo.getModelName());
+
+            ((ItemWithModel) RTMItem.itemCargo).setModelState(itemStack, cargo.getResourceState());
+            return itemStack;
+        } else {
+            return null;
+        }
+    }
+
+    protected abstract ItemStack getItem();
 }

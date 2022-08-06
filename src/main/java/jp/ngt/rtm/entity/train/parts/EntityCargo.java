@@ -100,20 +100,20 @@ public abstract class EntityCargo extends EntityVehiclePart {
 
     @Override
     public boolean attackEntityFrom(DamageSource par1, float par2) {
-        if (this.isEntityInvulnerable() || this.isDead) {
-            return false;
-        } else {
+        if (!this.isEntityInvulnerable() && !this.isDead) {
             if (!par1.isExplosion() && par1.getEntity() instanceof EntityPlayer) {
                 if (!this.worldObj.isRemote) {
                     if (this.isIndependent || this.getVehicle() == null) {
                         this.setDead();
-                        this.dropCargoItem();
+                        if (!((EntityPlayer) par1.getEntity()).capabilities.isCreativeMode) {
+                            this.dropCargoItem();
+                        }
                     }
                 }
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
     /**

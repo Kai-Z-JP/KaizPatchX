@@ -304,4 +304,9 @@ public class EntityArtillery extends EntityCargoWithModel<ModelSetFirearm> {
     public String getDefaultName() {
         return "40cmArtillery";
     }
+
+    @Override
+    protected ItemStack getItem() {
+        return new ItemStack(RTMItem.itemCargo, 1, 1);
+    }
 }

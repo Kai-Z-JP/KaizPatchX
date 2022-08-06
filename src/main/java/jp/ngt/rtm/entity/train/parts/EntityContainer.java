@@ -4,12 +4,15 @@ import jp.ngt.ngtlib.item.ItemUtil;
 import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.item.ItemCargo;
 import jp.ngt.rtm.item.ItemCrowbar;
+import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ContainerConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetContainer;
+import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -20,6 +23,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> implements IInventory {
@@ -72,7 +77,9 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
             });
 
             NBTTagCompound itemNBT = this.itemCargo.hasTagCompound() ? this.itemCargo.getTagCompound() : new NBTTagCompound();
-            itemNBT.setTag("Items", tagList);
+            if (tagList.tagCount() != 0) {
+                itemNBT.setTag("Items", tagList);
+            }
             itemNBT.setString("ModelName", this.getModelName());
             this.itemCargo.setTagCompound(itemNBT);
         }
@@ -113,13 +120,31 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
         ItemStack itemstack = player.inventory.getCurrentItem();
         if (this.isIndependent && itemstack != null) {
             if (itemstack.getItem() instanceof ItemCargo && itemstack.getItemDamage() == 0) {
-                ModelSetContainer set = this.getModelSet();
-                EntityCargo cargo = new EntityContainer(this.worldObj, itemstack.copy(), 0, 0, 0);
-                cargo.setPositionAndRotation(this.posX, this.posY + set.getConfig().containerHeight, this.posZ, this.rotationYaw, 0.0F);
+                double d0 = 1.5D;
+                double d1 = this.getModelSet().getConfig().containerHeight;
+                ItemCargo itemCargo = (ItemCargo) itemstack.getItem();
+                double d2 = ((ContainerConfig) ModelPackManager.INSTANCE.getModelSet(itemCargo.getModelType(itemstack), itemCargo.getModelName(itemstack)).getConfig()).containerHeight;
+                AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.posX - d0, this.posY + d1, this.posZ - d0, this.posX + d0, this.posY + d1 + d2, this.posZ + d0);
+                EntityCargo topEntity = ((List<EntityContainer>) this.worldObj.getEntitiesWithinAABBExcludingEntity(player, aabb, EntityCargo.class::isInstance))
+                        .stream()
+                        .filter(entity -> entity.isIndependent)
+                        .max(Comparator.comparingDouble(e -> e.posY))
+                        .orElse(this);
+
+                if (topEntity != this) {
+                    return topEntity.interactFirst(player);
+                }
+
+                EntityCargoWithModel<ModelSetContainer> cargo = new EntityContainer(this.worldObj, itemstack.splitStack(1), 0, 0, 0);
+                cargo.setPositionAndRotation(this.posX, this.posY + d1, this.posZ, this.rotationYaw, 0.0F);
+
+                cargo.readCargoFromItem();
                 if (!this.worldObj.isRemote) {
                     this.worldObj.spawnEntityInWorld(cargo);
+
+                    ResourceState itemState = itemCargo.getModelState(itemstack);
+                    cargo.getResourceState().readFromNBT(itemState.writeToNBT());
                 }
-                --itemstack.stackSize;
                 return true;
             } else if (itemstack.getItem() instanceof ItemCrowbar) {
                 this.attackEntityFrom(DamageSource.anvil, 0.0F);
@@ -258,5 +283,10 @@ public class EntityContainer extends EntityCargoWithModel<ModelSetContainer> imp
     @Override
     public String getDefaultName() {
         return "19g_JRF_0";
+    }
+
+    @Override
+    protected ItemStack getItem() {
+        return new ItemStack(RTMItem.itemCargo, 1, 0);
     }
 }

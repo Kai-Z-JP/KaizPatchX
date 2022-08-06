@@ -106,8 +106,6 @@ public class GuiEditor extends GuiContainerCustom {
         this.buttonList.add(new GuiButton(501, this.width - 50, 190, 40, 20, "Miniature"));
         this.buttonList.add(new GuiButton(502, this.width - 90, 210, 40, 20, "Export"));
         this.buttonList.add(new GuiButton(503, this.width - 50, 210, 40, 20, "Import"));
-
-        this.currentTextField = this.textField_start[0];
     }
 
     @Override

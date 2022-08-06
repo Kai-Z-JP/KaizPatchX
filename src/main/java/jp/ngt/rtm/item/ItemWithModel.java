@@ -148,7 +148,7 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         itemStack.getTagCompound().setTag("State", state.writeToNBT());
 
         if (this.selectedPlayer != null) {
-            NGTUtil.sendPacketToServer(this.selectedPlayer, this.selectedItem);
+            NGTUtil.sendPacketToServer(this.selectedPlayer, itemStack);
         }
     }
 

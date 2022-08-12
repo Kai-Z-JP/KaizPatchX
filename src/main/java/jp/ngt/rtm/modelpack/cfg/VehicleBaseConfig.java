@@ -22,6 +22,10 @@ public abstract class VehicleBaseConfig extends ModelConfig {
      * [ボタン][ボタンの状態名]
      */
     public String[][] customButtons;
+    /**
+     * [各ボタンの説明]
+     */
+    public String[] customButtonTips;
 
     public VehicleParts[] door_left;
     public VehicleParts[] door_right;
@@ -144,6 +148,10 @@ public abstract class VehicleBaseConfig extends ModelConfig {
 
         if (this.customButtons == null) {
             this.customButtons = new String[][]{};
+        }
+
+        if (this.customButtonTips == null) {
+            this.customButtonTips = new String[this.customButtons.length];
         }
     }
 

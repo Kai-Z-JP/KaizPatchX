@@ -2,6 +2,7 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.gui.GuiButtonCustom;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
@@ -15,6 +16,7 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.network.PacketNotice;
 import jp.ngt.rtm.network.PacketRTMKey;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
@@ -23,6 +25,7 @@ import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -90,6 +93,11 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
     }
 
     @Override
+    public void drawHoveringText(List textLines, int x, int y, FontRenderer font) {
+        super.drawHoveringText(textLines, x, y, font);
+    }
+
+    @Override
     public void initGui() {
         super.initGui();
 
@@ -127,14 +135,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
             this.buttonList.clear();
         } else if (tab == TabTrainControlPanel.TAB_Setting) {
-            //this.slotsList = containerTrain.inventorySlots;
-            containerTrain.inventorySlots = new ArrayList<>();
-            IntStream.range(0, 9)
-                    .mapToObj(i -> new Slot(this.player.inventory, i, 8 + i * 18, 142))
-                    .forEach(slot -> {
-                        slot.slotNumber = containerTrain.inventorySlots.size();
-                        containerTrain.inventorySlots.add(slot);
-                    });
+            this.initInventorySlot(containerTrain);
 
             this.buttonList.clear();
             //wMax:168
@@ -172,32 +173,26 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             this.buttonList.add(new GuiButton(114, this.guiLeft + 4, this.guiTop + 100, 20, 20, "<"));
             this.buttonList.add(new GuiButton(115, this.guiLeft + 152, this.guiTop + 100, 20, 20, ">"));
         } else if (tab == TabTrainControlPanel.TAB_Function) {
-            containerTrain.inventorySlots = new ArrayList<>();
-            IntStream.range(0, 9).mapToObj(i -> new Slot(this.player.inventory, i, 8 + i * 18, 142)).forEach(slot -> {
-                slot.slotNumber = containerTrain.inventorySlots.size();
-                containerTrain.inventorySlots.add(slot);
-            });
+            this.initInventorySlot(containerTrain);
 
             this.buttonList.clear();
 
-            String[][] sa = this.getCustomButtons();
-            this.dataValues = new int[sa.length];
-            IntStream.range(0, sa.length).forEach(i -> {
+            String[][] buttons = this.getCustomButtons();
+            String[] tips = this.getCustomButtonTips();
+            this.dataValues = new int[buttons.length];
+            IntStream.range(0, buttons.length).forEach(i -> {
                 int value = this.train.getResourceState().getDataMap().getInt("Button" + i);
                 int x = this.guiLeft + 4 + (i % 3) * (54 + 3);
                 int y = this.guiTop + 4 + (i / 3) * (20 + 4);
-                String displayString = sa[i].length > value ? sa[i][value] : "Out of range";
-                this.buttonList.add(new GuiButton(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, displayString));
+                String displayString = buttons[i].length > value ? buttons[i][value] : "Out of range";
+                GuiButtonCustom button = new GuiButtonCustom(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, displayString, this);
+                button.addTips(tips[i]);
+                button.addTips("Press F to set the state to all train of this formation");
+                this.buttonList.add(button);
                 this.dataValues[i] = value;
             });
         } else if (tab == TabTrainControlPanel.TAB_Formation) {
-            containerTrain.inventorySlots = new ArrayList<>();
-            IntStream.range(0, 9)
-                    .mapToObj(i -> new Slot(this.player.inventory, i, 8 + i * 18, 142))
-                    .forEach(slot -> {
-                        slot.slotNumber = containerTrain.inventorySlots.size();
-                        containerTrain.inventorySlots.add(slot);
-                    });
+            this.initInventorySlot(containerTrain);
 
             this.buttonList.clear();
 
@@ -230,6 +225,16 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
         this.currentScroll = 0.0F;
         this.sendTabPacket(this.selectedTabIndex);
+    }
+
+    private void initInventorySlot(Container containerTrain) {
+        containerTrain.inventorySlots = new ArrayList<>();
+        IntStream.range(0, 9)
+                .mapToObj(i -> new Slot(this.player.inventory, i, 8 + i * 18, 142))
+                .forEach(slot -> {
+                    slot.slotNumber = containerTrain.inventorySlots.size();
+                    containerTrain.inventorySlots.add(slot);
+                });
     }
 
     private void sendTabPacket(int tabIndex) {
@@ -804,6 +809,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
     private String[][] getCustomButtons() {
         return this.modelset.getConfig().customButtons;
+    }
+
+    private String[] getCustomButtonTips() {
+        return this.modelset.getConfig().customButtonTips;
     }
 
     private class GuiButtonFormation extends GuiButton {

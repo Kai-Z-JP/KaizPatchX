@@ -3,6 +3,7 @@ package jp.ngt.ngtlib.gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.gui.GuiTrainControlPanel;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -160,6 +161,8 @@ public abstract class GuiScreenCustom extends GuiScreen {
             ((GuiScreenCustom) screen).drawHoveringText(textLines, x, y, fontRenderer);
         } else if (screen instanceof GuiContainerCustom) {
             ((GuiContainerCustom) screen).drawHoveringText(textLines, x, y, fontRenderer);
+        } else if (screen instanceof GuiTrainControlPanel) {
+            ((GuiTrainControlPanel) screen).drawHoveringText(textLines, x, y, fontRenderer);
         }
 
         //以降で描画するボタンの明るさを変えないように

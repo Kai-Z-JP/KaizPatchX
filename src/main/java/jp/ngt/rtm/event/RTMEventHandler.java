@@ -2,6 +2,7 @@ package jp.ngt.rtm.event;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -10,10 +11,13 @@ import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEve
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.entity.train.EntityTrainBase;
+import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.entity.train.util.FormationManager;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.network.ConnectionManager;
 import net.minecraft.crash.CrashReport;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ReportedException;
@@ -40,6 +44,17 @@ public final class RTMEventHandler {
     {
         if (NGTUtil.isSMP() || NGTUtil.openedLANWorld()) {
             ModelPackManager.INSTANCE.sendModelSetsToClient((EntityPlayerMP) event.player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerLoggedOutEvent event) {
+        Entity ridingEntity = event.player.ridingEntity;
+        if (ridingEntity instanceof EntityFloor) {
+            event.player.mountEntity(null);
+        } else if (ridingEntity instanceof EntityTrainBase) {
+            event.player.mountEntity(null);
+            ((EntityTrainBase) ridingEntity).setEBNotch();
         }
     }
 

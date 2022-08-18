@@ -47,6 +47,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     private static final byte DW_Bogie1 = 22;
     private static final byte DW_FormationData = 23;
     private static final byte DW_ByteArray = 24;
+    private static final byte DW_Speed = 25;
 
     public static final short MAX_AIR_COUNT = 2880;
     public static final short MIN_AIR_COUNT = 2480;
@@ -104,6 +105,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         this.dataWatcher.addObject(DW_FormationData, "");
         byte[] ba = Base64.decodeBase64(new byte[16]);
         this.dataWatcher.addObject(DW_ByteArray, Base64.encodeBase64String(ba));
+        this.dataWatcher.addObject(DW_Speed, 0.0F);
     }
 
     @Override
@@ -809,7 +811,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     @Override
     public float getSpeed() {
-        return this.trainSpeed;
+        return this.dataWatcher.getWatchableObjectFloat(DW_Speed);
     }
 
     public void setSpeed(float par1) {
@@ -821,7 +823,10 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     public void setSpeed_NoSync(float par1) {
-        this.trainSpeed = par1;
+        if (this.trainSpeed != par1) {
+            this.trainSpeed = par1;
+            this.dataWatcher.updateObject(DW_Speed, par1);
+        }
     }
 
     public void stopTrain(boolean changeSpeed) {

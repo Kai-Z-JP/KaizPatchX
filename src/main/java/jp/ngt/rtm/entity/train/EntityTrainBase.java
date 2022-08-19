@@ -38,15 +38,14 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import org.apache.commons.codec.binary.Base64;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> implements IChunkLoader {
     private static final byte DW_Bogie0 = 21;
     private static final byte DW_Bogie1 = 22;
     private static final byte DW_FormationData = 23;
     private static final byte DW_ByteArray = 24;
+    private static final byte DW_Speed = 25;
 
     public static final short MAX_AIR_COUNT = 2880;
     public static final short MIN_AIR_COUNT = 2480;
@@ -104,6 +103,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         this.dataWatcher.addObject(DW_FormationData, "");
         byte[] ba = Base64.decodeBase64(new byte[16]);
         this.dataWatcher.addObject(DW_ByteArray, Base64.encodeBase64String(ba));
+        this.dataWatcher.addObject(DW_Speed, 0.0F);
     }
 
     @Override
@@ -809,7 +809,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     @Override
     public float getSpeed() {
-        return this.trainSpeed;
+        return this.dataWatcher.getWatchableObjectFloat(DW_Speed);
     }
 
     public void setSpeed(float par1) {
@@ -821,7 +821,10 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     public void setSpeed_NoSync(float par1) {
-        this.trainSpeed = par1;
+        if (this.trainSpeed != par1) {
+            this.trainSpeed = par1;
+            this.dataWatcher.updateObject(DW_Speed, par1);
+        }
     }
 
     public void stopTrain(boolean changeSpeed) {
@@ -994,7 +997,11 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             if (prevNotch != notch) {
                 this.setByteToDataWatcher(TrainStateType.State_Notch.id, notch);
                 if (prevNotch < 0 && notch - prevNotch > 0 && !this.worldObj.isRemote) {
-                    this.playBrakeReleaseSound(notch >= 0);
+                    Arrays.stream(this.getFormation().entries)
+                            .filter(Objects::nonNull)
+                            .map(entry -> entry.train)
+                            .filter(Objects::nonNull)
+                            .forEach(train -> train.playBrakeReleaseSound(notch >= 0));
                 }
                 return true;
             }

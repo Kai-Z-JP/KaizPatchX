@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CommandRTM extends CommandBase {
@@ -58,11 +57,7 @@ public class CommandRTM extends CommandBase {
                 Formation formation = ((EntityTrainBase) player.ridingEntity).getFormation();
                 if (player.ridingEntity instanceof EntityTrainBase && formation != null) {
                     int countTrain = formation.size();
-                    Arrays.stream(formation.entries)
-                            .filter(Objects::nonNull)
-                            .map(entry -> entry.train)
-                            .filter(Objects::nonNull)
-                            .forEach(EntityTrainBase::setDead);
+                    formation.getTrainStream().forEach(EntityTrainBase::setDead);
                     commandSender.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
                 }
             } else if (s[0].equalsIgnoreCase("delAllTrain")) {

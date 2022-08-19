@@ -467,11 +467,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                     .ifPresent(button -> {
                         int index = button.id - CUSTOM_BUTTOM_ID;
                         int val = this.dataValues[index];
-                        Arrays.stream(this.train.getFormation().entries)
-                                .filter(Objects::nonNull)
-                                .map(entry -> entry.train)
-                                .filter(Objects::nonNull)
-                                .forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
+                        this.train.getFormation().getTrainStream().forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
                         button.func_146113_a(this.mc.getSoundHandler());
                     });
         }

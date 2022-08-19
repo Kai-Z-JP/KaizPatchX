@@ -7,9 +7,6 @@ import jp.ngt.rtm.entity.vehicle.EntityVehicle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Arrays;
-import java.util.Objects;
-
 public final class RTMKeyHandlerServer {
     public static final RTMKeyHandlerServer INSTANCE = new RTMKeyHandlerServer();
 
@@ -62,10 +59,7 @@ public final class RTMKeyHandlerServer {
             String[] sa = sound.split(":");
             if (sa.length == 2) {
                 if (allCar && train.getFormation() != null) {
-                    Arrays.stream(train.getFormation().entries)
-                            .map(formationEntry -> formationEntry.train)
-                            .filter(Objects::nonNull)
-                            .forEach(entryTrain -> RTMCore.proxy.playSound(entryTrain, new ResourceLocation(sa[0], sa[1]), vol, 1.0F));
+                    train.getFormation().getTrainStream().forEach(entryTrain -> RTMCore.proxy.playSound(entryTrain, new ResourceLocation(sa[0], sa[1]), vol, 1.0F));
                 } else {
                     RTMCore.proxy.playSound(train, new ResourceLocation(sa[0], sa[1]), vol, 1.0F);
                 }

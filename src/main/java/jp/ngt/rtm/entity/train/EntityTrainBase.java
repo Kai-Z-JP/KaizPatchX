@@ -38,9 +38,7 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import org.apache.commons.codec.binary.Base64;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> implements IChunkLoader {
     private static final byte DW_Bogie0 = 21;
@@ -999,7 +997,11 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             if (prevNotch != notch) {
                 this.setByteToDataWatcher(TrainStateType.State_Notch.id, notch);
                 if (prevNotch < 0 && notch - prevNotch > 0 && !this.worldObj.isRemote) {
-                    this.playBrakeReleaseSound(notch >= 0);
+                    Arrays.stream(this.getFormation().entries)
+                            .filter(Objects::nonNull)
+                            .map(entry -> entry.train)
+                            .filter(Objects::nonNull)
+                            .forEach(train -> train.playBrakeReleaseSound(notch >= 0));
                 }
                 return true;
             }

@@ -7,11 +7,13 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.network.PacketNotice;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,11 +43,15 @@ public final class DataMap {
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
+        boolean isServer = NGTUtil.isServer();
         NBTTagList list = nbt.getTagList("DataList", 10);
         IntStream.range(0, list.tagCount()).mapToObj(list::getCompoundTagAt).forEach(entry -> {
             String type = entry.getString("Type");
             String name = entry.getString("Name");
             int flag = entry.getInteger("Flag");
+            int fSync = isServer ? flag & SYNC_FLAG : 0;
+            int fSave = flag & SAVE_FLAG;
+            flag = fSync | fSave;
             DataEntry de = DataEntry.getEntry(type, "", flag);
             de.readFromNBT(entry);
             this.set(name, de, flag);
@@ -68,7 +74,7 @@ public final class DataMap {
     }
 
     private void sendPacket(String key, DataEntry value, boolean toClient) {
-        PacketNotice packet = null;
+        PacketNotice packet;
 
         if (this.entity instanceof Entity) {
             Entity entity = (Entity) this.entity;
@@ -80,29 +86,44 @@ public final class DataMap {
                     value.toString(),
                     value.flag);
 
-            packet = toClient ? new PacketNotice(PacketNotice.Side_CLIENT, msg, entity) : new PacketNotice(PacketNotice.Side_SERVER, msg, entity);
+            if (toClient) {
+                if (entity.worldObj instanceof WorldServer) {
+                    packet = new PacketNotice(PacketNotice.Side_CLIENT, msg, entity);
+                    ((WorldServer) ((Entity) this.entity).worldObj)
+                            .getEntityTracker()
+                            .getTrackingPlayers(((Entity) this.entity))
+                            .stream()
+                            .map(EntityPlayerMP.class::cast)
+                            .forEach(player -> RTMCore.NETWORK_WRAPPER.sendTo(packet, player));
+                }
+                return;
+            } else {
+                packet = new PacketNotice(PacketNotice.Side_SERVER, msg, entity);
+            }
         } else if (this.entity instanceof TileEntity) {
             TileEntity te = (TileEntity) this.entity;
-            String pos = String.format("%d %d %d", te.xCoord, te.yCoord, te.zCoord);
-            String msg = String.format("DM,%s,%s,%s,%s,%s,%d",
-                    "T",
-                    pos,
-                    key,
-                    value.getType().key,
-                    value.toString(),
-                    value.flag);
-
-            packet = toClient ? new PacketNotice(PacketNotice.Side_CLIENT, msg, te) : new PacketNotice(PacketNotice.Side_SERVER, msg, te);
-        }
-
-        if (packet != null)//Item状態での値set時にnull
-        {
             if (toClient) {
-                RTMCore.NETWORK_WRAPPER.sendToAll(packet);
+                if (te.getWorldObj() instanceof WorldServer) {
+                    te.markDirty();
+                    te.getWorldObj().markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
+                }
+                return;
             } else {
-                RTMCore.NETWORK_WRAPPER.sendToServer(packet);
+                String pos = String.format("%d %d %d", te.xCoord, te.yCoord, te.zCoord);
+                String msg = String.format("DM,%s,%s,%s,%s,%s,%d",
+                        "T",
+                        pos,
+                        key,
+                        value.getType().key,
+                        value.toString(),
+                        value.flag);
+                packet = new PacketNotice(PacketNotice.Side_SERVER, msg, te);
             }
+        } else {
+            return;
         }
+
+        RTMCore.NETWORK_WRAPPER.sendToServer(packet);
     }
 
     public static void receivePacket(String msg, PacketNotice packet, World world, boolean onClient) {

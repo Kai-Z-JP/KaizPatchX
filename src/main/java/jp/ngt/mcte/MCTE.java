@@ -16,6 +16,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import jp.kaiz.kaizpatch.KaizPatchX;
 import jp.ngt.mcte.block.*;
 import jp.ngt.mcte.block.RSPort.PortType;
 import jp.ngt.mcte.editor.EntityEditor;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.Level;
 @Mod(modid = MCTE.MODID, name = "MCTerrainEditor", version = MCTE.VERSION)
 public class MCTE {
     public static final String MODID = "MCTE";
-    public static final String VERSION = "1.7.10.16";
+    public static final String VERSION = "1.7.10.16 KaizPatchX/" + KaizPatchX.VERSION;
 
     @Instance("MCTE")
     public static MCTE instance;

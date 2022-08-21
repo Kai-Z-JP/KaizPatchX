@@ -12,6 +12,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import jp.kaiz.kaizpatch.KaizPatchX;
 import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.command.RTMCommand;
@@ -35,7 +36,7 @@ import java.util.Map;
 public final class RTMCore {
     public static final String MODID = "RTM";
     public static final String NAME = "RealTrainMod";
-    public static final String VERSION = "1.7.10.41_KaizPatchX1.5.2";
+    public static final String VERSION = "1.7.10.41 KaizPatchX/" + KaizPatchX.VERSION;
 
     @Instance(MODID)
     public static RTMCore instance;

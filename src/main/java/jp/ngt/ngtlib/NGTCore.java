@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import jp.kaiz.kaizpatch.KaizPatchX;
 import jp.ngt.ngtlib.command.CommandNGT;
 import jp.ngt.ngtlib.command.CommandPermit;
 import jp.ngt.ngtlib.command.CommandProtection;
@@ -26,7 +27,7 @@ import java.io.IOException;
 @Mod(modid = NGTCore.MODID, name = "NGTLib", version = NGTCore.VERSION)
 public class NGTCore {
     public static final String MODID = "NGTLib";
-    public static final String VERSION = "1.7.10.32";
+    public static final String VERSION = "1.7.10.32 KaizPatchX/" + KaizPatchX.VERSION;
 
     @Instance(MODID)
     public static NGTCore instance;

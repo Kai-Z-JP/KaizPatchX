@@ -12,7 +12,6 @@ import jp.ngt.ngtlib.renderer.DisplayList;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
@@ -102,8 +101,8 @@ public class TileEntityMiniature extends TileEntityPlaceable {
         this.offsetY = y;
         this.offsetZ = z;
         this.mode = par6;
-        this.getDescriptionPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public MiniatureBlockState getMBState() {
@@ -225,12 +224,6 @@ public class TileEntityMiniature extends TileEntityPlaceable {
     private void updateAABB() {
         this.selectBox = null;
         this.collisionBoxes = null;
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        NGTUtil.sendPacketToClient(this);
-        return null;
     }
 
     @Override

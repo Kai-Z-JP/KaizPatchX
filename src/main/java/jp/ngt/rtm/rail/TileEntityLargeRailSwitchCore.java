@@ -2,8 +2,6 @@ package jp.ngt.rtm.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.rtm.RTMCore;
-import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -101,13 +99,6 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
     }
 
     @Override
-    public void sendPacket() {
-        if ((this.worldObj != null && !this.worldObj.isRemote) && this.isLoaded()) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailCore(this, PacketLargeRailCore.TYPE_SWITCH));
-        }
-    }
-
-    @Override
     public void updateEntity() {
         super.updateEntity();
 
@@ -122,7 +113,8 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
     public void onBlockChanged() {
         this.getSwitch().onBlockChanged(this.getWorldObj());
         if (!this.getWorldObj().isRemote) {
-            this.sendPacket();//Clientへ更新を通知
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

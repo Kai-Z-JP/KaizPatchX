@@ -2,8 +2,6 @@ package jp.ngt.rtm.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.rtm.RTMCore;
-import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailMapSlope;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,13 +40,6 @@ public class TileEntityLargeRailSlopeCore extends TileEntityLargeRailCore {
 
     public void setSlopeType(byte par1) {
         this.slopeType = par1;
-    }
-
-    @Override
-    public void sendPacket() {
-        if ((this.worldObj != null && !this.worldObj.isRemote) && this.isLoaded()) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailCore(this, PacketLargeRailCore.TYPE_SLOPE));
-        }
     }
 
     @Override

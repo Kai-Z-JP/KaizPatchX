@@ -10,7 +10,6 @@ import jp.ngt.rtm.modelpack.texture.ITextureHolder;
 import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.modelpack.texture.TextureManager.TexturePropertyType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityFlag extends TileEntityPlaceable implements ITextureHolder<FlagProperty> {
@@ -58,18 +57,6 @@ public class TileEntityFlag extends TileEntityPlaceable implements ITextureHolde
         }
     }
 
-    protected void sendPacket() {
-        NGTUtil.sendPacketToClient(this);
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            this.sendPacket();
-        }
-        return null;
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public double getMaxRenderDistanceSquared() {
@@ -98,8 +85,10 @@ public class TileEntityFlag extends TileEntityPlaceable implements ITextureHolde
     public void setTexture(String name) {
         this.textureName = name;
         this.property = null;
-        this.markDirty();
-        this.getDescriptionPacket();
+        if (this.worldObj != null) {
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        }
     }
 
     @Override

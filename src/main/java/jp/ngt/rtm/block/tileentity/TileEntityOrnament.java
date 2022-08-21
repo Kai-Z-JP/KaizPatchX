@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.block.OrnamentType;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
@@ -12,7 +11,6 @@ import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.modelset.ModelSetOrnament;
 import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
 public abstract class TileEntityOrnament extends TileEntityPlaceable implements IModelSelectorWithType {
@@ -39,16 +37,6 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
         nbt.setTag("State", this.state.writeToNBT());
         nbt.setByte("AttachedSide", this.attachedSide);
         nbt.setFloat("RandomScale", this.getRandomScale());
-    }
-
-    protected void sendPacket() {
-        NGTUtil.sendPacketToClient(this);
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
     }
 
     @Override
@@ -102,7 +90,8 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
                 this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
             }
             if (this.worldObj != null && !this.worldObj.isRemote && this.myModelSet != null && !this.myModelSet.isDummy()) {
-                PacketNBT.sendToClient(this);
+                this.markDirty();
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             }
         }
         return this.myModelSet;
@@ -124,7 +113,7 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
         this.myModelSet = null;
         if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
-            this.sendPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

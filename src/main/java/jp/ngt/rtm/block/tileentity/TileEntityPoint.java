@@ -30,8 +30,8 @@ public class TileEntityPoint extends TileEntityMachineBase {
 
     public void setActivated(boolean par1) {
         this.activated = par1;
-        this.sendPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public float getMove() {
@@ -43,8 +43,8 @@ public class TileEntityPoint extends TileEntityMachineBase {
      */
     public void setMove(float par1) {
         this.move = par1;
-        this.sendPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override

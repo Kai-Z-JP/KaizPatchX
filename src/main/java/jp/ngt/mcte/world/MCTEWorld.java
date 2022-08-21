@@ -1,7 +1,6 @@
 package jp.ngt.mcte.world;
 
 import jp.ngt.mcte.MCTE;
-import jp.ngt.mcte.block.TileEntityMiniature;
 import jp.ngt.ngtlib.block.NGTObject;
 import jp.ngt.ngtlib.world.NGTWorld;
 import net.minecraft.block.Block;
@@ -34,8 +33,7 @@ public class MCTEWorld extends NGTWorld {
                 //NGTLog.debug("set b:%s m:%d", block.getLocalizedName(), meta);
                 //this.markBlockForUpdate(x, y, z);//WorldServerでは未使用
                 this.notifyBlockChange(x, y, z, oldBlock);
-                TileEntityMiniature miniature = (TileEntityMiniature) this.world.getTileEntity(this.posX, this.posY, this.posZ);
-                miniature.getDescriptionPacket();
+                this.world.markBlockForUpdate(this.posX, this.posY, this.posZ);
                 this.updated = true;
 
                 if (block.hasComparatorInputOverride()) {

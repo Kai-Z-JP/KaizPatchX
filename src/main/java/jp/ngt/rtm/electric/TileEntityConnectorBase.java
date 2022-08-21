@@ -2,7 +2,6 @@ package jp.ngt.rtm.electric;
 
 import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.math.Vec3;
-import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
@@ -59,7 +58,7 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
                 this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
             }
             if (this.worldObj != null && !this.worldObj.isRemote) {
-                PacketNBT.sendToClient(this);
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             }
 
             //readNBT時ぬるぽ回避
@@ -117,7 +116,10 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     public void setModelName(String par1) {
         this.modelName = par1;
         this.myModelSet = null;
-        this.getDescriptionPacket();
+        if (this.worldObj != null) {
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        }
     }
 
     @Override

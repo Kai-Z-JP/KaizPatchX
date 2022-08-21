@@ -7,7 +7,6 @@ import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.block.OrnamentType;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.stream.IntStream;
@@ -68,8 +67,8 @@ public class TileEntityPipe extends TileEntityOrnament {
      */
     public void refresh() {
         this.searchConnection();
-        this.sendPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public byte getDirection() {
@@ -78,7 +77,8 @@ public class TileEntityPipe extends TileEntityOrnament {
 
     public void setDirection(byte par1) {
         this.direction = par1;
-        this.sendPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public void searchConnection() {
@@ -102,17 +102,12 @@ public class TileEntityPipe extends TileEntityOrnament {
             }
         });
 
-        this.sendPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public boolean isConnected(byte side) {
         return this.connection[side] == 2 || this.connection[side] == 3;
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
     }
 
     @Override

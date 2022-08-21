@@ -46,8 +46,8 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
         this.offsetY = offsetY;
         this.offsetZ = offsetZ;
         if (sync) {
-            this.getDescriptionPacket();
             this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 
@@ -58,8 +58,8 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
     public void setRotation(float par1, boolean synch) {
         this.rotation = par1 % 360.0F;
         if (synch) {
-            this.getDescriptionPacket();
             this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

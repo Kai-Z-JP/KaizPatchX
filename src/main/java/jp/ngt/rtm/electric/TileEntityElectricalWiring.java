@@ -10,7 +10,9 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -103,7 +105,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
 
         if (!this.worldObj.isRemote && flag) {
             this.markDirty();
-            this.getDescriptionPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
         return flag;
     }
@@ -115,7 +117,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
         this.setConnection(x, y, z, type, name);
         if (!this.worldObj.isRemote) {
             this.markDirty();
-            this.getDescriptionPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
         return true;
     }
@@ -238,7 +240,12 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
             }
         }
 
-        this.getDescriptionPacket();
+        this.markDirty();
+        if (this instanceof TileEntityDummyEW) {
+            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketWire(this));
+        } else {
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        }
         return true;
     }
 
@@ -360,10 +367,16 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
 
     @Override
     public Packet getDescriptionPacket() {
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketWire(this));
-        }
-        return null;
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeToNBT(nbt);
+        nbt.setBoolean("isActivated", this.isActivated);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        this.readFromNBT(pkt.func_148857_g());
+        this.isActivated = pkt.func_148857_g().getBoolean("isActivated");
     }
 
     @Override

@@ -5,10 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.DisplayList;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
-import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMRail;
 import jp.ngt.rtm.item.ItemRail;
-import jp.ngt.rtm.network.PacketLargeRailCore;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailMapBasic;
 import jp.ngt.rtm.rail.util.RailPosition;
@@ -17,7 +15,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.Packet;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.ArrayList;
@@ -181,15 +180,10 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     }
 
     @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
-    }
-
-    public void sendPacket() {
-        if ((this.worldObj != null && !this.worldObj.isRemote) && this.isLoaded()) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailCore(this, PacketLargeRailCore.TYPE_NORMAL));
-        }
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+        this.getRailMap(null).getRailBlockList(this.property).forEach(pos -> this.worldObj.markBlockForUpdate(pos[0], pos[1], pos[2]));
+        this.shouldRerenderRail = true;
     }
 
     @Override
@@ -213,7 +207,8 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         state.writeToNBT(nbtTagCompound);
         this.property = RailProperty.readFromNBT(nbtTagCompound);
         this.subRails.clear();
-        this.sendPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public void addSubRail(RailProperty state) {
@@ -228,7 +223,8 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         } else {
             this.subRails.remove(oldState);
         }
-        this.sendPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override
@@ -250,8 +246,8 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
             {
                 int texType = ((BlockLargeRailBase) this.getBlockType()).railTextureType;
                 this.property = RTMRail.getProperty(this.railShapeTemp, texType);
-                this.sendPacket();
                 this.markDirty();
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
                 this.railShapeTemp = -1;
             }
         }

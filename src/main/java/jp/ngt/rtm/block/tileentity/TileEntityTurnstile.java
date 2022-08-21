@@ -43,7 +43,8 @@ public class TileEntityTurnstile extends TileEntityMachineBase {
     public void setCount(int par1) {
         this.count = par1;
         if (!this.worldObj.isRemote) {
-            this.sendPacket();
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

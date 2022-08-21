@@ -44,7 +44,8 @@ public class TileEntityScaffold extends TileEntityOrnament {
 
     public void setDir(byte par1) {
         this.dir = par1;
-        this.sendPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public Vec3 getMotionVec() {

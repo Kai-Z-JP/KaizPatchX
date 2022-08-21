@@ -2,7 +2,6 @@ package jp.ngt.rtm.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.gui.InternalButton;
@@ -13,7 +12,9 @@ import jp.ngt.rtm.network.PacketNotice;
 import jp.ngt.rtm.rail.util.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -316,9 +317,16 @@ public class TileEntityMarker extends TileEntity {
 
     @Override
     public Packet getDescriptionPacket() {
-        NGTUtil.sendPacketToClient(this);
-        return null;
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeToNBT(nbt);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
     }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        this.readFromNBT(pkt.func_148857_g());
+    }
+
 
     @Override
     @SideOnly(Side.CLIENT)

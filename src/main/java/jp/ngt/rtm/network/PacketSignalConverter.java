@@ -43,8 +43,8 @@ public class PacketSignalConverter extends PacketTileEntity implements IMessageH
         TileEntitySignalConverter tile = (TileEntitySignalConverter) message.getTileEntity(world);
         tile.setComparator(ComparatorType.getType(message.comparatorIndex));
         tile.setSignalLevel(message.signal1, message.signal2);
-        tile.getDescriptionPacket();
         tile.markDirty();
+        world.markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
         return null;
     }
 }

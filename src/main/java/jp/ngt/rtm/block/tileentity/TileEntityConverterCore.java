@@ -142,7 +142,8 @@ public class TileEntityConverterCore extends TileEntityConverter {
         }
 
         if (!this.worldObj.isRemote && this.mode != this.prevMode) {
-            this.sendPacket();
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             NGTLog.sendChatMessageToAll("message.converter.mode" + this.mode);
         }
     }
@@ -161,7 +162,8 @@ public class TileEntityConverterCore extends TileEntityConverter {
 
     public void setDirection(byte par1) {
         this.direction = par1;
-        this.sendPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override

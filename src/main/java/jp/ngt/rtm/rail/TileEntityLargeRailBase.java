@@ -5,15 +5,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityCustom;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.protection.Lockable;
-import jp.ngt.rtm.RTMCore;
-import jp.ngt.rtm.network.PacketLargeRailBase;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -68,12 +65,6 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
             return tile.isCollidedTrain;
         }
         return false;
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        RTMCore.NETWORK_WRAPPER.sendToAll(new PacketLargeRailBase(this));
-        return null;
     }
 
     @Override

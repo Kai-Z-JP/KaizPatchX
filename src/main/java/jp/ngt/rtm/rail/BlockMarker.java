@@ -220,7 +220,8 @@ public class BlockMarker extends BlockContainer {
             tile.setStartPoint(start.blockX, start.blockY, start.blockZ);
 
             tile.createRailMap();
-            tile.sendPacket();
+            tile.markDirty();
+            world.markBlockForUpdate(start.blockX, start.blockY, start.blockZ);
 
             if (world.getBlock(end.blockX, end.blockY, end.blockZ) instanceof BlockMarker) {
                 world.setBlockToAir(end.blockX, end.blockY, end.blockZ);
@@ -286,7 +287,8 @@ public class BlockMarker extends BlockContainer {
         tile.setProperty(prop);
         tile.setStartPoint(x, y, z);
         tile.createRailMap();
-        tile.sendPacket();
+        tile.markDirty();
+        world.markBlockForUpdate(x, y, z);
         return true;
     }
 
@@ -323,7 +325,8 @@ public class BlockMarker extends BlockContainer {
             tile.setStartPoint(cx, cy, cz);
 
             tile.createRailMap();
-            tile.sendPacket();
+            tile.markDirty();
+            world.markBlockForUpdate(cx, cy, cz);
 
             return true;
         }

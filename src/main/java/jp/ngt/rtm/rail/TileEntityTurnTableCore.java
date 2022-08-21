@@ -125,15 +125,6 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
     }
 
     @Override
-    public void sendPacket() {
-        super.sendPacket();
-
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketNotice(PacketNotice.Side_CLIENT, "TT:" + this.getRotation(), this));
-        }
-    }
-
-    @Override
     public String getRailShapeName() {
         RailMap map = this.getRailMap(null);
         return "Type:TurnTable, " +

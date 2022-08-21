@@ -1,9 +1,7 @@
 package jp.ngt.rtm.block.tileentity;
 
 import jp.ngt.ngtlib.block.TileEntityCustom;
-import jp.ngt.ngtlib.util.NGTUtil;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityConverter extends TileEntityCustom {
@@ -46,16 +44,6 @@ public class TileEntityConverter extends TileEntityCustom {
 
     public void setCorePos(int x, int y, int z) {
         this.corePos = new int[]{x, y, z};
-    }
-
-    protected void sendPacket() {
-        NGTUtil.sendPacketToClient(this);
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
     }
 
     @Override

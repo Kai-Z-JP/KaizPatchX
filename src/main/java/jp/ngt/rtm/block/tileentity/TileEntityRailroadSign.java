@@ -10,7 +10,6 @@ import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.modelpack.texture.TextureManager.TexturePropertyType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityRailroadSign extends TileEntityPlaceable implements ITextureHolder<RRSProperty> {
@@ -76,7 +75,7 @@ public class TileEntityRailroadSign extends TileEntityPlaceable implements IText
         this.property = null;
         if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
-            this.getDescriptionPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 
@@ -84,15 +83,6 @@ public class TileEntityRailroadSign extends TileEntityPlaceable implements IText
     public TexturePropertyType getType() {
         return TexturePropertyType.RRS;
     }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            NGTUtil.sendPacketToClient(this);
-        }
-        return null;
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public double getMaxRenderDistanceSquared() {

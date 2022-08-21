@@ -3,11 +3,9 @@ package jp.ngt.rtm.block.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.block.OrnamentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 
@@ -45,13 +43,6 @@ public class TileEntityFluorescent extends TileEntityOrnament {
 
     public void setDir(byte byte0) {
         this.dirF = byte0;
-
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        NGTUtil.sendPacketToClient(this);
-        return null;
     }
 
     @Override

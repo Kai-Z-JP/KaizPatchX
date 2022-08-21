@@ -3,7 +3,6 @@ package jp.ngt.rtm.block.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
-import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.MachineType;
@@ -14,7 +13,6 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetMachine;
 import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
@@ -103,16 +101,6 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 
     public abstract MachineType getMachineType();
 
-    protected void sendPacket() {
-        NGTUtil.sendPacketToClient(this);
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
-    }
-
     @Override
     public boolean shouldRenderInPass(int pass) {
         return pass >= 0;
@@ -143,7 +131,8 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
                 this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
             }
             if (this.worldObj != null && !this.worldObj.isRemote) {
-                PacketNBT.sendToClient(this);
+                this.markDirty();
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             }
         }
         return this.myModelSet;
@@ -165,7 +154,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
         this.myModelSet = null;
         if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
-            this.sendPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

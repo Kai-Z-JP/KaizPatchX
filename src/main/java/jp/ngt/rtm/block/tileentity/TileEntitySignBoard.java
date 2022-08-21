@@ -9,7 +9,6 @@ import jp.ngt.rtm.modelpack.texture.SignBoardProperty;
 import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.modelpack.texture.TextureManager.TexturePropertyType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntitySignBoard extends TileEntityPlaceable implements ITextureHolder<SignBoardProperty> {
@@ -80,10 +79,7 @@ public class TileEntitySignBoard extends TileEntityPlaceable implements ITexture
         if (this.worldObj != null) {
             if (!this.worldObj.isRemote) {
                 this.markDirty();
-                this.sendPacket();
-                if (this.worldObj != null) {
-                    this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);//周りの明るさも変更
-                }
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             } else {
                 this.counter = 0;
             }
@@ -102,17 +98,8 @@ public class TileEntitySignBoard extends TileEntityPlaceable implements ITexture
     public void setDirection(byte par1)//Server only
     {
         this.direction = par1;
-        this.sendPacket();
-    }
-
-    private void sendPacket() {
-        NGTUtil.sendPacketToClient(this);
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override
@@ -124,9 +111,9 @@ public class TileEntitySignBoard extends TileEntityPlaceable implements ITexture
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        double height = this.property.height / 2.0F;
-        double width = this.property.width / 2.0F;
-        double depth = this.property.depth / 2.0F;
+        double height = this.getProperty().height / 2.0F;
+        double width = this.getProperty().width / 2.0F;
+        double depth = this.getProperty().depth / 2.0F;
         double d0 = Math.max(width, depth);
         return AxisAlignedBB.getBoundingBox((double) this.xCoord - d0, (double) this.yCoord - height, (double) this.zCoord - d0, (double) this.xCoord + d0 + 1.0D, (double) this.yCoord + height + 1.0D, (double) this.zCoord + d0 + 1.0D);
     }

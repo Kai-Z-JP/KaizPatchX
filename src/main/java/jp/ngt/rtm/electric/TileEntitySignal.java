@@ -3,7 +3,6 @@ package jp.ngt.rtm.electric;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
-import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.block.tileentity.TileEntityPole;
@@ -15,7 +14,6 @@ import jp.ngt.rtm.modelpack.state.ResourceState;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -87,7 +85,8 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
                 String modelName = TileEntityPole.getFixedModelName(this.getBlockMetadata());
                 tileEntity.setModelNameNoSync(modelName);
                 this.origTileEntity = tileEntity;
-                this.sendPacket();
+                this.markDirty();
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             }
         }
     }
@@ -106,7 +105,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
             }
             this.signalLevel = level;
             this.markDirty();
-            this.sendPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 
@@ -120,8 +119,8 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         this.blockDirection = par2;
         this.modelName = name;
         this.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
-        this.sendPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public TileEntity getOrigTileEntity() {
@@ -174,20 +173,10 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
                 this.myModelSet.dataFormatter.initDataMap(this.getResourceState().getDataMap());
             }
             if (this.worldObj != null && !this.worldObj.isRemote) {
-                PacketNBT.sendToClient(this);
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             }
         }
         return this.myModelSet;
-    }
-
-    private void sendPacket() {
-        NGTUtil.sendPacketToClient(this);
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
     }
 
     @Override
@@ -229,7 +218,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         this.myModelSet = null;
         if (this.worldObj != null && !this.worldObj.isRemote) {
             this.markDirty();
-            this.sendPacket();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
     }
 

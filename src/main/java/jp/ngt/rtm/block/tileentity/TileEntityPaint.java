@@ -5,7 +5,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.ColorUtil;
 import jp.ngt.ngtlib.util.NGTUtil;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -116,23 +118,23 @@ public class TileEntityPaint extends TileEntity {
             }
 
             if (flag) {
-                this.sendPacket();
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             } else {
                 this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord);
             }
         }
     }
 
-    protected void sendPacket() {
-        if (!this.worldObj.isRemote) {
-            NGTUtil.sendPacketToClient(this);
-        }
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeToNBT(nbt);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
     }
 
     @Override
-    public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        this.readFromNBT(pkt.func_148857_g());
     }
 
     @Override

@@ -6,7 +6,9 @@ import jp.ngt.ngtlib.block.NGTObject;
 import jp.ngt.ngtlib.renderer.DisplayList;
 import jp.ngt.ngtlib.util.NGTUtil;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -57,7 +59,8 @@ public class TileEntityTurnplate extends TileEntity {
         } else {
             this.isMoving = false;
         }
-        this.getDescriptionPacket();
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     private void setup() {
@@ -72,8 +75,14 @@ public class TileEntityTurnplate extends TileEntity {
 
     @Override
     public Packet getDescriptionPacket() {
-        NGTUtil.sendPacketToClient(this);
-        return null;
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeToNBT(nbt);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        this.readFromNBT(pkt.func_148857_g());
     }
 
     @Override

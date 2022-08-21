@@ -18,7 +18,9 @@ import jp.ngt.rtm.rail.BlockLargeRailBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -240,8 +242,8 @@ public class TileEntityMovingMachine extends TileEntity {
         }
 
         if (!this.worldObj.isRemote) {
-            this.sendPacket();
             this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 
             String s = "MM," + par1;
             RTMCore.NETWORK_WRAPPER.sendToAll(new PacketNotice(PacketNotice.Side_CLIENT, s, this));
@@ -403,8 +405,8 @@ public class TileEntityMovingMachine extends TileEntity {
         this.depth = p3;
         this.speed = p4;
         this.guideVisibility = p5;
-        this.sendPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public boolean hasPair() {
@@ -419,8 +421,8 @@ public class TileEntityMovingMachine extends TileEntity {
         this.pairBlockX = par1.xCoord - this.xCoord;
         this.pairBlockY = par1.yCoord - this.yCoord;
         this.pairBlockZ = par1.zCoord - this.zCoord;
-        this.sendPacket();
         this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     public void searchMM(int x, int y, int z) {
@@ -462,20 +464,20 @@ public class TileEntityMovingMachine extends TileEntity {
         this.pairBlockX = this.pairBlockY = this.pairBlockZ = 0;
         this.posX = this.posY = this.posZ = 0.0D;
         this.motionX = this.motionY = this.motionZ = 0.0D;
-        this.sendPacket();
         this.markDirty();
-    }
-
-    protected void sendPacket() {
-        if (!this.worldObj.isRemote) {
-            NGTUtil.sendPacketToClient(this);
-        }
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override
     public Packet getDescriptionPacket() {
-        this.sendPacket();
-        return null;
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeToNBT(nbt);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbt);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        this.readFromNBT(pkt.func_148857_g());
     }
 
     @Override

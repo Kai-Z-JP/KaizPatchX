@@ -692,7 +692,7 @@ public class EntityBogie extends Entity implements Lockable {
     public boolean interactFirst(EntityPlayer player) {
         if (this.getTrain() != null) {
             if (PermissionManager.INSTANCE.hasPermission(player, RTMCore.DRIVE_TRAIN)) {
-                return this.getTrain().interactTrain(this, player);
+                return player.isSneaking() ? this.getTrain().interactFirst(player) : this.getTrain().interactTrain(this, player);
             }
         } else if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem() == RTMItem.paddle) {
             //Debug

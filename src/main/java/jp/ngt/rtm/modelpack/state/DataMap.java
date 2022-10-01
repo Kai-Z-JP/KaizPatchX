@@ -43,15 +43,11 @@ public final class DataMap {
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
-        boolean isServer = NGTUtil.isServer();
         NBTTagList list = nbt.getTagList("DataList", 10);
         IntStream.range(0, list.tagCount()).mapToObj(list::getCompoundTagAt).forEach(entry -> {
             String type = entry.getString("Type");
             String name = entry.getString("Name");
             int flag = entry.getInteger("Flag");
-            int fSync = isServer ? flag & SYNC_FLAG : 0;
-            int fSave = flag & SAVE_FLAG;
-            flag = fSync | fSave;
             DataEntry de = DataEntry.getEntry(type, "", flag);
             de.readFromNBT(entry);
             this.set(name, de, flag);
@@ -65,7 +61,7 @@ public final class DataMap {
         this.map.entrySet().stream().filter(entry -> (entry.getValue().flag & SAVE_FLAG) != 0).forEach(entry -> {
             NBTTagCompound nbt2 = new NBTTagCompound();
             nbt2.setString("Name", entry.getKey());
-            nbt2.setInteger("Flag", entry.getValue().flag);
+            nbt2.setInteger("Flag", entry.getValue().flag & SAVE_FLAG);
             entry.getValue().writeToNBT(nbt2);
             list.appendTag(nbt2);
         });

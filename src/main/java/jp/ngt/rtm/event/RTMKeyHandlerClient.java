@@ -183,16 +183,18 @@ public final class RTMKeyHandlerClient {
                 NGTLog.showChatMessage(new ChatComponentText("Push EB"));
             } else if (KEY_CHIME_NEXT.isPressed()) {
                 TrainStateType type = TrainStateType.State_Announcement;
+                String[][] announce = train.getModelSet().getConfig().sound_Announcement;
                 int i0 = train.getTrainStateData(type.id) + 1;
-                i0 = i0 < type.min ? type.max : (i0 > type.max ? 0 : i0);
+                i0 = i0 < 0 ? announce.length - 1 : (i0 > announce.length - 1 ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
-                NGTLog.showChatMessage(new ChatComponentText("Next chime"));
+                NGTLog.showChatMessage(new ChatComponentText(String.format("Next chime(%s)", announce[i0][0])));
             } else if (KEY_CHIME_PREV.isPressed()) {
                 TrainStateType type = TrainStateType.State_Announcement;
+                String[][] announce = train.getModelSet().getConfig().sound_Announcement;
                 int i0 = train.getTrainStateData(type.id) - 1;
-                i0 = i0 < type.min ? type.max : (i0 > type.max ? 0 : i0);
+                i0 = i0 < 0 ? announce.length - 1 : (i0 > announce.length - 1 ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
-                NGTLog.showChatMessage(new ChatComponentText("Prev chime"));
+                NGTLog.showChatMessage(new ChatComponentText(String.format("Prev chime(%s)", announce[i0][0])));
             } else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
                 byte data = train.getTrainStateData(TrainStateType.State_Door.id);
                 boolean dir = train.getTrainDirection() == 0;

@@ -679,7 +679,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      */
     protected boolean interactTrain(EntityBogie bogie, EntityPlayer player) {
         if (this.riddenByEntity == null || this.riddenByEntity.equals(player)) {
-            if (!this.worldObj.isRemote) {
+            if (!this.worldObj.isRemote && PermissionManager.INSTANCE.hasPermission(player, RTMCore.DRIVE_TRAIN)) {
                 boolean canRide = this.getModelSet() != null;
                 ItemStack itemstack = player.inventory.getCurrentItem();
                 int id1 = bogie.getBogieId();

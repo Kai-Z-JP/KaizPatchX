@@ -37,6 +37,12 @@ public final class RTMKeyHandlerClient {
     public static final KeyBinding KEY_EB = new KeyBinding("key.rtm.eb", Keyboard.KEY_5, CATG_RTM);
     public static final KeyBinding KEY_CHIME_NEXT = new KeyBinding("key.rtm.chime_next", Keyboard.KEY_RIGHT, CATG_RTM);
     public static final KeyBinding KEY_CHIME_PREV = new KeyBinding("key.rtm.chime_prev", Keyboard.KEY_LEFT, CATG_RTM);
+
+    public static final KeyBinding KEY_PANTOGRAPH = new KeyBinding("key.rtm.pantograph", Keyboard.KEY_NONE, CATG_RTM);
+
+    public static final KeyBinding KEY_DEST_PREV = new KeyBinding("key.rtm.destination_prev", Keyboard.KEY_NONE, CATG_RTM);
+    public static final KeyBinding KEY_DEST_NEXT = new KeyBinding("key.rtm.destination_next", Keyboard.KEY_NONE, CATG_RTM);
+
     public static final KeyBinding KEY_REVERSER_FORWARD = new KeyBinding("key.rtm.reverser_forward", Keyboard.KEY_UP, CATG_RTM);
     public static final KeyBinding KEY_REVERSER_BACK = new KeyBinding("key.rtm.reverser_back", Keyboard.KEY_DOWN, CATG_RTM);
 
@@ -57,6 +63,9 @@ public final class RTMKeyHandlerClient {
         ClientRegistry.registerKeyBinding(KEY_CHIME_PREV);
         ClientRegistry.registerKeyBinding(KEY_REVERSER_FORWARD);
         ClientRegistry.registerKeyBinding(KEY_REVERSER_BACK);
+        ClientRegistry.registerKeyBinding(KEY_PANTOGRAPH);
+        ClientRegistry.registerKeyBinding(KEY_DEST_PREV);
+        ClientRegistry.registerKeyBinding(KEY_DEST_NEXT);
     }
 
     public void onTickStart() {
@@ -195,6 +204,31 @@ public final class RTMKeyHandlerClient {
                 i0 = i0 < 0 ? announce.length - 1 : (i0 > announce.length - 1 ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
                 NGTLog.showChatMessage(new ChatComponentText(String.format("Prev chime(%s)", announce[i0][0])));
+
+            } else if (KEY_PANTOGRAPH.isPressed()) {
+                TrainState.TrainStateType type = TrainState.TrainStateType.State_Pantograph;
+                int state = train.getTrainStateData(type.id);
+                state ^= 0x1;
+                train.syncTrainStateData(type.id, (byte) state);
+                NGTLog.showChatMessage(new ChatComponentText("Pantograph " + (state == 0 ? "Down" : "Up")));
+            } else if (KEY_DEST_PREV.isPressed()) {
+                TrainState.TrainStateType type = TrainState.TrainStateType.State_Destination;
+                String[] rollsignNames = train.getModelSet().getConfig().rollsignNames;
+                int state = train.getTrainStateData(type.id) - 1;
+                if (state < 0) {
+                    state = rollsignNames.length - 1;
+                }
+                train.syncTrainStateData(type.id, (byte) state);
+                NGTLog.showChatMessage(new ChatComponentText("Destination : " + rollsignNames[state]));
+            } else if (KEY_DEST_NEXT.isPressed()) {
+                TrainState.TrainStateType type = TrainState.TrainStateType.State_Destination;
+                String[] rollsignNames = train.getModelSet().getConfig().rollsignNames;
+                int state = train.getTrainStateData(type.id) + 1;
+                if (state >= rollsignNames.length) {
+                    state = 0;
+                }
+                train.syncTrainStateData(type.id, (byte) state);
+                NGTLog.showChatMessage(new ChatComponentText("Destination : " + rollsignNames[state]));
             } else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
                 byte data = train.getTrainStateData(TrainStateType.State_Door.id);
                 boolean dir = train.getTrainDirection() == 0;

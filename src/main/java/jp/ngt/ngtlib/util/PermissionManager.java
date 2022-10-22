@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public final class PermissionManager {
@@ -19,7 +18,7 @@ public final class PermissionManager {
 
     private final File saveDir;
     private final File saveFile;
-    private final Map<String, List<String>> permissionMap = new HashMap<>();
+    private final Map<String, Set<String>> permissionMap = new HashMap<>();
 
     private static final boolean DEBUG_MODE = false;//シングルでOP無視
 
@@ -29,24 +28,21 @@ public final class PermissionManager {
     }
 
     public void save() {
-        String[] sa = new String[this.permissionMap.size()];
-        int i = 0;
-        for (Entry<String, List<String>> entry : this.permissionMap.entrySet()) {
-            sa[i] = entry.getValue().stream().map(s -> s + ",").collect(Collectors.joining("", entry.getKey() + ":", ""));
-            ++i;
-        }
-        NGTText.writeToText(this.saveFile, sa);
+        NGTText.writeToText(this.saveFile, this.permissionMap
+                .entrySet()
+                .stream()
+                .map(entry -> entry.getValue().stream().collect(Collectors.joining(",", entry.getKey() + ":", "")))
+                .toArray(String[]::new));
     }
 
     public void load() throws IOException {
         this.initFile();
 
-        List<String> slist = NGTText.readText(this.saveFile, "");
-        slist.stream().map(s -> s.split(":")).filter(sa2 -> sa2.length == 2).forEach(sa2 -> {
-            List<String> list = this.getPlayerList(sa2[0]);
-            String[] sa3 = sa2[1].split(",");
-            list.addAll(Arrays.asList(sa3));
-        });
+        NGTText.readText(this.saveFile, "").stream()
+                .map(s -> s.split(":"))
+                .filter(split -> split.length == 2)
+                .collect(Collectors.toMap(split -> this.getPlayerList(split[0]), split -> Arrays.asList(split[1].split(","))))
+                .forEach(Collection::addAll);
     }
 
     private void initFile() {
@@ -63,11 +59,8 @@ public final class PermissionManager {
         }
     }
 
-    public List<String> getPlayerList(String par1) {
-        if (!this.permissionMap.containsKey(par1)) {
-            this.permissionMap.put(par1, new ArrayList<>());
-        }
-        return this.permissionMap.get(par1);
+    public Collection<String> getPlayerList(String par1) {
+        return this.permissionMap.computeIfAbsent(par1, k -> new HashSet<>());
     }
 
     public void registerPermission(String per1) {
@@ -76,7 +69,9 @@ public final class PermissionManager {
     }
 
     public void showPermissionList(ICommandSender player) {
-        this.permissionMap.entrySet().stream().map(entry -> entry.getValue().stream().map(s -> s + ",").collect(Collectors.joining("", entry.getKey() + ":", ""))).forEach(sb -> NGTLog.sendChatMessage(player, sb));
+        this.permissionMap.entrySet().stream()
+                .map(entry -> entry.getValue().stream().collect(Collectors.joining(", ", entry.getKey() + ": ", "")))
+                .forEach(sb -> NGTLog.sendChatMessage(player, sb));
     }
 
     public List<String> getPermissionList() {
@@ -119,12 +114,8 @@ public final class PermissionManager {
         if (this.isOp(player)) {
             return true;//シングル or OP
         } else {
-            List<String> players = this.getPlayerList(category);
-            if (players.contains(player.getCommandSenderName()) || players.contains(ALL)) {
-                return true;
-            } else {
-                return false;
-            }
+            Collection<String> players = this.getPlayerList(category);
+            return players.contains(player.getCommandSenderName()) || players.contains(ALL);
         }
     }
 

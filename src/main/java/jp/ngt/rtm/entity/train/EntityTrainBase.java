@@ -468,7 +468,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
         if (sound != null) {
             String[] sa = sound.split(":");
-            RTMCore.proxy.playSound(this, new ResourceLocation(sa[0], sa[1]), 1.0F, 1.0F);
+            RTMCore.proxy.playSound(this, new ResourceLocation(sa[0], sa[1]), 2.0F, 1.0F);
             //this.worldObj.playSoundAtEntity(this, sound, 1.0F, 1.0F);
         }
     }

@@ -33,6 +33,7 @@ public class SoundPlayer {
             }
             this.sound = new MovingSoundTileEntity(tile, src, repeat);
             this.sound.setVolume(10.0F);
+            this.sound.update();
             NGTUtilClient.playSound(this.sound);
         }
 

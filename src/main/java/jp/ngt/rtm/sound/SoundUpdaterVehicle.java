@@ -43,7 +43,6 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
             //RTMUtil.doScriptFunction(modelset.se, "onUpdate", this);
             ScriptUtil.doScriptIgnoreError(modelset.se, "onUpdate", this);
         } else {
-            boolean flag = false;
             if (this.theVehicle.isDead) {
                 if (this.prevSound != null) {
                     ((MovingSoundVehicle) this.prevSound).stop();
@@ -65,7 +64,6 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
                 this.theSoundHandler.playSound(sound);
                 this.prevSound = sound;
                 this.silent = false;
-                flag = true;
             }
         }
     }
@@ -121,6 +119,7 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
         }
         sound.setVolume(volume);
         sound.setPitch(pitch);
+        sound.update();
 
         if (flag) {
             this.theSoundHandler.playSound(sound);

@@ -99,9 +99,10 @@ public final class PermissionManager {
     }
 
     public boolean hasPermission(ICommandSender player, String category) {
-        boolean has = hasPermissionInternal(player, category);
-        if (!has)
-            NGTLog.sendChatMessageToAll("%s need permission (%s).", player.getCommandSenderName(), category);
+        boolean has = this.hasPermissionInternal(player, category);
+        if (!has) {
+            NGTLog.sendChatMessage(player, "%s need permission (%s).", player.getCommandSenderName(), category);
+        }
         return has;
     }
 

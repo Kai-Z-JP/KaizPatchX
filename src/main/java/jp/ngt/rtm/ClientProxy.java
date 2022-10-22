@@ -171,7 +171,7 @@ public class ClientProxy extends CommonProxy {
             return;
         }
 
-        List<File> fileList = NGTFileLoader.findFile((file) -> file.getName().equals("pack.json"));
+        List<File> fileList = NGTFileLoader.findFile(file -> file.getName().equals("pack.json"));
         try {
             fileList.stream()
                     .map(NGTJson::readFromJson)
@@ -315,6 +315,7 @@ public class ClientProxy extends CommonProxy {
                 MovingSoundEntity ms = new MovingSoundEntity(entity, sound, false);
                 ms.setVolume(vol);
                 ms.setPitch(pitch);
+                ms.update();
                 NGTUtilClient.playSound(ms);
             }
         }
@@ -329,6 +330,7 @@ public class ClientProxy extends CommonProxy {
                 MovingSoundTileEntity ms = new MovingSoundTileEntity(entity, sound, false);
                 ms.setVolume(vol);
                 ms.setPitch(pitch);
+                ms.update();
                 NGTUtilClient.playSound(ms);
             }
         }

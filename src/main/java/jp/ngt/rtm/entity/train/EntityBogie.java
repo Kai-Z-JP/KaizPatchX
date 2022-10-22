@@ -6,7 +6,6 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.ngtlib.protection.Lockable;
-import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.ngtlib.world.NGTWorld;
 import jp.ngt.rtm.RTMAchievement;
 import jp.ngt.rtm.RTMCore;
@@ -329,7 +328,7 @@ public class EntityBogie extends Entity implements Lockable {
         if (!cfg.muteJointSound) {
             float pitch = (Math.abs(train.getSpeed()) / cfg.maxSpeed[cfg.maxSpeed.length - 1]) * 0.5F + 1.0F;
             ResourceLocation sound = this.reverbSound ? JOINT_SOUND_REVERB : JOINT_SOUND;
-            RTMCore.proxy.playSound(this, sound, 1.0F, pitch);
+            RTMCore.proxy.playSound(this, sound, 4.0F, pitch);
 
             int size = cfg.jointDelay[this.getBogieId()].length;
             if (this.jointIndex < size - 1) {

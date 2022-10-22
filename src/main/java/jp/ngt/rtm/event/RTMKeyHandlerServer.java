@@ -25,7 +25,7 @@ public final class RTMKeyHandlerServer {
         if (keyCode == RTMCore.KEY_SNEAK) {
             this.setVehicleState(player, -1);
         } else if (keyCode == RTMCore.KEY_Horn) {
-            this.playSound(player, sound, 10000.0F, false);
+            this.playSound(player, sound, 6F, false);
         } else if (keyCode == RTMCore.KEY_Chime) {
             this.playSound(player, sound, 1.0F, true);
         } else if (keyCode == RTMCore.KEY_ControlPanel) {

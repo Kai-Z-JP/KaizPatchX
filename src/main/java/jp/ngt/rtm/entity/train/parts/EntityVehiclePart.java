@@ -24,6 +24,7 @@ public abstract class EntityVehiclePart extends Entity {
     protected boolean isIndependent;
     private EntityVehicleBase parent;
     private UUID unloadedParent;
+    private boolean sorted;
     public boolean needsUpdatePos;
 
     private EntityLivingBase rider;
@@ -126,9 +127,26 @@ public abstract class EntityVehiclePart extends Entity {
         return false;
     }
 
+    private void checkEntityOrder() {
+        if (!this.sorted) {
+            EntityVehicleBase vehicle = this.getVehicle();
+            if (vehicle != null) {
+                int myIndex = this.worldObj.loadedEntityList.indexOf(this);
+                int vehicleIndex = this.worldObj.loadedEntityList.indexOf(vehicle);
+                if (myIndex < vehicleIndex) {
+                    this.worldObj.loadedEntityList.remove(this);
+                    this.worldObj.loadedEntityList.add(this);
+                }
+            }
+            this.sorted = true;
+        }
+    }
+
     @Override
     public void onUpdate() {
-        if (!this.worldObj.isRemote) {
+        if (this.worldObj.isRemote) {
+            this.checkEntityOrder();
+        } else {
             if (this.riddenByEntity != null) {
                 if (this.rider == null && this.riddenByEntity instanceof EntityLivingBase) {
                     this.rider = (EntityLivingBase) this.riddenByEntity;

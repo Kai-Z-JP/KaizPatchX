@@ -54,11 +54,13 @@ public class CommandRTM extends CommandBase {
             if (s[0].equalsIgnoreCase("use1122marker") && player != null) {
                 RTMCore.NETWORK_WRAPPER.sendTo(new PacketNotice(PacketNotice.Side_CLIENT, "use1122marker," + (s.length == 2 ? Boolean.parseBoolean(s[1]) : "flip")), player);
             } else if (s[0].equalsIgnoreCase("delRidingFormation") && player != null) {
-                Formation formation = ((EntityTrainBase) player.ridingEntity).getFormation();
-                if (player.ridingEntity instanceof EntityTrainBase && formation != null) {
-                    int countTrain = formation.size();
-                    formation.getTrainStream().forEach(EntityTrainBase::setDead);
-                    commandSender.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
+                if (player.ridingEntity instanceof EntityTrainBase) {
+                    Formation formation = ((EntityTrainBase) player.ridingEntity).getFormation();
+                    if (formation != null) {
+                        int countTrain = formation.size();
+                        formation.getTrainStream().forEach(EntityTrainBase::setDead);
+                        commandSender.addChatMessage(new ChatComponentText("Deleted " + countTrain + "trains."));
+                    }
                 }
             } else if (s[0].equalsIgnoreCase("delAllTrain")) {
                 int countTrain = 0;

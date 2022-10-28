@@ -41,8 +41,8 @@ public final class PermissionManager {
         NGTText.readText(this.saveFile, "").stream()
                 .map(s -> s.split(":"))
                 .filter(split -> split.length == 2)
-                .collect(Collectors.toMap(split -> this.getPlayerList(split[0]), split -> Arrays.asList(split[1].split(","))))
-                .forEach(Collection::addAll);
+                .collect(Collectors.toMap(split -> split[0], split -> Arrays.asList(split[1].split(","))))
+                .forEach((key, value) -> this.getPlayerList(key).addAll(value));
     }
 
     private void initFile() {

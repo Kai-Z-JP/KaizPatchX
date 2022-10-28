@@ -1,0 +1,35 @@
+# The below is the copyright notice of original file:
+# Copyright (c) 2021 anatawa12 and other contributors
+# This file is part of fixRTM, released under GNU LGPL v3 with few exceptions
+# See LICENSE at https://github.com/fixrtm/fixRTM for more details
+
+name: 新機能のリクエスト [JA]
+description: 追加機能のリクエスト
+labels: [enhancement]
+assignees:
+  - Kai-Z-JP
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to request a feature.
+
+        機械翻訳をご利用の場合は、機械翻訳機のミスによる誤読や理解できない日本語を避けるため、母語と機械翻訳された日本語の両方でお書きください。
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Feature report check list
+      options:
+        - label: 非正式版を含む最新のバージョンの KaizPatchX にその機能が存在しないこと
+          required: true
+        - label: issues でそのリクエストがまだ無いこと。
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the feature
+      description: なにを追加してほしいかを説明してください。
+    validations:
+      required: true

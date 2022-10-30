@@ -1,6 +1,8 @@
 package jp.ngt.rtm.electric;
 
 
+import jp.ngt.ngtlib.math.Vec3;
+
 public class TileEntityDummyEW extends TileEntityElectricalWiring {
     public final EntityElectricalWiring entityEW;
     private int prevSignal;
@@ -30,6 +32,11 @@ public class TileEntityDummyEW extends TileEntityElectricalWiring {
                 this.prevSignal = level;
             }
         }
+    }
+
+    @Override
+    public Vec3 getWirePos() {
+        return Vec3.ZERO;
     }
 
     @Override

@@ -51,6 +51,11 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     }
 
     @Override
+    public Vec3 getWirePos() {
+        return wirePos;
+    }
+
+    @Override
     public ModelSetConnector getModelSet() {
         if (this.myModelSet == null || this.myModelSet.isDummy()) {
             this.myModelSet = ModelPackManager.INSTANCE.getModelSet("ModelConnector", this.modelName);

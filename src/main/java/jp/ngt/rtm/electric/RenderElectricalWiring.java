@@ -12,11 +12,14 @@ import jp.ngt.rtm.render.WirePartsRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class RenderElectricalWiring extends TileEntitySpecialRenderer {
@@ -25,11 +28,15 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
     private RenderElectricalWiring() {
     }
 
-    protected void renderElectricalWiring(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
+    protected void renderElectricalWiring(TileEntityElectricalWiring tileEntity, double par2, double par4, double par6, float par8) {
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-        this.renderConnector(tileEntity, par2, par4, par6, par8);
+        if (tileEntity instanceof TileEntityConnectorBase) {
+            this.renderConnector((TileEntityConnectorBase) tileEntity, par2, par4, par6, par8);
+        } else {
+            GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+        }
         this.renderAllWire(tileEntity, par2, par4, par6, par8);
 
         GL11.glPopMatrix();
@@ -69,9 +76,9 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    protected void renderAllWire(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
+    protected void renderAllWire(TileEntityElectricalWiring tileEntity, double par2, double par4, double par6, float par8) {
         GL11.glPushMatrix();
-        Vec3 vec = tileEntity.wirePos;
+        Vec3 vec = tileEntity.getWirePos();
         GL11.glTranslatef((float) par2 + 0.5F + (float) vec.getX(), (float) par4 + 0.5F + (float) vec.getY(), (float) par6 + 0.5F + (float) vec.getZ());
 
         tileEntity.getConnectionList().stream()
@@ -80,7 +87,7 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    private void renderWire(TileEntityConnectorBase tileEntity, Connection connection, double par2, double par4, double par6, float par8) {
+    private void renderWire(TileEntityElectricalWiring tileEntity, Connection connection, double par2, double par4, double par6, float par8) {
         ModelSetWireClient modelSet = (ModelSetWireClient) connection.getModelSet();
         if (modelSet.isDummy()) {
             return;
@@ -99,8 +106,8 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
 
-    public Vec3 getConnectedTarget(TileEntityConnectorBase tileEntity, Connection connection, float par8) {
-        Vec3 posMain = tileEntity.wirePos;
+    public Vec3 getConnectedTarget(TileEntityElectricalWiring tileEntity, Connection connection, float par8) {
+        Vec3 posMain = tileEntity.getWirePos();
         float x = 0.0F;
         float y = 0.0F;
         float z = 0.0F;
@@ -108,9 +115,21 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         float thisY = (float) tileEntity.yCoord + 0.5F + (float) posMain.getY();
         float thisZ = (float) tileEntity.zCoord + 0.5F + (float) posMain.getZ();
         if (connection.type == ConnectionType.TO_ENTITY) {
-            x = (float) connection.x + 0.5F - thisX;
-            y = (float) connection.y - thisY;
-            z = (float) connection.z + 0.5F - thisZ;
+            TileEntityElectricalWiring tile = ((List<Entity>) tileEntity.getWorldObj().loadedEntityList).stream()
+                    .filter(EntityElectricalWiring.class::isInstance)
+                    .map(EntityElectricalWiring.class::cast)
+                    .map(entity -> entity.tileEW)
+                    .filter(target -> target.xCoord == connection.x && target.yCoord == connection.y && target.zCoord == connection.z)
+                    .findFirst()
+                    .orElse(null);
+            if (tile != null) {
+                Vec3 posTarget = tile.getWirePos();
+                if (posTarget != null) {
+                    x = (float) connection.x + 0.5F + (float) posTarget.getX() - thisX;
+                    y = (float) connection.y - 0.5F + (float) posTarget.getY() - thisY;
+                    z = (float) connection.z + 0.5F + (float) posTarget.getZ() - thisZ;
+                }
+            }
         } else if (connection.type == ConnectionType.TO_PLAYER)//手に持ってる
         {
             EntityPlayer entity = connection.getPlayer(tileEntity.getWorldObj());
@@ -157,6 +176,6 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double d0, double d1, double d2, float f) {
-        this.renderElectricalWiring((TileEntityConnectorBase) tileentity, d0, d1, d2, f);
+        this.renderElectricalWiring((TileEntityElectricalWiring) tileentity, d0, d1, d2, f);
     }
 }

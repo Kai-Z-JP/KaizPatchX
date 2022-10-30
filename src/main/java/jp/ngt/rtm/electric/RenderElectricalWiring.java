@@ -112,7 +112,7 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         float y = 0.0F;
         float z = 0.0F;
         float thisX = (float) tileEntity.xCoord + 0.5F + (float) posMain.getX();
-        float thisY = (float) tileEntity.yCoord + 0.5F + (float) posMain.getY();
+        float thisY = (float) tileEntity.yCoord + (tileEntity instanceof TileEntityDummyEW ? 0.0F : 0.5F) + (float) posMain.getY();
         float thisZ = (float) tileEntity.zCoord + 0.5F + (float) posMain.getZ();
         if (connection.type == ConnectionType.TO_ENTITY) {
             TileEntityElectricalWiring tile = ((List<Entity>) tileEntity.getWorldObj().loadedEntityList).stream()
@@ -126,7 +126,7 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
                 Vec3 posTarget = tile.getWirePos();
                 if (posTarget != null) {
                     x = (float) connection.x + 0.5F + (float) posTarget.getX() - thisX;
-                    y = (float) connection.y - 0.5F + (float) posTarget.getY() - thisY;
+                    y = (float) connection.y + (float) posTarget.getY() - thisY;
                     z = (float) connection.z + 0.5F + (float) posTarget.getZ() - thisZ;
                 }
             }

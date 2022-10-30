@@ -1,7 +1,10 @@
 package jp.ngt.rtm.entity;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import jp.ngt.ngtlib.network.PacketNBT;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.item.ItemWithModel;
@@ -20,7 +23,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public abstract class EntityInstalledObject extends Entity implements IModelSelectorWithType {
+public abstract class EntityInstalledObject extends Entity implements IModelSelectorWithType, IEntityAdditionalSpawnData {
     private final ResourceState state = new ResourceState(this);
     private ModelSetMachine myModelSet;
     private final ScriptExecuter executer = new ScriptExecuter();
@@ -57,6 +60,18 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
         nbt.setString("ModelName", this.getModelName());
         nbt.setTag("State", this.getResourceState().writeToNBT());
         nbt.setFloat("RotationRoll", this.rotationRoll);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf additionalData) {
+        this.readEntityFromNBT(ByteBufUtils.readTag(additionalData));
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeEntityToNBT(nbt);
+        ByteBufUtils.writeTag(buffer, nbt);
     }
 
     @Override

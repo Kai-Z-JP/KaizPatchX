@@ -6,7 +6,6 @@ import jp.ngt.rtm.electric.SignalLevel;
 import jp.ngt.rtm.item.ItemInstalledObject.IstlObjType;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.stream.IntStream;
@@ -18,21 +17,6 @@ public class EntityTrainDetector extends EntityElectricalWiring {
         super(world);
         this.setSize(1.0F, 0.0625F);
         this.ignoreFrustumCheck = true;
-    }
-
-    @Override
-    protected void entityInit() {
-        super.entityInit();
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbt) {
-        super.writeEntityToNBT(nbt);
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbt) {
-        super.readEntityFromNBT(nbt);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package jp.ngt.rtm.electric;
 
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
@@ -72,6 +73,8 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
         return this.connections;
     }
 
+    public abstract Vec3 getWirePos();
+
     /**
      * Root側で呼び出し
      */
@@ -105,7 +108,11 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
 
         if (!this.worldObj.isRemote && flag) {
             this.markDirty();
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            if (this instanceof TileEntityDummyEW) {
+                RTMCore.NETWORK_WRAPPER.sendToAll(new PacketWire(this));
+            } else {
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            }
         }
         return flag;
     }
@@ -117,7 +124,11 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
         this.setConnection(x, y, z, type, name);
         if (!this.worldObj.isRemote) {
             this.markDirty();
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            if (this instanceof TileEntityDummyEW) {
+                RTMCore.NETWORK_WRAPPER.sendToAll(new PacketWire(this));
+            } else {
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            }
         }
         return true;
     }

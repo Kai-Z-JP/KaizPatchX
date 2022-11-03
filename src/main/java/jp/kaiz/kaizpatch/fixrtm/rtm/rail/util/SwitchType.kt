@@ -73,7 +73,7 @@ class SwitchTypeSingleCrossFixRTMV1 : SwitchType.SwitchSingleCross() {
             Point(switchList[0], rmsLine0, rmsSlashLine),
             Point(switchList[1], rmsLine1, rmsSlashLine),
             Point(rmsLine0.endRP, rmsLine0),
-            Point(rmsLine1.endRP, rmsLine0),
+            Point(rmsLine1.endRP, rmsLine1),
         )
         return true
     }

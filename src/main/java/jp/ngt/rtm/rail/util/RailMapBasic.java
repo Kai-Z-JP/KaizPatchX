@@ -65,9 +65,10 @@ public class RailMapBasic extends RailMap {
         boolean flag1 = (this.startRP.anchorYaw + this.endRP.anchorYaw) % 180.0F == 0;
 //		boolean flag1 = (this.endRP.direction - this.startRP.direction) % 4 == 0;
         boolean flag2 = (z0 == z1 || x0 == x1);//直角
-        boolean flag3 = (Math.abs(z0 - z1) == Math.abs(x0 - x1) && this.startRP.direction % 2 != 0 && this.endRP.direction % 2 != 0);//45度
-        // if anker is changed, we should use BezierCurve
-        boolean fixRTMV1 = fixRTMRailMapVersion >= 1 && (this.startRP.anchorLengthHorizontal > 0 || this.endRP.anchorLengthHorizontal > 0);
+        boolean flag3 = (Math.abs(z0 - z1) == Math.abs(x0 - x1) && this.startRP.direction % 2 != 0 && this.endRP.direction % 2 != 0);//45度// if anker angle is changed, we always should use BezierCurve.
+        boolean fixRTMV1 = fixRTMRailMapVersion >= 1 &&
+                (startRP.anchorYaw != NGTMath.wrapAngle(startRP.direction * 45.0F)
+                        || endRP.anchorYaw != NGTMath.wrapAngle(endRP.direction * 45.0F));
         if (flag1 && (flag2 || flag3) && !fixRTMV1) {
             this.lineHorizontal = new StraightLine(z0, x0, z1, x1);
         } else {

@@ -92,6 +92,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         if (nbt.hasKey("StartRP")) {
             this.railPositions[0] = RailPosition.readFromNBT(nbt.getCompoundTag("StartRP"));
             this.railPositions[1] = RailPosition.readFromNBT(nbt.getCompoundTag("EndRP"));
+            this.fixRTMRailMapVersion = nbt.getInteger("fixRTMRailMapVersion");
         } else {
             byte b0 = nbt.getByte("startDir");
             byte b1 = nbt.getByte("endDir");
@@ -104,7 +105,6 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 
             this.railPositions[0] = new RailPosition(x0, y0, z0, b0);
             this.railPositions[1] = new RailPosition(x1, y1, z1, b1);
-            this.fixRTMRailMapVersion = nbt.getInteger("fixRTMRailMapVersion");
         }
     }
 

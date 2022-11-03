@@ -100,10 +100,10 @@ public class BlockMarker extends BlockContainer {
                 marker.displayDistance ^= true;
                 return true;
             } else if (item.getItem() == Item.getItemFromBlock(RTMBlock.marker) || item.getItem() == Item.getItemFromBlock(RTMBlock.markerSwitch)) {
-                if (world.isRemote) {
+                if (!world.isRemote) {
                     this.makeRailMap(marker, x, y, z, player);
-                    player.openGui(RTMCore.instance, RTMCore.guiIdRailMarker, world, x, y, z);
                 }
+                player.openGui(RTMCore.instance, RTMCore.guiIdRailMarker, world, x, y, z);
                 return true;
             }
         }

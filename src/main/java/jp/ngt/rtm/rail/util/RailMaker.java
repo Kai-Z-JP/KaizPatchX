@@ -7,19 +7,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class RailMaker {
+    // see RailMapBasic.fixRTMRailMapVersion
+    public final int fixRTMRailMapVersion;
     private final World worldObj;
     private final List<RailPosition> rpList;
 
     public RailMaker(World world, List<RailPosition> par2) {
+        this(world, par2, RailMapBasic.fixRTMRailMapVersionCurrent);
+    }
+
+    public RailMaker(World world, List<RailPosition> par2, int fixRTMRailMapVersion) {
         this.worldObj = world;
         this.rpList = par2;
+        this.fixRTMRailMapVersion = fixRTMRailMapVersion;
     }
 
     public RailMaker(World world, RailPosition[] par2) {
-        this.worldObj = world;
-        this.rpList = new ArrayList<>();
-        this.rpList.addAll(Arrays.asList(par2));
+        this(world, par2, RailMapBasic.fixRTMRailMapVersionCurrent);
     }
+
+    public RailMaker(World world, RailPosition[] par2, int fixRTMRailMapVersion) {
+        this(world, new ArrayList<>(Arrays.asList(par2)), fixRTMRailMapVersion);
+    }
+
 
     private SwitchType getSwitchType() {
         if (this.rpList.size() == 3) {

@@ -32,6 +32,7 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
             this.railPositions = new RailPosition[size];
 
             IntStream.range(0, size).forEach(i -> this.railPositions[i] = RailPosition.readFromNBT(nbt.getCompoundTag("RP" + i)));
+            this.fixRTMRailMapVersion = nbt.getInteger("fixRTMRailMapVersion");
         } else//1.7.10.19互換
         {
             byte b0 = nbt.getByte("startDir");
@@ -76,6 +77,7 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
         nbt.setByte("Size", (byte) this.railPositions.length);
 
         IntStream.range(0, this.railPositions.length).forEach(i -> nbt.setTag("RP" + i, this.railPositions[i].writeToNBT()));
+        nbt.setInteger("fixRTMRailMapVersion", this.fixRTMRailMapVersion);
     }
 
     @Override
@@ -87,7 +89,7 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
     @Override
     public void createRailMap() {
         if (this.isLoaded() && this.switchObj == null) {
-            this.switchObj = (new RailMaker(this.getWorldObj(), this.railPositions).getSwitch());
+            this.switchObj = (new RailMaker(this.getWorldObj(), this.railPositions, this.fixRTMRailMapVersion)).getSwitch();
         }
     }
 

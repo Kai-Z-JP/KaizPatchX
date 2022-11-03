@@ -24,10 +24,23 @@ public class RailMapBasic extends RailMap {
 
     protected final List<int[]> rails = new ArrayList<>();
     protected double length;
+    // version 0: RTM original or KaizPatch 1.6.0.older
+    // version 1: KaizPatch 1.7.0...
+    public final int fixRTMRailMapVersion;
+    public static int fixRTMRailMapVersionCurrent = 1;
 
+    /**
+     * @deprecated use {@link #RailMapBasic(RailPosition, RailPosition, int)}
+     */
+    @Deprecated
     public RailMapBasic(RailPosition par1, RailPosition par2) {
+        this(par1, par2, 0);
+    }
+
+    public RailMapBasic(RailPosition par1, RailPosition par2, int version) {
         this.startRP = par1;
         this.endRP = par2;
+        this.fixRTMRailMapVersion = version;
         if (this.startRP.cantEdge * this.startRP.cantCenter < 0) {
             this.startRP.cantCenter = -this.startRP.cantCenter;
         } else if (this.startRP.cantEdge * this.startRP.cantCenter == 0 && this.endRP.cantEdge * this.startRP.cantCenter > 0) {

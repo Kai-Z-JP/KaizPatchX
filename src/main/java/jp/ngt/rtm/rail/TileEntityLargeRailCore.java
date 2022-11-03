@@ -47,6 +47,8 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
      */
     @SideOnly(Side.CLIENT)
     public boolean shouldRerenderRail;
+    // see RailMapBasic.fixRTMRailMapVersion
+    protected int fixRTMRailMapVersion;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
@@ -102,6 +104,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 
             this.railPositions[0] = new RailPosition(x0, y0, z0, b0);
             this.railPositions[1] = new RailPosition(x1, y1, z1, b1);
+            this.fixRTMRailMapVersion = nbt.getInteger("fixRTMRailMapVersion");
         }
     }
 
@@ -130,12 +133,13 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     protected void writeRailData(NBTTagCompound nbt) {
         nbt.setTag("StartRP", this.railPositions[0].writeToNBT());
         nbt.setTag("EndRP", this.railPositions[1].writeToNBT());
+        nbt.setInteger("fixRTMRailMapVersion", this.fixRTMRailMapVersion);
     }
 
     public void createRailMap() {
         if (this.isLoaded())//同期ができてない状態でのRailMapの生成を防ぐ
         {
-            this.railmap = new RailMapBasic(this.railPositions[0], this.railPositions[1]);
+            this.railmap = new RailMapBasic(this.railPositions[0], this.railPositions[1], this.fixRTMRailMapVersion);
         }
     }
 

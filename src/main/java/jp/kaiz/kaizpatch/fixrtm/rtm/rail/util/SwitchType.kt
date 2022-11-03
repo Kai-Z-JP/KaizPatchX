@@ -9,7 +9,12 @@ import jp.kaiz.kaizpatch.fixrtm.util.crossLineSegments
 import jp.ngt.rtm.rail.util.*
 import kotlin.math.abs
 
-class SwitchTypeSingleCrossFixRTMV1 : SwitchType.SwitchSingleCross() {
+class SwitchTypeSingleCrossFixRTMV1(fixRTMRailMapVersion: Int) : SwitchType.SwitchSingleCross(fixRTMRailMapVersion) {
+    init {
+        // this is only for version 1...
+        assert(fixRTMRailMapVersion >= 1)
+    }
+
     override fun init(switchList: List<RailPosition>, normalList: List<RailPosition>): Boolean {
         check(switchList.size == 2)
         check(normalList.size == 2)

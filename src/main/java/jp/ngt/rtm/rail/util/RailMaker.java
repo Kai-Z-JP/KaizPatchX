@@ -40,27 +40,27 @@ public final class RailMaker {
             int i0 = this.rpList.stream().mapToInt(rp -> (rp.switchType == 1) ? 1 : 0).sum();
 
             if (i0 == 1) {
-                return new SwitchType.SwitchBasic();
+                return new SwitchType.SwitchBasic(fixRTMRailMapVersion);
             }
         } else if (this.rpList.size() == 4) {
             int i0 = this.rpList.stream().mapToInt(rp -> (rp.switchType == 1) ? 1 : 0).sum();
 
             if (i0 == 2) {
                 if (fixRTMRailMapVersion >= 1) {
-                    return new SwitchTypeSingleCrossFixRTMV1();
+                    return new SwitchTypeSingleCrossFixRTMV1(fixRTMRailMapVersion);
                 } else {
-                    return new SwitchType.SwitchSingleCross();
+                    return new SwitchType.SwitchSingleCross(fixRTMRailMapVersion);
                 }
             } else if (i0 == 4) {
                 for (int i = 0; i < this.rpList.size(); ++i) {
                     for (int j = i + 1; j < this.rpList.size(); ++j)//全組み合わせ(重複なし)
                     {
                         if (this.rpList.get(i).direction == this.rpList.get(j).direction) {
-                            return new SwitchType.SwitchScissorsCross();
+                            return new SwitchType.SwitchScissorsCross(fixRTMRailMapVersion);
                         }
                     }
                 }
-                return new SwitchType.SwitchDiamondCross();
+                return new SwitchType.SwitchDiamondCross(fixRTMRailMapVersion);
             }
         }
 

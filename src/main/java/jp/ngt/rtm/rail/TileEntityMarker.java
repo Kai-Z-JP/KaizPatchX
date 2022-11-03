@@ -221,7 +221,7 @@ public class TileEntityMarker extends TileEntity {
             RailPosition rp0 = this.getMarkerRP(list.get(0));
             RailPosition rp1 = this.getMarkerRP(list.get(1));
             if (rp0 != null && rp1 != null) {
-                RailMap rm = new RailMapBasic(rp0, rp1);
+                RailMap rm = new RailMapBasic(rp0, rp1, RailMapBasic.fixRTMRailMapVersionCurrent);
                 this.railMaps = new RailMap[]{rm};
             }
         } else {
@@ -232,7 +232,7 @@ public class TileEntityMarker extends TileEntity {
                     list2.add(rp0);
                 }
             }
-            RailMaker rm = new RailMaker(this.worldObj, list2);
+            RailMaker rm = new RailMaker(this.worldObj, list2, RailMapBasic.fixRTMRailMapVersionCurrent);
             SwitchType sw = rm.getSwitch();
             if (sw != null) {
                 this.railMaps = sw.getAllRailMap();

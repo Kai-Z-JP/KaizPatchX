@@ -12,8 +12,11 @@ public final class RailMaker {
     private final World worldObj;
     private final List<RailPosition> rpList;
 
+    /**
+     * @deprecated use {@link #RailMaker(World, List, int)}
+     */
     public RailMaker(World world, List<RailPosition> par2) {
-        this(world, par2, RailMapBasic.fixRTMRailMapVersionCurrent);
+        this(world, par2, 0);
     }
 
     public RailMaker(World world, List<RailPosition> par2, int fixRTMRailMapVersion) {
@@ -23,7 +26,7 @@ public final class RailMaker {
     }
 
     public RailMaker(World world, RailPosition[] par2) {
-        this(world, par2, RailMapBasic.fixRTMRailMapVersionCurrent);
+        this(world, par2, 0);
     }
 
     public RailMaker(World world, RailPosition[] par2, int fixRTMRailMapVersion) {

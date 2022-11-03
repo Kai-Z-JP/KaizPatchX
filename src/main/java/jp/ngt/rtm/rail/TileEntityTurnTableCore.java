@@ -91,7 +91,7 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
             } else if (start.blockZ == end.blockZ) {
                 r = Math.abs(start.blockX - end.blockX) / 2;
             }
-            this.railmap = new RailMapTurntable(start, end, this.xCoord, this.yCoord, this.zCoord, r);
+            this.railmap = new RailMapTurntable(start, end, this.xCoord, this.yCoord, this.zCoord, r, fixRTMRailMapVersion);
         }
     }
 

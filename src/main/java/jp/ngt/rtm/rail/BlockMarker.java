@@ -206,7 +206,7 @@ public class BlockMarker extends BlockContainer {
      * y0 <= y1でなければならない
      */
     private static boolean createRail0(World world, RailPosition start, RailPosition end, RailProperty prop, boolean makeRail, boolean isCreative) {
-        RailMap railMap = new RailMapBasic(start, end);
+        RailMapBasic railMap = new RailMapBasic(start, end, RailMapBasic.fixRTMRailMapVersionCurrent);
 
         if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
             //railMap.setRail(world, RTMRail.largeRailBase[shape[0]], x0, y0, z0);
@@ -218,7 +218,7 @@ public class BlockMarker extends BlockContainer {
             tile.setRailPositions(new RailPosition[]{start, end});
             tile.setProperty(prop);
             tile.setStartPoint(start.blockX, start.blockY, start.blockZ);
-            tile.fixRTMRailMapVersion = ((RailMapBasic) railMap).fixRTMRailMapVersion;
+            tile.fixRTMRailMapVersion = railMap.fixRTMRailMapVersion;
 
             tile.createRailMap();
             tile.markDirty();
@@ -247,7 +247,7 @@ public class BlockMarker extends BlockContainer {
      * @param list {x, y, z}
      */
     private static boolean createRail1(World world, int x, int y, int z, EntityPlayer player, List<RailPosition> list, RailProperty prop, boolean makeRail, boolean isCreative) {
-        RailMaker railMaker = new RailMaker(world, list);
+        RailMaker railMaker = new RailMaker(world, list, RailMapBasic.fixRTMRailMapVersionCurrent);
         SwitchType st = railMaker.getSwitch();
         if (st == null) {
             if (player != null) {
@@ -316,7 +316,7 @@ public class BlockMarker extends BlockContainer {
             return false;
         }
 
-        RailMapTurntable railMap = new RailMapTurntable(start, end, cx, cy, cz, r);
+        RailMapTurntable railMap = new RailMapTurntable(start, end, cx, cy, cz, r, RailMapBasic.fixRTMRailMapVersionCurrent);
         if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
             railMap.setRail(world, RTMRail.largeRailBase0, cx, cy, cz, prop);
 

@@ -84,8 +84,8 @@ public abstract class SwitchType {
             RailPosition rpBranch1 = normalList.get(0);
             RailPosition rpBranch2 = normalList.get(1);
             RailDir dir = rpRoot.getDir(rpBranch1, rpBranch2);
-            rails[0] = new RailMapSwitch(rpRoot, rpBranch1, dir, RailDir.NONE);
-            rails[1] = new RailMapSwitch(rpRoot, rpBranch2, dir.invert(), RailDir.NONE);
+            rails[0] = new RailMapSwitch(rpRoot, rpBranch1, dir, RailDir.NONE, 0);
+            rails[1] = new RailMapSwitch(rpRoot, rpBranch2, dir.invert(), RailDir.NONE, 0);
             this.railMaps = rails;
             this.activeRails.add(this.railMaps[0]);
 
@@ -146,12 +146,12 @@ public abstract class SwitchType {
                         } else {
                             b1 = b2;
                         }
-                        rails[rmsCount] = new RailMapSwitch(rpA, rpB, b2.invert(), RailDir.NONE);
+                        rails[rmsCount] = new RailMapSwitch(rpA, rpB, b2.invert(), RailDir.NONE, 0);
                     }
                 }
                 ++rmsCount;
             }
-            rails[2] = new RailMapSwitch(rpRoot1, rpRoot2, b0, b1);//渡り部分
+            rails[2] = new RailMapSwitch(rpRoot1, rpRoot2, b0, b1, 0);//渡り部分
             this.railMaps = rails;
             this.activeRails.add(this.railMaps[0]);
             this.activeRails.add(this.railMaps[1]);
@@ -265,7 +265,7 @@ public abstract class SwitchType {
                             dir1 = rps[i][1].getDir(rps[i][0], rps[j][0]);
                         }
                     }
-                    rails[i] = new RailMapSwitch(rps[i][0], rps[i][1], dir0, dir1);
+                    rails[i] = new RailMapSwitch(rps[i][0], rps[i][1], dir0, dir1, 0);
                 }
 
                 this.railMaps = rails;
@@ -392,7 +392,7 @@ public abstract class SwitchType {
             for (int i = 0; i < 4; ++i) {
                 for (int j = 0; j < 4; ++j) {
                     if (i < j && Math.abs(rpList.get(i).direction - rpList.get(j).direction) == 4) {
-                        rails[k] = new RailMapSwitch(rpList.get(i), rpList.get(j), RailDir.NONE, RailDir.NONE);
+                        rails[k] = new RailMapSwitch(rpList.get(i), rpList.get(j), RailDir.NONE, RailDir.NONE, 0);
                         ++k;
 
                         if (k >= 2) {

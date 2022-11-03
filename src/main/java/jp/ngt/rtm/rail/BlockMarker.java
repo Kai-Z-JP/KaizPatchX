@@ -325,6 +325,7 @@ public class BlockMarker extends BlockContainer {
             tile.setRailPositions(new RailPosition[]{start, end});
             tile.setProperty(prop);
             tile.setStartPoint(cx, cy, cz);
+            tile.fixRTMRailMapVersion = railMap.fixRTMRailMapVersion;
 
             tile.createRailMap();
             tile.markDirty();

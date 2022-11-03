@@ -1,5 +1,6 @@
 package jp.ngt.rtm.rail.util;
 
+import jp.kaiz.kaizpatch.fixrtm.rtm.rail.util.SwitchTypeSingleCrossFixRTMV1;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -45,7 +46,11 @@ public final class RailMaker {
             int i0 = this.rpList.stream().mapToInt(rp -> (rp.switchType == 1) ? 1 : 0).sum();
 
             if (i0 == 2) {
-                return new SwitchType.SwitchSingleCross();
+                if (fixRTMRailMapVersion >= 1) {
+                    return new SwitchTypeSingleCrossFixRTMV1();
+                } else {
+                    return new SwitchType.SwitchSingleCross();
+                }
             } else if (i0 == 4) {
                 for (int i = 0; i < this.rpList.size(); ++i) {
                     for (int j = i + 1; j < this.rpList.size(); ++j)//全組み合わせ(重複なし)

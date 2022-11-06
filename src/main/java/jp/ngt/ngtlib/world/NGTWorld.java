@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class NGTWorld extends World implements IBlockAccessNGT {
     public final World world;
@@ -100,17 +99,20 @@ public class NGTWorld extends World implements IBlockAccessNGT {
         }
 
         //EntityBogieの関連付けタイミング
-        IntStream.range(0, 2).forEach(pass -> ((List<Entity>) this.loadedEntityList).forEach(entity -> {
-            double x = entity.posX;
-            double y = entity.posY - entity.yOffset;
-            double z = entity.posZ;
-            try {
-                entity.onUpdate();
-            } catch (Exception ignored)//etc. cast WorldServer
-            {
+        for (int pass = 0; pass < 2; ++pass) {
+            for (int j = 0; j < this.loadedEntityList.size(); ++j) {
+                Entity entity = (Entity) this.loadedEntityList.get(j);
+                double x = entity.posX;
+                double y = entity.posY - entity.yOffset;
+                double z = entity.posZ;
+                try {
+                    entity.onUpdate();
+                } catch (Exception ignored) {
+                    //etc. cast WorldServer
+                }
+                entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
             }
-            entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
-        }));
+        }
     }
 
     private Entity getEntityFromNBT(NBTTagCompound nbt) {

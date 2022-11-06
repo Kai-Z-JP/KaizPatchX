@@ -139,27 +139,14 @@ public final class NGTFileLoader {
 
         MODS_DIR = new ArrayList<>();
 
-        boolean dev = false;
-        try {
-            //Dev環境以外ではぬるぽ
-            File modsDir2 = new File(Thread.currentThread().getContextClassLoader().getResource("").getPath());
-            if (!modsDir2.getAbsolutePath().contains("mods")) {
-                MODS_DIR.add(modsDir2);//開発環境でのMod本体のパス
-                NGTLog.debug("[NGTFL] Add mods dir : " + modsDir2.getAbsolutePath());
-                dev = true;
-            }
-        } catch (NullPointerException ignored) {
+        for (File jarOrDir : FIXFileLoader.INSTANCE.getModsOrJars()) {
+            if (jarOrDir.isDirectory())
+                MODS_DIR.add(jarOrDir);
+            else
+                MODS_DIR.add(jarOrDir.getParentFile());
         }
 
-        File modsDir = NGTCore.proxy.getMinecraftDirectory("mods");
-        String modsDirPath = dev ? normalizePath(modsDir.getAbsolutePath()) : modsDir.getAbsolutePath();
-
-        MODS_DIR.add(new File(modsDirPath));
-        NGTLog.debug("[NGTFL] Add mods dir : " + modsDirPath);
-
-        File jarInJarModDir = NGTCore.proxy.getMinecraftDirectory("jar-mods-cache/v1");
-        MODS_DIR.add(new File(dev ? normalizePath(jarInJarModDir.getAbsolutePath()) : jarInJarModDir.getAbsolutePath()));
-        NGTLog.debug("[NGTFL] Add jar-in-jar cache dir : " + jarInJarModDir);
+        NGTLog.debug("[NGTFL] Add mods dir : " + MODS_DIR);
 
         return MODS_DIR;
     }

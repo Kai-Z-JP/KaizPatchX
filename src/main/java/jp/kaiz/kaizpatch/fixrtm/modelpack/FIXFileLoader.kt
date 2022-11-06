@@ -6,8 +6,8 @@ package jp.kaiz.kaizpatch.fixrtm.modelpack
 
 import jp.kaiz.kaizpatch.fixrtm.MS932
 import jp.kaiz.kaizpatch.fixrtm.directoryDigestBaseStream
-import jp.kaiz.kaizpatch.fixrtm.util.DigestUtils
 import jp.kaiz.kaizpatch.fixrtm.minecraftDir
+import jp.kaiz.kaizpatch.fixrtm.util.DigestUtils
 import jp.ngt.rtm.RTMCore
 import net.minecraft.crash.CrashReport
 import net.minecraft.launchwrapper.Launch
@@ -47,7 +47,7 @@ object FIXFileLoader {
     }
 
     fun getFiles(): List<File> {
-        return getModsOrJars().flatMap { it.walk().filter(File::isFile) }
+        return getModsOrJars().flatMap { it.walk() }
     }
 
     fun getModsOrJars(): List<File> {

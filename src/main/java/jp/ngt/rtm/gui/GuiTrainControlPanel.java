@@ -2,6 +2,7 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.gui.GuiButtonWithScrollingListBox;
 import jp.ngt.ngtlib.gui.GuiButtonCustom;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
@@ -14,7 +15,7 @@ import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.network.PacketNotice;
-import jp.ngt.rtm.network.PacketRTMKey;
+import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
@@ -68,8 +70,8 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
     protected final ModelSetVehicleBase<TrainConfig> modelset;
 
     private GuiButton buttonChunkLoader;
-    private GuiButton buttonDestination;
-    private GuiButton buttonAnnouncement;
+    private GuiButtonWithScrollingListBox buttonDestination;
+    private GuiButtonWithScrollingListBox buttonAnnouncement;
     private final GuiButton[] buttonDirection = new GuiButton[3];
     /**
      * 0:R, L:1
@@ -102,8 +104,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         super.initGui();
 
         this.buttonList.clear();
-        this.selectedTabIndex = 0;
-        this.setCurrentTab(TabTrainControlPanel.tabArray[0]);//i
+        this.setCurrentTab(TabTrainControlPanel.tabArray[this.selectedTabIndex]);//i
         int tabCount = TabTrainControlPanel.tabArray.length;
         if (tabCount > 12) {
             this.buttonList.add(new GuiButton(101, this.guiLeft, this.guiTop - 50, 20, 20, "<"));
@@ -162,16 +163,32 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             this.buttonList.add(new GuiButton(111, this.guiLeft + 152, this.guiTop + 52, 20, 20, ">"));
 
             if (((ModelSetVehicleBaseClient<TrainConfig>) this.modelset).rollsignTexture != null) {
-                this.buttonDestination = new GuiButton(128, this.guiLeft + 28, this.guiTop + 76, 120, 20, this.getFormattedText(8, this.train.getTrainStateData(8)));
+                this.buttonDestination = new GuiButtonWithScrollingListBox(128, this.guiLeft + 28, this.guiTop + 76, 120, 20,
+                        () -> (int) this.train.getTrainStateData(8),
+                        Arrays.asList(this.modelset.getConfig().rollsignNames),
+                        I18n.format("state.destination") + " %s",
+                        data -> {
+                            this.sendTrainState(8, data.byteValue());
+                            return Unit.INSTANCE;
+                        });
                 this.buttonList.add(this.buttonDestination);
                 this.buttonList.add(new GuiButton(112, this.guiLeft + 4, this.guiTop + 76, 20, 20, "<"));
                 this.buttonList.add(new GuiButton(113, this.guiLeft + 152, this.guiTop + 76, 20, 20, ">"));
             }
 
-            this.buttonAnnouncement = new GuiButton(129, this.guiLeft + 28, this.guiTop + 100, 120, 20, this.getFormattedText(9, this.train.getTrainStateData(9)));
-            this.buttonList.add(this.buttonAnnouncement);
-            this.buttonList.add(new GuiButton(114, this.guiLeft + 4, this.guiTop + 100, 20, 20, "<"));
-            this.buttonList.add(new GuiButton(115, this.guiLeft + 152, this.guiTop + 100, 20, 20, ">"));
+            if (this.modelset.getConfig().sound_Announcement != null) {
+                this.buttonAnnouncement = new GuiButtonWithScrollingListBox(129, this.guiLeft + 28, this.guiTop + 100, 120, 20,
+                        () -> (int) this.train.getTrainStateData(9),
+                        Arrays.stream(this.modelset.getConfig().sound_Announcement).map(s -> s[0]).collect(Collectors.toList()),
+                        I18n.format("state.announcement") + " %s",
+                        data -> {
+                            this.sendTrainState(9, data.byteValue());
+                            return Unit.INSTANCE;
+                        });
+                this.buttonList.add(this.buttonAnnouncement);
+                this.buttonList.add(new GuiButton(114, this.guiLeft + 4, this.guiTop + 100, 20, 20, "<"));
+                this.buttonList.add(new GuiButton(115, this.guiLeft + 152, this.guiTop + 100, 20, 20, ">"));
+            }
         } else if (tab == TabTrainControlPanel.TAB_Function) {
             this.initInventorySlot(containerTrain);
 
@@ -330,11 +347,9 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             //((ContainerTrainControlPanel)this.inventorySlots).scrollTo(this.currentScroll);
         }
         if (i != 0) {
-            int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-            int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
             int i0 = (i > 0) ? -1 : 1;
             ((List<GuiButton>) this.buttonList).stream()
-                    .filter(button -> button.mousePressed(this.mc, x, y))
+                    .filter(GuiButton::func_146115_a)
                     .findFirst()
                     .ifPresent(button -> {
                         int id, data, prevData;
@@ -679,14 +694,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             } else if (button.id == 128) {
                 return;
             } else if (button.id == 129) {
-                int index = this.train.getTrainStateData(9);
-                String[][] sa0 = this.modelset.getConfig().sound_Announcement;
-                if (sa0 != null && index < sa0.length) {
-                    String[] sa1 = sa0[index][1].split(":");
-
-                    RTMCore.NETWORK_WRAPPER.sendToServer(new PacketRTMKey(player, RTMCore.KEY_Chime, sa0[index][1]));
-//                    RTMCore.proxy.playSound(this.train, new ResourceLocation(sa1[0], sa1[1]), 1.0F, 1.0F);
-                }
                 return;
             } else if (button.id <= 129) {
                 i0 = button.id - 120;
@@ -709,9 +716,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             if (button.id == 110 || button.id == 111) {
                 this.buttonChunkLoader.displayString = this.getFormattedText(i0, (byte) i2);
             } else if (button.id == 112 || button.id == 113) {
-                this.buttonDestination.displayString = this.getFormattedText(i0, (byte) i2);
             } else if (button.id == 114 || button.id == 115) {
-                this.buttonAnnouncement.displayString = this.getFormattedText(i0, (byte) i2);
             } else {
                 button.displayString = this.getFormattedText(i0, (byte) i2);
             }

@@ -43,10 +43,14 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * RenderLargeRailから呼ばれる
      */
     public void renderRail(TileEntityLargeRailCore tileEntity, int index, double par2, double par4, double par6, float par8) {
-        this.currentRailIndex = index;
-        this.renderRailStatic(tileEntity, par2, par4, par6, par8);
+        try {
+            this.currentRailIndex = index;
+            this.renderRailStatic(tileEntity, par2, par4, par6, par8);
 
-        this.renderRailDynamic(tileEntity, par2, par4, par6, par8);
+            this.renderRailDynamic(tileEntity, par2, par4, par6, par8);
+        } catch (Exception e) {
+            throw new RuntimeException("On init script : " + this.modelSet.getConfig().getName(), e);
+        }
     }
 
     /*スクリプト呼び出しメソッド**********************************************************************************/

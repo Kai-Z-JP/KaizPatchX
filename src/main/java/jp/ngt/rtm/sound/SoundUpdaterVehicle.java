@@ -114,6 +114,9 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
         MovingSoundVehicle sound = this.getPlayingSound(domain, path);
         boolean flag = (sound == null);
         if (flag) {
+            if (volume == 0) {
+                return;
+            }
             ResourceLocation resource = new ResourceLocation(domain, path);
             sound = new MovingSoundVehicle(this.theVehicle, resource, repeat, false);
         }

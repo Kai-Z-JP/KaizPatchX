@@ -193,6 +193,9 @@ public final class RTMKeyHandlerClient {
             } else if (KEY_CHIME_NEXT.isPressed()) {
                 TrainStateType type = TrainStateType.State_Announcement;
                 String[][] announce = train.getModelSet().getConfig().sound_Announcement;
+                if (announce == null || announce.length == 0) {
+                    return;
+                }
                 int i0 = train.getTrainStateData(type.id) + 1;
                 i0 = i0 < 0 ? announce.length - 1 : (i0 > announce.length - 1 ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
@@ -200,11 +203,13 @@ public final class RTMKeyHandlerClient {
             } else if (KEY_CHIME_PREV.isPressed()) {
                 TrainStateType type = TrainStateType.State_Announcement;
                 String[][] announce = train.getModelSet().getConfig().sound_Announcement;
+                if (announce == null || announce.length == 0) {
+                    return;
+                }
                 int i0 = train.getTrainStateData(type.id) - 1;
                 i0 = i0 < 0 ? announce.length - 1 : (i0 > announce.length - 1 ? 0 : i0);
                 train.syncTrainStateData(type.id, (byte) i0);
                 NGTLog.showChatMessage(new ChatComponentText(String.format("Prev chime(%s)", announce[i0][0])));
-
             } else if (KEY_PANTOGRAPH.isPressed()) {
                 TrainState.TrainStateType type = TrainState.TrainStateType.State_Pantograph;
                 int state = train.getTrainStateData(type.id);
@@ -214,6 +219,9 @@ public final class RTMKeyHandlerClient {
             } else if (KEY_DEST_PREV.isPressed()) {
                 TrainState.TrainStateType type = TrainState.TrainStateType.State_Destination;
                 String[] rollsignNames = train.getModelSet().getConfig().rollsignNames;
+                if (rollsignNames == null || rollsignNames.length == 0) {
+                    return;
+                }
                 int state = train.getTrainStateData(type.id) - 1;
                 if (state < 0) {
                     state = rollsignNames.length - 1;
@@ -223,6 +231,9 @@ public final class RTMKeyHandlerClient {
             } else if (KEY_DEST_NEXT.isPressed()) {
                 TrainState.TrainStateType type = TrainState.TrainStateType.State_Destination;
                 String[] rollsignNames = train.getModelSet().getConfig().rollsignNames;
+                if (rollsignNames == null || rollsignNames.length == 0) {
+                    return;
+                }
                 int state = train.getTrainStateData(type.id) + 1;
                 if (state >= rollsignNames.length) {
                     state = 0;

@@ -10,6 +10,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -35,11 +37,28 @@ public class ItemNPC extends Item {
             float yawF = (float) yaw * rotationInterval;
 
             EntityNPC entity = itemStack.getItemDamage() == 0 ? new EntityMotorman(world, player) : new EntityNPC(world, player);
+            NBTTagCompound nbt = itemStack.getTagCompound();
+            if (nbt != null && nbt.hasKey("EntityData")) {
+                NBTTagCompound entityData = nbt.getCompoundTag("EntityData");
+                entity.readEntityFromNBT(entityData);
+                entity.func_152115_b(player.getUniqueID().toString());
+            }
             entity.setLocationAndAngles((double) par4 + 0.5D, (double) par5 + 1.5D, (double) par6 + 0.5D, yawF, 0.0F);
             entity.rotationYawHead = yawF;
             world.spawnEntityInWorld(entity);
         }
         return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+        NBTTagCompound nbt = itemStack.getTagCompound();
+        if (nbt != null && nbt.hasKey("EntityData")) {
+            NBTTagCompound entityData = nbt.getCompoundTag("EntityData");
+            list.add(EnumChatFormatting.GRAY + entityData.getString("ModelName"));
+            list.add(EnumChatFormatting.DARK_PURPLE + "(+EntityData)");
+        }
     }
 
     @Override

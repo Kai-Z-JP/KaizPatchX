@@ -6,6 +6,7 @@ import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.io.NGTText;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.entity.ai.EntityAIDriveWithMacro;
 import jp.ngt.rtm.entity.ai.EntityAIDrivingWithDiagram;
 import jp.ngt.rtm.entity.ai.EntityAIDrivingWithSignal;
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemWritableBook;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import java.io.File;
@@ -133,5 +135,10 @@ public class EntityMotorman extends EntityNPC {
     @Override
     public boolean isMotorman() {
         return true;
+    }
+
+    @Override
+    public ItemStack getPickedResult(MovingObjectPosition target) {
+        return new ItemStack(RTMItem.itemMotorman, 1, 0);
     }
 }

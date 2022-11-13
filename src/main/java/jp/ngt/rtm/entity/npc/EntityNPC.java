@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public class EntityNPC extends EntityTameable implements IModelSelector, IRangedAttackMob {
@@ -406,5 +407,17 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
             return new EntityBullet(this.worldObj, this, type.speed, type.bulletType);
         }
         return new EntityBullet(this.worldObj, this, this.getAttackTarget(), type.speed, type.bulletType);
+    }
+
+    @Override
+    public ItemStack getPickedResult(MovingObjectPosition target) {
+        ItemStack item = new ItemStack(RTMItem.itemMotorman, 1, 1);
+        if (!item.hasTagCompound()) {
+            item.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeEntityToNBT(nbt);
+        item.getTagCompound().setTag("EntityData", nbt);
+        return item;
     }
 }

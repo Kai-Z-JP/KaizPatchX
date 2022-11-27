@@ -8,8 +8,15 @@ public final class RailMapTurntable extends RailMapBasic {
     public final int centerX, centerY, centerZ, radius;
     private float rotation;
 
+    /**
+     * @deprecated use {@link #RailMapTurntable(RailPosition, RailPosition, int, int, int, int, int)}
+     */
     public RailMapTurntable(RailPosition par1, RailPosition par2, int x, int y, int z, int r) {
-        super(par1, par2);
+        this(par1, par2, x, y, z, r, 0);
+    }
+
+    public RailMapTurntable(RailPosition par1, RailPosition par2, int x, int y, int z, int r, int version) {
+        super(par1, par2, version);
         this.centerX = x;
         this.centerY = y;
         this.centerZ = z;

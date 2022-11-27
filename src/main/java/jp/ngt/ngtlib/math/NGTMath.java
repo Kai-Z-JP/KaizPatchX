@@ -202,6 +202,20 @@ public final class NGTMath {
         return RANDOM;
     }
 
+    public static float wrapAngle(float value) {
+        value = value % 360.0F;
+
+        if (value >= 180.0F) {
+            value -= 360.0F;
+        }
+
+        if (value < -180.0F) {
+            value += 360.0F;
+        }
+
+        return value;
+    }
+
     public static double getDistanceSq(double sX, double sY, double eX, double eY) {
         double dx = eX - sX;
         double dy = eY - sY;

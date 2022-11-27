@@ -10,7 +10,7 @@ public class RailMapSlope extends RailMapBasic {
     private final byte slopeType;
 
     public RailMapSlope(RailPosition par1, RailPosition par2, byte type) {
-        super(par1, par2);
+        super(par1, par2, 0);
         this.dirDeg = MathHelper.wrapAngleTo180_float((float) par1.direction * 45.0F);
         this.slopeType = type;
     }

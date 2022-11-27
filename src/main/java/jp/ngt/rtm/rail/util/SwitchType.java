@@ -11,12 +11,22 @@ public abstract class SwitchType {
     public final byte id;
     protected RailMapSwitch[] railMaps;
     protected Point[] points;
+    // see RailMapBasic#fixRTMRailMapVersion
+    public final int fixRTMRailMapVersion;
 
     @Deprecated
     protected List<RailMapSwitch> activeRails = new ArrayList<>();
 
+    /**
+     * @deprecated use {@link #SwitchType(int, int)}
+     */
     protected SwitchType(int par1) {
+        this(par1, 0);
+    }
+
+    protected SwitchType(int par1, int fixRTMRailMapVersion) {
         this.id = (byte) par1;
+        this.fixRTMRailMapVersion = fixRTMRailMapVersion;
     }
 
     /**
@@ -73,8 +83,15 @@ public abstract class SwitchType {
 
     //Y字
     public static class SwitchBasic extends SwitchType {
+        /**
+         * @deprecated use {@link #SwitchBasic(int)}
+         */
         public SwitchBasic() {
-            super(0);
+            this(0);
+        }
+
+        public SwitchBasic(int fixRTMRailMapVersion) {
+            super(0, fixRTMRailMapVersion);
         }
 
         @Override
@@ -84,8 +101,8 @@ public abstract class SwitchType {
             RailPosition rpBranch1 = normalList.get(0);
             RailPosition rpBranch2 = normalList.get(1);
             RailDir dir = rpRoot.getDir(rpBranch1, rpBranch2);
-            rails[0] = new RailMapSwitch(rpRoot, rpBranch1, dir, RailDir.NONE);
-            rails[1] = new RailMapSwitch(rpRoot, rpBranch2, dir.invert(), RailDir.NONE);
+            rails[0] = new RailMapSwitch(rpRoot, rpBranch1, dir, RailDir.NONE, this.fixRTMRailMapVersion);
+            rails[1] = new RailMapSwitch(rpRoot, rpBranch2, dir.invert(), RailDir.NONE, this.fixRTMRailMapVersion);
             this.railMaps = rails;
             this.activeRails.add(this.railMaps[0]);
 
@@ -122,9 +139,18 @@ public abstract class SwitchType {
 
     //N字
     public static class SwitchSingleCross extends SwitchType {
+        /**
+         * @deprecated use {@link #SwitchSingleCross(int)}
+         */
+        @Deprecated
         public SwitchSingleCross() {
-            super(1);
+            this(0);
         }
+
+        public SwitchSingleCross(int fixRTMRailMapVersion) {
+            super(1, fixRTMRailMapVersion);
+        }
+
 
         @Override
         public boolean init(List<RailPosition> switchList, List<RailPosition> normalList) {
@@ -146,12 +172,12 @@ public abstract class SwitchType {
                         } else {
                             b1 = b2;
                         }
-                        rails[rmsCount] = new RailMapSwitch(rpA, rpB, b2.invert(), RailDir.NONE);
+                        rails[rmsCount] = new RailMapSwitch(rpA, rpB, b2.invert(), RailDir.NONE, this.fixRTMRailMapVersion);
                     }
                 }
                 ++rmsCount;
             }
-            rails[2] = new RailMapSwitch(rpRoot1, rpRoot2, b0, b1);//渡り部分
+            rails[2] = new RailMapSwitch(rpRoot1, rpRoot2, b0, b1, this.fixRTMRailMapVersion);//渡り部分
             this.railMaps = rails;
             this.activeRails.add(this.railMaps[0]);
             this.activeRails.add(this.railMaps[1]);
@@ -216,8 +242,16 @@ public abstract class SwitchType {
 
     //シーサスクロッシング
     public static class SwitchScissorsCross extends SwitchType {
+        /**
+         * @deprecated use {@link #SwitchScissorsCross(int)}
+         */
+        @Deprecated
         public SwitchScissorsCross() {
-            super(2);
+            this(0);
+        }
+
+        public SwitchScissorsCross(int fixRTMRailMapVersion) {
+            super(2, fixRTMRailMapVersion);
         }
 
         @Override
@@ -265,7 +299,7 @@ public abstract class SwitchType {
                             dir1 = rps[i][1].getDir(rps[i][0], rps[j][0]);
                         }
                     }
-                    rails[i] = new RailMapSwitch(rps[i][0], rps[i][1], dir0, dir1);
+                    rails[i] = new RailMapSwitch(rps[i][0], rps[i][1], dir0, dir1, this.fixRTMRailMapVersion);
                 }
 
                 this.railMaps = rails;
@@ -377,8 +411,16 @@ public abstract class SwitchType {
 
     //ダイヤモンドクロス
     public static class SwitchDiamondCross extends SwitchType {
+        /**
+         * @deprecated use {@link #SwitchDiamondCross(int)}
+         */
+        @Deprecated
         public SwitchDiamondCross() {
-            super(3);
+            this(0);
+        }
+
+        public SwitchDiamondCross(int fixRTMRailMapVersion) {
+            super(3, fixRTMRailMapVersion);
         }
 
         @Override
@@ -392,7 +434,7 @@ public abstract class SwitchType {
             for (int i = 0; i < 4; ++i) {
                 for (int j = 0; j < 4; ++j) {
                     if (i < j && Math.abs(rpList.get(i).direction - rpList.get(j).direction) == 4) {
-                        rails[k] = new RailMapSwitch(rpList.get(i), rpList.get(j), RailDir.NONE, RailDir.NONE);
+                        rails[k] = new RailMapSwitch(rpList.get(i), rpList.get(j), RailDir.NONE, RailDir.NONE, this.fixRTMRailMapVersion);
                         ++k;
 
                         if (k >= 2) {

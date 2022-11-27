@@ -36,6 +36,12 @@ public class RTMConfig {
     public static boolean expandPlayableSoundCount;
     public static boolean markerDistanceMoreRealPosition = true;
 
+    public static float trainRunningSoundRange;
+    public static float trainJointSoundRange;
+    public static float trainBrakeReleaseSoundRange;
+    public static float trainHornSoundRange;
+    public static float crossingGateSoundRange;
+
     public static void init(Configuration config) {
         cfg = config;
         try {
@@ -57,6 +63,17 @@ public class RTMConfig {
         RTMConfig.expandPlayableSoundCount = cfg.getBoolean(
                 "Expand playable sound count", CATEGORY_SOUND, true,
                 "expands the count of playable sound count at the same time. this may cause compatibility issue with Immersive Vehicles.");
+
+        RTMConfig.trainRunningSoundRange = cfg.getFloat(
+                "audible range train running", CATEGORY_SOUND, 48.0F, 0.0F, 256.0F, "Audible range of train running sound range.(Sounds played from script as well");
+        RTMConfig.trainJointSoundRange = cfg.getFloat(
+                "audible range train joint", CATEGORY_SOUND, 48.0F, 0.0F, 256.0F, "Audible range of train joint sound.(Server Side)");
+        RTMConfig.trainBrakeReleaseSoundRange = cfg.getFloat(
+                "audible range train brake release", CATEGORY_SOUND, 32.0F, 0.0F, 256.0F, "Audible range of train brake release sound.(Server Side)");
+        RTMConfig.trainHornSoundRange = cfg.getFloat(
+                "audible range train horn", CATEGORY_SOUND, 96.0F, 0.0F, 256.0F, "Audible range of train horn sound.(Server Side)");
+        RTMConfig.crossingGateSoundRange = cfg.getFloat(
+                "audible range crossing gate", CATEGORY_SOUND, 32.0F, 0.0F, 256.0F, "Audible range of crossing gate sound.");
 
         RTMConfig.railGeneratingDistance = (short) cfg.getInt(
                 "GeneratingDistance", CATEGORY_RAIL, 64, 0, 256, "Distance for generating a rail. (default:64, recomended max value:256, It depends on server side)");

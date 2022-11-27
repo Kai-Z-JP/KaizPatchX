@@ -8,6 +8,7 @@ import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.RTMAchievement;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.electric.WireManager;
@@ -468,7 +469,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
         if (sound != null) {
             String[] sa = sound.split(":");
-            RTMCore.proxy.playSound(this, new ResourceLocation(sa[0], sa[1]), 2.0F, 1.0F);
+            RTMCore.proxy.playSound(this, new ResourceLocation(sa[0], sa[1]), 1.0F, 1.0F, RTMConfig.trainBrakeReleaseSoundRange);
             //this.worldObj.playSoundAtEntity(this, sound, 1.0F, 1.0F);
         }
     }

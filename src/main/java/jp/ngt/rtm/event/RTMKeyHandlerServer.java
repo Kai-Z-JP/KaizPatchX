@@ -1,5 +1,6 @@
 package jp.ngt.rtm.event;
 
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
@@ -25,9 +26,9 @@ public final class RTMKeyHandlerServer {
         if (keyCode == RTMCore.KEY_SNEAK) {
             this.setVehicleState(player, -1);
         } else if (keyCode == RTMCore.KEY_Horn) {
-            this.playSound(player, sound, 6F, false);
+            this.playSound(player, sound, 1.0F, false, RTMConfig.trainHornSoundRange);
         } else if (keyCode == RTMCore.KEY_Chime) {
-            this.playSound(player, sound, 1.0F, true);
+            this.playSound(player, sound, 1.0F, true, 16.0F);
         } else if (keyCode == RTMCore.KEY_ControlPanel) {
             player.openGui(RTMCore.instance, RTMCore.guiIdTrainControlPanel, player.worldObj, player.ridingEntity.getEntityId(), 0, 0);
         } else if (keyCode == RTMCore.KEY_Fire) {
@@ -53,15 +54,15 @@ public final class RTMKeyHandlerServer {
         }
     }
 
-    private void playSound(EntityPlayer player, String sound, float vol, boolean allCar) {
+    private void playSound(EntityPlayer player, String sound, float vol, boolean allCar, float range) {
         EntityTrainBase train = this.getRidingTrain(player);
         if (train != null) {
             String[] sa = sound.split(":");
             if (sa.length == 2) {
                 if (allCar && train.getFormation() != null) {
-                    train.getFormation().getTrainStream().forEach(entryTrain -> RTMCore.proxy.playSound(entryTrain, new ResourceLocation(sa[0], sa[1]), vol, 1.0F));
+                    train.getFormation().getTrainStream().forEach(entryTrain -> RTMCore.proxy.playSound(entryTrain, new ResourceLocation(sa[0], sa[1]), vol, 1.0F, range));
                 } else {
-                    RTMCore.proxy.playSound(train, new ResourceLocation(sa[0], sa[1]), vol, 1.0F);
+                    RTMCore.proxy.playSound(train, new ResourceLocation(sa[0], sa[1]), vol, 1.0F, range);
                 }
             }
         }

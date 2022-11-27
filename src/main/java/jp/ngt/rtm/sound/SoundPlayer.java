@@ -2,6 +2,7 @@ package jp.ngt.rtm.sound;
 
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.RTMConfig;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -31,9 +32,7 @@ public class SoundPlayer {
             if (this.sound != null) {
                 this.stopSound();
             }
-            this.sound = new MovingSoundTileEntity(tile, src, repeat);
-            this.sound.setVolume(4.0F);
-            this.sound.update();
+            this.sound = new MovingSoundTileEntity(tile, src, repeat, RTMConfig.crossingGateSoundRange);
             NGTUtilClient.playSound(this.sound);
         }
 

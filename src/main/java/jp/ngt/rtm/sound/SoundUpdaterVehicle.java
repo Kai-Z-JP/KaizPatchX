@@ -3,6 +3,7 @@ package jp.ngt.rtm.sound;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.entity.vehicle.IUpdateVehicle;
@@ -114,15 +115,11 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
         MovingSoundVehicle sound = this.getPlayingSound(domain, path);
         boolean flag = (sound == null);
         if (flag) {
-            if (volume == 0) {
-                return;
-            }
             ResourceLocation resource = new ResourceLocation(domain, path);
-            sound = new MovingSoundVehicle(this.theVehicle, resource, repeat, false);
+            sound = new MovingSoundVehicle(this.theVehicle, resource, repeat, false, RTMConfig.trainRunningSoundRange);
         }
         sound.setVolume(volume);
         sound.setPitch(pitch);
-        sound.update();
 
         if (flag) {
             this.theSoundHandler.playSound(sound);

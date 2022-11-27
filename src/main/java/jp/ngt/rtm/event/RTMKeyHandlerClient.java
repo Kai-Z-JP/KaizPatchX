@@ -166,6 +166,7 @@ public final class RTMKeyHandlerClient {
             }
         } else if (KEY_ATS.isPressed()) {
             this.sendKeyToServer(RTMCore.KEY_ATS, "");
+            NGTLog.showChatMessage(new ChatComponentText("ATS Key Pushed"));
         }
 
         if (player.isRiding() && (riding instanceof EntityTrainBase)) {

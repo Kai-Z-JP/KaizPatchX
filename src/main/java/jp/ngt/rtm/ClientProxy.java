@@ -307,30 +307,28 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void playSound(Entity entity, ResourceLocation sound, float vol, float pitch) {
+    public void playSound(Entity entity, ResourceLocation sound, float vol, float pitch, float range) {
         if (sound != null) {
             if (NGTUtil.isServer()) {
-                super.playSound(entity, sound, vol, pitch);
+                super.playSound(entity, sound, vol, pitch, range);
             } else {
-                MovingSoundEntity ms = new MovingSoundEntity(entity, sound, false);
+                MovingSoundEntity ms = new MovingSoundEntity(entity, sound, false, range);
                 ms.setVolume(vol);
                 ms.setPitch(pitch);
-                ms.update();
                 NGTUtilClient.playSound(ms);
             }
         }
     }
 
     @Override
-    public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch) {
+    public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch, float range) {
         if (sound != null) {
             if (NGTUtil.isServer()) {
-                super.playSound(entity, sound, vol, pitch);
+                super.playSound(entity, sound, vol, pitch, range);
             } else {
-                MovingSoundTileEntity ms = new MovingSoundTileEntity(entity, sound, false);
+                MovingSoundTileEntity ms = new MovingSoundTileEntity(entity, sound, false, range);
                 ms.setVolume(vol);
                 ms.setPitch(pitch);
-                ms.update();
                 NGTUtilClient.playSound(ms);
             }
         }

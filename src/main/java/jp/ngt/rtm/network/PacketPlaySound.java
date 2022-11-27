@@ -17,22 +17,33 @@ public class PacketPlaySound extends PacketCustom implements IMessage, IMessageH
     private ResourceLocation sound;
     private float volume;
     private float pitch;
+    private float range;
 
     public PacketPlaySound() {
     }
 
     public PacketPlaySound(Entity par1, ResourceLocation par2, float par3, float par4) {
+        this(par1, par2, par3, par4, 16.0F);
+    }
+
+    public PacketPlaySound(Entity par1, ResourceLocation par2, float par3, float par4, float par5) {
         super(par1);
         this.sound = par2;
         this.volume = par3;
         this.pitch = par4;
+        this.range = par5;
     }
 
-    public PacketPlaySound(TileEntity par1, ResourceLocation sound2, float par3, float par4) {
+    public PacketPlaySound(TileEntity par1, ResourceLocation par2, float par3, float par4) {
+        this(par1, par2, par3, par4, 16.0F);
+    }
+
+    public PacketPlaySound(TileEntity par1, ResourceLocation sound2, float par3, float par4, float par5) {
         super(par1);
         this.sound = sound2;
         this.volume = par3;
         this.pitch = par4;
+        this.range = par5;
     }
 
     @Override
@@ -42,6 +53,7 @@ public class PacketPlaySound extends PacketCustom implements IMessage, IMessageH
         ByteBufUtils.writeUTF8String(buffer, this.sound.getResourcePath());
         buffer.writeFloat(this.volume);
         buffer.writeFloat(this.pitch);
+        buffer.writeFloat(this.range);
     }
 
     @Override
@@ -52,6 +64,7 @@ public class PacketPlaySound extends PacketCustom implements IMessage, IMessageH
         this.sound = new ResourceLocation(s1, s2);
         this.volume = buffer.readFloat();
         this.pitch = buffer.readFloat();
+        this.range = buffer.readFloat();
     }
 
     @Override
@@ -60,12 +73,12 @@ public class PacketPlaySound extends PacketCustom implements IMessage, IMessageH
         if (message.forEntity()) {
             Entity entity = message.getEntity(world);
             if (entity != null) {
-                RTMCore.proxy.playSound(entity, message.sound, message.volume, message.pitch);
+                RTMCore.proxy.playSound(entity, message.sound, message.volume, message.pitch, message.range);
             }
         } else {
             TileEntity entity = message.getTileEntity(world);
             if (entity != null) {
-                RTMCore.proxy.playSound(entity, message.sound, message.volume, message.pitch);
+                RTMCore.proxy.playSound(entity, message.sound, message.volume, message.pitch, message.range);
             }
         }
         return null;

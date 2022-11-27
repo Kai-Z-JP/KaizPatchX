@@ -1,5 +1,6 @@
 package jp.ngt.rtm;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.entity.train.util.FormationManager;
@@ -79,14 +80,28 @@ public class CommonProxy {
      * @param sound  null可
      */
     public void playSound(Entity entity, ResourceLocation sound, float vol, float pitch) {
+        this.playSound(entity, sound, vol, pitch, 16.0F);
+    }
+
+    public void playSound(Entity entity, ResourceLocation sound, float vol, float pitch, float range) {
         if (sound != null) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketPlaySound(entity, sound, vol, pitch));
+            RTMCore.NETWORK_WRAPPER.sendToAllAround(
+                    new PacketPlaySound(entity, sound, vol, pitch, range),
+                    new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range)
+            );
         }
     }
 
     public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch) {
+        this.playSound(entity, sound, vol, pitch, 16.0F);
+    }
+
+    public void playSound(TileEntity entity, ResourceLocation sound, float vol, float pitch, float range) {
         if (sound != null) {
-            RTMCore.NETWORK_WRAPPER.sendToAll(new PacketPlaySound(entity, sound, vol, pitch));
+            RTMCore.NETWORK_WRAPPER.sendToAllAround(
+                    new PacketPlaySound(entity, sound, vol, pitch, range),
+                    new NetworkRegistry.TargetPoint(entity.getWorldObj().provider.dimensionId, entity.xCoord, entity.yCoord, entity.zCoord, range)
+            );
         }
     }
 

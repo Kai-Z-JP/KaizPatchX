@@ -10,13 +10,17 @@ public class MovingSoundVehicle extends MovingSoundEntity {
     protected boolean changePitch;
 
     /**
-     * @param train
+     * @param vehicle
      * @param sound
-     * @param par3  リピート
-     * @param par4  ピッチ変更
+     * @param par3    リピート
+     * @param par4    ピッチ変更
      */
     public MovingSoundVehicle(EntityVehicleBase vehicle, ResourceLocation sound, boolean par3, boolean par4) {
-        super(vehicle, sound, par3);
+        this(vehicle, sound, par3, par4, 16.0F);
+    }
+
+    public MovingSoundVehicle(EntityVehicleBase vehicle, ResourceLocation sound, boolean par3, boolean par4, float range) {
+        super(vehicle, sound, par3, range);
         this.changePitch = par4;
     }
 

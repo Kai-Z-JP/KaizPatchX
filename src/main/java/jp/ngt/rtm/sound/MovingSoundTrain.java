@@ -9,7 +9,11 @@ import net.minecraft.util.ResourceLocation;
 @SideOnly(Side.CLIENT)
 public class MovingSoundTrain extends MovingSoundVehicle {
     public MovingSoundTrain(EntityTrainBase train, ResourceLocation sound, boolean par3, boolean par4) {
-        super(train, sound, par3, par4);
+        this(train, sound, par3, par4, 16.0F);
+    }
+
+    public MovingSoundTrain(EntityTrainBase train, ResourceLocation sound, boolean par3, boolean par4, float range) {
+        super(train, sound, par3, par4, range);
     }
 
     @Override

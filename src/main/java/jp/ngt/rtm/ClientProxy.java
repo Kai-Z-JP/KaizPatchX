@@ -312,10 +312,9 @@ public class ClientProxy extends CommonProxy {
             if (NGTUtil.isServer()) {
                 super.playSound(entity, sound, vol, pitch, range);
             } else {
-                MovingSoundEntity ms = new MovingSoundEntity(entity, sound, false);
+                MovingSoundEntity ms = new MovingSoundEntity(entity, sound, false, range);
                 ms.setVolume(vol);
                 ms.setPitch(pitch);
-                ms.update();
                 NGTUtilClient.playSound(ms);
             }
         }
@@ -327,10 +326,9 @@ public class ClientProxy extends CommonProxy {
             if (NGTUtil.isServer()) {
                 super.playSound(entity, sound, vol, pitch, range);
             } else {
-                MovingSoundTileEntity ms = new MovingSoundTileEntity(entity, sound, false);
+                MovingSoundTileEntity ms = new MovingSoundTileEntity(entity, sound, false, range);
                 ms.setVolume(vol);
                 ms.setPitch(pitch);
-                ms.update();
                 NGTUtilClient.playSound(ms);
             }
         }

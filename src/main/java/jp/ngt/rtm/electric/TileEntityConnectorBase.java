@@ -139,6 +139,11 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     }
 
     @Override
+    public boolean shouldRenderInPass(int pass) {
+        return pass >= 0;
+    }
+
+    @Override
     public ResourceState getResourceState() {
         return this.state;
     }

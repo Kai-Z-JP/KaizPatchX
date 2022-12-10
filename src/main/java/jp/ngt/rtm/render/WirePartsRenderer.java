@@ -4,7 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.math.NGTVec;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.electric.Connection;
 import jp.ngt.rtm.electric.TileEntityElectricalWiring;
 import jp.ngt.rtm.modelpack.cfg.WireConfig;
@@ -12,6 +12,7 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetWireClient;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
@@ -30,47 +31,53 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
         this.useScript = par1;
     }
 
-    public void renderWire(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
+    public void renderWire(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, RenderPass pass) {
         this.bindTexture(this.modelSet.modelObj.textures[0].material.texture);
 
-        this.renderWireStatic(tileEntity, connection, target, par8);
+        this.renderWireStatic(tileEntity, connection, target, par8, pass.id);
 
-        this.renderWireDynamic(tileEntity, connection, target, par8);
+        this.renderWireDynamic(tileEntity, connection, target, par8, pass.id);
     }
 
-    protected void renderWireStatic(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
+    protected void renderWireStatic(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass) {
         if (this.useScript) {
-            ScriptUtil.doScriptFunction(this.script, "renderWireStatic", tileEntity, connection, target, par8);
+            ScriptUtil.doScriptFunction(this.script, "renderWireStatic", tileEntity, connection, target, par8, pass);
         } else {
         }
     }
 
-    protected void renderWireDynamic(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
+    protected void renderWireDynamic(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass) {
         if (this.useScript) {
-            ScriptUtil.doScriptFunction(this.script, "renderWireDynamic", tileEntity, connection, target, par8);
-        } else {
+            ScriptUtil.doScriptFunction(this.script, "renderWireDynamic", tileEntity, connection, target, par8, pass);
+        } else if (pass == RenderPass.NORMAL.id) {//スクリプトなしモデルでの発光防止
             WireConfig cfg = connection.getModelSet().getConfig();
             if (cfg.deflectionCoefficient > 0.0F) {
-                this.renderWireDeflection(tileEntity, connection, target, par8);
+                this.renderWireDeflection(tileEntity, connection, target, par8, pass, null);
             } else {
-                this.renderWireStraight(tileEntity, connection, target, par8);
+                this.renderWireStraight(tileEntity, connection, target, par8, pass, null);
             }
         }
     }
 
-    protected void renderWireStraight(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
+    public void renderWireStraight(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass, @Nullable Parts parts) {
         GL11.glPushMatrix();
         GL11.glRotatef(target.getYaw() + 180.0F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(target.getPitch() - 90.0F, 1.0F, 0.0F, 0.0F);
 
         ModelSetWireClient modelSet = (ModelSetWireClient) connection.getModelSet();
         WireConfig cfg = modelSet.getConfig();
-        double length = target.lengthVector();
+        double length = target.length();
         int split = MathHelper.floor_double(length / cfg.sectionLength);
         float scaleY = (float) ((length / (double) split) / cfg.sectionLength);
         GL11.glScalef(1.0F, scaleY, 1.0F);
         IntStream.range(0, split).forEach(i -> {
-            modelSet.modelObj.model.renderAll(cfg.smoothing);
+            if (this.shouldRenderObject(tileEntity, split, i, pass)) {
+                if (parts == null) {
+                    modelSet.modelObj.model.renderAll(cfg.smoothing);
+                } else {
+                    parts.render(this);
+                }
+            }
             GL11.glTranslatef(0.0F, cfg.sectionLength, 0.0F);
         });
 
@@ -78,11 +85,11 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
     }
 
     @Deprecated
-    protected void renderWireDeflection2(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
-        double lx = Math.sqrt(target.xCoord * target.xCoord + target.zCoord * target.zCoord);
+    protected void renderWireDeflection2(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass) {
+        double lx = Math.sqrt(target.getX() * target.getX() + target.getZ() * target.getZ());
         if (lx == 0.0D)//XZ成分なし時は直線扱い
         {
-            this.renderWireStraight(tileEntity, connection, target, par8);
+            this.renderWireStraight(tileEntity, connection, target, par8, pass, null);
             return;
         }
 
@@ -92,7 +99,7 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
         GL11.glPushMatrix();
         GL11.glRotatef(target.getYaw(), 0.0F, 1.0F, 0.0F);
         float pitch = target.getPitch();
-        double ly = target.yCoord;
+        double ly = target.getY();
         //長さ係数は必ず1以上
         float lc = 1.0F + cfg.lengthCoefficient;
         //傾きが大きいほどたわみ係数を小さく
@@ -120,11 +127,11 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
         GL11.glPopMatrix();
     }
 
-    protected void renderWireDeflection(TileEntityElectricalWiring tileEntity, Connection connection, NGTVec target, float par8) {
-        double lx = Math.sqrt(target.xCoord * target.xCoord + target.zCoord * target.zCoord);
+    public void renderWireDeflection(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass, @Nullable Parts parts) {
+        double lx = Math.sqrt(target.getX() * target.getX() + target.getZ() * target.getZ());
         if (lx == 0.0D)//XZ成分なし時は直線扱い
         {
-            this.renderWireStraight(tileEntity, connection, target, par8);
+            this.renderWireStraight(tileEntity, connection, target, par8, pass, parts);
             return;
         }
 
@@ -134,7 +141,7 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
         GL11.glPushMatrix();
         GL11.glRotatef(target.getYaw(), 0.0F, 1.0F, 0.0F);
         float pitch = target.getPitch();
-        double ly = target.yCoord;
+        double ly = target.getY();
         //長さ係数は必ず1以上
         float lc = 1.0F + cfg.lengthCoefficient;
         //傾きが大きいほどたわみ係数を小さく
@@ -146,6 +153,7 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
         }
 
         double x = 0.0D;
+        int i = 0;
         while (x < lx) {
             GL11.glPushMatrix();
             double y = alpha * ((x * x) - (2.0D * a * x));
@@ -164,11 +172,26 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
             GL11.glTranslatef(0.0F, (float) cY, (float) cX);
             GL11.glRotatef(pitchC + 90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glTranslatef(0.0F, -cfg.sectionLength * 0.5F, 0.0F);
-            modelSet.modelObj.model.renderAll(cfg.smoothing);
+            if (this.shouldRenderObject(tileEntity, 0, i, pass)) {
+                if (parts == null) {
+                    modelSet.modelObj.model.renderAll(cfg.smoothing);
+                } else {
+                    parts.render(this);
+                }
+            }
             GL11.glPopMatrix();
 
             x = nextX;
+            ++i;
         }
         GL11.glPopMatrix();
+    }
+
+    private boolean shouldRenderObject(TileEntityElectricalWiring tileEntity, int len, int pos, int pass) {
+        if (this.useScript) {
+            return (Boolean) ScriptUtil.doScriptFunction(this.getScript(), "shouldRenderObject", tileEntity, len, pos, pass);
+        } else {
+            return true;
+        }
     }
 }

@@ -4,10 +4,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.math.Vec3;
+import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetConnectorClient;
 import jp.ngt.rtm.modelpack.modelset.ModelSetWireClient;
+import jp.ngt.rtm.render.RenderPass;
 import jp.ngt.rtm.render.WirePartsRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -16,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -32,17 +35,18 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
+        int pass = MinecraftForgeClient.getRenderPass();
         if (tileEntity instanceof TileEntityConnectorBase) {
-            this.renderConnector((TileEntityConnectorBase) tileEntity, par2, par4, par6, par8);
+            this.renderConnector((TileEntityConnectorBase) tileEntity, par2, par4, par6, par8, pass);
         } else {
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         }
-        this.renderAllWire(tileEntity, par2, par4, par6, par8);
+        this.renderAllWire(tileEntity, par2, par4, par6, par8, pass);
 
         GL11.glPopMatrix();
     }
 
-    protected void renderConnector(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8) {
+    protected void renderConnector(TileEntityConnectorBase tileEntity, double par2, double par4, double par6, float par8, int pass) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 0.5F, (float) par6 + 0.5F);
         GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
@@ -72,22 +76,22 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
                 GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
                 break;
         }
-        modelSet.modelObj.render(tileEntity, cfg, 0, par8);
+        modelSet.modelObj.render(tileEntity, cfg, pass, par8);
         GL11.glPopMatrix();
     }
 
-    protected void renderAllWire(TileEntityElectricalWiring tileEntity, double par2, double par4, double par6, float par8) {
+    protected void renderAllWire(TileEntityElectricalWiring tileEntity, double par2, double par4, double par6, float par8, int pass) {
         GL11.glPushMatrix();
         Vec3 vec = tileEntity.getWirePos();
         GL11.glTranslatef((float) par2 + 0.5F + (float) vec.getX(), (float) par4 + 0.5F + (float) vec.getY(), (float) par6 + 0.5F + (float) vec.getZ());
 
         tileEntity.getConnectionList().stream()
                 .filter(connection -> connection.type.isVisible && connection.isRoot)
-                .forEach(connection -> this.renderWire(tileEntity, connection, par2, par4, par6, par8));
+                .forEach(connection -> this.renderWire(tileEntity, connection, par2, par4, par6, par8, pass));
         GL11.glPopMatrix();
     }
 
-    private void renderWire(TileEntityElectricalWiring tileEntity, Connection connection, double par2, double par4, double par6, float par8) {
+    private void renderWire(TileEntityElectricalWiring tileEntity, Connection connection, double par2, double par4, double par6, float par8, int pass) {
         ModelSetWireClient modelSet = (ModelSetWireClient) connection.getModelSet();
         if (modelSet.isDummy()) {
             return;
@@ -99,9 +103,34 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
             GL11.glDisable(GL11.GL_CULL_FACE);
         }
 
+        if (modelSet.getConfig().smoothing) {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
+
         Vec3 vec = this.getConnectedTarget(tileEntity, connection, par8);
         WirePartsRenderer renderer = (WirePartsRenderer) modelSet.modelObj.renderer;
-        renderer.renderWire(tileEntity, connection, vec.toNGTVec(), par8);
+        if (pass == 0) {
+            renderer.renderWire(tileEntity, connection, vec, par8, RenderPass.NORMAL);
+        } else if (pass == 1) {
+            if (modelSet.modelObj.light) {
+                GLHelper.disableLighting();
+                GLHelper.setLightmapMaxBrightness();
+                renderer.renderWire(tileEntity, connection, vec, par8, RenderPass.LIGHT);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GLHelper.enableLighting();
+            }
+
+            if (modelSet.modelObj.alphaBlend) {
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                renderer.renderWire(tileEntity, connection, vec, par8, RenderPass.TRANSPARENT);
+                GL11.glDisable(GL11.GL_BLEND);
+            }
+        }
+
+        if (modelSet.getConfig().smoothing) {
+            GL11.glShadeModel(GL11.GL_FLAT);
+        }
 
         GL11.glEnable(GL11.GL_CULL_FACE);
     }

@@ -34,7 +34,9 @@ public class EditorManager {
 
     public void removeAll() {
         NGTLog.sendChatMessageToAll("Clear %s Editors", this.editorMap.size());
-        this.editorMap.forEach((key, value) -> value.getEntity().setDead());
+        for (Entry<String, Editor> entry : this.editorMap.entrySet()) {
+            entry.getValue().getEntity().setDead();
+        }
         this.editorMap.clear();
     }
 

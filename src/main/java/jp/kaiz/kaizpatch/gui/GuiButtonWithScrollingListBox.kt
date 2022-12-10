@@ -17,7 +17,7 @@ class GuiButtonWithScrollingListBox(
     private val displayStringList: List<String>,
     private val displayFormat: String,
     private val onSelect: Int.() -> Unit
-) : GuiButton(id, xPosition, yPosition, width, height, displayFormat.format(displayStringList[index()])) {
+) : GuiButton(id, xPosition, yPosition, width, height, "") {
 
     private lateinit var listScreen: GuiScrollingListBox
 
@@ -45,9 +45,12 @@ class GuiButtonWithScrollingListBox(
             } else if (field_146123_n) {
                 l = 16777120
             }
+            val currentIndex = index()
             drawCenteredString(
                 mc.fontRenderer,
-                displayFormat.format(displayStringList[index()]), xPosition + width / 2, yPosition + (height - 8) / 2, l
+                if (displayStringList.size > currentIndex) displayFormat.format(displayStringList[currentIndex])
+                else displayFormat.format("null"),
+                xPosition + width / 2, yPosition + (height - 8) / 2, l
             )
         }
     }

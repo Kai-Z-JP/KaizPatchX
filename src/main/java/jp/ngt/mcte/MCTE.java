@@ -19,6 +19,7 @@ import cpw.mods.fml.relauncher.Side;
 import jp.kaiz.kaizpatch.KaizPatchX;
 import jp.ngt.mcte.block.*;
 import jp.ngt.mcte.block.RSPort.PortType;
+import jp.ngt.mcte.editor.EditorManager;
 import jp.ngt.mcte.editor.EntityEditor;
 import jp.ngt.mcte.gui.MCTEGuiHandler;
 import jp.ngt.mcte.item.ItemEditor;
@@ -152,5 +153,6 @@ public class MCTE {
     @EventHandler
     public void handleServerStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandMCTE());
+        EditorManager.INSTANCE.removeAll();
     }
 }

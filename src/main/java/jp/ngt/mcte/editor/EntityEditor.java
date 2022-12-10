@@ -99,7 +99,7 @@ public class EntityEditor extends Entity implements IInventory {
         }
 
         if (!this.worldObj.isRemote) {
-            if (this.getPlayer() == null) {
+            if (this.getPlayer() == null || !this.worldObj.playerEntities.contains(this.getPlayer())) {
                 this.setDead();
             }
         }

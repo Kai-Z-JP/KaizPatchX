@@ -165,7 +165,7 @@ public class RenderMarkerBlock1710 extends RenderMarkerBlockBase {
         double dz = vec3.zCoord - rp.posZ;
         if (dx != 0.0D && dz != 0.0D) {
             float dirRad = (float) Math.atan2(dx, dz);
-            float length = (float) (dx / MathHelper.sin(dirRad));
+            float length = (float) (dx / Math.sin(dirRad));
             float yaw = NGTMath.toDegrees(dirRad);
 
             if (curElm == MarkerElement.HORIZONTIAL) {

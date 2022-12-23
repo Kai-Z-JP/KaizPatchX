@@ -389,7 +389,7 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
             if (dx != 0.0D && dz != 0.0D) {
                 RailPosition neighborRP = getNeighborRail(marker);
                 float dirRad = (float) Math.atan2(dx, dz);
-                float length = (float) (dx / MathHelper.sin(dirRad));
+                float length = (float) (dx / Math.sin(dirRad));
                 float yaw = NGTMath.toDegrees(dirRad);
                 if (curElm == MarkerElement.HORIZONTIAL) {
                     if (neighborRP != null && marker.getState(MarkerState.FIT_NEIGHBOR)) {

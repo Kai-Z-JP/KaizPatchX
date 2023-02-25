@@ -358,7 +358,7 @@ public class GuiTextFieldCustom extends GuiTextField {
         this.drawTextBox();
 
         boolean hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-        if (hovered && !this.tips.isEmpty()) {
+        if (hovered && !this.tips.isEmpty() && this.visible) {
             GuiScreenCustom.drawHoveringTextS(this.tips, mouseX, mouseY, this.screen);
         }
     }

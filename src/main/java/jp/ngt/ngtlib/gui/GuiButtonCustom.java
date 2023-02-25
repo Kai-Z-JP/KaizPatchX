@@ -23,7 +23,7 @@ public class GuiButtonCustom extends GuiButton {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         super.drawButton(mc, mouseX, mouseY);
 
-        if (this.field_146123_n && !this.tips.isEmpty()) {
+        if (this.field_146123_n && !this.tips.isEmpty() && this.visible) {
             GuiScreenCustom.drawHoveringTextS(this.tips, mouseX, mouseY, this.screen);
         }
     }

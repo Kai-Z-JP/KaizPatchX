@@ -2,6 +2,7 @@
 tile.rtm:ironPillar.name=鉄柱
 tile.rtm:marker.name=マーカー
 tile.rtm:markerSwitch.name=分岐用マーカー
+tile.rtm:markerStraight.name=直線用マーカー
 tile.rtm:powerUnit.name=電源装置
 tile.rtm:trainWorkBench.0.name=RTM専用作業台
 tile.rtm:trainWorkBench.1.name=レール用作業台
@@ -151,10 +152,7 @@ usage.wrench=モード
 
 description.wrench.mode_0=普通レールマーカー設置
 description.wrench.mode_1=分岐レールマーカー設置
-description.wrench.mode_2=坂レールマーカー(62.5‰)設置
-description.wrench.mode_3=坂レールマーカー(125‰)設置
-description.wrench.mode_4=坂レールマーカー(250‰)設置
-description.wrench.mode_5=坂レールマーカー(500‰)設置
+description.wrench.mode_2=直線レールマーカー設置
 description.wrench.mode_6=距離表示ON/OFF
 description.wrench.mode_7=表示モード変更
 description.wrench.mode_8=レールの高さ変更

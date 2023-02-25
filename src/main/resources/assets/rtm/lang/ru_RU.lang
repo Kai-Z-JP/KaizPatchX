@@ -153,10 +153,7 @@ usage.wrench=Режим
 
 description.wrench.mode_0=Поставить обычный маркер
 description.wrench.mode_1=Поставить стрелочный маркер
-description.wrench.mode_2=Поставить маркер наклонного рельса (62.5‰)
-description.wrench.mode_3=Поставить маркер наклонного рельса (125‰)
-description.wrench.mode_4=Поставить маркер наклонного рельса (250‰)
-description.wrench.mode_5=Поставить маркер наклонного рельса (500‰)
+description.wrench.mode_2=Put Straight Rail Marker
 description.wrench.mode_6=Расстояния от маркера ВКЛ/ВЫКЛ
 description.wrench.mode_7=Показать расположение пути
 description.wrench.mode_8=Выбрать высоту рельс

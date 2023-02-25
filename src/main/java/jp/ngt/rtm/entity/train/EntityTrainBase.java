@@ -47,6 +47,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     private static final byte DW_FormationData = 23;
     private static final byte DW_ByteArray = 24;
     private static final byte DW_Speed = 25;
+    private static final byte DW_CabDir = 26;
 
     public static final short MAX_AIR_COUNT = 2880;
     public static final short MIN_AIR_COUNT = 2480;
@@ -105,6 +106,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         byte[] ba = Base64.decodeBase64(new byte[16]);
         this.dataWatcher.addObject(DW_ByteArray, Base64.encodeBase64String(ba));
         this.dataWatcher.addObject(DW_Speed, 0.0F);
+        this.dataWatcher.addObject(DW_CabDir, (byte) 0);
     }
 
     @Override
@@ -128,6 +130,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
         nbt.setInteger("trainDir", this.getTrainDirection());
         nbt.setString("byteArray", this.dataWatcher.getWatchableObjectString(DW_ByteArray));
+        nbt.setByte("cabDir", this.dataWatcher.getWatchableObjectByte(DW_CabDir));
     }
 
     private void writeFormationData(NBTTagCompound nbt) {
@@ -153,6 +156,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
         this.setTrainDirection(nbt.getInteger("trainDir"));
         this.dataWatcher.updateObject(DW_ByteArray, nbt.getString("byteArray"));
+        this.dataWatcher.updateObject(DW_CabDir, nbt.getByte("cabDir"));
     }
 
     private void readFormationData(NBTTagCompound nbt) {
@@ -629,7 +633,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     public void updateRiderPosition() {
         if (this.riddenByEntity != null) {
             float[][] pos = this.getModelSet().getConfig().getPlayerPos();
-            int dir = this.getTrainDirection();
+            int dir = this.dataWatcher.getWatchableObjectByte(DW_CabDir);
             Vec3 v31 = Vec3.createVectorHelper(pos[dir][0], pos[dir][1], pos[dir][2]);
             v31.rotateAroundZ(NGTMath.toRadians(-this.rotationRoll));
             v31.rotateAroundX(NGTMath.toRadians(this.rotationPitch));
@@ -719,10 +723,15 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     private void mountEntityToTrain(Entity entity, int direction) {
-        if (this.getTrainDirection() != direction) {
-            this.setSpeed(-this.getSpeed());
+        if (this.isControlCar()) {
+            this.setTrainDirection(direction);
+            if (this.formation != null && this.formation.size() > 1) {
+                byte data = this.getTrainStateData(TrainStateType.State_Direction.id);
+                byte newData = this.getCabDirection() == this.getTrainDirection() ? data : (byte) (data ^ 2);
+                this.setTrainStateData_NoSync(TrainStateType.State_Direction.id, newData);
+            }
         }
-        this.setTrainDirection(direction);
+        this.dataWatcher.updateObject(DW_CabDir, (byte) direction);
         entity.mountEntity(this);
     }
 
@@ -938,6 +947,10 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         String result = Base64.encodeBase64String(ba);
         this.dataWatcher.updateObject(DW_ByteArray, result);
         return data;
+    }
+
+    public byte getCabDirection() {
+        return this.dataWatcher.getWatchableObjectByte(DW_CabDir);
     }
 
     /**

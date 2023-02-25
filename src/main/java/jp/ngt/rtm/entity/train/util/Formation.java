@@ -282,6 +282,10 @@ public class Formation {
     }
 
     public void setTrainDirection(byte par1, EntityTrainBase par2) {
+        if (par2.getTrainDirection() != par1) {
+            this.setSpeed(-par2.getSpeed());
+        }
+
         FormationEntry entry = this.getEntry(par2);
         if (entry == null) {
             return;
@@ -300,7 +304,8 @@ public class Formation {
         {
             if (data == TrainState.Direction_Front.data || data == TrainState.Direction_Back.data) {
                 this.controlCar = par2;
-                par2.setTrainDirection(par2.getTrainDirection());
+                par2.setTrainStateData_NoSync(id, (par2.getCabDirection() == par2.getTrainDirection()) ? data : (byte) (data ^ 2));
+                par2.setTrainDirection(par2.getCabDirection());
             }
 
             this.getTrainStream().forEach(train -> {

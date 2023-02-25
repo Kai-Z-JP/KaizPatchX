@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.NGTTessellator;
-import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailPosition;
@@ -28,12 +27,16 @@ public abstract class RenderMarkerBlockBase {
     public abstract void renderTileEntityMarker(TileEntityMarker tileEntity, double par2, double par4, double par6, float par8);
 
     protected void renderDistanceMark(TileEntityMarker marker) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
         int meta = marker.getBlockMetadata();
         Block block = marker.getBlockType();
-        int color = block == RTMBlock.marker ? 0xFF0000 : 0x0000FF;
+        if (!(block instanceof BlockMarker)) {
+            return;
+        }
+        int type = ((BlockMarker) block).markerType;
+        int color = block.getRenderColor(type);
         float dir = BlockMarker.getMarkerDir(marker.getBlockType(), meta) * 45.0F;
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.5F, 0.0625F, 0.5F);
         GL11.glRotatef(dir, 0.0F, 1.0F, 0.0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         float size = 0.4F;

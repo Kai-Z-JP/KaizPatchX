@@ -58,6 +58,9 @@ public class ItemWrench extends Item {
             case 1:
                 this.placeMarker(player, world, x, y, z, RTMBlock.markerSwitch, 0);
                 break;
+            case 2:
+                this.placeMarker(player, world, x, y, z, RTMBlock.markerStraight, 0);
+                break;
         }
         return true;
     }
@@ -88,7 +91,7 @@ public class ItemWrench extends Item {
 
     private void changeMode(World world, ItemStack itemStack, EntityPlayer player) {
         int i = (itemStack.getItemDamage() + 1) % 11;
-        if (i >= 2 && i <= 5) {
+        if (i >= 3 && i <= 5) {
             i = 6;
         }
         itemStack.setItemDamage(i);
@@ -101,6 +104,9 @@ public class ItemWrench extends Item {
                     break;
                 case 1:
                     color = EnumChatFormatting.AQUA;
+                    break;
+                case 2:
+                    color = EnumChatFormatting.LIGHT_PURPLE;
                     break;
                 default:
                     color = EnumChatFormatting.WHITE;
@@ -189,7 +195,7 @@ public class ItemWrench extends Item {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         for (int i = 0; i < 10; ++i) {
 
-            if (i >= 2 && i <= 5) {
+            if (i >= 3 && i <= 5) {
                 return;
             }
             String sb =

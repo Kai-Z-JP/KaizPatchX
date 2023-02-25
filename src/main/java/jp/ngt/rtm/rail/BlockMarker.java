@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.math.NGTVec;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.*;
 import jp.ngt.rtm.item.ItemRail;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class BlockMarker extends BlockContainer {
     /**
-     * 0:normal, 1:switch, 2:slope
+     * 0:normal, 1:switch, 10:straight
      */
     public final int markerType;
     @SideOnly(Side.CLIENT)
@@ -90,7 +91,7 @@ public class BlockMarker extends BlockContainer {
             }
             TileEntityMarker marker = (TileEntityMarker) tile;
 
-            if (item.getItem() == RTMItem.wrench) {
+            if (item.getItem() == RTMItem.wrench && (this.markerType == 0 || this.markerType == 1)) {
                 if (!world.isRemote) {
                     this.makeRailMap(marker, x, y, z, player);
                 }
@@ -99,7 +100,7 @@ public class BlockMarker extends BlockContainer {
             } else if (item.getItem() == RTMItem.paddle) {
                 marker.displayDistance ^= true;
                 return true;
-            } else if (item.getItem() == Item.getItemFromBlock(RTMBlock.marker) || item.getItem() == Item.getItemFromBlock(RTMBlock.markerSwitch)) {
+            } else if (item.getItem() == Item.getItemFromBlock(this) && (this.markerType == 0 || this.markerType == 1)) {
                 if (!world.isRemote) {
                     this.makeRailMap(marker, x, y, z, player);
                 }
@@ -139,7 +140,7 @@ public class BlockMarker extends BlockContainer {
             int hei2 = hei1 * 2;
             boolean isCreative = player == null || player.capabilities.isCreativeMode;
 
-            if (type == 0) {
+            if (type == 0 || type == 10) {
                 RailPosition rpS = this.getRailPosition(world, x, y, z);
 
                 List<TileEntity> tileEntityList = ((List<TileEntity>) world.loadedTileEntityList);
@@ -148,7 +149,7 @@ public class BlockMarker extends BlockContainer {
                             .filter(TileEntityMarker.class::isInstance)
                             .map(TileEntityMarker.class::cast)
                             .filter(tile -> tile.getMarkerRP() != rpS)
-                            .filter(tile -> tile.getBlockType().equals(RTMBlock.marker))
+                            .filter(tile -> tile.getBlockType().equals(this))
                             .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
                             .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
                             .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
@@ -156,6 +157,14 @@ public class BlockMarker extends BlockContainer {
                             .map(TileEntityMarker::getMarkerRP)
                             .orElse(null);
                     if (rpS != null && rpE != null) {
+                        if (type == 10) {
+                            NGTVec eS = new NGTVec(rpE.posX - rpS.posX, rpE.posY - rpS.posY, rpE.posZ - rpS.posZ);
+                            NGTVec sE = new NGTVec(rpS.posX - rpE.posX, rpS.posY - rpE.posY, rpS.posZ - rpE.posZ);
+                            rpS.anchorYaw = eS.getYaw();
+                            rpS.anchorPitch = eS.getPitch();
+                            rpE.anchorYaw = sE.getYaw();
+                            rpE.anchorPitch = sE.getPitch();
+                        }
                         return createRail0(world, rpS, rpE, prop, makeRail, isCreative);
                     }
                 }
@@ -166,6 +175,7 @@ public class BlockMarker extends BlockContainer {
                     list = tileEntityList.stream()
                             .filter(TileEntityMarker.class::isInstance)
                             .map(TileEntityMarker.class::cast)
+                            .filter(tile -> tile.getBlockType().equals(RTMBlock.marker) || tile.getBlockType().equals(RTMBlock.markerSwitch))
                             .filter(tile -> tile.getDistanceFrom(x, tile.yCoord, z) < dis3)
                             .filter(tile -> Math.abs(tile.yCoord - y) < hei1)
                             .sorted(Comparator.comparingInt(o -> Math.abs(o.yCoord - y)))
@@ -377,7 +387,7 @@ public class BlockMarker extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-        if (this.markerType == 0 || this.markerType == 1) {
+        if (this.markerType == 0 || this.markerType == 1 || this.markerType == 10) {
             list.add(new ItemStack(par1, 1, 0));
         }
     }
@@ -390,7 +400,7 @@ public class BlockMarker extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int par1, int par2) {
-        int i = ((this.markerType == 0 || this.markerType == 1) ? 7 : 3);
+        int i = ((this.markerType == 0 || this.markerType == 1 || this.markerType == 10) ? 7 : 3);
         return this.icons[par2 & i];
     }
 
@@ -412,7 +422,6 @@ public class BlockMarker extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public int getRenderColor(int par1) {
         switch (this.markerType) {
-            //case 0: return par1 < 4 ? 0xFF0000 : 0xFFFFFF;
             case 0:
                 return 0xFF0000;
             case 1:
@@ -428,6 +437,8 @@ public class BlockMarker extends BlockContainer {
                     case 3:
                         return 0x999900;
                 }
+            case 10:
+                return 0xEC008C;
             default:
                 return 16777215;
         }

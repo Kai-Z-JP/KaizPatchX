@@ -147,10 +147,7 @@ usage.wrench=模式
 
 description.wrench.mode_0=放置铁轨标记
 description.wrench.mode_1=放置分岔标记
-description.wrench.mode_2=放置上坡标记 (62.5‰)
-description.wrench.mode_3=放置上坡标记 (125‰)
-description.wrench.mode_4=放置上坡标记 (250‰)
-description.wrench.mode_5=放置上坡标记 (500‰)
+description.wrench.mode_2=Put Straight Rail Marker
 description.wrench.mode_6=距离显示 开/关
 description.wrench.mode_7=更改显示模式
 description.wrench.mode_8=更改铁轨高度

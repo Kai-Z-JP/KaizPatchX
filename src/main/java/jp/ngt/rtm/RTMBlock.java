@@ -21,7 +21,7 @@ import java.util.Random;
 public final class RTMBlock {
     public static BlockMarker marker;
     public static BlockMarker markerSwitch;
-    public static BlockMarker markerSlope;
+    public static BlockMarker markerStraight;
 
     public static Block fluorescent;
     public static Block ironPillar;
@@ -110,7 +110,7 @@ public final class RTMBlock {
 
         marker = (BlockMarker) (new BlockMarker(0)).setBlockName("rtm:marker").setBlockTextureName("rtm:marker_0").setHardness(1.0F).setResistance(5.0F).setCreativeTab(CreativeTabRTM.tabRailway);
         markerSwitch = (BlockMarker) (new BlockMarker(1)).setBlockName("rtm:markerSwitch").setBlockTextureName("rtm:marker_0").setHardness(1.0F).setResistance(5.0F).setCreativeTab(CreativeTabRTM.tabRailway);
-        markerSlope = (BlockMarker) (new BlockMarker(2)).setBlockName("rtm:markerSlope").setBlockTextureName("rtm:marker_0").setHardness(1.0F).setResistance(5.0F).setCreativeTab(CreativeTabRTM.tabRailway);
+        markerStraight = (BlockMarker) (new BlockMarker(10)).setBlockName("rtm:markerStraight").setBlockTextureName("rtm:marker_0").setHardness(1.0F).setResistance(5.0F).setCreativeTab(CreativeTabRTM.tabRailway);
 
         fluorescent = (new BlockFluorescent()).setBlockName("rtm:fluorescent");
         ironPillar = (new BlockIronPillar()).setBlockName("rtm:ironPillar").setBlockTextureName("rtm:ironPillar").setCreativeTab(CreativeTabRTM.tabRailway);
@@ -166,7 +166,7 @@ public final class RTMBlock {
 
         RTMCore.registerRtmPrefixed(marker, ItemBlockCustomColor.class, "rtm:marker");
         RTMCore.registerRtmPrefixed(markerSwitch, ItemBlockCustomColor.class, "rtm:markerSwitch");
-//        RTMCore.registerRtmPrefixed(markerSlope, "rtm:markerSlope");
+        RTMCore.registerRtmPrefixed(markerStraight, ItemBlockCustomColor.class, "rtm:markerStraight");
 
         RTMCore.registerRtmPrefixed(fluorescent, "rtm:fluorescent");
         RTMCore.registerRtmPrefixed(ironPillar, "rtm:ironPillar");

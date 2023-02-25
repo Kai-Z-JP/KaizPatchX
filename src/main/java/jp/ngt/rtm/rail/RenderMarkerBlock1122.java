@@ -15,6 +15,7 @@ import jp.ngt.rtm.network.PacketMarkerRPClient;
 import jp.ngt.rtm.rail.util.MarkerState;
 import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailPosition;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -39,6 +40,12 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
     }
 
     public void renderTileEntityMarker(TileEntityMarker tileEntity, double par2, double par4, double par6, float par8) {
+        Block block = tileEntity.getBlockType();
+        if (!(block instanceof BlockMarker)) {
+            return;
+        }
+        int type = ((BlockMarker) block).markerType;
+
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glDisable(GL11.GL_CULL_FACE);
@@ -46,7 +53,11 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glTranslatef((float) par2, (float) par4, (float) par6);
 
-        this.renderGUI(tileEntity);
+
+        if (type == 0 || type == 1) {
+            this.renderGUI(tileEntity);
+        }
+
         GL11.glDisable(3553);
         if (tileEntity.getState(MarkerState.GRID) && tileEntity.getGrid() != null) {
             this.renderGrid(tileEntity);

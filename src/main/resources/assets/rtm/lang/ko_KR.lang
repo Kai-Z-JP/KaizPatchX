@@ -152,10 +152,7 @@ usage.wrench=모드
 
 description.wrench.mode_0=보통 레일 마커 설치
 description.wrench.mode_1=분기 레일 마커 설치
-description.wrench.mode_2=경사 레일 마커(62.5‰) 설치
-description.wrench.mode_3=경사 레일 마커(125‰) 설치
-description.wrench.mode_4=경사 레일 마커(250‰) 설치
-description.wrench.mode_5=경사 레일 마커(500‰) 설치
+description.wrench.mode_2=Put Straight Rail Marker
 description.wrench.mode_6=거리 표시 ON/OFF
 description.wrench.mode_7=표시 모드 변경
 description.wrench.mode_8=레일 높이 변경

@@ -266,7 +266,7 @@ public class TileEntityMarker extends TileEntity {
         this.startZ = z;
 
         if (!(this.xCoord == x && this.yCoord == y && this.zCoord == z)) {
-            this.markerPosList = null;
+            this.markerPosList = new ArrayList<>();
             this.railMaps = null;
             this.grid = null;
         }

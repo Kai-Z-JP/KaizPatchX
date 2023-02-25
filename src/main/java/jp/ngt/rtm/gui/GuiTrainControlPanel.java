@@ -204,7 +204,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                 String displayString = buttons[i].length > value ? buttons[i][value] : "Out of range";
                 GuiButtonCustom button = new GuiButtonCustom(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, displayString, this);
                 button.addTips(tips[i]);
-                button.addTips("Press F to set the state to all train of this formation");
                 this.buttonList.add(button);
                 this.dataValues[i] = value;
             });

@@ -21,5 +21,13 @@
     "smoothing": true,
     "doCulling": true,
     "accuracy": "LOW",
-    "tags": "ngt5479"
+    "tags": "ngt5479",
+    "renderAABB": [
+        -256.0,
+        -256.0,
+        -256.0,
+        256.0,
+        256.0,
+        256.0
+    ]
 }

@@ -1,11 +1,8 @@
 package jp.ngt.rtm.block.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.electric.MachineType;
 import jp.ngt.rtm.render.MachinePartsRenderer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
 public class TileEntityLight extends TileEntityMachineBase {
@@ -48,11 +45,5 @@ public class TileEntityLight extends TileEntityMachineBase {
     @Override
     protected String getDefaultName() {
         return "SearchLight01";
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
     }
 }

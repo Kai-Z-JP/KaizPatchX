@@ -3,6 +3,7 @@ package jp.ngt.rtm.block.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
+import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.MachineType;
@@ -15,6 +16,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class TileEntityMachineBase extends TileEntityPlaceable implements IModelSelectorWithType {
     private final ResourceState state = new ResourceState(this);
@@ -115,13 +120,25 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
+        float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
+
+        float rotation = this.getRotation();
+        float rad = NGTMath.toRadians(rotation);
+
+        List<Vec3> vertexList = IntStream.range(0, 4).mapToObj(i -> {
+            Vec3 vec = Vec3.createVectorHelper(box[i / 2 * 3] - 0.5, 0, box[i % 2 * 3 + 2] - 0.5);
+            vec.rotateAroundY(rad);
+            return vec.addVector(0.5, 0.0, 0.5);
+        }).collect(Collectors.toList());
+
+
         return AxisAlignedBB.getBoundingBox(
-                this.xCoord + this.getOffsetX(),
-                this.yCoord + this.getOffsetY(),
-                this.zCoord + this.getOffsetZ(),
-                this.xCoord + 1 + this.getOffsetX(),
-                this.yCoord + 1 + this.getOffsetY(),
-                this.zCoord + 1 + this.getOffsetZ());
+                this.xCoord + vertexList.stream().mapToDouble(vec -> vec.xCoord).min().orElse(0.0) + this.getOffsetX(),
+                this.yCoord + box[1] + this.getOffsetY(),
+                this.zCoord + vertexList.stream().mapToDouble(vec -> vec.zCoord).min().orElse(0.0) + this.getOffsetZ(),
+                this.xCoord + vertexList.stream().mapToDouble(vec -> vec.xCoord).max().orElse(1.0) + this.getOffsetX(),
+                this.yCoord + box[4] + this.getOffsetY(),
+                this.zCoord + vertexList.stream().mapToDouble(vec -> vec.zCoord).max().orElse(1.0) + this.getOffsetZ());
     }
 
     public ModelSetMachine getModelSet() {

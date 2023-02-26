@@ -6,7 +6,10 @@ import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetConnector;
+import jp.ngt.rtm.modelpack.modelset.ModelSetConnectorClient;
+import jp.ngt.rtm.modelpack.modelset.ModelSetWireClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
+import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring implements IModelSelectorWithType {
@@ -140,7 +143,12 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
 
     @Override
     public boolean shouldRenderInPass(int pass) {
-        return pass >= 0;
+        ModelSetConnectorClient modelSet = (ModelSetConnectorClient) this.getModelSet();
+        ModelObject modelObj = modelSet.modelObj;
+        boolean lightingWire = this.connections.stream()
+                .map(c -> ((ModelSetWireClient) c.getModelSet()).modelObj)
+                .anyMatch(m -> m.light || m.alphaBlend);
+        return pass == 0 || (modelObj.light || modelObj.alphaBlend || lightingWire) && pass >= 0;
     }
 
     @Override

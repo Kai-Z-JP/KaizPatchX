@@ -13,13 +13,16 @@ import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.ScriptExecuter;
 import jp.ngt.rtm.modelpack.cfg.VehicleBaseConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
+import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
+import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +94,9 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
     @Override
     public boolean shouldRenderInPass(int pass) {
-        return pass >= 0;
+        ModelSetVehicleBaseClient<T> modelSet = (ModelSetVehicleBaseClient<T>) this.getModelSet();
+        ModelObject modelObj = modelSet.vehicleModel;
+        return pass == 0 || (modelObj.light || modelObj.alphaBlend) && pass >= 0;
     }
 
     @Override
@@ -343,7 +348,9 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
 
     protected void onModelChanged() {
         if (this.worldObj != null && !this.worldObj.isRemote) {
-            PacketNBT.sendToClient(this);
+            if (this.worldObj instanceof WorldServer) {
+                PacketNBT.sendToClient(this);
+            }
             this.floorLoaded = false;
         }
 

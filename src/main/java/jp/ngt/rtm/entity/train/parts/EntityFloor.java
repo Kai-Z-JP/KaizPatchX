@@ -36,6 +36,11 @@ public class EntityFloor extends EntityVehiclePart {
     }
 
     @Override
+    public boolean shouldRenderInPass(int pass) {
+        return pass == 0 && (this.getVehicle() == null || this.getSeatType() == 1);
+    }
+
+    @Override
     protected void readEntityFromNBT(NBTTagCompound nbt) {
         this.setSeatType(nbt.getByte("seatType"));
         super.readEntityFromNBT(nbt);

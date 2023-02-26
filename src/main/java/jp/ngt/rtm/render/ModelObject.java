@@ -131,17 +131,21 @@ public class ModelObject {
             this.renderWithTexture(entity, 0, par3);
         } else if (pass == 1) {
             //半透明
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            this.renderWithTexture(entity, 1, par3);
-            GL11.glDisable(GL11.GL_BLEND);
+            if (this.alphaBlend) {
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                this.renderWithTexture(entity, 1, par3);
+                GL11.glDisable(GL11.GL_BLEND);
+            }
 
             //発光
-            GLHelper.disableLighting();
-            GLHelper.setLightmapMaxBrightness();
-            this.renderWithTexture(entity, 2, par3);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GLHelper.enableLighting();
+            if (this.light) {
+                GLHelper.disableLighting();
+                GLHelper.setLightmapMaxBrightness();
+                this.renderWithTexture(entity, 2, par3);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GLHelper.enableLighting();
+            }
         }
 
         if (cfg.smoothing) {

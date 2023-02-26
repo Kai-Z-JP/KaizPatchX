@@ -1,10 +1,7 @@
 package jp.ngt.rtm.block.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.electric.MachineType;
 import jp.ngt.rtm.sound.SoundPlayer;
-import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityCrossingGate extends TileEntityMachineBase {
     /**
@@ -77,19 +74,6 @@ public class TileEntityCrossingGate extends TileEntityMachineBase {
     @Override
     public MachineType getMachineType() {
         return MachineType.Gate;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getRenderBoundingBox() {
-        float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
-        return AxisAlignedBB.getBoundingBox(
-                this.xCoord + box[0] + this.getOffsetX(),
-                this.yCoord + box[1] + this.getOffsetY(),
-                this.zCoord + box[2] + this.getOffsetZ(),
-                this.xCoord + box[3] + this.getOffsetX(),
-                this.yCoord + box[4] + this.getOffsetY(),
-                this.zCoord + box[5] + this.getOffsetZ());
     }
 
     @Override

@@ -15,11 +15,11 @@
     "machineType": "Gate",
     "sound_Running": "rtm:block.rtm_crossingGate0",
     "renderAABB": [
-        0.0,
+        -4.0,
         0.0,
         0.0,
         1.0,
-        4.0,
+        5.0,
         1.0
     ],
     "smoothing": true,

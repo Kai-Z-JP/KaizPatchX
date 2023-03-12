@@ -9,15 +9,20 @@ import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketMarkerRPClient;
 import jp.ngt.rtm.rail.BlockMarker;
+import jp.ngt.rtm.rail.TileEntityLargeRailBase;
+import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.rail.TileEntityMarker;
+import jp.ngt.rtm.rail.util.RailPosition;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +49,12 @@ public class ItemWrench extends Item {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
-        if (side != 1 || itemStack.getItemDamage() > 5) {
-            this.onItemRightClick(itemStack, world, player);
+        if (side != 1 || itemStack.getItemDamage() > 5 && itemStack.getItemDamage() < 11) {
+            this.changeMarkerAnchor(world, player);
             return true;
+        }
+        if (itemStack.getItemDamage() == 11) {
+            this.revertRailToMarker(world, x, y, z);
         }
 
         ++y;
@@ -63,6 +71,28 @@ public class ItemWrench extends Item {
                 break;
         }
         return true;
+    }
+
+    private int directionMetaMap[] = {2, 5, 1, 4, 0, 7, 3, 6};
+
+    public void revertRailToMarker(World world, int x, int y, int z) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileEntityLargeRailBase) {
+            TileEntityLargeRailBase targetRail = (TileEntityLargeRailBase) tile;
+            TileEntityLargeRailCore targetRailCore = targetRail.getRailCore();
+            if (targetRailCore != null) {
+                world.setBlockToAir(x, y, z);
+                RailPosition[] rps = targetRailCore.getRailPositions();
+                Arrays.stream(rps).forEach(rp -> {
+                    if (rp != null) {
+                        int meta = directionMetaMap[rp.direction];
+                        world.setBlock(rp.blockX, rp.blockY, rp.blockZ, rp.switchType == 0 ? RTMBlock.marker : RTMBlock.markerSwitch, meta, 2);
+                        TileEntityMarker marker = (TileEntityMarker) world.getTileEntity(rp.blockX, rp.blockY, rp.blockZ);
+                        marker.setMarkerRP(rp);
+                    }
+                });
+            }
+        }
     }
 
     //BlockMarkerから, C/S両方で呼ばれる
@@ -90,7 +120,7 @@ public class ItemWrench extends Item {
     }
 
     private void changeMode(World world, ItemStack itemStack, EntityPlayer player) {
-        int i = (itemStack.getItemDamage() + 1) % 11;
+        int i = (itemStack.getItemDamage() + 1) % 12;
         if (i >= 3 && i <= 5) {
             i = 6;
         }
@@ -193,17 +223,18 @@ public class ItemWrench extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-        for (int i = 0; i < 10; ++i) {
-
+        for (int i = 0; i < 12; ++i) {
             if (i >= 3 && i <= 5) {
-                return;
+                continue;
             }
-            String sb =
-                    I18n.format("usage.wrench") +
-                            i +
-                            " : " +
-                            I18n.format("description.wrench.mode_" + i);
+            String sb = I18n.format("usage.wrench") + i + " : " + I18n.format("description.wrench.mode_" + i);
             list.add(EnumChatFormatting.GRAY + sb);
         }
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack itemStack) {
+        int i = itemStack.getItemDamage();
+        return super.getItemStackDisplayName(itemStack) + " (" + I18n.format("description.wrench.mode_" + i) + ")";
     }
 }

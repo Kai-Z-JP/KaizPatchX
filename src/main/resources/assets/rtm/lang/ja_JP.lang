@@ -158,6 +158,7 @@ description.wrench.mode_7=表示モード変更
 description.wrench.mode_8=レールの高さ変更
 description.wrench.mode_9=レールの形状変更
 description.wrench.mode_10=アンカーの吸付きON/OFF
+description.wrench.mode_11=レールをマーカーに戻す
 
 state.door.close=ドア閉
 state.door.open=ドア開

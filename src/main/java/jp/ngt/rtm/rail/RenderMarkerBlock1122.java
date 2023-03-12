@@ -99,7 +99,7 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
             startY += 0.1F;
             marker.buttons[0] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.ANCHOR21));
             startY += buttonHeight + 0.1F;
-            marker.buttons[1] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> System.nanoTime());
+            marker.buttons[1] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE2));
             startY += buttonHeight + 0.1F;
             marker.buttons[2] = (new InternalButton(startX, startY, buttonWidth, buttonHeight)).setColor(buttonColor).setListner(button -> marker.flipState(MarkerState.LINE1));
             startY += buttonHeight + 0.1F;
@@ -145,6 +145,7 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
             this.clicking = true;
             marker.editMode = hoveredElement.ordinal();
             marker.startPlayerPitch = (NGTUtilClient.getMinecraft()).thePlayer.rotationPitch;
+            marker.startPlayerYaw = NGTUtilClient.getMinecraft().thePlayer.rotationYawHead;
             marker.startMarkerHeight = (marker.getMarkerRP()).height;
         }
         renderAnchorLine(marker, false, hoveredElement);
@@ -347,28 +348,30 @@ public class RenderMarkerBlock1122 extends RenderMarkerBlockBase {
         }
         if (marker.getState(MarkerState.LINE2)) {
             RailMap map = marker.getRailMaps()[0];
+            RailPosition startRP = map.getStartRP();
+            RailPosition endRP = map.getEndRP();
             if (curElm == MarkerElement.CONST_LIMIT_HP) {
                 float height = 3.0F + -pitchDif / 10.0F;
                 height = Math.max(height, 1.9F);
-                (map.getEndRP()).constLimitHP = height;
+                startRP.constLimitHP = endRP.constLimitHP = height;
                 marker.onChangeRailShape();
                 return true;
             } else if (curElm == MarkerElement.CONST_LIMIT_HN) {
                 float height = -pitchDif / 10.0F;
                 height = Math.min(height, 0.0F);
-                (map.getEndRP()).constLimitHN = height;
+                startRP.constLimitHN = endRP.constLimitHN = height;
                 marker.onChangeRailShape();
                 return true;
             } else if (curElm == MarkerElement.CONST_LIMIT_WP) {
                 float width = 1.5F + -yawDif / 10.0F;
                 width = Math.max(width, 0.49F);
-                (map.getEndRP()).constLimitWP = width;
+                startRP.constLimitWP = endRP.constLimitWP = width;
                 marker.onChangeRailShape();
                 return true;
             } else if (curElm == MarkerElement.CONST_LIMIT_WN) {
                 float width = -1.5F + -yawDif / 10.0F;
                 width = Math.min(width, -0.49F);
-                (map.getEndRP()).constLimitWN = width;
+                startRP.constLimitWN = endRP.constLimitWN = width;
                 marker.onChangeRailShape();
                 return true;
             }

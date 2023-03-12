@@ -70,11 +70,12 @@ public class PacketMarkerRPClient implements IMessage, IMessageHandler<PacketMar
                 TileEntity tile = world.getTileEntity(rp.blockX, rp.blockY, rp.blockZ);
                 if (tile instanceof TileEntityMarker) {
                     ((TileEntityMarker) tile).setMarkerRP(rp);
+                    if (((TileEntityMarker) tile).isCoreMarker()) {
+                        RTMBlock.marker.onMarkerActivated(world, rp.blockX, rp.blockY, rp.blockZ, ctx.getServerHandler().playerEntity, false);
+                    }
                 }
             }
         }
-
-        RTMBlock.marker.onMarkerActivated(world, message.x, message.y, message.z, ctx.getServerHandler().playerEntity, false);
         return null;
     }
 }

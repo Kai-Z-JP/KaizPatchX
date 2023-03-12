@@ -100,7 +100,7 @@ public class BlockMarker extends BlockContainer {
             } else if (item.getItem() == RTMItem.paddle) {
                 marker.displayDistance ^= true;
                 return true;
-            } else if (item.getItem() == Item.getItemFromBlock(this) && (this.markerType == 0 || this.markerType == 1)) {
+            } else if (Block.getBlockFromItem(item.getItem()) instanceof BlockMarker && (this.markerType == 0 || this.markerType == 1)) {
                 if (!world.isRemote) {
                     this.makeRailMap(marker, x, y, z, player);
                 }
@@ -350,7 +350,7 @@ public class BlockMarker extends BlockContainer {
     public static byte getMarkerDir(Block block, int meta) {
         int i0 = meta & 3;
         int i1 = ((6 - i0) & 3) * 2;
-        if ((block == RTMBlock.marker || block == RTMBlock.markerSwitch) && meta >= 4) {
+        if (meta >= 4) {
             i1 = (i1 + 7) & 7;
         }
         return (byte) i1;

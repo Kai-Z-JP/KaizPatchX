@@ -266,7 +266,7 @@ public class TileEntityMarker extends TileEntity {
         this.startZ = z;
 
         if (!(this.xCoord == x && this.yCoord == y && this.zCoord == z)) {
-            this.markerPosList = new ArrayList<>();
+            this.markerPosList.clear();
             this.railMaps = null;
             this.grid = null;
         }
@@ -301,7 +301,7 @@ public class TileEntityMarker extends TileEntity {
 
     public RailPosition[] getAllRP() {
         //GuiRailMarker用
-        if (this.markerPosList == null) {
+        if (this.markerPosList.isEmpty()) {
             return new RailPosition[]{this.rp};
         }
 

@@ -100,7 +100,7 @@ public class BlockMarker extends BlockContainer {
             } else if (item.getItem() == RTMItem.paddle) {
                 marker.displayDistance ^= true;
                 return true;
-            } else if (item.getItem() == Item.getItemFromBlock(this) && (this.markerType == 0 || this.markerType == 1)) {
+            } else if (Block.getBlockFromItem(item.getItem()) instanceof BlockMarker && (this.markerType == 0 || this.markerType == 1)) {
                 if (!world.isRemote) {
                     this.makeRailMap(marker, x, y, z, player);
                 }

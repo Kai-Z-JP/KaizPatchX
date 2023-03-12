@@ -63,6 +63,7 @@ public class ItemSignal extends ItemWithModel {
                 int dir = par7 == 2 ? 2 : (par7 == 4 ? 3 : (par7 == 3 ? 0 : 1));
                 teSignal.setSignalProperty(this.getModelName(itemStack), target, dir, player, origTile);
                 ItemWithModel.applyOffsetToTileEntity(itemStack, teSignal);
+                teSignal.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
                 flag = true;
             }
 

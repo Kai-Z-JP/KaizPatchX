@@ -157,6 +157,7 @@ description.wrench.mode_6=Display distance On/Off
 description.wrench.mode_7=Change display mode
 description.wrench.mode_8=Change rail height
 description.wrench.mode_9=Change rail shape
+description.wrench.mode_10=Fit neighbor rails On/Off
 
 state.door.close=Door:Close
 state.door.open=Door:Open

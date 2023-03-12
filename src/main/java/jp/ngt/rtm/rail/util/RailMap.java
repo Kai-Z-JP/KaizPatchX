@@ -94,24 +94,21 @@ public abstract class RailMap {
 
         this.rails.clear();
         int split = (int) (this.getLength() * 4.0D);
-		/*if(height < 0.0625)
-			{
-				y -= 1;
-			}*/
+        double halfPi = Math.PI * 0.5D;
         IntStream.range(0, split).forEach(j -> {
             double[] point = this.getRailPos(split, j);
             double x = point[1];
             double z = point[0];
-            double slope = NGTMath.toRadians(this.getRailYaw(split, j));
+            double slope = Math.toRadians(this.getRailYaw(split, j));
             double height = this.getRailHeight(split, j);
             int y = (int) height;
             int x0 = MathHelper.floor_double(x);
             int z0 = MathHelper.floor_double(z);
             IntStream.rangeClosed(1, width).forEach(i -> {
-                int x1 = MathHelper.floor_double(x + Math.sin(slope + Math.PI * 0.5D) * (double) i);
-                int z1 = MathHelper.floor_double(z + Math.cos(slope + Math.PI * 0.5D) * (double) i);
-                int x2 = MathHelper.floor_double(x + Math.sin(slope - Math.PI * 0.5D) * (double) i);
-                int z2 = MathHelper.floor_double(z + Math.cos(slope - Math.PI * 0.5D) * (double) i);
+                int x1 = MathHelper.floor_double(x + Math.sin(slope + halfPi) * i);
+                int z1 = MathHelper.floor_double(z + Math.cos(slope + halfPi) * i);
+                int x2 = MathHelper.floor_double(x + Math.sin(slope - halfPi) * i);
+                int z2 = MathHelper.floor_double(z + Math.cos(slope - halfPi) * i);
                 this.addRailBlock(x1, y, z1);
                 this.addRailBlock(x2, y, z2);
             });
@@ -142,7 +139,7 @@ public abstract class RailMap {
      */
     public void setRail(World world, Block block, int x0, int y0, int z0, RailProperty prop) {
         this.createRailList(prop);
-//		setBaseBlock(world, x0, y0, z0);
+        setBaseBlock(world, x0, y0, z0);
         this.rails.forEach(rail -> {
             int x = rail[0];
             int y = rail[1];
@@ -163,7 +160,7 @@ public abstract class RailMap {
     private void setBaseBlock(World world, int x0, int y0, int z0) {
         int split = (int) (this.getLength() * 4.0D);
         RailPosition rp = getStartRP();
-        int minWidth = MathHelper.floor_float(rp.constLimitWN + 0.5F);
+        int minWidth = MathHelper.floor_float(rp.constLimitWN - 0.5F);
         int maxWidth = MathHelper.floor_float(rp.constLimitWP + 0.5F);
         int minHeight = MathHelper.floor_float(rp.constLimitHN);
         int maxHeight = MathHelper.floor_float(rp.constLimitHP);
@@ -179,9 +176,9 @@ public abstract class RailMap {
                 int h = minHeight + i;
                 for (int j = 0; j < (blocks[i]).length; j++) {
                     int w = minWidth + j;
-                    net.minecraft.util.Vec3 vec = Vec3.createVectorHelper(w, h, 0.0D);
+                    Vec3 vec = Vec3.createVectorHelper(w, h, 0.0D);
                     vec.rotateAroundY(yaw);
-                    int[] pos = new int[]{(int) (x + vec.xCoord), (int) (y + vec.yCoord), (int) (z + vec.zCoord)};
+                    int[] pos = new int[]{MathHelper.floor_double(x + vec.xCoord), MathHelper.floor_double(y + vec.yCoord), MathHelper.floor_double(z + vec.zCoord)};
                     Block block = world.getBlock(pos[0], pos[1], pos[2]);
                     int meta = world.getBlockMetadata(pos[0], pos[1], pos[2]);
                     if (k == 0) {

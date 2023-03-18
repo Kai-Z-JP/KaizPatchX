@@ -40,6 +40,11 @@ public class ItemWrench extends Item {
     }
 
     @Override
+    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player) {
+        return true;
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
         if (!this.changeMarkerAnchor(world, player)) {
             this.changeMode(world, itemStack, player);
@@ -76,6 +81,9 @@ public class ItemWrench extends Item {
     private int directionMetaMap[] = {2, 5, 1, 4, 0, 7, 3, 6};
 
     public void revertRailToMarker(World world, int x, int y, int z) {
+        if (world.isRemote) {
+            return;
+        }
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileEntityLargeRailBase) {
             TileEntityLargeRailBase targetRail = (TileEntityLargeRailBase) tile;

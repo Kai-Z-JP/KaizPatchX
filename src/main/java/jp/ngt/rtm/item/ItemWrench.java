@@ -40,6 +40,11 @@ public class ItemWrench extends Item {
     }
 
     @Override
+    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player) {
+        return true;
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
         if (!this.changeMarkerAnchor(world, player)) {
             this.changeMode(world, itemStack, player);

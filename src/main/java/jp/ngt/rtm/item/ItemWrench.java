@@ -81,6 +81,9 @@ public class ItemWrench extends Item {
     private int directionMetaMap[] = {2, 5, 1, 4, 0, 7, 3, 6};
 
     public void revertRailToMarker(World world, int x, int y, int z) {
+        if (world.isRemote) {
+            return;
+        }
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileEntityLargeRailBase) {
             TileEntityLargeRailBase targetRail = (TileEntityLargeRailBase) tile;

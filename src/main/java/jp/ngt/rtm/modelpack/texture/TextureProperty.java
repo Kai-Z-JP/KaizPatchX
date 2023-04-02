@@ -31,7 +31,15 @@ public abstract class TextureProperty {
         return 4;
     }
 
+    public int getUWidthInGui() {
+        return 100;
+    }
+
     public int getVCountInGui() {
         return 2;
+    }
+
+    public int getVHeightInGui() {
+        return 100;
     }
 }

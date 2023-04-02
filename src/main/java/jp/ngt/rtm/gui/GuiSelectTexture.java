@@ -28,10 +28,14 @@ public class GuiSelectTexture extends GuiScreenCustom {
 
     @Override
     public void initGui() {
-        this.uCount = !this.properties.isEmpty() ? this.properties.get(0).getUCountInGui() : 1;
-        this.vCount = !this.properties.isEmpty() ? this.properties.get(0).getVCountInGui() : 1;
-        int x = this.width / this.uCount;
-        int y = this.height / vCount;
+        int x = !this.properties.isEmpty() ? this.properties.get(0).getUWidthInGui() : this.width;
+        int y = !this.properties.isEmpty() ? this.properties.get(0).getVHeightInGui() : this.height;
+
+        this.uCount = Math.max(this.width / x, 1);
+        this.vCount = Math.max(this.height / y, 1);
+
+        int offsetX = (this.width - (x * this.uCount)) / 2;
+
         this.buttonList.clear();
 
         int yCount = (this.properties.size() / this.uCount) + 1;
@@ -52,7 +56,7 @@ public class GuiSelectTexture extends GuiScreenCustom {
 
                 int w = (int) (prop.width * f0);
                 int h = (int) (prop.height * f0);
-                int xPos = x * u + ((x - w) / 2);
+                int xPos = x * u + ((x - w) / 2) + offsetX;
                 int yPos = y * v + ((y - h) / 2);
                 this.buttonList.add(new GuiButtonSelectTexture(index, xPos, yPos, w, h, prop));
             }

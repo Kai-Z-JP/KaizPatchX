@@ -39,7 +39,17 @@ public class RRSProperty extends TextureProperty {
     }
 
     @Override
+    public int getUWidthInGui() {
+        return 50;
+    }
+
+    @Override
     public int getVCountInGui() {
         return 4;
+    }
+
+    @Override
+    public int getVHeightInGui() {
+        return 50;
     }
 }

@@ -113,7 +113,9 @@ public class TileEntityPipe extends TileEntityOrnament {
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        return AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
+        return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 1, 1)
+                .offset(this.xCoord, this.yCoord, this.zCoord)
+                .offset(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
     }
 
     @Override

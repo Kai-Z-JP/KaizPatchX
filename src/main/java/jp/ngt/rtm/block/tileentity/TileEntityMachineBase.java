@@ -135,14 +135,15 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
             return vec.addVector(0.5, 0.0, 0.5);
         }).collect(Collectors.toList());
 
-
         return AxisAlignedBB.getBoundingBox(
-                this.xCoord + vertexList.stream().mapToDouble(vec -> vec.xCoord).min().orElse(0.0) + this.getOffsetX(),
-                this.yCoord + box[1] + this.getOffsetY(),
-                this.zCoord + vertexList.stream().mapToDouble(vec -> vec.zCoord).min().orElse(0.0) + this.getOffsetZ(),
-                this.xCoord + vertexList.stream().mapToDouble(vec -> vec.xCoord).max().orElse(1.0) + this.getOffsetX(),
-                this.yCoord + box[4] + this.getOffsetY(),
-                this.zCoord + vertexList.stream().mapToDouble(vec -> vec.zCoord).max().orElse(1.0) + this.getOffsetZ());
+                        vertexList.stream().mapToDouble(vec -> vec.xCoord).min().orElse(0.0),
+                        box[1],
+                        vertexList.stream().mapToDouble(vec -> vec.zCoord).min().orElse(0.0),
+                        vertexList.stream().mapToDouble(vec -> vec.xCoord).max().orElse(1.0),
+                        box[4],
+                        vertexList.stream().mapToDouble(vec -> vec.zCoord).max().orElse(1.0))
+                .offset(this.xCoord, this.yCoord, this.zCoord)
+                .offset(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
     }
 
     public ModelSetMachine getModelSet() {

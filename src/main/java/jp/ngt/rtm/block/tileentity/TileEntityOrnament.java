@@ -14,6 +14,11 @@ import jp.ngt.rtm.modelpack.state.ResourceState;
 import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class TileEntityOrnament extends TileEntityPlaceable implements IModelSelectorWithType {
     private final ResourceState state = new ResourceState(this);
@@ -76,9 +81,25 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
+
+        float rotation = this.getRotation();
+        float rad = NGTMath.toRadians(rotation);
+
+        List<Vec3> vertexList = IntStream.range(0, 4).mapToObj(i -> {
+            Vec3 vec = Vec3.createVectorHelper(box[i / 2 * 3] - 0.5, 0, box[i % 2 * 3 + 2] - 0.5);
+            vec.rotateAroundY(rad);
+            return vec.addVector(0.5, 0.0, 0.5);
+        }).collect(Collectors.toList());
+
         return AxisAlignedBB.getBoundingBox(
-                this.xCoord + box[0], this.yCoord + box[1], this.zCoord + box[2],
-                this.xCoord + box[3], this.yCoord + box[4], this.zCoord + box[5]);
+                        vertexList.stream().mapToDouble(vec -> vec.xCoord).min().orElse(0.0),
+                        box[1],
+                        vertexList.stream().mapToDouble(vec -> vec.zCoord).min().orElse(0.0),
+                        vertexList.stream().mapToDouble(vec -> vec.xCoord).max().orElse(1.0),
+                        box[4],
+                        vertexList.stream().mapToDouble(vec -> vec.zCoord).max().orElse(1.0))
+                .offset(this.xCoord, this.yCoord, this.zCoord)
+                .offset(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
     }
 
     @Override

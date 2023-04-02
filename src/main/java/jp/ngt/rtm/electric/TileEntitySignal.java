@@ -197,13 +197,9 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        return AxisAlignedBB.getBoundingBox(
-                this.xCoord + this.getOffsetX(),
-                this.yCoord + this.getOffsetY(),
-                this.zCoord + this.getOffsetZ(),
-                this.xCoord + 1 + this.getOffsetX(),
-                this.yCoord + 2 + this.getOffsetY(),
-                this.zCoord + 1 + this.getOffsetZ());
+        return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1)
+                .offset(this.xCoord, this.yCoord, this.zCoord)
+                .offset(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
     }
 
     @Override

@@ -115,6 +115,8 @@ public class TileEntitySignBoard extends TileEntityPlaceable implements ITexture
         double width = this.getProperty().width / 2.0F;
         double depth = this.getProperty().depth / 2.0F;
         double d0 = Math.max(width, depth);
-        return AxisAlignedBB.getBoundingBox((double) this.xCoord - d0, (double) this.yCoord - height, (double) this.zCoord - d0, (double) this.xCoord + d0 + 1.0D, (double) this.yCoord + height + 1.0D, (double) this.zCoord + d0 + 1.0D);
+        return AxisAlignedBB.getBoundingBox(-d0, -height, -d0, d0 + 1.0D, height + 1.0D, d0 + 1.0D)
+                .offset(this.xCoord, this.yCoord, this.zCoord)
+                .offset(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
     }
 }

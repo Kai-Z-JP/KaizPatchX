@@ -51,7 +51,7 @@ jobs:
                     java-version: '8'
 
             -   name: Initialize CodeQL
-                uses: github/codeql-action/init@v1
+                uses: github/codeql-action/init@v2
                 with:
                     languages: ${{ matrix.language }}
                     # If you wish to specify custom queries, you can do so here or in a config file.
@@ -63,7 +63,7 @@ jobs:
             # If this step fails, then you should remove it and run the build manually (see below)
             -   if: matrix.language == 'javascript'
                 name: Autobuild
-                uses: github/codeql-action/autobuild@v1
+                uses: github/codeql-action/autobuild@v2
 
             -   if: matrix.language == 'java'
                 name: Use cahce

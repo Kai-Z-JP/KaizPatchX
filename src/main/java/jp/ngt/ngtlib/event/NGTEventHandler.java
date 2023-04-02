@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.protection.ProtectionManager;
 import jp.ngt.ngtlib.util.VersionChecker;
+import jp.ngt.rtm.item.ItemWrench;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -32,11 +33,11 @@ public final class NGTEventHandler {
         ProtectionManager.INSTANCE.loadData(event.world);
     }
 
-	/*@SubscribeEvent
-	public void onSaveWorld(WorldEvent.Save event)
-	{
-		ProtectionManager.INSTANCE.saveData(event.world);
-	}*/
+    /*@SubscribeEvent
+    public void onSaveWorld(WorldEvent.Save event)
+    {
+        ProtectionManager.INSTANCE.saveData(event.world);
+    }*/
 
     @SubscribeEvent
     public void onPlayerInteractBlock(PlayerInteractEvent event) {
@@ -62,6 +63,8 @@ public final class NGTEventHandler {
         if (ProtectionManager.INSTANCE.leftClickBlock(event.getPlayer(), event.x, event.y, event.z)) {
             event.setCanceled(true);
             this.cancelBreakBlock(event.getPlayer().worldObj, event.x, event.y, event.z);
+        } else if (event.getPlayer().getHeldItem() != null && event.getPlayer().getHeldItem().getItem() instanceof ItemWrench) {
+            event.setCanceled(true);
         }
     }
 

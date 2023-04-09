@@ -28,7 +28,7 @@ public final class RTMKeyHandlerServer {
         } else if (keyCode == RTMCore.KEY_Horn) {
             this.playSound(player, sound, 1.0F, false, RTMConfig.trainHornSoundRange);
         } else if (keyCode == RTMCore.KEY_Chime) {
-            this.playSound(player, sound, 1.0F, true, 16.0F);
+            this.playSound(player, sound, 1.0F, true, 32.0F);
         } else if (keyCode == RTMCore.KEY_ControlPanel) {
             player.openGui(RTMCore.instance, RTMCore.guiIdTrainControlPanel, player.worldObj, player.ridingEntity.getEntityId(), 0, 0);
         } else if (keyCode == RTMCore.KEY_Fire) {

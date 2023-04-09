@@ -2,16 +2,13 @@ package jp.ngt.rtm.rail.util;
 
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.RTMBlock;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRail;
-import jp.ngt.rtm.rail.BlockLargeRailBase;
-import jp.ngt.rtm.rail.BlockMarker;
-import jp.ngt.rtm.rail.TileEntityLargeRailBase;
-import jp.ngt.rtm.rail.TileEntityLargeRailCore;
+import jp.ngt.rtm.rail.*;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -139,7 +136,10 @@ public abstract class RailMap {
      */
     public void setRail(World world, Block block, int x0, int y0, int z0, RailProperty prop) {
         this.createRailList(prop);
-        setBaseBlock(world, x0, y0, z0);
+        TileEntity tile = world.getTileEntity(x0, y0, z0);
+        if (tile instanceof TileEntityMarker && ((TileEntityMarker) tile).getState(MarkerState.LINE2)) {
+            this.setBaseBlock(world, x0, y0, z0);
+        }
         this.rails.forEach(rail -> {
             int x = rail[0];
             int y = rail[1];
@@ -148,9 +148,9 @@ public abstract class RailMap {
             if (!(block2 instanceof BlockLargeRailBase) || block2 == block)//異なる種類のレールを上書きしない
             {
                 world.setBlock(x, y, z, block, 0, 2);
-                TileEntityLargeRailBase tile = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
-                if (tile != null) {
-                    tile.setStartPoint(x0, y0, z0);
+                TileEntityLargeRailBase railBase = (TileEntityLargeRailBase) world.getTileEntity(x, y, z);
+                if (railBase != null) {
+                    railBase.setStartPoint(x0, y0, z0);
                 }
             }
         });
@@ -159,8 +159,8 @@ public abstract class RailMap {
 
     private void setBaseBlock(World world, int x0, int y0, int z0) {
         int split = (int) (this.getLength() * 4.0D);
-        RailPosition rp = getStartRP();
-        int minWidth = MathHelper.floor_float(rp.constLimitWN - 0.5F);
+        RailPosition rp = this.getStartRP();
+        int minWidth = MathHelper.floor_float(rp.constLimitWN + 0.5F);
         int maxWidth = MathHelper.floor_float(rp.constLimitWP + 0.5F);
         int minHeight = MathHelper.floor_float(rp.constLimitHN);
         int maxHeight = MathHelper.floor_float(rp.constLimitHP);
@@ -176,9 +176,9 @@ public abstract class RailMap {
                 int h = minHeight + i;
                 for (int j = 0; j < (blocks[i]).length; j++) {
                     int w = minWidth + j;
-                    Vec3 vec = Vec3.createVectorHelper(w, h, 0.0D);
-                    vec.rotateAroundY(yaw);
-                    int[] pos = new int[]{MathHelper.floor_double(x + vec.xCoord), MathHelper.floor_double(y + vec.yCoord), MathHelper.floor_double(z + vec.zCoord)};
+                    Vec3 vec = new Vec3(w, h, 0.0D);
+                    vec = vec.rotateAroundY(yaw);
+                    int[] pos = new int[]{MathHelper.floor_double(x + vec.getX()), MathHelper.floor_double(y + vec.getY()), MathHelper.floor_double(z + vec.getZ())};
                     Block block = world.getBlock(pos[0], pos[1], pos[2]);
                     int meta = world.getBlockMetadata(pos[0], pos[1], pos[2]);
                     if (k == 0) {

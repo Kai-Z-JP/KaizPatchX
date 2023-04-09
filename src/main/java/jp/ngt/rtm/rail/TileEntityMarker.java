@@ -83,6 +83,7 @@ public class TileEntityMarker extends TileEntity {
         if (nbt.hasKey("RP")) {
             this.rp = RailPosition.readFromNBT(nbt.getCompoundTag("RP"));
         }
+        this.markerState = nbt.getInteger("MarkerState");
     }
 
     @Override
@@ -92,6 +93,7 @@ public class TileEntityMarker extends TileEntity {
         if (this.rp != null) {
             nbt.setTag("RP", this.rp.writeToNBT());
         }
+        nbt.setInteger("MarkerState", this.markerState);
     }
 
     @Override
@@ -342,6 +344,14 @@ public class TileEntityMarker extends TileEntity {
 
     public void updateMarkerRM(EntityPlayer player) {
         ((BlockMarker) getBlockType()).makeRailMap(this, xCoord, yCoord, zCoord, player);
+    }
+
+    public int getMarkerState() {
+        return markerState;
+    }
+
+    public void setMarkerState(int markerState) {
+        this.markerState = markerState;
     }
 
     public boolean getState(MarkerState state) {

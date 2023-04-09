@@ -87,7 +87,7 @@ public class CommonProxy {
         if (sound != null) {
             RTMCore.NETWORK_WRAPPER.sendToAllAround(
                     new PacketPlaySound(entity, sound, vol, pitch, range),
-                    new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range)
+                    new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 256.0F)
             );
         }
     }
@@ -100,7 +100,7 @@ public class CommonProxy {
         if (sound != null) {
             RTMCore.NETWORK_WRAPPER.sendToAllAround(
                     new PacketPlaySound(entity, sound, vol, pitch, range),
-                    new NetworkRegistry.TargetPoint(entity.getWorldObj().provider.dimensionId, entity.xCoord, entity.yCoord, entity.zCoord, range)
+                    new NetworkRegistry.TargetPoint(entity.getWorldObj().provider.dimensionId, entity.xCoord, entity.yCoord, entity.zCoord, 256.0F)
             );
         }
     }

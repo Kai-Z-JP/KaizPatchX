@@ -122,20 +122,20 @@ compileTestKotlin {
 }
 
 
-jar.dependsOn deobfJar
+build.dependsOn deobfJar
 
 publishing {
     publications {
-        mavenMain(MavenPublication) {
-            groupId 'jp.kaiz'
-            artifactId 'KaizPatchX'
-            artifact file("${project.buildDir}/build/libs/src1.7.10_20200822+KaizPatchX-SNAPSHOT.jar")
-        }
-        mavenDev(MavenPublication) {
-            groupId 'jp.kaiz'
-            artifactId 'KaizPatchX'
-            classifier 'dev'
-            artifact file("${project.buildDir}/build/libs/src1.7.10_20200822+KaizPatchX-SNAPSHOT-dev.jar")
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar {
+                classifier = 'sources'
+                extension = 'jar'
+            }
+            artifact deobfJar {
+                classifier = 'dev'
+                extension = 'jar'
+            }
         }
     }
 }

@@ -202,7 +202,7 @@ public class ItemRail extends ItemWithModel {
     private boolean placeRail(World world, int x, int y, int z, ItemStack stack, EntityPlayer player) {
         List<RailPosition> rps = getRPFromItem(stack);
         if (!rps.isEmpty()) {
-            int dir = -BlockMarker.getFacing(player, false) * 2 + 4;//90刻みへ変換
+            int dir = BlockMarker.getMarkerDir(null, BlockMarker.getFacing(player, false));//45刻みへ変換
             RailPosition topRP = rps.get(0);//分岐RP前提、BlockMarkerで並べ替え
             int difDir = dir - topRP.direction;
             int origX = topRP.blockX;

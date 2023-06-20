@@ -137,7 +137,7 @@ public abstract class EntityVehicle extends EntityVehicleBase<VehicleConfig> imp
 
         this.speed += moveForward * cfg.getAcceleration(this.onGround);
         float maxSpeed = cfg.getMaxSpeed(this.onGround);
-        float f0 = (moveStrafe + 0.02F) * cfg.getYawCoefficient(this.onGround);
+        float f0 = moveStrafe * cfg.getYawCoefficient(this.onGround);
         f0 *= cfg.changeYawOnStopping ? ((this.speed >= 0.0F) ? 1.0F : -1.0F) : (this.speed / maxSpeed);
         float maxYaw = cfg.getMaxYaw(this.onGround);
         if (f0 > maxYaw) {

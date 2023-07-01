@@ -25,10 +25,12 @@ public abstract class BlockElectricalWiring extends BlockContainer implements IB
         if (world.isRemote) {
             if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
                 player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+            } else if (player.isSneaking()) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, world, x, y, z);
             }
             return true;
         } else {
-            if (!NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+            if (!NGTUtil.isEquippedItem(player, RTMItem.crowbar) && !player.isSneaking()) {
                 TileEntityElectricalWiring tile = (TileEntityElectricalWiring) world.getTileEntity(x, y, z);
                 return tile.onRightClick(player);
             } else {

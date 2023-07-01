@@ -1,5 +1,6 @@
 package jp.ngt.rtm.electric;
 
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.EntityInstalledObject;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,10 +48,15 @@ public abstract class EntityElectricalWiring extends EntityInstalledObject {
     @Override
     public boolean interactFirst(EntityPlayer player) {
         if (this.worldObj.isRemote) {
-            return true;
+            if (player.isSneaking() && player.getCurrentEquippedItem() == null) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdSelectEntityModel, this.worldObj, this.getEntityId(), 0, 0);
+            }
         } else {
-            return this.tileEW.onRightClick(player);
+            if (!player.isSneaking()) {
+                return this.tileEW.onRightClick(player);
+            }
         }
+        return true;
     }
 
     public abstract int getElectricity();

@@ -12,6 +12,7 @@
     },
     "buttonTexture": "textures/machine/button_ATC_02.png",
     "machineType": "Antenna_Send",
+    "followRailAngle": true,
     "smoothing": false,
     "doCulling": true,
     "accuracy": "LOW",

@@ -12,6 +12,7 @@
     },
     "buttonTexture": "textures/machine/button_TrainDetector_01.png",
     "machineType": "Antenna_Receive",
+    "followRailAngle": true,
     "smoothing": false,
     "doCulling": true,
     "accuracy": "LOW",

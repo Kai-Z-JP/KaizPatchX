@@ -470,19 +470,21 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
     protected void keyTyped(char par1, int par2) {
         super.keyTyped(par1, par2);
         if (par2 == Keyboard.KEY_F) {
-
-            int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-            int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-
             ((List<GuiButton>) this.buttonList).stream()
                     .filter(button -> button.id >= CUSTOM_BUTTOM_ID)
-                    .filter(button -> button.mousePressed(this.mc, x, y))
+                    .filter(GuiButton::func_146115_a)
                     .findFirst()
                     .ifPresent(button -> {
                         int index = button.id - CUSTOM_BUTTOM_ID;
                         int val = this.getDataMap().getInt("Button" + index);
-                        this.train.getFormation().getTrainStream().forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
-                        button.func_146113_a(this.mc.getSoundHandler());
+
+                        Formation formation = this.train.getFormation();
+                        if (formation != null) {
+                            formation.getTrainStream()
+                                    .filter(Objects::nonNull)
+                                    .forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
+                            button.func_146113_a(this.mc.getSoundHandler());
+                        }
                     });
         }
     }
@@ -537,6 +539,8 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
         if (tab == TabTrainControlPanel.TAB_Inventory) {
             GuiInventory.func_147046_a(this.guiLeft + 51, this.guiTop + 75, 30, (float) (this.guiLeft + 51 - par2), (float) (this.guiTop + 75 - 50 - par3), this.mc.thePlayer);
+        } else if (tab == TabTrainControlPanel.TAB_Function) {
+//            this.drawGradientRect(this.guiLeft + 7, this.guiTop + 7, this.guiLeft + this.xSize - 7, this.guiTop + this.ySize - 30, -1072689136, -804253680);
         }
     }
 

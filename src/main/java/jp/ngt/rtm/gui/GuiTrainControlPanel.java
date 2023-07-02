@@ -3,7 +3,6 @@ package jp.ngt.rtm.gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.kaiz.kaizpatch.gui.GuiButtonWithScrollingListBox;
-import jp.ngt.ngtlib.gui.GuiButtonCustom;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
@@ -14,6 +13,7 @@ import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
+import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.network.PacketNotice;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
@@ -77,8 +77,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
      * 0:R, L:1
      */
     private final GuiButtonDoor[] buttonDoor = new GuiButtonDoor[2];
-
-    private int[] dataValues;
 
     public GuiTrainControlPanel(ContainerTrainControlPanel par1) {
         super(par1);
@@ -196,16 +194,19 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
             String[][] buttons = this.getCustomButtons();
             String[] tips = this.getCustomButtonTips();
-            this.dataValues = new int[buttons.length];
             IntStream.range(0, buttons.length).forEach(i -> {
-                int value = this.train.getResourceState().getDataMap().getInt("Button" + i);
                 int x = this.guiLeft + 4 + (i % 3) * (54 + 3);
                 int y = this.guiTop + 4 + (i / 3) * (20 + 4);
-                String displayString = buttons[i].length > value ? buttons[i][value] : "Out of range";
-                GuiButtonCustom button = new GuiButtonCustom(CUSTOM_BUTTOM_ID + i, x, y, 54, 20, displayString, this);
+                GuiButtonWithScrollingListBox button = new GuiButtonWithScrollingListBox(CUSTOM_BUTTOM_ID + i, x, y, 54, 20,
+                        () -> this.getDataMap().getInt("Button" + i),
+                        Arrays.stream(buttons[i]).collect(Collectors.toList()),
+                        "%s",
+                        data -> {
+                            this.getDataMap().setInt("Button" + i, data, 3);
+                            return Unit.INSTANCE;
+                        });
                 button.addTips(tips[i]);
                 this.buttonList.add(button);
-                this.dataValues[i] = value;
             });
         } else if (tab == TabTrainControlPanel.TAB_Formation) {
             this.initInventorySlot(containerTrain);
@@ -291,7 +292,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                 if (guibutton.mousePressed(this.mc, par1, par2)) {
                     //this.selectedButton = guibutton;
                     guibutton.func_146113_a(this.mc.getSoundHandler());
-                    this.buttonRightClicked(guibutton);
                 }
             }
             return;
@@ -362,16 +362,15 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                         } else if (button.id >= CUSTOM_BUTTOM_ID) {
                             int index = button.id - CUSTOM_BUTTOM_ID;
                             String[] sa = this.getCustomButtons()[index];
-                            int val = this.dataValues[index] + i0;
+                            int nowValue = this.getDataMap().getInt("Button" + index);
+                            int val = nowValue + i0;
                             if (val >= sa.length) {
                                 val = 0;
                             } else if (val < 0) {
                                 val = sa.length - 1;
                             }
                             button.func_146113_a(this.mc.getSoundHandler());
-                            button.displayString = sa[val];
-                            this.dataValues[index] = val;
-                            this.onCustomButtonClick(index, val);
+                            this.getDataMap().setInt("Button" + index, val, 3);
                             return;
                         } else {
                             return;
@@ -471,18 +470,21 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
     protected void keyTyped(char par1, int par2) {
         super.keyTyped(par1, par2);
         if (par2 == Keyboard.KEY_F) {
-
-            int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-            int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
             ((List<GuiButton>) this.buttonList).stream()
                     .filter(button -> button.id >= CUSTOM_BUTTOM_ID)
-                    .filter(button -> button.mousePressed(this.mc, x, y))
+                    .filter(GuiButton::func_146115_a)
                     .findFirst()
                     .ifPresent(button -> {
                         int index = button.id - CUSTOM_BUTTOM_ID;
-                        int val = this.dataValues[index];
-                        this.train.getFormation().getTrainStream().forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
-                        button.func_146113_a(this.mc.getSoundHandler());
+                        int val = this.getDataMap().getInt("Button" + index);
+
+                        Formation formation = this.train.getFormation();
+                        if (formation != null) {
+                            formation.getTrainStream()
+                                    .filter(Objects::nonNull)
+                                    .forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
+                            button.func_146113_a(this.mc.getSoundHandler());
+                        }
                     });
         }
     }
@@ -537,6 +539,8 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
         if (tab == TabTrainControlPanel.TAB_Inventory) {
             GuiInventory.func_147046_a(this.guiLeft + 51, this.guiTop + 75, 30, (float) (this.guiLeft + 51 - par2), (float) (this.guiTop + 75 - 50 - par3), this.mc.thePlayer);
+        } else if (tab == TabTrainControlPanel.TAB_Function) {
+//            this.drawGradientRect(this.guiLeft + 7, this.guiTop + 7, this.guiLeft + this.xSize - 7, this.guiTop + this.ySize - 30, -1072689136, -804253680);
         }
     }
 
@@ -746,37 +750,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             }
             MacroRecorder.INSTANCE.recDoor(this.train.worldObj, type);
         }
-
-        if (button.id >= CUSTOM_BUTTOM_ID) {
-            int index = button.id - CUSTOM_BUTTOM_ID;
-            String[] sa = this.getCustomButtons()[index];
-            int val = this.dataValues[index] + 1;
-            if (val >= sa.length) {
-                val = 0;
-            }
-            button.displayString = sa[val];
-            this.dataValues[index] = val;
-            this.onCustomButtonClick(index, val);
-        }
-    }
-
-    protected void buttonRightClicked(GuiButton button) {
-        if (button.id >= CUSTOM_BUTTOM_ID) {
-            int index = button.id - CUSTOM_BUTTOM_ID;
-            String[] sa = this.getCustomButtons()[index];
-            int val = this.dataValues[index] - 1;
-            if (val < 0) {
-                val = sa.length - 1;
-            }
-            button.displayString = sa[val];
-            this.dataValues[index] = val;
-            this.onCustomButtonClick(index, val);
-        }
-    }
-
-
-    private void onCustomButtonClick(int index, int val) {
-        this.train.getResourceState().getDataMap().setInt("Button" + index, val, 3);
     }
 
     private void sendTrainState(int id, byte data) {
@@ -805,6 +778,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             String s = "state." + stateType.stateName + "." + TrainState.getState(par1, par2).stateName;
             return I18n.format(s);
         }
+    }
+
+    private DataMap getDataMap() {
+        return this.train.getResourceState().getDataMap();
     }
 
     private String[][] getCustomButtons() {

@@ -1,7 +1,7 @@
 package jp.kaiz.kaizpatch.gui
 
+import jp.ngt.ngtlib.gui.GuiButtonCustom
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.renderer.OpenGlHelper
 import org.lwjgl.opengl.GL11
 import kotlin.math.min
@@ -17,7 +17,7 @@ class GuiButtonWithScrollingListBox(
     private val displayStringList: List<String>,
     private val displayFormat: String,
     private val onSelect: Int.() -> Unit
-) : GuiButton(id, xPosition, yPosition, width, height, "") {
+) : GuiButtonCustom(id, xPosition, yPosition, width, height, "") {
 
     private lateinit var listScreen: GuiScrollingListBox
 

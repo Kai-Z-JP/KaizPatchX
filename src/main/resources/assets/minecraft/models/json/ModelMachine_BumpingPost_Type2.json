@@ -12,6 +12,7 @@
     },
     "buttonTexture": "textures/machine/button_BumpingPost_Type2.png",
     "machineType": "BumpingPost",
+    "followRailAngle": true,
     "smoothing": true,
     "doCulling": true,
     "accuracy": "LOW",

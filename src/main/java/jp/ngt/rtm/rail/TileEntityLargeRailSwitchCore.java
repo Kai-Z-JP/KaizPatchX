@@ -33,8 +33,8 @@ public class TileEntityLargeRailSwitchCore extends TileEntityLargeRailCore {
 
             IntStream.range(0, size).forEach(i -> this.railPositions[i] = RailPosition.readFromNBT(nbt.getCompoundTag("RP" + i)));
             this.fixRTMRailMapVersion = nbt.getInteger("fixRTMRailMapVersion");
-        } else//1.7.10.19互換
-        {
+        } else if (nbt.hasKey("StartRP")) {
+            //1.7.10.19互換
             byte b0 = nbt.getByte("startDir");
             byte[] ba1 = nbt.getByteArray("endDir");
             int x0 = nbt.getInteger("spX");

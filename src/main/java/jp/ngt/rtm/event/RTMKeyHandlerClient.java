@@ -243,28 +243,36 @@ public final class RTMKeyHandlerClient {
                 NGTLog.showChatMessage(new ChatComponentText("Destination : " + rollsignNames[state]));
             } else if (mc.gameSettings.keyBindJump.getIsKeyPressed()) {
                 byte data = train.getTrainStateData(TrainStateType.State_Door.id);
-                boolean dir = train.getTrainDirection() == 0;
+                boolean trainDir = train.getTrainDirection() == 0;
+                boolean cabDir = train.getCabDirection() == 0;
                 String side;
-                int mask;
+                int right = data & 1;
+                int left = (data >> 1);
                 if (mc.gameSettings.keyBindRight.isPressed() && mc.gameSettings.keyBindRight.getIsKeyPressed()) {
-                    mask = dir ? 2 : 1;
+                    if (cabDir) {
+                        left ^= 1;
+                    } else {
+                        right ^= 1;
+                    }
                     side = "Right";
                 } else if (mc.gameSettings.keyBindLeft.isPressed() && mc.gameSettings.keyBindLeft.getIsKeyPressed()) {
-                    mask = dir ? 1 : 2;
+                    if (cabDir) {
+                        right ^= 1;
+                    } else {
+                        left ^= 1;
+                    }
                     side = "Left";
                 } else {
                     return;
                 }
-                data ^= mask;
-                boolean open = (data & mask) == mask;
+                byte newData = (byte) (trainDir ? (left << 1 | right) : (right << 1 | left));
+                boolean open = newData > data;
                 if (open && train.getSpeed() != 0) {
                     return;
                 }
                 player.addChatMessage(new ChatComponentText(side + " door: " + (open ? "open" : "close")));
-                if (!dir) {
-                    data = (byte) Integer.rotateLeft(data, 1);
-                }
-                train.syncTrainStateData(TrainStateType.State_Door.id, data);
+
+                train.syncTrainStateData(TrainStateType.State_Door.id, newData);
             }
         }
     }

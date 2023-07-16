@@ -23,7 +23,9 @@ import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -234,7 +236,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         int state = this.train.getTrainStateData(TrainStateType.State_Door.id);
         boolean r = (state & 1) == 1;
         boolean l = (state & 2) == 2;
-        boolean dir = this.train.getTrainDirection() == 0;
+        int trainDir = 0;
+        int cabDir = this.train.getCabDirection();
+        int xor = trainDir ^ cabDir;
+        boolean dir = (xor & 1) == 0;
         this.buttonDoor[0].opened = dir ? l : r;
         this.buttonDoor[1].opened = dir ? r : l;
         this.buttonList.add(this.buttonDoor[0]);
@@ -589,6 +594,35 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         }
     }
 
+    protected void drawGradientRect(int par1, int par2, int par3, int par4, int par5, int par6) {
+        float f = (float) (par5 >> 24 & 255) / 255.0F;
+        float f1 = (float) (par5 >> 16 & 255) / 255.0F;
+        float f2 = (float) (par5 >> 8 & 255) / 255.0F;
+        float f3 = (float) (par5 & 255) / 255.0F;
+        float f4 = (float) (par6 >> 24 & 255) / 255.0F;
+        float f5 = (float) (par6 >> 16 & 255) / 255.0F;
+        float f6 = (float) (par6 >> 8 & 255) / 255.0F;
+        float f7 = (float) (par6 & 255) / 255.0F;
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA_F(f1, f2, f3, f);
+        tessellator.addVertex(par3, par2, 0.0D);
+        tessellator.addVertex(par1, par2, 0.0D);
+        tessellator.setColorRGBA_F(f5, f6, f7, f4);
+        tessellator.addVertex(par1, par4, 0.0D);
+        tessellator.addVertex(par3, par4, 0.0D);
+        tessellator.draw();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+
     protected void renderTabItem(TabTrainControlPanel tab) {
         boolean flag = tab.getTabIndex() == this.selectedTabIndex;
         boolean flag1 = tab.isTabInFirstRow();
@@ -729,8 +763,11 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             ((GuiButtonDoor) button).opened ^= true;
             int r = (this.buttonDoor[0].opened ? 1 : 0);
             int l = (this.buttonDoor[1].opened ? 1 : 0);
-            //boolean dir = this.train.getTrainDirection() == 0;
-            int state = (r << 1 | l);
+            int trainDir = this.train.getTrainDirection();
+            int cabDir = this.train.getCabDirection();
+            int xor = trainDir ^ cabDir;
+            boolean dir = (xor & 1) == 0;
+            int state = dir ? (r << 1 | l) : (l << 1 | r);
             this.train.setTrainStateData(TrainStateType.State_Door.id, (byte) state);
             this.sendTrainState(TrainStateType.State_Door.id, (byte) state);
             TrainState type = TrainState.Door_Close;

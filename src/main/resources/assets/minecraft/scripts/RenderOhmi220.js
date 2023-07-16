@@ -101,10 +101,11 @@ function render(entity, pass, par3) {
 
 function onRightClick(entity, parts) {
     var doorState = entity.getTrainStateData(TrainState.TrainStateType.State_Door.id);
+    var dirForward = (entity.getTrainDirection() === 0);
     if (parts.equals(con_sw_RF) || parts.equals(con_sw_RB)) {
-        doorState ^= 1;
+        doorState ^= (dirForward ? 1 : 2);
     } else if (parts.equals(con_sw_LF) || parts.equals(con_sw_LB)) {
-        doorState ^= 2;
+        doorState ^= (dirForward ? 2 : 1)
     }
     entity.setTrainStateData(TrainState.TrainStateType.State_Door.id, doorState);
     entity.syncTrainStateData(TrainState.TrainStateType.State_Door.id, doorState);
@@ -133,8 +134,8 @@ function renderController(entity, pass, par3) {
     var rotationMB = 0.0;
     var rotationBF = 0.0;
     var rotationBB = 0.0;
-    if (entity != null) {
-        var dirForward = (entity.getTrainDirection() === 0);
+    if (entity != null && entity.isControlCar()) {
+        var dirForward = (entity.getCabDirection() === 0);
         var notch = entity.getNotch();
         var notchM = (notch < 0 ? 0 : notch) / 5;
         var notchB = ((notch > 0 ? 0 : notch) + 8) / 8;

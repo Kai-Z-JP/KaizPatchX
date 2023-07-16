@@ -33,6 +33,7 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 
     public EntityInstalledObject(World world) {
         super(world);
+        this.renderDistanceWeight = 10.0D;
     }
 
     @Override

@@ -93,7 +93,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
             this.railPositions[0] = RailPosition.readFromNBT(nbt.getCompoundTag("StartRP"));
             this.railPositions[1] = RailPosition.readFromNBT(nbt.getCompoundTag("EndRP"));
             this.fixRTMRailMapVersion = nbt.getInteger("fixRTMRailMapVersion");
-        } else {
+        } else if (nbt.hasKey("StartRP")) {
             byte b0 = nbt.getByte("startDir");
             byte b1 = nbt.getByte("endDir");
             int x0 = nbt.getInteger("spX");

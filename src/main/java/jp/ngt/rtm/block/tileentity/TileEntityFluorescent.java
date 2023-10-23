@@ -21,6 +21,8 @@ public class TileEntityFluorescent extends TileEntityOrnament {
             int meta = this.getBlockMetadata();
             if (meta >= 2) {
                 this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
+            } else {
+                this.setModelName(this.getDefaultName());
             }
         }
     }
@@ -31,6 +33,8 @@ public class TileEntityFluorescent extends TileEntityOrnament {
             int meta = this.getBlockMetadata();
             if (meta >= 2) {
                 this.setModelName(meta == 2 ? "Fluorescent01Broken" : "FluorescentCovered01");
+            } else {
+                this.setModelName(this.getDefaultName());
             }
         }
         super.writeToNBT(nbt);

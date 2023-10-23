@@ -15,24 +15,20 @@ public class TileEntityScaffold extends TileEntityOrnament {
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        if (this.getModelName().isEmpty()) {
+        if (this.hasWorldObj() && this.getModelName().isEmpty()) {
             this.setModelName(this.getDefaultName());
-            if (this.hasWorldObj()) {
-                int meta = this.getBlockMetadata();
-                this.getResourceState().color = MapColor.getMapColorForBlockColored(meta).colorValue;
-            }
+            int meta = this.getBlockMetadata();
+            this.getResourceState().color = MapColor.getMapColorForBlockColored(meta).colorValue;
         }
         this.dir = nbt.getByte("direction");
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        if (this.getModelName().isEmpty()) {
+        if (this.hasWorldObj() && this.getModelName().isEmpty()) {
             this.setModelName(this.getDefaultName());
-            if (this.hasWorldObj()) {
-                int meta = this.getBlockMetadata();
-                this.getResourceState().color = MapColor.getMapColorForBlockColored(meta).colorValue;
-            }
+            int meta = this.getBlockMetadata();
+            this.getResourceState().color = MapColor.getMapColorForBlockColored(meta).colorValue;
         }
         super.writeToNBT(nbt);
         nbt.setByte("direction", this.dir);

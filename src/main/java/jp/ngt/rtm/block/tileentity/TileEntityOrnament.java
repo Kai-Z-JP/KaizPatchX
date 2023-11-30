@@ -11,7 +11,6 @@ import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.modelset.ModelSetOrnament;
 import jp.ngt.rtm.modelpack.modelset.ModelSetOrnamentClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
-import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -73,8 +72,7 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetOrnamentClient modelSet = (ModelSetOrnamentClient) this.getModelSet();
-        ModelObject modelObj = modelSet.model;
-        return pass == 0 || (modelObj.light || modelObj.alphaBlend) && pass >= 0;
+        return pass == 0 || (modelSet.model.light || modelSet.model.alphaBlend) && pass >= 0;
     }
 
     @Override

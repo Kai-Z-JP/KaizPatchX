@@ -38,7 +38,7 @@ public class EntityBogie extends Entity implements Lockable {
     /**
      * ベジェ曲線の分割精度(1m当たり)
      */
-    private static final byte SPLIT_VALUE = 32;//64だとカーブでゆっくりになる
+    private static final int SPLITS_PER_METER = 360; //(Minimum Speed[km/h] / 3.6 / 20[tick])^-1 e.g. (0.2/3.6/20)^-1 = 360
 
     private static final byte DW_TrainId = 20;
     private static final byte DW_IsFront = 21;
@@ -203,7 +203,7 @@ public class EntityBogie extends Entity implements Lockable {
             pIndex = rm.getNearlestPoint(this.split, px, pz);
         } else {
             //移動範囲を制限して、「台車からの距離は同じでも位置は真逆」な点の検出を防ぐ
-            int indexInc = (int) ((Math.abs(speed) + 0.25F) * (float) SPLIT_VALUE);//前回位置からどの程度進むか
+            int indexInc = (int) ((Math.abs(speed) + 0.25F) * (float) SPLITS_PER_METER);//前回位置からどの程度進むか
             int indexNeg = this.prevPosIndex - indexInc;
             int indexPos = this.prevPosIndex + indexInc;
             int indexMin = Math.max(indexNeg, 0);
@@ -293,7 +293,7 @@ public class EntityBogie extends Entity implements Lockable {
 
                 this.currentRailObj = coreObj;
                 this.currentRailMap = railMap;
-                this.split = (int) (this.currentRailMap.getLength() * (double) SPLIT_VALUE);
+                this.split = (int) (this.currentRailMap.getLength() * (double) SPLITS_PER_METER);
                 this.prevPosIndex = -1;
                 this.onChangeRail(coreObj);
             }

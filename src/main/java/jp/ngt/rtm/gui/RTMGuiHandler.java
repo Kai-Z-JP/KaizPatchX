@@ -123,7 +123,7 @@ public class RTMGuiHandler implements IGuiHandler {
             }
         } else if (ID == RTMCore.guiIdNPC) {
             EntityNPC npc = (EntityNPC) world.getEntityByID(x);
-            if (npc.getRole() == Role.SALESPERSON) {
+            if (npc.getRole() == Role.SALESPERSON || npc.getRole() == Role.BUYER) {
                 return new GuiSalesperson(player, npc);
             } else {
                 return new GuiNPC(player, npc);

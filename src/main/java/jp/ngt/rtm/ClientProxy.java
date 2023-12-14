@@ -155,7 +155,7 @@ public class ClientProxy extends CommonProxy {
         ModelPackManager.INSTANCE.registerType("ModelTrain", TrainConfig.class, ModelSetTrainClient.class);
         ModelPackManager.INSTANCE.registerType("ModelContainer", ContainerConfig.class, ModelSetContainerClient.class);
         ModelPackManager.INSTANCE.registerType("ModelVehicle", VehicleConfig.class, ModelSetVehicleClient.class);
-        ModelPackManager.INSTANCE.registerType("ModelNPC", NPCConfig.class, ModelSetNPC.class);
+        ModelPackManager.INSTANCE.registerType("ModelNPC", NPCConfig.class, ModelSetNPCClient.class);
         ModelPackManager.INSTANCE.registerType("ModelMachine", MachineConfig.class, ModelSetMachineClient.class);
         ModelPackManager.INSTANCE.registerType("ModelWire", WireConfig.class, ModelSetWireClient.class);
         ModelPackManager.INSTANCE.registerType("ModelConnector", ConnectorConfig.class, ModelSetConnectorClient.class);

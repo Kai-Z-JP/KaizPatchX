@@ -9,6 +9,7 @@ import jp.ngt.rtm.item.ItemGun;
 import jp.ngt.rtm.item.ItemGun.GunType;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.ModelPackManager;
+import jp.ngt.rtm.modelpack.cfg.NPCConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetNPC;
 import jp.ngt.rtm.modelpack.state.ResourceState;
 import jp.ngt.rtm.util.PathNavigateCustom;
@@ -37,6 +38,8 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
     private final EntityDummyPlayer playerDummy;
 
     protected int useItemCount;
+
+    private boolean roleChanged;
 
     public InventoryNPC inventory = new InventoryNPC(this);
 
@@ -182,6 +185,12 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
     protected void updateEntityActionState() {
         if (this.myRole != Role.MANNEQUIN) {
             super.updateEntityActionState();
+        }
+        if (this.roleChanged) {
+            this.roleChanged = false;
+            this.myRole = Role.getRole(((ModelSetNPC) this.state.getResourceSet()).getConfig().role);
+            this.myRole.init(this);
+            onInventoryChanged();
         }
     }
 
@@ -400,6 +409,10 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
     public void onInventoryChanged() {
         this.getModelSet();
         this.myRole.onInventoryChanged(this);
+        NPCConfig cfg = ((ModelSetNPC) getResourceState().getResourceSet()).getConfig();
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(cfg.health);
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(cfg.speed);
+        this.getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(cfg.damage);
     }
 
     public EntityBullet getBullet(GunType type) {

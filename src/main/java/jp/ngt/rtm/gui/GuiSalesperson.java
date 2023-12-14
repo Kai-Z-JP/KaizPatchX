@@ -10,6 +10,7 @@ import jp.ngt.rtm.RTMItem.MoneyType;
 import jp.ngt.rtm.entity.npc.EntityNPC;
 import jp.ngt.rtm.entity.npc.Menu;
 import jp.ngt.rtm.entity.npc.MenuEntry;
+import jp.ngt.rtm.entity.npc.Role;
 import jp.ngt.rtm.network.PacketSyncItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -51,7 +52,7 @@ public final class GuiSalesperson extends GuiNPC {
         super(par1, par2);
 
         this.isOwner = (par1.equals(par2.getOwner()));
-        this.menu = new Menu(par2.getMenu());
+        this.menu = new Menu(par2.getMenu(), par2.getRole());
         this.selectedMenu = this.menu.get(0);
         this.message = I18n.format("gui.npc.put_money");
     }
@@ -62,10 +63,16 @@ public final class GuiSalesperson extends GuiNPC {
 
         if (!this.showMenu) {
             this.buttonList.add(new GuiButtonItem(200, this.guiLeft + 90, this.guiTop + 26, 20, 20));
-            this.buttonList.add(new GuiButton(201, this.guiLeft + 85, this.guiTop + 49, 40, 20, I18n.format("gui.npc.buy")));
+            String s = (this.npc.getRole() == Role.BUYER) ? "gui.npc.sell" : "gui.npc.buy";
+            this.buttonList.add(new GuiButton(201, this.guiLeft + 85, this.guiTop + 49, 40, 20, I18n.format(s)));
             GuiButton button = new GuiButton(202, this.guiLeft + 130, this.guiTop + 49, 40, 20, I18n.format("gui.npc.register"));
             button.enabled = this.isOwner;
             this.buttonList.add(button);
+            if (this.npc.getRole() == Role.SALESPERSON) {
+                this.message = I18n.format("gui.npc.put_money");
+            } else if (this.npc.getRole() == Role.BUYER) {
+                this.message = I18n.format("gui.npc.put_item");
+            }
         } else {
             this.buttonList.clear();
 
@@ -115,16 +122,36 @@ public final class GuiSalesperson extends GuiNPC {
                 this.setPage(0);
             } else if (button.id == 201)//購入
             {
-                if (!this.buy()) {
-                    this.message = I18n.format("gui.npc.can_not_buy");
+                if (this.npc.getRole() == Role.BUYER) {
+                    if (!sell()) {
+                        this.message = I18n.format("gui.npc.can_not_sell");
+                    }
+                } else if (this.npc.getRole() == Role.SALESPERSON) {
+                    if (!buy()) {
+                        this.message = I18n.format("gui.npc.can_not_buy");
+                    }
                 }
             } else if (button.id == 202)//登録
             {
-                if (this.registerItem()) {
-                    this.message = I18n.format("gui.npc.reg_successful");
-                } else {
-                    this.message = I18n.format("gui.npc.reg_failed");
+                String s;
+                switch (registerItem()) {
+                    case 0:
+                        s = "gui.npc.reg_successful";
+                        break;
+                    case 1:
+                        s = "gui.npc.reg_no_item";
+                        break;
+                    case 2:
+                        s = "gui.npc.reg_no_money";
+                        break;
+                    case 3:
+                        s = "gui.npc.reg_invalid_size";
+                        break;
+                    default:
+                        s = "gui.npc.reg_failed";
+                        break;
                 }
+                this.message = I18n.format(s);
             }
         } else {
             if (button.id == 300)//close
@@ -149,7 +176,7 @@ public final class GuiSalesperson extends GuiNPC {
                 }
             } else if (button.id == 303)//import
             {
-                this.menu.importFromText();
+                this.menu.importFromText(this.npc.getRole());
                 this.setPage(this.pageIndex);
             } else if (button.id == 304)//export
             {
@@ -221,9 +248,18 @@ public final class GuiSalesperson extends GuiNPC {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (!this.showMenu) {
             super.drawScreen(mouseX, mouseY, partialTicks);
-
-            int money = this.selectedMenu.price - this.amountMoney;
-            this.fontRendererObj.drawString(String.format("￥%d", money), this.guiLeft + 115, this.guiTop + 32, 0x000000);
+            if (this.npc.getRole() == Role.BUYER) {
+                if (this.amountMoney > 0) {
+                    int amount = this.amountMoney / this.selectedMenu.price;
+                    this.fontRendererObj.drawString(String.format("￥%dx%d=￥%d", this.selectedMenu.price, amount, this.amountMoney),
+                            this.guiLeft + 115, this.guiTop + 32, 0x000000);
+                } else {
+                    this.fontRendererObj.drawString(String.format("￥%d", this.amountMoney), this.guiLeft + 115, this.guiTop + 32, 0x000000);
+                }
+            } else if (this.npc.getRole() == Role.SALESPERSON) {
+                int money = this.selectedMenu.price - this.amountMoney;
+                this.fontRendererObj.drawString(String.format("￥%d", money), this.guiLeft + 115, this.guiTop + 32, 0x000000);
+            }
             this.fontRendererObj.drawString(this.message, this.guiLeft + 83, this.guiTop + 72, 0xFF0000);
         } else {
             this.drawDefaultBackground();
@@ -258,14 +294,25 @@ public final class GuiSalesperson extends GuiNPC {
     @Override
     protected void handleMouseClick(Slot slot, int slotId, int mouseButton, int type) {
         super.handleMouseClick(slot, slotId, mouseButton, type);
-
-        this.amountMoney = this.countMoney(false);
-        if (this.amountMoney > 0) {
-            this.message = I18n.format("gui.npc.push_buy");
-        } else {
-            this.message = I18n.format("gui.npc.put_money");
+        if (this.npc.getRole() == Role.SALESPERSON) {
+            this.amountMoney = countMoney(false);
+            if (this.amountMoney > 0) {
+                this.message = I18n.format("gui.npc.push_buy");
+            } else {
+                this.message = I18n.format("gui.npc.put_money");
+            }
+        } else if (this.npc.getRole() == Role.BUYER) {
+            this.amountMoney = this.countSaleItemPayment();
+            if (this.amountMoney > 0) {
+                this.message = I18n.format("gui.npc.push_sell");
+            } else if (this.amountMoney == 0) {
+                this.message = I18n.format("gui.npc.put_item");
+            } else {
+                this.message = I18n.format("gui.npc.can_not_sell");
+            }
         }
     }
+
 
     private boolean buy() {
         int amount = this.countMoney(false);
@@ -307,13 +354,82 @@ public final class GuiSalesperson extends GuiNPC {
         return true;
     }
 
-    private boolean registerItem() {
-        ItemStack item = ((Slot) this.inventorySlots.inventorySlots.get(MIN_SLOT_INDEX)).getStack();
-        int price = this.countMoney(false);
-        if (item != null && !this.isMoney(item) && price > 0) {
-            return this.menu.add(new MenuEntry(item.copy(), price));
+    private boolean sell() {
+        if (this.amountMoney > 0) {
+            for (int i = 0; i < this.inventorySlots.inventorySlots.size(); i++) {
+                Slot slot = (Slot) this.inventorySlots.inventorySlots.get(i);
+                if (slot.slotNumber >= MIN_SLOT_INDEX) {
+                    this.changeSlot(null, i);
+                }
+            }
+            this.payback(this.amountMoney);
+            return true;
         }
         return false;
+    }
+
+    private int countSaleItemPayment() {
+        List<MenuEntry> list = this.menu.getList();
+        int payment = 0;
+        for (int i = 0; i < this.inventorySlots.inventorySlots.size(); i++) {
+            Slot slot = (Slot) this.inventorySlots.inventorySlots.get(i);
+            if (slot.slotNumber >= MIN_SLOT_INDEX) {
+                ItemStack item = slot.getStack();
+                if (isMoney(item)) {
+                    return -1;
+                }
+                int paymentTmp = list.stream()
+                        .filter(entry -> compareItemWithoutSize(item, entry.item) && entry.item.stackSize == 1)
+                        .findFirst()
+                        .map(entry -> entry.price * item.stackSize).orElse(0);
+                if (paymentTmp > 0) {
+                    payment += paymentTmp;
+                }
+            }
+        }
+        return payment;
+    }
+
+    private boolean compareItemWithoutSize(ItemStack stack1, ItemStack stack2) {
+        return (stack1 != null && stack2 != null &&
+                stack1.getItem() == stack2.getItem() &&
+                stack1.getItemDamage() == stack2.getItemDamage());
+    }
+
+    private void payback(int payment) {
+        int paymentTmp = payment;
+        for (int i = 0; i < this.inventorySlots.inventorySlots.size(); i++) {
+            Slot slot = (Slot) this.inventorySlots.inventorySlots.get(i);
+            if (slot.slotNumber >= MIN_SLOT_INDEX) {
+                if (paymentTmp > 0) {
+                    int maxId = (RTMItem.MoneyType.values()).length - 1;
+                    for (int id = maxId; id >= 0; id--) {
+                        int price = RTMItem.MoneyType.getPrice(id);
+                        if (paymentTmp >= price) {
+                            int count = paymentTmp / price;
+                            paymentTmp -= count * price;
+                            changeSlot(new ItemStack(RTMItem.money, count, id), i);
+                            break;
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
+    private int registerItem() {
+        ItemStack item = ((Slot) this.inventorySlots.inventorySlots.get(MIN_SLOT_INDEX)).getStack();
+        int price = this.countMoney(false);
+        if (item == null || this.isMoney(item)) {
+            return 1;
+        } else if (price <= 0) {
+            return 2;
+        } else if (this.npc.getRole() == Role.BUYER && item.stackSize > 1) {
+            return 3;
+        }
+        return this.menu.add(new MenuEntry(item.copy(), price)) ? 0 : -1;
     }
 
     private int countMoney(boolean pay) {

@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.rtm.item.ItemGun;
+import jp.ngt.rtm.modelpack.modelset.ModelSetNPCClient;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -51,12 +52,25 @@ public class RenderNPC extends RenderBiped {
 
     @Override
     public void doRender(EntityLiving entity, double x, double y, double z, float par8, float par9) {
-        super.doRender(entity, x, y, z, par8, par9);
+        if (((ModelSetNPCClient) ((EntityNPC) entity).getModelSet()).modelObj == null) {
+            super.doRender(entity, x, y, z, par8, par9);
 
-        ItemStack heldItem = entity.getHeldItem();
-        boolean hasGun = (heldItem != null && heldItem.getItem() instanceof ItemGun);
-        boolean usingGun = hasGun && ((EntityNPC) entity).isUsingItem();
-        this.field_82423_g.aimedBow = this.field_82425_h.aimedBow = this.modelBipedMain.aimedBow = usingGun;
+            ItemStack heldItem = entity.getHeldItem();
+            boolean hasGun = (heldItem != null && heldItem.getItem() instanceof ItemGun);
+            boolean usingGun = hasGun && ((EntityNPC) entity).isUsingItem();
+            this.field_82423_g.aimedBow = this.field_82425_h.aimedBow = this.modelBipedMain.aimedBow = usingGun;
+        } else {
+            renderCustomModel((EntityNPC) entity, x, y, z, par8, par9);
+        }
+    }
+
+    private void renderCustomModel(EntityNPC entity, double x, double y, double z, float par8, float partialTick) {
+        GL11.glPushMatrix();
+        GL11.glEnable(32826);
+        GL11.glTranslatef((float) x, (float) y, (float) z);
+        ModelSetNPCClient modelSet = (ModelSetNPCClient) entity.getResourceState().getResourceSet();
+        modelSet.modelObj.render(entity, modelSet.getConfig(), 0, partialTick);
+        GL11.glPopMatrix();
     }
 
     @Override

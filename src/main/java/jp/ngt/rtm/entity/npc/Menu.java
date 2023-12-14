@@ -21,10 +21,9 @@ import java.util.stream.IntStream;
 public class Menu {
     private final List<MenuEntry> menuList = new ArrayList<>();
 
-    public Menu(String s) {
-        this.init(s);
+    public Menu(String s, Role role) {
+        this.init(s, role);
     }
-
     /**
      * 重複時は上書き
      */
@@ -52,7 +51,7 @@ public class Menu {
         return this.menuList;
     }
 
-    public boolean init(String s) {
+    public boolean init(String s, Role role) {
         this.menuList.clear();
 
         if (s != null && !s.isEmpty()) {
@@ -69,8 +68,13 @@ public class Menu {
             }
         }
 
-        this.add(new MenuEntry(new ItemStack(Items.cookie, 10), 200));
-        this.add(new MenuEntry(new ItemStack(Items.cooked_fished, 5), 500));
+        if (role == Role.SALESPERSON) {
+            this.add(new MenuEntry(new ItemStack(Items.cookie, 10), 200));
+            this.add(new MenuEntry(new ItemStack(Items.cooked_fished, 5), 500));
+        } else if (role == Role.BUYER) {
+            this.add(new MenuEntry(new ItemStack(Items.cookie, 1), 20));
+            this.add(new MenuEntry(new ItemStack(Items.cooked_fished, 1), 100));
+        }
         return false;
     }
 
@@ -85,21 +89,19 @@ public class Menu {
 
     public boolean exportToText() {
         File file = NGTFileLoader.saveFile(FileType.JSON);
-        if (file != null) {
-            return NGTText.writeToText(file, this.toString());
-        }
+        if (file != null)
+            return NGTText.writeToText(file, toString());
         return false;
     }
 
-    public boolean importFromText() {
+    public boolean importFromText(Role role) {
         File file = NGTFileLoader.selectFile(FileType.JSON);
-        if (file != null) {
+        if (file != null)
             try {
-                return this.init(NGTText.readText(file, false, "UTF-8"));
+                return this.init(NGTText.readText(file, false, "UTF-8"), role);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
         return false;
     }
 }

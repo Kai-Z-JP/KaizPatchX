@@ -77,4 +77,33 @@ public class ContainerNPC extends Container {
     @Override
     protected void retrySlotClick(int index, int p_75133_2_, boolean p_75133_3_, EntityPlayer player) {
     }
+
+    /**
+     * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
+     */
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotNumber) {
+        ItemStack itemstack = null;
+        Slot slot = (Slot) this.inventorySlots.get(slotNumber);
+
+        if (slot != null && slot.getHasStack()) {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+
+            if (slotNumber < 36) {
+                if (!this.mergeItemStack(itemstack1, 40, this.inventorySlots.size(), false)) {
+                    return null;
+                }
+            } else if (!this.mergeItemStack(itemstack1, 0, 36, false)) {
+                return null;
+            }
+
+            if (itemstack1.stackSize == 0) {
+                slot.putStack(null);
+            } else {
+                slot.onSlotChanged();
+            }
+        }
+
+        return itemstack;
+    }
 }

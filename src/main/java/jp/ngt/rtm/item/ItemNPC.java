@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ItemNPC extends Item {
+public class ItemNPC extends ItemWithModel {
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
 
@@ -38,10 +38,14 @@ public class ItemNPC extends Item {
 
             EntityNPC entity = itemStack.getItemDamage() == 0 ? new EntityMotorman(world, player) : new EntityNPC(world, player);
             NBTTagCompound nbt = itemStack.getTagCompound();
-            if (nbt != null && nbt.hasKey("EntityData")) {
-                NBTTagCompound entityData = nbt.getCompoundTag("EntityData");
-                entity.readEntityFromNBT(entityData);
-                entity.func_152115_b(player.getUniqueID().toString());
+            if (nbt != null) {
+                if (nbt.hasKey("EntityData")) {
+                    NBTTagCompound entityData = nbt.getCompoundTag("EntityData");
+                    entity.readEntityFromNBT(entityData);
+                    entity.func_152115_b(player.getUniqueID().toString());
+                } else if (nbt.hasKey("ModelName")) {
+                    entity.setModelName(nbt.getString("ModelName"));
+                }
             }
             entity.setLocationAndAngles((double) par4 + 0.5D, (double) par5 + 1.5D, (double) par6 + 0.5D, yawF, 0.0F);
             entity.rotationYawHead = yawF;
@@ -54,9 +58,8 @@ public class ItemNPC extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         NBTTagCompound nbt = itemStack.getTagCompound();
+        list.add(EnumChatFormatting.GRAY + getModelName(itemStack));
         if (nbt != null && nbt.hasKey("EntityData")) {
-            NBTTagCompound entityData = nbt.getCompoundTag("EntityData");
-            list.add(EnumChatFormatting.GRAY + entityData.getString("ModelName"));
             list.add(EnumChatFormatting.DARK_PURPLE + "(+EntityData)");
         }
     }
@@ -86,5 +89,18 @@ public class ItemNPC extends Item {
         this.icons = new IIcon[2];
         this.icons[0] = register.registerIcon("rtm:itemMotorman");
         this.icons[1] = register.registerIcon("rtm:itemNPC");
+    }
+
+    @Override
+    public String getModelType(ItemStack itemStack) {
+        return "ModelNPC";
+    }
+
+    @Override
+    protected String getDefaultModelName(ItemStack itemStack) {
+        if (itemStack.getItemDamage() == 1) {
+            return "AttendantNGT01";
+        }
+        return "";
     }
 }

@@ -1,0 +1,21 @@
+{
+    "name": "N1703",
+    "model": {
+        "modelFile": "ModelBiped_N1703.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/npc/n1703.png"
+            ]
+        ],
+        "rendererPath": "scripts/RenderN1703.js"
+    },
+    "buttonTexture": "textures/npc/button_n1703.png",
+    "role": "guard",
+    "health": 120.0,
+    "speed": 0.4,
+    "damage": 15.0,
+    "useCustomColor": true,
+    "doCulling": true,
+    "smoothing": true
+}

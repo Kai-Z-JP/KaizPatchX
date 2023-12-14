@@ -4,6 +4,7 @@ public class NPCConfig extends ModelConfig {
     public static final String TYPE = "ModelNPC";
 
     private String name;
+    public ModelSource model;
     public String texture;
     public String lightTexture;
     /**
@@ -11,9 +12,24 @@ public class NPCConfig extends ModelConfig {
      */
     public String role;
 
+    public float health;
+
+    public float speed;
+
+    public float damage;
+
     @Override
     public void init() {
         super.init();
+        if (this.health <= 0.0F) {
+            this.health = 40.0F;
+        }
+        if (this.speed <= 0.0F) {
+            this.speed = 0.45F;
+        }
+        if (this.damage <= 0.0F) {
+            this.damage = 1.0F;
+        }
     }
 
     @Override

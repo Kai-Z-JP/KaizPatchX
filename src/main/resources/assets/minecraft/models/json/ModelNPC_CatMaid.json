@@ -1,0 +1,17 @@
+{
+    "model": {
+        "modelFile": "cat_maid.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/npc/cat_maid.png"
+            ]
+        ],
+        "rendererPath": "scripts/RenderBiped.js"
+    },
+    "name": "CatMaid",
+    "buttonTexture": "textures/npc/button_cat_maid.png",
+    "role": "salesperson",
+    "doCulling": true,
+    "smoothing": true
+}

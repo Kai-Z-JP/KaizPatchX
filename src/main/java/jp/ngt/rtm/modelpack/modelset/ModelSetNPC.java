@@ -16,7 +16,7 @@ public class ModelSetNPC extends ModelSetBase<NPCConfig> {
 
     public ModelSetNPC(NPCConfig cfg) {
         super(cfg);
-        this.texture = ModelPackManager.INSTANCE.getResource(cfg.texture);
+        this.texture = cfg.texture != null ? ModelPackManager.INSTANCE.getResource(cfg.texture) : null;
         this.lightTexture = cfg.lightTexture != null ? ModelPackManager.INSTANCE.getResource(cfg.lightTexture) : null;
     }
 

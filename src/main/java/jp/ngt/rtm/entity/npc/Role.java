@@ -21,6 +21,7 @@ public class Role {
     public static final Role GUARD = new RoleGuard("guard");
     public static final Role MOTORMAN = new Role("motorman");
     public static final Role SALESPERSON = new RoleSalesperson("salesperson");
+    public static final Role BUYER = new RoleSalesperson("buyer");
 
     public Role(String name) {
         nameMap.put(name, this);

@@ -1,0 +1,17 @@
+{
+    "name": "PassengerNGT03",
+    "model": {
+        "modelFile": "humanoid.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/npc/passenger01.png"
+            ]
+        ],
+        "rendererPath": "scripts/RenderHumanoid.js"
+    },
+    "buttonTexture": "textures/npc/button_passenger_NGT02.png",
+    "role": "mannequin",
+    "doCulling": true,
+    "smoothing": true
+}

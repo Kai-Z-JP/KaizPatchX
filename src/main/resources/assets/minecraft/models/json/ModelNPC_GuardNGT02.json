@@ -2,5 +2,6 @@
     "name": "GuardNGT02",
     "texture": "textures/npc/guard02.png",
     "lightTexture": "textures/npc/guard02_light.png",
+    "buttonTexture": "textures/npc/button_guard_NGT02.png",
     "role": "guard"
 }

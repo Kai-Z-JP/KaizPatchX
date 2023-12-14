@@ -1,5 +1,6 @@
 {
     "name": "PassengerNGT01",
     "texture": "textures/npc/passenger01.png",
+    "buttonTexture": "textures/npc/button_passenger_NGT01.png",
     "role": "passenger"
 }

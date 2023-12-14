@@ -1,0 +1,17 @@
+{
+    "model": {
+        "modelFile": "ModelBiped_f01.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/npc/attendant02.png"
+            ]
+        ],
+        "rendererPath": "scripts/RenderBiped.js"
+    },
+    "name": "AttendantNGT02",
+    "buttonTexture": "textures/npc/button_attendant_NGT02.png",
+    "role": "attendant",
+    "doCulling": true,
+    "smoothing": true
+}

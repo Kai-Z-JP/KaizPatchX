@@ -1,5 +1,6 @@
 {
     "name": "AttendantNGT01",
     "texture": "textures/npc/attendant01.png",
+    "buttonTexture": "textures/npc/button_attendant_NGT01.png",
     "role": "attendant"
 }

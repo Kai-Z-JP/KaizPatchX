@@ -64,10 +64,10 @@ public class BlockScaffold extends BlockOrnamentBase {
         if (tile instanceof TileEntityScaffold) {
             b0 = ((TileEntityScaffold) tile).getDir() == 0;
         }
-        byte flag0 = BlockScaffold.getConnectionType(world, x + 1, y, z, (byte) 0);
-        byte flag1 = BlockScaffold.getConnectionType(world, x - 1, y, z, (byte) 0);
-        byte flag2 = BlockScaffold.getConnectionType(world, x, y, z + 1, (byte) 1);
-        byte flag3 = BlockScaffold.getConnectionType(world, x, y, z - 1, (byte) 1);
+        byte flag0 = BlockScaffold.getConnectionType(world, x + 1, y, z, tile);
+        byte flag1 = BlockScaffold.getConnectionType(world, x - 1, y, z, tile);
+        byte flag2 = BlockScaffold.getConnectionType(world, x, y, z + 1, tile);
+        byte flag3 = BlockScaffold.getConnectionType(world, x, y, z - 1, tile);
 
         if ((b0 && flag0 == 0) || (!b0 && flag0 == 0 && (flag2 == 1 || flag3 == 1 || flag2 == 3 || flag3 == 3)))//XPos
         {
@@ -114,6 +114,21 @@ public class BlockScaffold extends BlockOrnamentBase {
         int meta = world.getBlockMetadata(x, y, z);
         return this.getRenderColor(meta);
     }
+
+
+    /**
+     * @return なし:0,  足場Z:1, 足場X:2, 階段:3, 立方体:4
+     */
+    public static byte getConnectionType(IBlockAccess world, int x, int y, int z, TileEntity tile) {
+        boolean isStairs = tile instanceof TileEntityScaffoldStairs;
+        if (isStairs) {
+            byte stairsDir = ((TileEntityScaffoldStairs) tile).getDir();
+            return getConnectionType(world, x, y, z, stairsDir);
+        } else {
+            return getConnectionType(world, x, y, z);
+        }
+    }
+
 
     /**
      * @return なし:0,  足場Z:1, 足場X:2, 階段:3, 立方体:4

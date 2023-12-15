@@ -36,10 +36,10 @@ function render(entity, pass, par3) {
             }
 
             //なし:0, 足場Z:1, 足場X:2, 階段:3, 立方体:4
-            var flag0 = BlockScaffold.getConnectionType(world, x + 1, y, z, 0);
-            var flag1 = BlockScaffold.getConnectionType(world, x - 1, y, z, 0);
-            var flag2 = BlockScaffold.getConnectionType(world, x, y, z + 1, 1);
-            var flag3 = BlockScaffold.getConnectionType(world, x, y, z - 1, 1);
+            var flag0 = BlockScaffold.getConnectionType(world, x + 1, y, z, entity);
+            var flag1 = BlockScaffold.getConnectionType(world, x - 1, y, z, entity);
+            var flag2 = BlockScaffold.getConnectionType(world, x, y, z + 1, entity);
+            var flag3 = BlockScaffold.getConnectionType(world, x, y, z - 1, entity);
             var flagXP = (b0 && flag0 == 0) || (!b0 && flag0 == 0 && (flag2 == 1 || flag3 == 1 || flag2 == 3 || flag3 == 3));
             var flagXN = (b0 && flag1 == 0) || (!b0 && flag1 == 0 && (flag2 == 1 || flag3 == 1 || flag2 == 3 || flag3 == 3));
             var flagZP = (!b0 && flag2 == 0) || (b0 && flag2 == 0 && (flag0 == 2 || flag1 == 2 || flag0 == 3 || flag1 == 3));

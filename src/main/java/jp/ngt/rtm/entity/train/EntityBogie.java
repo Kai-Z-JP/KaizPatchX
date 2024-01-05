@@ -328,7 +328,14 @@ public class EntityBogie extends Entity implements Lockable {
         TrainConfig cfg = train.getModelSet().getConfig();
         if (!cfg.muteJointSound) {
             float pitch = (Math.abs(train.getSpeed()) / cfg.maxSpeed[cfg.maxSpeed.length - 1]) * 0.5F + 1.0F;
-            ResourceLocation sound = this.reverbSound ? JOINT_SOUND_REVERB : JOINT_SOUND;
+            String customSoundJoint = cfg.sound_Joint;
+            String customSoundJointReverb = cfg.sound_JointReverb;
+            ResourceLocation sound;
+            if (customSoundJoint != null && customSoundJointReverb != null) {
+                sound = this.reverbSound ? new ResourceLocation(customSoundJointReverb) : new ResourceLocation(customSoundJoint);
+            } else {
+                sound = this.reverbSound ? JOINT_SOUND_REVERB : JOINT_SOUND;
+            }
             RTMCore.proxy.playSound(this, sound, 1.0F, pitch, RTMConfig.trainJointSoundRange);
 
             int size = cfg.jointDelay[this.getBogieId()].length;

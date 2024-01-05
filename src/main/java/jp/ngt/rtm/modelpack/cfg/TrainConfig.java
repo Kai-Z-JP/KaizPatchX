@@ -102,6 +102,10 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
     public boolean useVariableAcceleration;
     public boolean useVariableDeceleration;
 
+    public String sound_CpFin;
+    public String sound_Joint;
+    public String sound_JointReverb;
+
     @Override
     public void init() {
         super.init();
@@ -126,6 +130,10 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
 
         this.sound_BrakeRelease = this.fixSoundPath(this.sound_BrakeRelease);
         this.sound_BrakeRelease2 = this.fixSoundPath(this.sound_BrakeRelease2);
+
+        this.sound_CpFin = this.fixSoundPath(this.sound_CpFin);
+        this.sound_Joint = this.fixSoundPath(this.sound_Joint);
+        this.sound_JointReverb = this.fixSoundPath(this.sound_JointReverb);
 
         if (this.bogiePos == null) {
             this.bogiePos = new float[][]{{0.0F, 0.0F, 7.125F}, {0.0F, 0.0F, -7.125F}};

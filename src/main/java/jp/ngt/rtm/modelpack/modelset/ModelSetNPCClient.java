@@ -32,7 +32,11 @@ public class ModelSetNPCClient extends ModelSetNPC implements IModelSetClient {
         } else {
             this.modelObj = new ModelObject(par1.model, this, null);
         }
-        this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        if (par1.buttonTexture != null) {
+            this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        } else {
+            this.buttonTexture = ModelPackManager.INSTANCE.getResource("textures/npc/hoge.png");
+        }
     }
 
     @Override

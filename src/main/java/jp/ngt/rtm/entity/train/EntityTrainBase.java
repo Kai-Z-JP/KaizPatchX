@@ -54,6 +54,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     public static final float TRAIN_WIDTH = 2.75F;
     public static final float TRAIN_HEIGHT = 1.25F - 0.0625F;//レールに合わせ高さ修正
 
+    private static final ResourceLocation SOUND_CP_FIN = new ResourceLocation("rtm", "train.cp_fin");
+
     public BogieController bogieController = new BogieController();
     private Formation formation;
 
@@ -348,7 +350,16 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             if (this.brakeAirCount >= MAX_AIR_COUNT) {
                 this.complessorActive = false;
                 //this.playBrakeReleaseSound(false);
-                RTMCore.proxy.playSound(this, new ResourceLocation("rtm", "train.cp_fin"), 1.0F, 1.0F);
+                String soundCpFin = this.getModelSet().getConfig().sound_CpFin;
+                ResourceLocation sound;
+
+                if (soundCpFin != null) {
+                    String[] sa = soundCpFin.split(":");
+                    sound = new ResourceLocation(sa[0], sa[1]);
+                } else {
+                    sound = SOUND_CP_FIN;
+                }
+                RTMCore.proxy.playSound(this, sound, 1.0F, 1.0F);
             }
         } else {
             if (this.brakeAirCount < MIN_AIR_COUNT) {

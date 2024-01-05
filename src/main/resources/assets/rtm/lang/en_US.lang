@@ -3,6 +3,7 @@ tile.rtm:ironPillar.name=Iron Pillar
 tile.rtm:marker.name=Marker
 tile.rtm:markerSwitch.name=Marker Switch
 tile.rtm:markerStraight.name=Marker Straight
+tile.rtm:markerVoid.name=Marker Void
 tile.rtm:powerUnit.name=PowerUnit
 tile.rtm:trainWorkBench.0.name=RTM Workbench
 tile.rtm:trainWorkBench.1.name=Rail Workbench

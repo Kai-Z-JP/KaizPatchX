@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class BlockMarker extends BlockContainer {
     /**
-     * 0:normal, 1:switch, 10:straight
+     * 0:normal, 1:switch, 10:straight, 11: void
      */
     public final int markerType;
     @SideOnly(Side.CLIENT)
@@ -387,7 +387,7 @@ public class BlockMarker extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs tab, List list) {
-        if (this.markerType == 0 || this.markerType == 1 || this.markerType == 10) {
+        if (this.markerType == 0 || this.markerType == 1 || this.markerType == 10 || this.markerType == 11) {
             list.add(new ItemStack(par1, 1, 0));
         }
     }
@@ -400,7 +400,7 @@ public class BlockMarker extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int par1, int par2) {
-        int i = ((this.markerType == 0 || this.markerType == 1 || this.markerType == 10) ? 7 : 3);
+        int i = ((this.markerType == 0 || this.markerType == 1 || this.markerType == 10 || this.markerType == 11) ? 7 : 3);
         return this.icons[par2 & i];
     }
 
@@ -439,6 +439,8 @@ public class BlockMarker extends BlockContainer {
                 }
             case 10:
                 return 0xEC008C;
+            case 11:
+                return 0xFFFFFF;
             default:
                 return 16777215;
         }

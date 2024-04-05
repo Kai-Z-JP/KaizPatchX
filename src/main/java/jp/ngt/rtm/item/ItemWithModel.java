@@ -202,4 +202,15 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         ItemWithModel.setOffset(itemStack, tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
         ItemWithModel.setRotation(itemStack, tileEntity.getRotation());
     }
+
+    protected String getResourceName(ItemStack itemStack) {
+        return this.getModelName(itemStack);
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack itemStack) {
+        String itemStackName = super.getItemStackDisplayName(itemStack);
+        String resourceName = this.getResourceName(itemStack);
+        return String.format("%s (%s)", itemStackName, resourceName);
+    }
 }

@@ -91,18 +91,15 @@ public class ItemRail extends ItemWithModel {
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack itemStack) {
-        String s = super.getItemStackDisplayName(itemStack);
-        RailProperty prop = getProperty(itemStack);
-        if (prop == null) {
-            return s;
-        }
+    protected String getResourceName(ItemStack itemStack) {
+        String modelName = this.getModelName(itemStack);
 
-        String localizedName = "";
-        if (StatCollector.canTranslate(prop.unlocalizedName)) {
-            localizedName = ", " + StatCollector.translateToLocal(prop.unlocalizedName);
+        RailProperty prop = getProperty(itemStack);
+        if (prop == null || !StatCollector.canTranslate(prop.unlocalizedName)) {
+            return modelName;
+        } else {
+            return modelName + ", " + StatCollector.translateToLocal(prop.unlocalizedName);
         }
-        return s + "(" + prop.getModelSet().getConfig().getName() + localizedName + ")";
     }
 
     @Override

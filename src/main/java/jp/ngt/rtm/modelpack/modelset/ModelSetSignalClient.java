@@ -1,7 +1,5 @@
 package jp.ngt.rtm.modelpack.modelset;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.renderer.model.Material;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.TextureSet;
@@ -17,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-@SideOnly(Side.CLIENT)
 public class ModelSetSignalClient extends ModelSetSignal implements IModelSetClient {
     public final ModelObject model;
     public final ResourceLocation buttonTexture;

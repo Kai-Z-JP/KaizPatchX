@@ -32,6 +32,7 @@ public class ModelSetFirearmClient extends ModelSetFirearm implements IModelSetC
         this.model = ModelPackManager.INSTANCE.loadModel(par1.firearmModel, GL11.GL_TRIANGLES, true, par1);
         this.texture = ModelPackManager.INSTANCE.getResource(par1.firearmTexture);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        this.finishConstruct();
     }
 
     @Override
@@ -77,5 +78,10 @@ public class ModelSetFirearmClient extends ModelSetFirearm implements IModelSetC
 
         par1.getTextureManager().bindTexture(this.texture);
         this.model.renderAll(RTMConfig.smoothing);
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.model;
     }
 }

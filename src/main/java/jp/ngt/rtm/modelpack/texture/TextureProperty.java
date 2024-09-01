@@ -15,7 +15,12 @@ public abstract class TextureProperty {
 
     protected ResourceLocation resource;
 
+    public String displayName;
+
     protected void init() {
+        if (this.texture != null) {
+            this.displayName = this.texture.replace("textures/signboard/", "").replace(".png", "");
+        }
     }
 
     public ResourceLocation getTexture() {

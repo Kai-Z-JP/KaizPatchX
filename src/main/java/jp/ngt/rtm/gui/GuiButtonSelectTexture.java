@@ -43,6 +43,39 @@ public class GuiButtonSelectTexture extends GuiButton {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(this.property.getTexture());
         this.draw();
+
+        // Draw texture name
+        int textureYPosition = this.yPosition + this.height + 16;
+        String textureName = property.displayName;
+        int stringWidth = mc.fontRenderer.getStringWidth(textureName);
+        int charWidth = mc.fontRenderer.getCharWidth('A');
+
+        if (stringWidth > this.width) {
+            StringBuilder newTextureNameBuilder = new StringBuilder();
+            int currentWidth = 0;
+
+            for (int i = 0; i < textureName.length(); i++) {
+                char c = textureName.charAt(i);
+
+                currentWidth += charWidth;
+
+                if (currentWidth > width) {
+                    newTextureNameBuilder.append("\n");
+                    currentWidth = charWidth;
+                }
+
+                newTextureNameBuilder.append(c);
+            }
+
+            textureName = newTextureNameBuilder.toString();
+        }
+
+        String[] splittedText = textureName.split("\n");
+
+        for (int i = 0; i < splittedText.length; i++) {
+            mc.fontRenderer.drawString(splittedText[i], this.xPosition, textureYPosition + (mc.fontRenderer.FONT_HEIGHT * i), 16777215);
+        }
+
     	/*int k = this.getHoverState(this.field_146123_n);
     	if(k == 2)
         {

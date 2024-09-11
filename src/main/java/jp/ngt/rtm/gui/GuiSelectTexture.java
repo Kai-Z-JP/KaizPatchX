@@ -20,6 +20,7 @@ public class GuiSelectTexture extends GuiScreenCustom {
     private int currentScroll;
     private int prevScroll;
     private int uCount, vCount;
+    private final int SPACING_TEXT_Y = 64;
 
     public GuiSelectTexture(ITextureHolder par1) {
         this.holder = par1;
@@ -57,7 +58,7 @@ public class GuiSelectTexture extends GuiScreenCustom {
                 int w = (int) (prop.width * f0);
                 int h = (int) (prop.height * f0);
                 int xPos = x * u + ((x - w) / 2) + offsetX;
-                int yPos = y * v + ((y - h) / 2);
+                int yPos = (y * v + (v * this.SPACING_TEXT_Y)) + ((y - h) / 2);
                 this.buttonList.add(new GuiButtonSelectTexture(index, xPos, yPos, w, h, prop));
             }
         }

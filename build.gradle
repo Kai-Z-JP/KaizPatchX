@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.9.23'
+    ext.kotlin_version = '2.1.10'
     repositories {
         mavenCentral()
         maven {
@@ -51,7 +51,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    embed 'org.jetbrains:annotations:24.1.0'
+    compileOnly 'org.jetbrains:annotations:26.0.2'
     embed 'org.sejda.imageio:webp-imageio:0.1.6'
 }
 
@@ -88,7 +88,7 @@ targetCompatibility = "1.8"
 jar {
     configurations.embed.each { dep ->
         from(project.zipTree(dep)) {
-            exclude 'META-INF', 'META-INF/versions/**', 'META-INF/maven/**'
+            exclude 'META-INF/'
         }
     }
 

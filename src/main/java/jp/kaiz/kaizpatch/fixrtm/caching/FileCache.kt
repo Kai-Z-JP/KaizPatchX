@@ -106,7 +106,7 @@ class FileCache<TValue>(
     }
 
     private fun getFile(sha1In: String): File {
-        val sha1 = sha1In.toLowerCase()
+        val sha1 = sha1In.lowercase()
         if (withTwoCharDir) {
             return baseDir.resolve(sha1.substring(0, 2))
                 .resolve(sha1)

@@ -45,7 +45,7 @@ jobs:
                 run: ./gradlew build
 
             -   name: Upload build artifact
-                uses: actions/upload-artifact@v2
+                uses: actions/upload-artifact@v4
                 with:
                     # optional, default is artifact
                     name: KaizPatchX-${{ steps.vars.outputs.sha_short }}.jar

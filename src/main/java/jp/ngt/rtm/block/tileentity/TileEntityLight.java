@@ -16,16 +16,16 @@ public class TileEntityLight extends TileEntityMachineBase {
         super.writeToNBT(nbt);
     }
 
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
-
-        boolean b = this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord);
-        if (this.isGettingPower ^ b) {
-            this.isGettingPower = b;
-            this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);//明るさ更新
-        }
-    }
+//    @Override
+//    public void updateEntity() {
+//        super.updateEntity();
+//
+//        boolean b = this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord);
+//        if (this.isGettingPower ^ b) {
+//            this.isGettingPower = b;
+//            this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);//明るさ更新
+//        }
+//    }
 
     @Override
     public Vec3 getNormal(float x, float y, float z, float pitch, float yaw) {

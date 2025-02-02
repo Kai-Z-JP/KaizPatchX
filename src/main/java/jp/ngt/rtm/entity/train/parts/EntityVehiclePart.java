@@ -219,7 +219,7 @@ public abstract class EntityVehiclePart extends Entity {
     }
 
     public EntityVehicleBase getVehicle() {
-        if (this.parent == null) {
+        if (this.parent == null || this.parent.isDead) {
             Entity entity = this.worldObj.getEntityByID(this.dataWatcher.getWatchableObjectInt(20));
             if (entity instanceof EntityVehicleBase) {
                 this.parent = (EntityVehicleBase) entity;

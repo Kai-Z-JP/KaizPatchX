@@ -42,226 +42,224 @@ public class ItemInstalledObject extends ItemWithModel {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int par4, int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (!world.isRemote) {
-            int meta = itemStack.getItemDamage();
-            int x = par4;
-            int y = par5;
-            int z = par6;
-            Block block = null;
-            IstlObjType type = IstlObjType.getType(meta);
+        int meta = itemStack.getItemDamage();
+        int x = par4;
+        int y = par5;
+        int z = par6;
+        Block block = null;
+        IstlObjType type = IstlObjType.getType(meta);
 
-            if (par7 == 0)//up
-            {
-                --par5;
-            } else if (par7 == 1)//down
-            {
-                ++par5;
-            } else if (par7 == 2)//south
-            {
-                --par6;
-            } else if (par7 == 3)//north
-            {
-                ++par6;
-            } else if (par7 == 4)//east
-            {
-                --par4;
-            } else if (par7 == 5)//west
-            {
-                ++par4;
-            }
+        if (par7 == 0)//up
+        {
+            --par5;
+        } else if (par7 == 1)//down
+        {
+            ++par5;
+        } else if (par7 == 2)//south
+        {
+            --par6;
+        } else if (par7 == 3)//north
+        {
+            ++par6;
+        } else if (par7 == 4)//east
+        {
+            --par4;
+        } else if (par7 == 5)//west
+        {
+            ++par4;
+        }
 
-            if (!world.isAirBlock(par4, par5, par6)) {
-                return true;
-            }
+        if (!world.isAirBlock(par4, par5, par6)) {
+            return true;
+        }
 
-            if (type == IstlObjType.FLUORESCENT) {
-                block = RTMBlock.fluorescent;
-                int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                if (player.canPlayerEdit(par4, par5, par6, par7, itemStack) && world.isAirBlock(par4, par5, par6)) {
-                    world.setBlock(par4, par5, par6, block, 0, 2);
-                    byte dir = 0;
-                    switch (par7) {
-                        case 0:
-                            if (i1 == 0 || i1 == 2) {
-                                dir = 0;
-                            } else {
-                                dir = 4;
-                            }
-                            break;
-                        case 1:
-                            if (i1 == 0 || i1 == 2) {
-                                dir = 2;
-                            } else {
-                                dir = 6;
-                            }
-                            break;
-                        case 2:
-                            dir = 1;
-                            break;
-                        case 3:
-                            dir = 3;
-                            break;
-                        case 4:
-                            dir = 5;
-                            break;
-                        case 5:
-                            dir = 7;
-                            break;
-                    }
-                    TileEntityFluorescent tile = (TileEntityFluorescent) world.getTileEntity(par4, par5, par6);
-                    tile.setDir(dir);
-                    tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
-                    tile.setModelName(this.getModelName(itemStack));
-                    tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+        if (type == IstlObjType.FLUORESCENT) {
+            block = RTMBlock.fluorescent;
+            int i1 = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+            if (player.canPlayerEdit(par4, par5, par6, par7, itemStack) && world.isAirBlock(par4, par5, par6)) {
+                world.setBlock(par4, par5, par6, block, 0, 2);
+                byte dir = 0;
+                switch (par7) {
+                    case 0:
+                        if (i1 == 0 || i1 == 2) {
+                            dir = 0;
+                        } else {
+                            dir = 4;
+                        }
+                        break;
+                    case 1:
+                        if (i1 == 0 || i1 == 2) {
+                            dir = 2;
+                        } else {
+                            dir = 6;
+                        }
+                        break;
+                    case 2:
+                        dir = 1;
+                        break;
+                    case 3:
+                        dir = 3;
+                        break;
+                    case 4:
+                        dir = 5;
+                        break;
+                    case 5:
+                        dir = 7;
+                        break;
                 }
-            } else if (type == IstlObjType.PLANT) {
-                block = RTMBlock.plant_ornament;
-                world.setBlock(par4, par5, par6, block, 0, 3);
-                TileEntityPlantOrnament tile = (TileEntityPlantOrnament) world.getTileEntity(par4, par5, par6);
+                TileEntityFluorescent tile = (TileEntityFluorescent) world.getTileEntity(par4, par5, par6);
+                tile.setDir(dir);
+                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            }
+        } else if (type == IstlObjType.PLANT) {
+            block = RTMBlock.plant_ornament;
+            world.setBlock(par4, par5, par6, block, 0, 3);
+            TileEntityPlantOrnament tile = (TileEntityPlantOrnament) world.getTileEntity(par4, par5, par6);
+            tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+        } else if (type == IstlObjType.PIPE) {
+            block = RTMBlock.pipe;
+            world.setBlock(par4, par5, par6, block, 0, 3);
+            TileEntityPipe tile = (TileEntityPipe) world.getTileEntity(par4, par5, par6);
+            tile.setAttachedSide((byte) par7);
+            tile.refresh();
+            //world.notifyBlockOfStateChange(new BlockPos(x, y, z), block);
+            world.notifyBlocksOfNeighborChange(par4, par5, par6, block);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+        } else if (type == IstlObjType.CROSSING) {
+            if (par7 == 1) {
+                world.setBlock(par4, par5, par6, RTMBlock.crossingGate, 0, 3);
+                TileEntityCrossingGate tile = (TileEntityCrossingGate) world.getTileEntity(par4, par5, par6);
                 tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
                 ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-            } else if (type == IstlObjType.PIPE) {
-                block = RTMBlock.pipe;
-                world.setBlock(par4, par5, par6, block, 0, 3);
-                TileEntityPipe tile = (TileEntityPipe) world.getTileEntity(par4, par5, par6);
-                tile.setAttachedSide((byte) par7);
-                tile.refresh();
-                //world.notifyBlockOfStateChange(new BlockPos(x, y, z), block);
-                world.notifyBlocksOfNeighborChange(par4, par5, par6, block);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-            } else if (type == IstlObjType.CROSSING) {
-                if (par7 == 1) {
-                    world.setBlock(par4, par5, par6, RTMBlock.crossingGate, 0, 3);
-                    TileEntityCrossingGate tile = (TileEntityCrossingGate) world.getTileEntity(par4, par5, par6);
-                    tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
-                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                    tile.setModelName(this.getModelName(itemStack));
-                    tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                    block = RTMBlock.crossingGate;
-                }
-            } else if (type == IstlObjType.TURNSTILE) {
-                //当たり判定のため
-                int dir = (MathHelper.floor_double((NGTMath.normalizeAngle(player.rotationYaw + 180.0D) / 90.0D) + 0.5D) & 3);
-                world.setBlock(par4, par5, par6, RTMBlock.turnstile, dir, 3);
-                TileEntityTurnstile tile = (TileEntityTurnstile) world.getTileEntity(par4, par5, par6);
-                tile.setRotation(player, 90.0F, true);
-                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                block = RTMBlock.turnstile;
-            } else if (type == IstlObjType.BUMPING_POST) {
-                if (par7 == 1 && setEntityOnRail(world, new EntityBumpingPost(world), par4, par5 - 1, par6, player, itemStack)) {
-                    block = Blocks.stone;
-                }
-            } else if (type == IstlObjType.LINEPOLE) {
-                block = RTMBlock.linePole;
-                world.setBlock(par4, par5, par6, block, 0, 3);
-                TileEntityPole tile = (TileEntityPole) world.getTileEntity(par4, par5, par6);
-                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-            } else if (type == IstlObjType.POINT) {
-                if (par7 == 1) {
-                    world.setBlock(par4, par5, par6, RTMBlock.point, 0, 3);
-                    TileEntityPoint tile = (TileEntityPoint) world.getTileEntity(par4, par5, par6);
-                    tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
-                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                    tile.setModelName(this.getModelName(itemStack));
-                    tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                    block = RTMBlock.point;
-                }
-            } else if (type == IstlObjType.SIGNBOARD) {
-                world.setBlock(par4, par5, par6, RTMBlock.signboard, par7, 3);
-                TileEntitySignBoard tile = (TileEntitySignBoard) world.getTileEntity(par4, par5, par6);
-                int playerFacing = (MathHelper.floor_double((NGTMath.normalizeAngle(player.rotationYaw + 180.0D) / 90D) + 0.5D) & 3);
-                tile.setDirection((byte) playerFacing);
-                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                tile.setTexture("textures/signboard/ngt_a01.png");
-                block = RTMBlock.signboard;
-            } else if (type == IstlObjType.TICKET_VENDOR) {
-                if (par7 == 1) {
-                    world.setBlock(par4, par5, par6, RTMBlock.ticketVendor, 0, 3);
-                    TileEntityTicketVendor tile = (TileEntityTicketVendor) world.getTileEntity(par4, par5, par6);
-                    tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
-                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                    tile.setModelName(this.getModelName(itemStack));
-                    tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                    block = RTMBlock.ticketVendor;
-                }
-            } else if (type == IstlObjType.LIGHT) {
-                world.setBlock(par4, par5, par6, RTMBlock.light, par7, 3);
-                TileEntityLight tile = (TileEntityLight) world.getTileEntity(par4, par5, par6);
-                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
-                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                block = RTMBlock.light;
-            } else if (type == IstlObjType.FLAG) {
-                world.setBlock(par4, par5, par6, RTMBlock.flag, 0, 3);
-                TileEntityFlag tile = (TileEntityFlag) world.getTileEntity(par4, par5, par6);
-                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
-                tile.setTexture("textures/flag/flag_RTM3Anniversary.png");
-                block = RTMBlock.flag;
-            } else if (type == IstlObjType.STAIR) {
-                block = RTMBlock.scaffoldStairs;
-                world.setBlock(par4, par5, par6, block, 0, 3);
-                block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
-                TileEntityScaffoldStairs tile = (TileEntityScaffoldStairs) world.getTileEntity(par4, par5, par6);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-            } else if (type == IstlObjType.SCAFFOLD) {
-                block = RTMBlock.scaffold;
-                world.setBlock(par4, par5, par6, block, 0, 3);
-                block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
-                TileEntityScaffold tile = (TileEntityScaffold) world.getTileEntity(par4, par5, par6);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-            } else if (type == IstlObjType.ATC) {
-                if (par7 == 1 && this.setEntityOnRail(world, new EntityATC(world), par4, par5 - 1, par6, player, itemStack)) {
-                    block = Blocks.stone;
-                }
-            } else if (type == IstlObjType.TRAIN_DETECTOR) {
-                if (par7 == 1 && this.setEntityOnRail(world, new EntityTrainDetector(world), par4, par5 - 1, par6, player, itemStack)) {
-                    block = Blocks.stone;
-                }
-            } else if (type == IstlObjType.INSULATOR) {
-                world.setBlock(par4, par5, par6, RTMBlock.insulator, par7, 2);
-                TileEntityInsulator tile = (TileEntityInsulator) world.getTileEntity(par4, par5, par6);
-                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                block = RTMBlock.insulator;
-            } else if (type == IstlObjType.CONNECTOR_IN || type == IstlObjType.CONNECTOR_OUT) {
-                Block block2 = world.getBlock(x, y, z);
-                if (block2 instanceof IBlockConnective && ((IBlockConnective) block2).canConnect(world, x, y, z)) {
-                    if (type == IstlObjType.CONNECTOR_OUT) {
-                        par7 += 6;
-                    }
-                    world.setBlock(par4, par5, par6, RTMBlock.connector, par7, 2);
-                    TileEntityConnector tile = (TileEntityConnector) world.getTileEntity(par4, par5, par6);
-                    ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
-                    tile.setModelName(this.getModelName(itemStack));
-                    tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                    tile.setConnectionTo(x, y, z, ConnectionType.DIRECT, "");
-                    block = RTMBlock.connector;
-                }
-            } else if (type == IstlObjType.SPEAKER) {
-                world.setBlock(par4, par5, par6, RTMBlock.speaker, par7, 3);
-                TileEntitySpeaker tile = (TileEntitySpeaker) world.getTileEntity(par4, par5, par6);
-                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
-                tile.setModelName(this.getModelName(itemStack));
-                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
-                block = RTMBlock.speaker;
+                block = RTMBlock.crossingGate;
             }
+        } else if (type == IstlObjType.TURNSTILE) {
+            //当たり判定のため
+            int dir = (MathHelper.floor_double((NGTMath.normalizeAngle(player.rotationYaw + 180.0D) / 90.0D) + 0.5D) & 3);
+            world.setBlock(par4, par5, par6, RTMBlock.turnstile, dir, 3);
+            TileEntityTurnstile tile = (TileEntityTurnstile) world.getTileEntity(par4, par5, par6);
+            tile.setRotation(player, 90.0F, true);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            block = RTMBlock.turnstile;
+        } else if (type == IstlObjType.BUMPING_POST) {
+            if (par7 == 1 && setEntityOnRail(world, new EntityBumpingPost(world), par4, par5 - 1, par6, player, itemStack)) {
+                block = Blocks.stone;
+            }
+        } else if (type == IstlObjType.LINEPOLE) {
+            block = RTMBlock.linePole;
+            world.setBlock(par4, par5, par6, block, 0, 3);
+            TileEntityPole tile = (TileEntityPole) world.getTileEntity(par4, par5, par6);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+        } else if (type == IstlObjType.POINT) {
+            if (par7 == 1) {
+                world.setBlock(par4, par5, par6, RTMBlock.point, 0, 3);
+                TileEntityPoint tile = (TileEntityPoint) world.getTileEntity(par4, par5, par6);
+                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, false);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+                block = RTMBlock.point;
+            }
+        } else if (type == IstlObjType.SIGNBOARD) {
+            world.setBlock(par4, par5, par6, RTMBlock.signboard, par7, 3);
+            TileEntitySignBoard tile = (TileEntitySignBoard) world.getTileEntity(par4, par5, par6);
+            int playerFacing = (MathHelper.floor_double((NGTMath.normalizeAngle(player.rotationYaw + 180.0D) / 90D) + 0.5D) & 3);
+            tile.setDirection((byte) playerFacing);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+            tile.setTexture("textures/signboard/ngt_a01.png");
+            block = RTMBlock.signboard;
+        } else if (type == IstlObjType.TICKET_VENDOR) {
+            if (par7 == 1) {
+                world.setBlock(par4, par5, par6, RTMBlock.ticketVendor, 0, 3);
+                TileEntityTicketVendor tile = (TileEntityTicketVendor) world.getTileEntity(par4, par5, par6);
+                tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+                block = RTMBlock.ticketVendor;
+            }
+        } else if (type == IstlObjType.LIGHT) {
+            world.setBlock(par4, par5, par6, RTMBlock.light, par7, 3);
+            TileEntityLight tile = (TileEntityLight) world.getTileEntity(par4, par5, par6);
+            tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            block = RTMBlock.light;
+        } else if (type == IstlObjType.FLAG) {
+            world.setBlock(par4, par5, par6, RTMBlock.flag, 0, 3);
+            TileEntityFlag tile = (TileEntityFlag) world.getTileEntity(par4, par5, par6);
+            tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+            tile.setTexture("textures/flag/flag_RTM3Anniversary.png");
+            block = RTMBlock.flag;
+        } else if (type == IstlObjType.STAIR) {
+            block = RTMBlock.scaffoldStairs;
+            world.setBlock(par4, par5, par6, block, 0, 3);
+            block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
+            TileEntityScaffoldStairs tile = (TileEntityScaffoldStairs) world.getTileEntity(par4, par5, par6);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+        } else if (type == IstlObjType.SCAFFOLD) {
+            block = RTMBlock.scaffold;
+            world.setBlock(par4, par5, par6, block, 0, 3);
+            block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
+            TileEntityScaffold tile = (TileEntityScaffold) world.getTileEntity(par4, par5, par6);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+        } else if (type == IstlObjType.ATC) {
+            if (par7 == 1 && this.setEntityOnRail(world, new EntityATC(world), par4, par5 - 1, par6, player, itemStack)) {
+                block = Blocks.stone;
+            }
+        } else if (type == IstlObjType.TRAIN_DETECTOR) {
+            if (par7 == 1 && this.setEntityOnRail(world, new EntityTrainDetector(world), par4, par5 - 1, par6, player, itemStack)) {
+                block = Blocks.stone;
+            }
+        } else if (type == IstlObjType.INSULATOR) {
+            world.setBlock(par4, par5, par6, RTMBlock.insulator, par7, 2);
+            TileEntityInsulator tile = (TileEntityInsulator) world.getTileEntity(par4, par5, par6);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            block = RTMBlock.insulator;
+        } else if (type == IstlObjType.CONNECTOR_IN || type == IstlObjType.CONNECTOR_OUT) {
+            Block block2 = world.getBlock(x, y, z);
+            if (block2 instanceof IBlockConnective && ((IBlockConnective) block2).canConnect(world, x, y, z)) {
+                if (type == IstlObjType.CONNECTOR_OUT) {
+                    par7 += 6;
+                }
+                world.setBlock(par4, par5, par6, RTMBlock.connector, par7, 2);
+                TileEntityConnector tile = (TileEntityConnector) world.getTileEntity(par4, par5, par6);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
+                tile.setModelName(this.getModelName(itemStack));
+                tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+                tile.setConnectionTo(x, y, z, ConnectionType.DIRECT, "");
+                block = RTMBlock.connector;
+            }
+        } else if (type == IstlObjType.SPEAKER) {
+            world.setBlock(par4, par5, par6, RTMBlock.speaker, par7, 3);
+            TileEntitySpeaker tile = (TileEntitySpeaker) world.getTileEntity(par4, par5, par6);
+            tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+            tile.setModelName(this.getModelName(itemStack));
+            tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
+            block = RTMBlock.speaker;
+        }
 
-            if (block != null) {
-                world.playSoundEffect((double) par4 + 0.5D, (double) par5 + 0.5D, (double) par6 + 0.5D,
-                        block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
-                --itemStack.stackSize;
-            }
+        if (block != null) {
+            world.playSoundEffect((double) par4 + 0.5D, (double) par5 + 0.5D, (double) par6 + 0.5D,
+                    block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
+            --itemStack.stackSize;
         }
         return true;
     }

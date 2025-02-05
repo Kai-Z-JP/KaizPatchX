@@ -51,6 +51,14 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 
         this.yawFixed = nbt.hasKey("Yaw");
         this.getResourceState().readFromNBT(nbt.getCompoundTag("State"));
+
+        boolean gettingPower = nbt.getBoolean("isGettingPower");
+        if (this.isGettingPower != gettingPower) {
+            this.isGettingPower = gettingPower;
+            if (this.worldObj != null) {
+                this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);//明るさ更新
+            }
+        }
     }
 
     @Override
@@ -59,6 +67,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
         nbt.setString("ModelName", this.modelName);
         nbt.setFloat("Pitch", this.pitch);
         nbt.setTag("State", this.getResourceState().writeToNBT());
+        nbt.setBoolean("isGettingPower", this.isGettingPower);
     }
 
     @Override
@@ -73,6 +82,13 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
         }
     }
 
+    public void setGettingPower(boolean par1) {
+        if (this.isGettingPower != par1) {
+            this.isGettingPower = par1;
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        }
+    }
 
     @Override
     public void setRotation(EntityPlayer player, float rotationInterval, boolean synch) {

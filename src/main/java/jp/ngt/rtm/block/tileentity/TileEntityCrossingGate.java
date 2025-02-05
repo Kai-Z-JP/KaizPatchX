@@ -20,7 +20,7 @@ public class TileEntityCrossingGate extends TileEntityMachineBase {
     public void updateEntity() {
         super.updateEntity();
 
-        if (this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
+        if (this.isGettingPower) {
             if (this.barMoveCount < 90) {
                 ++this.barMoveCount;
             }

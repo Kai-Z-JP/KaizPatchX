@@ -9,6 +9,7 @@ import jp.ngt.rtm.electric.MachineType;
 import jp.ngt.rtm.item.ItemInstalledObject;
 import jp.ngt.rtm.item.ItemWithModel;
 import jp.ngt.rtm.modelpack.cfg.MachineConfig;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,5 +89,26 @@ public abstract class BlockMachineBase extends BlockContainer {
             return itemStack;
         }
         return null;
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+        super.onNeighborBlockChange(world, x, y, z, block);
+        this.updateBlockState(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z) {
+        super.onBlockAdded(world, x, y, z);
+        this.updateBlockState(world, x, y, z);
+    }
+
+    protected void updateBlockState(World world, int x, int y, int z) {
+        TileEntityMachineBase tile = (TileEntityMachineBase) world.getTileEntity(x, y, z);
+
+        boolean b = world.isBlockIndirectlyGettingPowered(x, y, z);
+        if (tile.isGettingPower ^ b) {
+            tile.setGettingPower(b);
+        }
     }
 }

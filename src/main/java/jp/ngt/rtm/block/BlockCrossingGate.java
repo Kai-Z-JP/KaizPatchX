@@ -2,7 +2,6 @@ package jp.ngt.rtm.block;
 
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.block.tileentity.TileEntityCrossingGate;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -26,19 +25,5 @@ public class BlockCrossingGate extends BlockMachineBase {
         if (!world.isRemote) {
             this.dropBlockAsItem(world, x, y, z, new ItemStack(RTMItem.installedObject, 1, 5));
         }
-    }
-
-    @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        super.onNeighborBlockChange(world, x, y, z, block);
-        TileEntityCrossingGate tile = (TileEntityCrossingGate) world.getTileEntity(x, y, z);
-        tile.isGettingPower = world.isBlockIndirectlyGettingPowered(x, y, z);
-    }
-
-    @Override
-    public void onBlockAdded(World world, int x, int y, int z) {
-        super.onBlockAdded(world, x, y, z);
-        TileEntityCrossingGate tile = (TileEntityCrossingGate) world.getTileEntity(x, y, z);
-        tile.isGettingPower = world.isBlockIndirectlyGettingPowered(x, y, z);
     }
 }

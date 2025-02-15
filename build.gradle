@@ -88,7 +88,7 @@ targetCompatibility = "1.8"
 jar {
     configurations.embed.each { dep ->
         from(project.zipTree(dep)) {
-            exclude 'META-INF/'
+            exclude 'META-INF', 'META-INF/versions/**', 'META-INF/maven/**'
         }
     }
 

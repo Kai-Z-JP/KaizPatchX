@@ -29,6 +29,7 @@ public class ModelSetContainerClient extends ModelSetContainer implements IModel
         this.model = ModelPackManager.INSTANCE.loadModel(par1.containerModel, GL11.GL_TRIANGLES, true, par1);
         this.texture = ModelPackManager.INSTANCE.getResource(par1.containerTexture);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        this.finishConstruct();
     }
 
     @Override
@@ -71,5 +72,10 @@ public class ModelSetContainerClient extends ModelSetContainer implements IModel
 
         par1.getTextureManager().bindTexture(this.texture);
         this.model.renderAll(RTMConfig.smoothing);
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.model;
     }
 }

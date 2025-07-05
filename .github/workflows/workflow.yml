@@ -32,7 +32,7 @@ jobs:
                 id: vars
                 run: echo ::set-output name=sha_short::$(git rev-parse --short=7 ${{ github.sha }})
 
-            -   uses: actions/cache@v2
+            -   uses: actions/cache@v4
                 with:
                     path: ~/.gradle/caches
                     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}

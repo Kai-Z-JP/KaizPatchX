@@ -265,6 +265,10 @@ public class ItemInstalledObject extends ItemWithModel {
     }
 
     public boolean setEntityOnRail(World world, EntityInstalledObject entity, int x, int y, int z, EntityPlayer player, ItemStack stack) {
+        if (world.isRemote) {
+            return false;
+        }
+
         RailMap rm0 = TileEntityLargeRailBase.getRailMapFromCoordinates(world, null, x, y, z);
         if (rm0 == null) {
             return false;

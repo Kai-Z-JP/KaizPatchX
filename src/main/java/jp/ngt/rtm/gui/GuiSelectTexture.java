@@ -33,7 +33,7 @@ public class GuiSelectTexture extends GuiScreenCustom {
         int y = !this.properties.isEmpty() ? this.properties.get(0).getVHeightInGui() : this.height;
 
         this.uCount = Math.max(this.width / x, 1);
-        this.vCount = Math.max(this.height / y, 1);
+        this.vCount = Math.max(this.height / (y + SPACING_TEXT_Y), 1);
 
         int offsetX = (this.width - (x * this.uCount)) / 2;
 

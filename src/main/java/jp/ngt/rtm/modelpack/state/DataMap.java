@@ -43,11 +43,16 @@ public final class DataMap {
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
+        boolean isServer = NGTUtil.isServer();
+
         NBTTagList list = nbt.getTagList("DataList", 10);
         IntStream.range(0, list.tagCount()).mapToObj(list::getCompoundTagAt).forEach(entry -> {
             String type = entry.getString("Type");
             String name = entry.getString("Name");
             int flag = entry.getInteger("Flag");
+            if (isServer && (flag & SAVE_FLAG) == 0) {
+                return;
+            }
             DataEntry de = DataEntry.getEntry(type, "", flag);
             de.readFromNBT(entry);
             this.set(name, de, flag);
@@ -58,7 +63,7 @@ public final class DataMap {
         NBTTagCompound nbt = new NBTTagCompound();
 
         NBTTagList list = new NBTTagList();
-        this.map.entrySet().stream().filter(entry -> (entry.getValue().flag & SAVE_FLAG) != 0).forEach(entry -> {
+        this.map.entrySet().stream().forEach(entry -> {
             NBTTagCompound nbt2 = new NBTTagCompound();
             nbt2.setString("Name", entry.getKey());
             nbt2.setInteger("Flag", entry.getValue().flag & SAVE_FLAG);
@@ -260,7 +265,8 @@ public final class DataMap {
     }
 
     //以下Script呼び出し用
-    //////////////////////////////////////////////////////////////////////
+
+    /// ///////////////////////////////////////////////////////////////////
 
     public int getInt(String key) {
         try {
@@ -276,7 +282,7 @@ public final class DataMap {
         this.set(key, new DataEntryInt(value, flag), flag);
     }
 
-    //////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////
 
     public double getDouble(String key) {
         try {
@@ -293,7 +299,7 @@ public final class DataMap {
         this.set(key, new DataEntryDouble(value, flag), flag);//NGTLog.debug("set:" + value);
     }
 
-    //////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////
 
     public boolean getBoolean(String key) {
         try {
@@ -309,7 +315,7 @@ public final class DataMap {
         this.set(key, new DataEntryBoolean(value, flag), flag);
     }
 
-    //////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////
 
     public String getString(String key) {
         try {
@@ -325,7 +331,7 @@ public final class DataMap {
         this.set(key, new DataEntryString(value, flag), flag);
     }
 
-    //////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////
 
     public Vec3 getVec(String key) {
         try {
@@ -341,7 +347,7 @@ public final class DataMap {
         this.set(key, new DataEntryVec(value, flag), flag);
     }
 
-    //////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////
 
     public int getHex(String key) {
         try {

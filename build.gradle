@@ -96,6 +96,15 @@ jar {
         include 'README.md'
         include 'LICENCE'
     }
+
+    manifest {
+        attributes(
+                "FMLCorePlugin": "jp.kaiz.kaizpatch.asm.ModelPackLoader",
+                "FMLCorePluginContainsFMLMod": "true"
+        )
+    }
+
+
 }
 
 

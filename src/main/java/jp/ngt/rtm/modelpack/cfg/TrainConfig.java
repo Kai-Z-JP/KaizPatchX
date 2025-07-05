@@ -105,6 +105,8 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
     public String sound_CpFin;
     public String sound_Joint;
     public String sound_JointReverb;
+    public String sound_Notch;
+    public String sound_Reversal;
 
     @Override
     public void init() {
@@ -134,6 +136,8 @@ public class TrainConfig extends VehicleBaseConfig implements IConfigWithType {
         this.sound_CpFin = this.fixSoundPath(this.sound_CpFin);
         this.sound_Joint = this.fixSoundPath(this.sound_Joint);
         this.sound_JointReverb = this.fixSoundPath(this.sound_JointReverb);
+        this.sound_Notch = this.fixSoundPath(this.sound_Notch);
+        this.sound_Reversal = this.fixSoundPath(this.sound_Reversal);
 
         if (this.bogiePos == null) {
             this.bogiePos = new float[][]{{0.0F, 0.0F, 7.125F}, {0.0F, 0.0F, -7.125F}};

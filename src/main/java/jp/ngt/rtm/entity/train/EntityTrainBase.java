@@ -1008,7 +1008,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         if (par2 != 0) {
             int i = this.getNotch();
             if (this.setNotch(i + par2)) {
-                driver.worldObj.playSoundAtEntity(driver, "rtm:train.lever", 1.0F, 1.0F);
+                String customNotchSound = this.getModelSet().getConfig().sound_Notch;
+                driver.worldObj.playSoundAtEntity(driver, customNotchSound == null ? "rtm:train.lever" : customNotchSound, 1.0F, 1.0F);
                 return true;
             }
         }

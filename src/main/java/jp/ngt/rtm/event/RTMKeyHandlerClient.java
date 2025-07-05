@@ -174,7 +174,8 @@ public final class RTMKeyHandlerClient {
             if (KEY_REVERSER_BACK.isPressed()) {
                 byte data = train.getTrainStateData(TrainStateType.State_Direction.id);
                 if (data < 2) {
-                    player.playSound("rtm:train.lever", 1.0F, 1.0F);
+                    String customReversalSound = train.getModelSet().getConfig().sound_Reversal;
+                    player.playSound(customReversalSound != null ? customReversalSound : "rtm:train.lever", 1.0F, 1.0F);
                     train.syncTrainStateData(TrainStateType.State_Direction.id, ++data);
                     TrainState state = TrainState.getState(TrainStateType.State_Direction.id, data);
                     NGTLog.showChatMessage(new ChatComponentText("direction: " + state.stateName));
@@ -182,7 +183,8 @@ public final class RTMKeyHandlerClient {
             } else if (KEY_REVERSER_FORWARD.isPressed()) {
                 byte data = train.getTrainStateData(TrainStateType.State_Direction.id);
                 if (data > 0) {
-                    player.playSound("rtm:train.lever", 1.0F, 1.0F);
+                    String customReversalSound = train.getModelSet().getConfig().sound_Reversal;
+                    player.playSound(customReversalSound != null ? customReversalSound : "rtm:train.lever", 1.0F, 1.0F);
                     train.syncTrainStateData(TrainStateType.State_Direction.id, --data);
                     TrainState state = TrainState.getState(TrainStateType.State_Direction.id, data);
                     NGTLog.showChatMessage(new ChatComponentText("direction: " + state.stateName));

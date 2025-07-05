@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -46,6 +47,7 @@ public class GuiSelectModel extends GuiScreenCustom {
     private GuiTextField nameField;
     protected GuiTextField argField;
     private GuiTextField searchField;
+    private String lastSearch = "";
     private GuiButtonCustom colorButton;
 
     private int modelColor;
@@ -248,8 +250,45 @@ public class GuiSelectModel extends GuiScreenCustom {
     protected void keyTyped(char par1, int par2) {
         super.keyTyped(par1, par2);
 
-        this.resetModelList();
-        this.resetColor();
+        if (this.searchField != null && !this.searchField.getText().equals(this.lastSearch)) {
+            this.lastSearch = this.searchField.getText();
+
+            this.resetModelList();
+            this.resetColor();
+        }
+
+        switch (par2) {
+            case Keyboard.KEY_HOME:
+                this.scroll(0);
+                break;
+            case Keyboard.KEY_END:
+                if (!this.modelListSelect.isEmpty()) {
+                    this.scroll(this.modelListSelect.size() - 1);
+                }
+                break;
+            case Keyboard.KEY_PRIOR: //Page Up
+                if (this.currentScroll > 0) {
+                    int i = (this.height - 16) / 32;
+                    this.scroll(this.currentScroll - i);
+                }
+                break;
+            case Keyboard.KEY_NEXT: //Page Down
+                if (this.currentScroll < this.modelListSelect.size() - 1) {
+                    int i = (this.height - 16) / 32;
+                    this.scroll(this.currentScroll + i);
+                }
+                break;
+            case Keyboard.KEY_UP:
+                if (this.currentScroll > 0) {
+                    this.scroll(this.currentScroll - 1);
+                }
+                break;
+            case Keyboard.KEY_DOWN:
+                if (this.currentScroll < this.modelListSelect.size() - 1) {
+                    this.scroll(this.currentScroll + 1);
+                }
+                break;
+        }
     }
 
     @Override

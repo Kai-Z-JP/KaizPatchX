@@ -75,7 +75,8 @@ public class PacketSelectModel implements IMessage, IMessageHandler<PacketSelect
                 if (selector instanceof Entity) {
                     PacketNBT.sendToClient((Entity) selector);
                 } else {
-                    PacketNBT.sendToClient((TileEntity) selector);
+                    ((TileEntity) selector).markDirty();
+                    world.markBlockForUpdate(message.pos[0], message.pos[1], message.pos[2]);
                 }
             }
         }

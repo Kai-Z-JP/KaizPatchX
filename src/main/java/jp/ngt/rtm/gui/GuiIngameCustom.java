@@ -161,9 +161,7 @@ public class GuiIngameCustom extends GuiScreen {
         int t0 = this.getWorldTime();
         int hour = ((t0 / 1000) + 6) % 24;
         int minute = (int) ((float) (t0 % 1000) * 0.06F);
-        String sb = hour + ":" +
-                minute;
-        return sb;
+        return String.format("%d:%02d", hour, minute);
     }
 
     private void setScale(ScaledResolution par1) {

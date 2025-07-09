@@ -10,6 +10,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.IOException;
 
+@Deprecated
 public final class ScriptUtil {
     private static NashornScriptEngineFactory SEM;
 

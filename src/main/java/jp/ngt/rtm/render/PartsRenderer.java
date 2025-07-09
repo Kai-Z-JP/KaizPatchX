@@ -3,7 +3,7 @@ package jp.ngt.rtm.render;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.NGTLog;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtil;
@@ -17,11 +17,11 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.graalvm.polyglot.Context;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import javax.script.ScriptEngine;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -36,7 +36,7 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     protected List<ActionParts> targetsList = new ArrayList<>();
     protected MS modelSet;
     protected ModelObject modelObj;
-    protected ScriptEngine script;
+    protected Context context;
     protected Map<Integer, Object> dataMap = new HashMap<>();
 
     public int currentMatId;
@@ -51,17 +51,13 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
     public PartsRenderer(String... par1) {
     }
 
-    public void setScript(ScriptEngine se, ResourceLocation rl) {
-        this.script = se;
-    }
-
-    public ScriptEngine getScript() {
-        return this.script;
+    public Context getContext() {
+        return this.context;
     }
 
     private void execScriptFunc(String func, Object... args) {
         try {
-            ScriptUtil.doScriptFunction(this.script, func, args);
+            ScriptUtilV2.doScriptFunction(this.context, func, args);
         } catch (Exception e) {
             throw new RuntimeException("On init script : " + this.modelSet.getConfig().getName(), e);
         }
@@ -81,9 +77,9 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
         this.modelSet = par1;
         this.modelObj = par2;
 
-        if (this.script != null)//子から呼ばれた時のため
+        if (this.context != null)//子から呼ばれた時のため
         {
-            ScriptUtil.doScriptFunction(this.script, "init", par1, par2);
+            ScriptUtilV2.doScriptFunction(this.context, "init", par1, par2);
         }
 
         this.partsList.forEach(parts -> parts.init(this));
@@ -438,13 +434,13 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 
     public static <R extends PartsRenderer> R getRendererWithScript(ResourceLocation par1, String... args) throws ReflectiveOperationException {
         String text = ModelPackManager.INSTANCE.getScript(par1.getResourcePath());
-        ScriptEngine se = ScriptUtil.doScript(text);
-        String s = (String) ScriptUtil.getScriptField(se, "renderClass");
+        Context ctx = ScriptUtilV2.doScript(text, par1.getResourcePath());
+        String s = (String) ScriptUtilV2.getScriptField(ctx, "renderClass");
         Class clazz = Launch.classLoader.loadClass(s);
         Constructor<R> constructor = clazz.getConstructor(String[].class);
         R renderer = constructor.newInstance(new Object[]{args});
-        renderer.script = se;
-        se.put("renderer", renderer);
+        renderer.context = ctx;
+        ctx.getBindings("js").putMember("renderer", renderer);
         return renderer;
     }
 

@@ -1,33 +1,32 @@
 package jp.ngt.mcte.editor.filter;
 
 import jp.ngt.mcte.editor.Editor;
-import jp.ngt.ngtlib.io.ScriptUtil;
-
-import javax.script.ScriptEngine;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
+import org.graalvm.polyglot.Context;
 
 public class EditFilterCustom extends EditFilterBase {
-    private final ScriptEngine script;
+    private final Context context;
     private final String scriptText;
 
     public EditFilterCustom(String data) {
-        this.script = ScriptUtil.doScript(data);
+        this.context = ScriptUtilV2.doScript(data);
         this.scriptText = data;
     }
 
     @Override
     public void init(Config par1) {
         super.init(par1);
-        ScriptUtil.doScriptFunction(this.script, "initFilter", par1);
+        ScriptUtilV2.doScriptFunction(this.context, "initFilter", par1);
     }
 
     @Override
     public String getFilterName() {
-        return (String) ScriptUtil.doScriptFunction(this.script, "getFilterName");
+        return (String) ScriptUtilV2.doScriptFunction(this.context, "getFilterName");
     }
 
     @Override
     public boolean edit(Editor editor) {
-        return (Boolean) ScriptUtil.doScriptFunction(this.script, "edit", editor, this);
+        return (Boolean) ScriptUtilV2.doScriptFunction(this.context, "edit", editor, this);
     }
 
     public String getScriptText() {

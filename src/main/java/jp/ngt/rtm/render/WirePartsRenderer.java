@@ -2,7 +2,7 @@ package jp.ngt.rtm.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.electric.Connection;
@@ -41,14 +41,14 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
 
     protected void renderWireStatic(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass) {
         if (this.useScript) {
-            ScriptUtil.doScriptFunction(this.script, "renderWireStatic", tileEntity, connection, target, par8, pass);
+            ScriptUtilV2.doScriptFunction(this.context, "renderWireStatic", tileEntity, connection, target, par8, pass);
         } else {
         }
     }
 
     protected void renderWireDynamic(TileEntityElectricalWiring tileEntity, Connection connection, Vec3 target, float par8, int pass) {
         if (this.useScript) {
-            ScriptUtil.doScriptFunction(this.script, "renderWireDynamic", tileEntity, connection, target, par8, pass);
+            ScriptUtilV2.doScriptFunction(this.context, "renderWireDynamic", tileEntity, connection, target, par8, pass);
         } else if (pass == RenderPass.NORMAL.id) {//スクリプトなしモデルでの発光防止
             WireConfig cfg = connection.getModelSet().getConfig();
             if (cfg.deflectionCoefficient > 0.0F) {
@@ -189,7 +189,7 @@ public class WirePartsRenderer extends TileEntityPartsRenderer<ModelSetWireClien
 
     private boolean shouldRenderObject(TileEntityElectricalWiring tileEntity, int len, int pos, int pass) {
         if (this.useScript) {
-            return (Boolean) ScriptUtil.doScriptFunction(this.getScript(), "shouldRenderObject", tileEntity, len, pos, pass);
+            return (Boolean) ScriptUtilV2.doScriptFunction(this.getContext(), "shouldRenderObject", tileEntity, len, pos, pass);
         } else {
             return true;
         }

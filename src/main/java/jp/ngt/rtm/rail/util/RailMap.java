@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public abstract class RailMap {
     protected final List<int[]> rails = new ArrayList<>();
@@ -92,7 +91,7 @@ public abstract class RailMap {
         this.rails.clear();
         int split = (int) (this.getLength() * 4.0D);
         double halfPi = Math.PI * 0.5D;
-        IntStream.range(0, split).forEach(j -> {
+        for (int j = 0; j < split; j++) {
             double[] point = this.getRailPos(split, j);
             double x = point[1];
             double z = point[0];
@@ -101,16 +100,22 @@ public abstract class RailMap {
             int y = (int) height;
             int x0 = MathHelper.floor_double(x);
             int z0 = MathHelper.floor_double(z);
-            IntStream.rangeClosed(1, width).forEach(i -> {
-                int x1 = MathHelper.floor_double(x + Math.sin(slope + halfPi) * i);
-                int z1 = MathHelper.floor_double(z + Math.cos(slope + halfPi) * i);
-                int x2 = MathHelper.floor_double(x + Math.sin(slope - halfPi) * i);
-                int z2 = MathHelper.floor_double(z + Math.cos(slope - halfPi) * i);
+
+            double sinSlopePlus = Math.sin(slope + halfPi);
+            double cosSlopePlus = Math.cos(slope + halfPi);
+            double sinSlopeMinus = Math.sin(slope - halfPi);
+            double cosSlopeMinus = Math.cos(slope - halfPi);
+
+            for (int i = 1; i <= width; i++) {
+                int x1 = MathHelper.floor_double(x + sinSlopePlus * i);
+                int z1 = MathHelper.floor_double(z + cosSlopePlus * i);
+                int x2 = MathHelper.floor_double(x + sinSlopeMinus * i);
+                int z2 = MathHelper.floor_double(z + cosSlopeMinus * i);
                 this.addRailBlock(x1, y, z1);
                 this.addRailBlock(x2, y, z2);
-            });
+            }
             this.addRailBlock(x0, y, z0);
-        });
+        }
     }
 
     protected void addRailBlock(int x, int y, int z) {

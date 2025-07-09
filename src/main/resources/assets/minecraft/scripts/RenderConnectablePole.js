@@ -27,12 +27,12 @@ function render(entity, pass, par3) {
             var y = entity.getY();
             var z = entity.getZ();
             var world = renderer.getWorld(entity);
-            var conXP = BlockLinePole.isConnected(world, x + 1, y, z, 0);
-            var conXN = BlockLinePole.isConnected(world, x - 1, y, z, 0);
-            var conYP = BlockLinePole.isConnected(world, x, y + 1, z, 0);
-            var conYN = BlockLinePole.isConnected(world, x, y - 1, z, 0);
-            var conZP = BlockLinePole.isConnected(world, x, y, z + 1, 0);
-            var conZN = BlockLinePole.isConnected(world, x, y, z - 1, 0);
+            var conXP = BlockLinePole.isConnected(world, x + 1, y, z, false);
+            var conXN = BlockLinePole.isConnected(world, x - 1, y, z, false);
+            var conYP = BlockLinePole.isConnected(world, x, y + 1, z, false);
+            var conYN = BlockLinePole.isConnected(world, x, y - 1, z, false);
+            var conZP = BlockLinePole.isConnected(world, x, y, z + 1, false);
+            var conZN = BlockLinePole.isConnected(world, x, y, z - 1, false);
             var noCon = !conXP && !conXN && !conZP && !conZN;
             var rightAngleCon = (conXP || conXN) && (conZP || conZN);
 

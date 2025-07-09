@@ -108,9 +108,9 @@ public class GuiIngameCustom extends GuiScreen {
 
     private void renderVehicleGui(EntityVehicleBase vehicle) {
         ModelSetVehicleBase modelSet = (ModelSetVehicleBase) vehicle.getResourceState().getResourceSet();
-        if (modelSet != null && modelSet.guiSE != null) {
+        if (modelSet != null && modelSet.guiCtx != null) {
             NGTUtilClient.bindTexture(modelSet.guiTexture != null ? modelSet.guiTexture : tex_cab);
-            ScriptUtil.doScriptIgnoreError(modelSet.guiSE, "renderGui", vehicle, this);
+            ScriptUtilV2.doScriptIgnoreError(modelSet.guiCtx, "renderGui", vehicle, this);
         } else if (vehicle instanceof EntityTrainBase) {
             this.renderDefaultTrainGui((EntityTrainBase) vehicle);
         }

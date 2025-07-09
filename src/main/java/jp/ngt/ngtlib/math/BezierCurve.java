@@ -2,7 +2,7 @@ package jp.ngt.ngtlib.math;
 
 import net.minecraft.util.MathHelper;
 
-import java.util.stream.IntStream;
+import java.util.Arrays;
 
 public final class BezierCurve implements ILine {
     public static final int QUANTIZE = 32;
@@ -144,17 +144,16 @@ public final class BezierCurve implements ILine {
         }
 
         //距離の合計(=dd[n])で正規化,ddはdd[0]=0<dd[1]<dd[2]<...<dd[N-1]<dd[N]=1となる
-        IntStream.range(1, this.split + 1).forEach(i -> dd[i] /= dd[this.split]);
+        for (int i = 1; i < split + 1; i++) {
+            dd[i] /= dd[this.split];
+        }
 
         for (int i = 0; i < this.split; ++i) {
             float t = (float) i / (float) this.split;
-            int k;
-            for (k = 0; k < this.split - 1; ++k) {
-                if (dd[k] <= t && t <= dd[k + 1]) break;
-            }
-
+            int k = Arrays.binarySearch(dd, t);
+            if (k < 0) k = -k - 2;
             float x = (t - dd[k]) / (dd[k + 1] - dd[k]);
-            x = (k * (1 - x) + (1 + k) * x) * (1.0F / (float) this.split);
+            x = (k + x) * ni;
             this.normalizedParameters[i] = x;
         }
     }

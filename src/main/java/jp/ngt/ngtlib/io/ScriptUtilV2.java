@@ -17,7 +17,6 @@ public final class ScriptUtilV2 {
             .targetTypeMapping(Value.class, Integer.class, Value::isNumber, value -> (int) value.asDouble())
             .build();
 
-
     private static Context createContext() {
         return Context.newBuilder()
                 .allowExperimentalOptions(true)
@@ -55,40 +54,7 @@ public final class ScriptUtilV2 {
             ctx.eval(src);
             return ctx;
         } catch (PolyglotException pe) {
-            StringBuilder msg = new StringBuilder();
-            SourceSection loc = pe.getSourceLocation();
-
-            if (loc != null) {
-                msg.append(String.format("Error at %s:%d%n",
-                        loc.getSource().getName(),
-                        loc.getStartLine()));
-                msg.append(String.format("  > %s%n", pe.getMessage()));
-
-                String allSrc = loc.getSource().getCharacters().toString();
-                String[] lines = allSrc.split("\\r?\\n");
-                int errLine = loc.getStartLine();
-                if (errLine >= 1 && errLine <= lines.length) {
-                    String code = lines[errLine - 1];
-                    msg.append("    ").append(code).append("\n");
-
-                    int col = loc.getStartColumn();
-                    StringBuilder pointer = new StringBuilder("    ");
-                    for (int i = 1; i < col; i++) pointer.append(' ');
-                    pointer.append("^\n");
-                    msg.append(pointer);
-                }
-            } else {
-                msg.append("Error:\n").append("  > ").append(pe.getMessage()).append("\n");
-            }
-
-            Value guest = pe.getGuestObject();
-            if (guest != null && guest.hasMember("stack")) {
-                msg.append("JS Stack:\n")
-                        .append(guest.getMember("stack").asString())
-                        .append("\n");
-            }
-
-            throw new RuntimeException(msg.toString(), pe);
+            throw new RuntimeException(buildStacktrace(pe), pe);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -124,6 +90,8 @@ public final class ScriptUtilV2 {
                 throw new ScriptException("Function not found: " + func);
             }
             return function.execute(args).as(Object.class);
+        } catch (PolyglotException pe) {
+            throw new RuntimeException(buildStacktrace(pe), pe);
         } catch (Exception e) {
             throw new RuntimeException("Invoke error: " + e.getMessage());
         }
@@ -147,5 +115,47 @@ public final class ScriptUtilV2 {
     public static Object getScriptField(Context ctx, String fieldName) {
         Value val = ctx.getBindings("js").getMember(fieldName);
         return val != null ? val.as(Object.class) : null;
+    }
+
+    private static String buildStacktrace(PolyglotException pe) {
+        StringBuilder msg = new StringBuilder();
+        SourceSection loc = pe.getSourceLocation();
+
+        if (loc != null) {
+            msg.append(String.format("Error at %s:%d%n",
+                    loc.getSource().getName(),
+                    loc.getStartLine()));
+            msg.append(String.format("  > %s%n", pe.getMessage()));
+
+            String allSrc = loc.getSource().getCharacters().toString();
+            String[] lines = allSrc.split("\\r?\\n");
+            int errLine = loc.getStartLine();
+            if (errLine >= 1 && errLine <= lines.length) {
+                String code = lines[errLine - 1];
+                msg.append("    ").append(code).append("\n");
+
+                int col = loc.getStartColumn();
+                StringBuilder pointer = new StringBuilder("    ");
+                for (int i = 1; i < col; i++) {
+                    pointer.append(' ');
+                }
+                pointer.append("^\n");
+                msg.append(pointer);
+            }
+        } else {
+            msg.append("Error:\n")
+                    .append("  > ")
+                    .append(pe.getMessage())
+                    .append("\n");
+        }
+
+        Value guest = pe.getGuestObject();
+        if (guest != null && guest.hasMember("stack")) {
+            msg.append("JS Stack:\n")
+                    .append(guest.getMember("stack").asString())
+                    .append("\n");
+        }
+
+        return msg.toString();
     }
 }

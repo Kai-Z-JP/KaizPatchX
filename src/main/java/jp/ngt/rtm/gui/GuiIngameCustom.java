@@ -2,7 +2,7 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.ClientProxy;
 import jp.ngt.rtm.entity.train.EntityTrainBase;

@@ -51,7 +51,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly 'org.jetbrains:annotations:26.0.2'
+    compileOnly 'org.jetbrains:annotations:26.0.2-1'
     embed 'org.sejda.imageio:webp-imageio:0.1.6'
 }
 

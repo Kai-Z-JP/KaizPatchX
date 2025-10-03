@@ -1,11 +1,14 @@
 package jp.ngt.mcte.world;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.mcte.MCTE;
 import jp.ngt.ngtlib.block.NGTObject;
 import jp.ngt.ngtlib.world.NGTWorld;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,5 +147,21 @@ public class MCTEWorld extends NGTWorld {
             this.time = pTime;
             this.priority = pPriority;
         }
+    }
+
+
+    @SideOnly(Side.CLIENT)
+    public int getLightBrightnessForSkyBlocks(int x, int y, int z, int defaultValue) {
+        return this.world.getLightBrightnessForSkyBlocks(x, y, z, defaultValue);
+    }
+
+    @Override
+    public Block getBlock(int x, int y, int z) {
+        return this.getBlockSet(x - this.posX, y - this.posY, z - this.posZ).block;
+    }
+
+    @Override
+    public BiomeGenBase getBiomeGenForCoords(int x, int z) {
+        return this.world.getBiomeGenForCoords(x, z);
     }
 }

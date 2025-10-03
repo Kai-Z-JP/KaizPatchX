@@ -171,6 +171,10 @@ public final class NGTRenderer {
      *                        ※テクスチャバインドは行わない
      */
     public static void renderNGTObject(IBlockAccessNGT par1, NGTObject par2, boolean changeLightting, int mode, int pass) {
+        renderNGTObject(par1, 0, 0, 0, par2, changeLightting, mode, pass);
+    }
+
+    public static void renderNGTObject(IBlockAccessNGT par1, int x, int y, int z, NGTObject par2, boolean changeLightting, int mode, int pass) {
         GL11.glPushMatrix();
         if (changeLightting) {
             GLHelper.disableLighting();
@@ -199,9 +203,9 @@ public final class NGTRenderer {
                     BlockSet set = par1.getBlockSet(i, j, k);
                     if (set.block.getMaterial() != Material.air && set.block.getRenderBlockPass() == pass) {
                         if (isSculpture) {
-                            renderBlockAsSculpture(renderer, set, par2, i, j, k);
+                            renderBlockAsSculpture(renderer, set, par2, x + i, y + j, z + k);
                         } else {
-                            renderBlockByRenderer(renderer, set.block, i, j, k);
+                            renderBlockByRenderer(renderer, set.block, x + i, y + j, z + k);
                         }
                     }
                 }

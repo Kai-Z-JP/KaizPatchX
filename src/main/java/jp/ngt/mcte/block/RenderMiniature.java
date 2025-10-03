@@ -51,6 +51,7 @@ public final class RenderMiniature extends TileEntitySpecialRenderer {
                 break;
         }
         GL11.glTranslatef(0.0F, -0.5F, 0.0F);
+        GL11.glTranslatef(tile.getOffsetX(), tile.getOffsetY(), tile.getOffsetZ());
         GL11.glRotatef(tile.getRotation(), 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(tile.offsetX, tile.offsetY, tile.offsetZ);
         float f0 = tile.scale;

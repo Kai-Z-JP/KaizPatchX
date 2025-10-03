@@ -7,6 +7,9 @@ import jp.ngt.mcte.item.ItemMiniature;
 import jp.ngt.mcte.item.ItemMiniature.MiniatureMode;
 import jp.ngt.ngtlib.block.NGTObject;
 import jp.ngt.ngtlib.math.NGTMath;
+import jp.ngt.ngtlib.util.NGTUtil;
+import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.RTMItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -72,8 +75,16 @@ public class BlockMiniature extends BlockContainer {
         ItemStack stack = player.inventory.getCurrentItem();
         if (stack == null || stack.getItem() != MCTE.itemMiniature) {
             if (!world.isRemote) {
+                if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                    return true;
+                }
                 TileEntityMiniature tile = this.getMiniatureTileEntity(world, x, y, z);
                 tile.setRotation((float) NGTMath.normalizeAngle(tile.getRotation() + MCTE.rotationInterval), true);
+            } else {
+                if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                    player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
+                    return true;
+                }
             }
             return true;
         }

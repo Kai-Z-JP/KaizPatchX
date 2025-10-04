@@ -84,7 +84,6 @@ public final class RenderMiniature extends TileEntitySpecialRenderer {
         int i = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
         GLHelper.setBrightness(i);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslatef(-tile.getX(), -tile.getY(), -tile.getZ());
 
         this.bindTexture(TextureMap.locationBlocksTexture);
         boolean smoothing = NGTUtilClient.getMinecraft().gameSettings.ambientOcclusion != 0;
@@ -94,11 +93,11 @@ public final class RenderMiniature extends TileEntitySpecialRenderer {
         if (!GLHelper.isValid(tile.glLists[pass])) {
             tile.glLists[pass] = GLHelper.generateGLList();
             GLHelper.startCompile(tile.glLists[pass]);
-            NGTRenderer.renderNGTObject(world, tile.getX(), tile.getY(), tile.getZ(), tile.blocksObject, false, tile.mode.id, pass);
+            NGTRenderer.renderNGTObject(world, tile.blocksObject, false, tile.mode.id, pass);
             GLHelper.endCompile();
         } else if (world.updated) {
             GLHelper.startCompile(tile.glLists[pass]);
-            NGTRenderer.renderNGTObject(world, tile.getX(), tile.getY(), tile.getZ(), tile.blocksObject, false, tile.mode.id, pass);
+            NGTRenderer.renderNGTObject(world, tile.blocksObject, false, tile.mode.id, pass);
             GLHelper.endCompile();
             world.updated = false;
         } else {

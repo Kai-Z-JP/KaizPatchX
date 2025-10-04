@@ -152,16 +152,11 @@ public class MCTEWorld extends NGTWorld {
 
     @SideOnly(Side.CLIENT)
     public int getLightBrightnessForSkyBlocks(int x, int y, int z, int defaultValue) {
-        return this.world.getLightBrightnessForSkyBlocks(x, y, z, defaultValue);
-    }
-
-    @Override
-    public Block getBlock(int x, int y, int z) {
-        return this.getBlockSet(x - this.posX, y - this.posY, z - this.posZ).block;
+        return this.world.getLightBrightnessForSkyBlocks(this.posX + x, this.posY + y, this.posZ + z, defaultValue);
     }
 
     @Override
     public BiomeGenBase getBiomeGenForCoords(int x, int z) {
-        return this.world.getBiomeGenForCoords(x, z);
+        return this.world.getBiomeGenForCoords(this.posX + x, this.posZ + z);
     }
 }

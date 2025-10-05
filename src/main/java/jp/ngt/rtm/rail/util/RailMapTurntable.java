@@ -16,11 +16,16 @@ public final class RailMapTurntable extends RailMapBasic {
     }
 
     public RailMapTurntable(RailPosition par1, RailPosition par2, int x, int y, int z, int r, int version) {
+        this(par1, par2, x, y, z, r, 0, version);
+    }
+
+    public RailMapTurntable(RailPosition par1, RailPosition par2, int x, int y, int z, int r, float rotation, int version) {
         super(par1, par2, version);
         this.centerX = x;
         this.centerY = y;
         this.centerZ = z;
         this.radius = r;
+        this.rotation = rotation;
     }
 
     @Override
@@ -99,7 +104,25 @@ public final class RailMapTurntable extends RailMapBasic {
     @Override
     public boolean canConnect(RailMap railMap) {
         this.recreateLine();
-        return super.canConnect(railMap);
+
+        if (railMap == null) {
+            return false;
+        }
+        if (equals(railMap)) {
+            return true;
+        }
+        for (int i = 0; i < 2; i++) {
+            double[] p0 = getRailPos(10, i * 10);
+            int nearlestPoint = railMap.getNearlestPoint((int) (railMap.getLength() * 128), p0[1], p0[0]);
+            double[] p1 = railMap.getRailPos((int) (railMap.getLength() * 128), nearlestPoint);
+            double dx = p0[0] - p1[0];
+            double dz = p0[1] - p1[1];
+            if (dx * dx + dz * dz < 0.01D) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void setRotation(float par1) {

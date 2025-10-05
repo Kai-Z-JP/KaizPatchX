@@ -92,6 +92,9 @@ public class TileEntityTurnTableCore extends TileEntityLargeRailCore {
                 r = Math.abs(start.blockX - end.blockX) / 2;
             }
             this.railmap = new RailMapTurntable(start, end, this.xCoord, this.yCoord, this.zCoord, r, fixRTMRailMapVersion);
+            if (!this.getWorldObj().isRemote) {
+                ((RailMapTurntable) this.railmap).setRotation(this.rotation);
+            }
         }
     }
 

@@ -68,6 +68,9 @@ public abstract class RailMap {
         if (equals(railMap)) {
             return true;
         }
+        if (railMap instanceof RailMapTurntable) {
+            return railMap.canConnect(this);
+        }
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 double[] p0 = getRailPos(10, i * 10);
@@ -230,9 +233,11 @@ public abstract class RailMap {
         posList.forEach(pos -> {
             world.setBlockToAir(pos[0], pos[1], pos[2]);
             world.removeTileEntity(pos[0], pos[1], pos[2]);
+            world.markBlockForUpdate(pos[0], pos[1], pos[2]);
         });
         world.setBlockToAir(core.xCoord, core.yCoord, core.zCoord);
         world.removeTileEntity(core.xCoord, core.yCoord, core.zCoord);
+        world.markBlockForUpdate(core.xCoord, core.yCoord, core.zCoord);
         ((List<TileEntity>) world.loadedTileEntityList).remove(core);
 
         this.rails.clear();

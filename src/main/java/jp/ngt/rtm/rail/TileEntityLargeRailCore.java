@@ -22,6 +22,7 @@ import net.minecraft.util.AxisAlignedBB;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     public boolean breaking;
@@ -147,7 +148,7 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
      * レール情報の読み込みが完了してるかどうか(=RailPositionが存在する)
      */
     public boolean isLoaded() {
-        return (this.railPositions != null && this.railPositions.length > 0);
+        return (this.railPositions != null && this.railPositions.length > 0 && Arrays.stream(this.railPositions).allMatch(Objects::nonNull));
     }
 
     public RailPosition[] getRailPositions() {

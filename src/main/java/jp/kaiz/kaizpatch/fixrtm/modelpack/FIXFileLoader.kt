@@ -54,7 +54,6 @@ object FIXFileLoader {
         val files = mutableListOf<File>()
         files += minecraftDir.resolve("mods")
         files += minecraftDir.resolve("jar-mods-cache/v1/mods")
-        files += minecraftDir.resolve("mods/modelpacks")
         if (Launch.blackboard["fml.deobfuscatedEnvironment"] as Boolean) {
             val loader = FIXFileLoader::class.java.classLoader
             fun zipUrlToFile(loader: ClassLoader, relative: String): File {

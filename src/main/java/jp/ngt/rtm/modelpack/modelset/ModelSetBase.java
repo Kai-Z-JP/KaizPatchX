@@ -3,23 +3,22 @@ package jp.ngt.rtm.modelpack.modelset;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig;
 import jp.ngt.rtm.modelpack.state.DataFormatter;
 import net.minecraft.util.ResourceLocation;
-
-import javax.script.ScriptEngine;
+import org.graalvm.polyglot.Context;
 
 public abstract class ModelSetBase<T extends ModelConfig> {
     protected final T cfg;
     public final DataFormatter dataFormatter;
     private final boolean isDummyModel;
 
-    public ScriptEngine serverSE;
+    public Context serverCtx;
 
     @SideOnly(Side.CLIENT)
-    public ScriptEngine guiSE;
+    public Context guiCtx;
     @SideOnly(Side.CLIENT)
     public ResourceLocation guiTexture;
 
@@ -38,11 +37,11 @@ public abstract class ModelSetBase<T extends ModelConfig> {
         this.isDummyModel = false;
 
         if (this.cfg.serverScriptPath != null) {
-            this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath));
+            this.serverCtx = ScriptUtilV2.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath), this.cfg.serverScriptPath);
         }
 
         if (FMLCommonHandler.instance().getSide().isClient() && this.cfg.guiScriptPath != null) {
-            this.guiSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath));
+            this.guiCtx = ScriptUtilV2.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath), this.cfg.guiScriptPath);
             this.guiTexture = ModelPackManager.INSTANCE.getResource(this.cfg.guiTexture);
         }
     }

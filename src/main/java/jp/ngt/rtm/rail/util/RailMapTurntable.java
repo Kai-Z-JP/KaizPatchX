@@ -43,6 +43,15 @@ public final class RailMapTurntable extends RailMapBasic {
         double sz = this.startRP.posZ - cz;
         double ex = this.endRP.posX - cx;
         double ez = this.endRP.posZ - cz;
+        double gain = 0.5D;
+        //見た目より若干長めにすることで斜め時に隣接RMと隙間が空くの回避
+        if (this.startRP.blockX == this.endRP.blockX) {
+            sz += (sz > ez) ? gain : -gain;
+            ez += (ez > sz) ? gain : -gain;
+        } else {
+            sx += (sx > ex) ? gain : -gain;
+            ex += (ex > sx) ? gain : -gain;
+        }
         Vec3 vStart = PooledVec3.create(sx, 0.0D, sz);
         Vec3 vEnd = PooledVec3.create(ex, 0.0D, ez);
         vStart = vStart.rotateAroundY(this.rotation);

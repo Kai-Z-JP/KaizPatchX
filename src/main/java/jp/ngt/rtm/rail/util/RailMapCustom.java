@@ -1,17 +1,16 @@
 package jp.ngt.rtm.rail.util;
 
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import net.minecraft.util.MathHelper;
-
-import javax.script.ScriptEngine;
+import org.graalvm.polyglot.Context;
 
 public final class RailMapCustom extends RailMap {
     private RailPosition startRP;
 
     private RailPosition endRP;
 
-    private ScriptEngine script;
+    private Context context;
 
     public RailMapCustom(RailPosition rp, String scriptName, String args) {
         this.startRP = rp;
@@ -19,7 +18,7 @@ public final class RailMapCustom extends RailMap {
     }
 
     private void init(String scriptName, String args) {
-        this.script = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(scriptName));
+        this.context = ScriptUtilV2.doScript(ModelPackManager.INSTANCE.getScript(scriptName));
         int split = (int) (getLength() * 4.0D);
         double[] dzx = getRailPos(split, split);
         double dy = getRailHeight(split, split);
@@ -32,11 +31,11 @@ public final class RailMapCustom extends RailMap {
     }
 
     public static String getDefaultArgs(String scriptName) {
-        return getDefaultArgs(ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(scriptName)));
+        return getDefaultArgs(ScriptUtilV2.doScript(ModelPackManager.INSTANCE.getScript(scriptName)));
     }
 
-    public static String getDefaultArgs(ScriptEngine se) {
-        return (String) ScriptUtil.doScriptFunction(se, "getDefaultArgs", new Object[0]);
+    public static String getDefaultArgs(Context context) {
+        return (String) ScriptUtilV2.doScriptFunction(context, "getDefaultArgs", new Object[0]);
     }
 
     public RailPosition getStartRP() {
@@ -48,31 +47,31 @@ public final class RailMapCustom extends RailMap {
     }
 
     public double getLength() {
-        return (Double) ScriptUtil.doScriptFunction(this.script, "getLength", new Object[0]);
+        return (Double) ScriptUtilV2.doScriptFunction(this.context, "getLength", new Object[0]);
     }
 
     public int getNearlestPoint(int split, double x, double z) {
-        return (Integer) ScriptUtil.doScriptFunction(this.script, "getNearlestPoint", new Object[]{split, x, z});
+        return (Integer) ScriptUtilV2.doScriptFunction(this.context, "getNearlestPoint", new Object[]{split, x, z});
     }
 
     public double[] getRailPos(int split, int index) {
-        return (double[]) ScriptUtil.doScriptFunction(this.script, "getPos", new Object[]{split, index});
+        return (double[]) ScriptUtilV2.doScriptFunction(this.context, "getPos", new Object[]{split, index});
     }
 
     public double getRailHeight(int split, int index) {
-        return (Double) ScriptUtil.doScriptFunction(this.script, "getHeight", new Object[]{split, index});
+        return (Double) ScriptUtilV2.doScriptFunction(this.context, "getHeight", new Object[]{split, index});
     }
 
     public float getRailYaw(int split, int index) {
-        float yaw = (Float) ScriptUtil.doScriptFunction(this.script, "getYaw", new Object[]{split, index});
+        float yaw = (Float) ScriptUtilV2.doScriptFunction(this.context, "getYaw", new Object[]{split, index});
         return yaw + this.startRP.anchorYaw;
     }
 
     public float getRailPitch(int split, int index) {
-        return (Float) ScriptUtil.doScriptFunction(this.script, "getPitch", new Object[]{split, index});
+        return (Float) ScriptUtilV2.doScriptFunction(this.context, "getPitch", new Object[]{split, index});
     }
 
     public float getRailRoll(int split, int index) {
-        return (Float) ScriptUtil.doScriptFunction(this.script, "getRoll", new Object[]{split, index});
+        return (Float) ScriptUtilV2.doScriptFunction(this.context, "getRoll", new Object[]{split, index});
     }
 }

@@ -1,6 +1,6 @@
 package jp.ngt.rtm.modelpack;
 
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import net.minecraft.command.ICommandManager;
@@ -20,8 +20,8 @@ public class ScriptExecuter implements ICommandSender {
 
     protected Object callMethod(IModelSelector selector, String name, Object... args) {
         ModelSetBase set = selector.getModelSet();
-        if (set.serverSE != null) {
-            return ScriptUtil.doScriptIgnoreError(set.serverSE, name, args);
+        if (set.serverCtx != null) {
+            return ScriptUtilV2.doScriptIgnoreError(set.serverCtx, name, args);
         }
         return null;
     }

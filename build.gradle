@@ -14,9 +14,6 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-//plugins {
-//    id "com.anatawa12.jarInJar" version "1.0.1"
-//}
 
 configurations {
     embed
@@ -38,21 +35,10 @@ minecraft {
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
     embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compileOnly 'org.jetbrains:annotations:26.0.2'
     embed 'org.sejda.imageio:webp-imageio:0.1.6'
+    embed "org.graalvm.js:js:21.3.3.1"
 }
 
 processResources {
@@ -86,25 +72,23 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 jar {
-    configurations.embed.each { dep ->
-        from(project.zipTree(dep)) {
-            exclude 'META-INF', 'META-INF/versions/**', 'META-INF/maven/**'
-        }
-    }
+    duplicatesStrategy = DuplicatesStrategy.WARN
 
     from(rootDir) {
         include 'README.md'
         include 'LICENCE'
     }
 
+    from(configurations.embed) {
+        into 'libs'
+    }
+
     manifest {
         attributes(
-                "FMLCorePlugin": "jp.kaiz.kaizpatch.asm.ModelPackLoader",
+                "FMLCorePlugin": "jp.kaiz.kaizpatch.asm.KaizPatchCorePlugin",
                 "FMLCorePluginContainsFMLMod": "true"
         )
     }
-
-
 }
 
 

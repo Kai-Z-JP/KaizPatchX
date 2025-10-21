@@ -2,7 +2,7 @@ package jp.ngt.rtm.modelpack.modelset;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.renderer.model.Material;
 import jp.ngt.ngtlib.renderer.model.TextureSet;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
@@ -15,9 +15,8 @@ import jp.ngt.rtm.render.ModelObject;
 import jp.ngt.rtm.render.PartsRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import org.graalvm.polyglot.Context;
 import org.lwjgl.opengl.GL11;
-
-import javax.script.ScriptEngine;
 
 @SideOnly(Side.CLIENT)
 public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> extends ModelSetVehicleBase<T> implements IModelSetClient {
@@ -34,7 +33,7 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
     public final ResourceLocation sound_ATSChime;
     public final ResourceLocation sound_ATSBell;
 
-    public ScriptEngine se;
+    public Context context;
 
     public ModelSetVehicleBaseClient() {
         super();
@@ -73,7 +72,7 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         this.sound_ATSBell = this.getSoundResource(cfg.sound_ATSBell == null ? "rtm:train.ats_bell" : cfg.sound_ATSBell);
 
         if (cfg.soundScriptPath != null) {
-            this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath));
+            this.context = ScriptUtilV2.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath), cfg.soundScriptPath);
         }
     }
 

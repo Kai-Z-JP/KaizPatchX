@@ -2,7 +2,7 @@ package jp.ngt.rtm.sound;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
@@ -40,9 +40,9 @@ public class SoundUpdaterVehicle implements IUpdateVehicle {
     @Override
     public void update() {
         ModelSetVehicleBaseClient modelset = (ModelSetVehicleBaseClient) this.theVehicle.getModelSet();
-        if (modelset.se != null) {
+        if (modelset.context != null) {
             //RTMUtil.doScriptFunction(modelset.se, "onUpdate", this);
-            ScriptUtil.doScriptIgnoreError(modelset.se, "onUpdate", this);
+            ScriptUtilV2.doScriptIgnoreError(modelset.context, "onUpdate", this);
         } else {
             if (this.theVehicle.isDead) {
                 if (this.prevSound != null) {

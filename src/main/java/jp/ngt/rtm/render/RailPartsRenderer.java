@@ -2,7 +2,7 @@ package jp.ngt.rtm.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.renderer.*;
 import jp.ngt.ngtlib.renderer.model.Face;
@@ -59,14 +59,14 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * 形状固定の部分を描画
      */
     protected void renderRailStatic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
-        ScriptUtil.doScriptFunction(this.script, "renderRailStatic", tileEntity, x, y, z, par8, 0);
+        ScriptUtilV2.doScriptFunction(this.context, "renderRailStatic", tileEntity, x, y, z, par8, 0);
     }
 
     /**
      * 形状が変化する部分を描画
      */
     protected void renderRailDynamic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
-        ScriptUtil.doScriptFunction(this.script, "renderRailDynamic", tileEntity, x, y, z, par8, 0);
+        ScriptUtilV2.doScriptFunction(this.context, "renderRailDynamic", tileEntity, x, y, z, par8, 0);
     }
 
     /**
@@ -77,7 +77,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * @param pos     何番目のセグメントか
      */
     protected boolean shouldRenderObject(TileEntityLargeRailCore tileEntity, String objName, int len, int pos) {
-        return (Boolean) ScriptUtil.doScriptFunction(this.script, "shouldRenderObject", tileEntity, objName, len, pos);
+        return (Boolean) ScriptUtilV2.doScriptFunction(this.context, "shouldRenderObject", tileEntity, objName, len, pos);
     }
 
     /****************************************************************************************************/

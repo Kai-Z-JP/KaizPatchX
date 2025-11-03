@@ -2,7 +2,7 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.ClientProxy;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
@@ -108,9 +108,9 @@ public class GuiIngameCustom extends GuiScreen {
 
     private void renderVehicleGui(EntityVehicleBase vehicle) {
         ModelSetVehicleBase modelSet = (ModelSetVehicleBase) vehicle.getResourceState().getResourceSet();
-        if (modelSet != null && modelSet.guiSE != null) {
+        if (modelSet != null && modelSet.guiCtx != null) {
             NGTUtilClient.bindTexture(modelSet.guiTexture != null ? modelSet.guiTexture : tex_cab);
-            ScriptUtil.doScriptIgnoreError(modelSet.guiSE, "renderGui", vehicle, this);
+            ScriptUtilV2.doScriptIgnoreError(modelSet.guiCtx, "renderGui", vehicle, this);
         } else if (vehicle instanceof EntityTrainBase) {
             this.renderDefaultTrainGui((EntityTrainBase) vehicle);
         }

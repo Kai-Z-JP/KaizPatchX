@@ -1,6 +1,6 @@
 package jp.ngt.rtm.entity.train.util;
 
-import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.ngtlib.io.ScriptUtilV2;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 
@@ -16,8 +16,8 @@ public final class TrainSpeedManager {
                 return 0.0F;
             } else {
                 if (cfg.useVariableAcceleration) {
-                    Object obj = ScriptUtil.doScriptIgnoreError(
-                            train.getModelSet().serverSE,
+                    Object obj = ScriptUtilV2.doScriptIgnoreError(
+                            train.getModelSet().serverCtx,
                             "getAcceleration",
                             train,
                             prevSpeed);
@@ -29,8 +29,8 @@ public final class TrainSpeedManager {
         } else {
             float deceleration;
             if (cfg.useVariableDeceleration) {
-                Object obj = ScriptUtil.doScriptIgnoreError(
-                        train.getModelSet().serverSE,
+                Object obj = ScriptUtilV2.doScriptIgnoreError(
+                        train.getModelSet().serverCtx,
                         "getDeceleration",
                         train,
                         prevSpeed);

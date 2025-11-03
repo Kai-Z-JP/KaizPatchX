@@ -12,7 +12,7 @@ HALF_GAUGE = 0.5647;
 /**レール長で割る*/
 YAW_RATE = 450.0;
 
-patternGrass = /grass/;
+patternGrass = "grass";
 
 function init(par1, par2) {
     staticParts = renderer.registerParts(new Parts("base"));
@@ -40,7 +40,7 @@ function renderRailDynamic(tileEntity, posX, posY, posZ, par8, pass) {
 }
 
 function shouldRenderObject(tileEntity, objName, len, pos) {
-    if (patternGrass.test(objName)) {
+    if (objName.indexOf(patternGrass) !== -1) {
         return (NGTMath.RANDOM.nextInt(4) == 0)
     } else if (renderer.isSwitchRail(tileEntity))//分岐レール
     {

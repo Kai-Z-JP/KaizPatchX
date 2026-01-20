@@ -9,6 +9,7 @@ import jp.ngt.ngtlib.io.NGTText;
 import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.entity.util.CollisionHelper;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
 import jp.ngt.rtm.network.PacketModelSet;
@@ -117,6 +118,7 @@ public final class ModelPackManager {
         if (modelSet != null) {
             this.smpModelSetMap.get(type).put(name, modelSet);
 //			NGTLog.debug("[RTM] Add model to SMP map : " + name);
+            CollisionHelper.INSTANCE.syncCollisionObj(type, modelSet);
         }
     }
 

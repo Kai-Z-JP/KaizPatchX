@@ -2,10 +2,7 @@ package jp.ngt.rtm.modelpack.modelset;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.ngt.ngtlib.renderer.model.Material;
-import jp.ngt.ngtlib.renderer.model.ModelLoader;
-import jp.ngt.ngtlib.renderer.model.TextureSet;
-import jp.ngt.ngtlib.renderer.model.VecAccuracy;
+import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
 import jp.ngt.rtm.gui.GuiSelectModel;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -35,6 +32,7 @@ public class ModelSetSignalClient extends ModelSetSignal implements IModelSetCli
         PartsRenderer renderer = (!PartsRenderer.validPath(par1.model.rendererPath)) ? new BasicSignalPartsRenderer(par1) : null;
         this.model = new ModelObject(par1.model, this, renderer);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
+        this.finishConstruct();
     }
 
     @Override
@@ -78,5 +76,10 @@ public class ModelSetSignalClient extends ModelSetSignal implements IModelSetCli
         SignalConfig cfg = this.getConfig();
         this.model.render(null, cfg, 0, 0.0F);
         this.model.render(null, cfg, 1, 0.0F);
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.model.model;
     }
 }

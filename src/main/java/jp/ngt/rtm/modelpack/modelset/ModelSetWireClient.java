@@ -1,9 +1,6 @@
 package jp.ngt.rtm.modelpack.modelset;
 
-import jp.ngt.ngtlib.renderer.model.Material;
-import jp.ngt.ngtlib.renderer.model.ModelLoader;
-import jp.ngt.ngtlib.renderer.model.TextureSet;
-import jp.ngt.ngtlib.renderer.model.VecAccuracy;
+import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.gui.GuiButtonSelectModel;
 import jp.ngt.rtm.gui.GuiSelectModel;
@@ -38,6 +35,7 @@ public class ModelSetWireClient extends ModelSetWire implements IModelSetClient 
         }
         this.modelObj = new ModelObject(cfg.model, this, renderer);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(cfg.buttonTexture);
+        this.finishConstruct();
     }
 
     @Override
@@ -83,5 +81,10 @@ public class ModelSetWireClient extends ModelSetWire implements IModelSetClient 
         ModelObject mo = this.modelObj;
         NGTUtilClient.bindTexture(mo.textures[0].material.texture);
         mo.model.renderAll(false);
+    }
+
+    @Override
+    public IModelNGT getModelObject() {
+        return this.modelObj.model;
     }
 }

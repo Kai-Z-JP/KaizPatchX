@@ -1,14 +1,21 @@
 package jp.ngt.rtm.modelpack.state;
 
+import jp.ngt.rtm.entity.util.CollisionObj;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 1.12から移植、一部ダミー化
  */
 public class ResourceState {
     public final DataMap dataMap = new DataMap();
+    public final List<String> exclusionParts = new ArrayList<>();
 
     private final IModelSelector selector;
     private String name;
@@ -64,5 +71,30 @@ public class ResourceState {
 
     public DataMap getDataMap() {
         return this.dataMap;
+    }
+
+    public void applyCollison(Entity target, Entity myself, AxisAlignedBB playerAABB, List<AxisAlignedBB> list) {
+        if (this.getResourceSet() != null) {
+            CollisionObj obj = this.getResourceSet().getCollisionObj();
+            if (obj != null) {
+                obj.applyCollison(target, myself, playerAABB, list, this.exclusionParts);
+            }
+        }
+    }
+
+    public void addExclusionParts(String... names) {
+        for (String name : names) {
+            if (!this.exclusionParts.contains(name)) {
+                this.exclusionParts.add(name);
+            }
+        }
+    }
+
+    public void removeExclusionParts(String... names) {
+        for (String name : names) {
+            if (this.exclusionParts.contains(name)) {
+                this.exclusionParts.remove(name);
+            }
+        }
     }
 }

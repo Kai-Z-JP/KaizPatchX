@@ -4,6 +4,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
+import jp.ngt.rtm.entity.util.ColFace;
+import jp.ngt.rtm.entity.util.CollisionObj;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig;
 import jp.ngt.rtm.modelpack.state.DataFormatter;
@@ -23,6 +25,9 @@ public abstract class ModelSetBase<T extends ModelConfig> {
     @SideOnly(Side.CLIENT)
     public ResourceLocation guiTexture;
 
+    private CollisionObj collisionObj;
+    private boolean syncFinished;
+
     /**
      * ダミー用
      */
@@ -41,9 +46,18 @@ public abstract class ModelSetBase<T extends ModelConfig> {
             this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath));
         }
 
-        if (FMLCommonHandler.instance().getSide().isClient() && this.cfg.guiScriptPath != null) {
-            this.guiSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath));
-            this.guiTexture = ModelPackManager.INSTANCE.getResource(this.cfg.guiTexture);
+        if (FMLCommonHandler.instance().getSide().isClient()) {
+            if (this.cfg.guiScriptPath != null) {
+                this.guiSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath));
+                this.guiTexture = ModelPackManager.INSTANCE.getResource(this.cfg.guiTexture);
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void finishConstruct() {
+        if (this instanceof IModelSetClient) {
+            this.collisionObj = new CollisionObj(((IModelSetClient) this).getModelObject(), this.getConfig());
         }
     }
 
@@ -67,5 +81,20 @@ public abstract class ModelSetBase<T extends ModelConfig> {
             }
         }
         return null;
+    }
+
+    //Side.SERVER
+    public void addColFace(String partsName, ColFace face, byte status) {
+        if (!this.syncFinished) {
+            if (this.collisionObj == null) {
+                this.collisionObj = new CollisionObj();
+            }
+            this.collisionObj.addColFace(partsName, face, status);
+            this.syncFinished = (status == 2);
+        }
+    }
+
+    public CollisionObj getCollisionObj() {
+        return this.collisionObj;
     }
 }

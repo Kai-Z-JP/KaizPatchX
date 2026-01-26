@@ -66,7 +66,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     public int brakeCount = 72;
     public int atsCount;
     @SideOnly(Side.CLIENT)
-    public int brakeAirCount;
+    public int brakeAirCount = MAX_AIR_COUNT;
     @SideOnly(Side.CLIENT)
     public boolean complessorActive;
 

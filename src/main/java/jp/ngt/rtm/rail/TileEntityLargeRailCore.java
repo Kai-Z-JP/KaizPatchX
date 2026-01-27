@@ -187,8 +187,11 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
-        this.getRailMap(null).getRailBlockList(this.property).forEach(pos -> this.worldObj.markBlockForUpdate(pos[0], pos[1], pos[2]));
-        this.shouldRerenderRail = true;
+        RailMap rm = this.getRailMap(null);
+        if (rm != null) {
+            rm.getRailBlockList(this.property).forEach(pos -> this.worldObj.markBlockForUpdate(pos[0], pos[1], pos[2]));
+            this.shouldRerenderRail = true;
+        }
     }
 
     @Override

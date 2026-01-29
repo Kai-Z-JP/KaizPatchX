@@ -24,10 +24,9 @@ public class RenderOrnament<T extends TileEntityOrnament> extends TileEntitySpec
         GL11.glTranslatef(par1.getOffsetX(), par1.getOffsetY(), par1.getOffsetZ());
         GL11.glRotatef(par1.getRotation(), 0.0F, 1.0F, 0.0F);
 
-        if (modelSet.model.renderer.getScript() == null) {
-            float scale = par1.getRandomScale();
-            GL11.glScalef(scale, scale, scale);
-        }
+        float scale = par1.getScale();
+        GL11.glScalef(scale, scale, scale);
+
         modelSet.model.render(par1, cfg, pass, par8);
 
         GL11.glPopMatrix();

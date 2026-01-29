@@ -50,6 +50,8 @@ public class RenderElectricalWiring extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 0.5F, (float) par6 + 0.5F);
         GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
+        float scale = tileEntity.getScale();
+        GL11.glScalef(scale, scale, scale);
         GL11.glRotatef(tileEntity.getRotation(), 0.0F, 1.0F, 0.0F);
         ModelSetConnectorClient modelSet = (ModelSetConnectorClient) tileEntity.getModelSet();
         ConnectorConfig cfg = modelSet.getConfig();

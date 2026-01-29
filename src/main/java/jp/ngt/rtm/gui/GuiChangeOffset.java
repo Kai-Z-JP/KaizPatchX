@@ -13,6 +13,7 @@ public class GuiChangeOffset extends GuiScreenCustom {
     private GuiTextFieldCustom fieldOffsetY;
     private GuiTextFieldCustom fieldOffsetZ;
     private GuiTextFieldCustom fieldRotationYaw;
+    private GuiTextFieldCustom fieldScale;
 
     public GuiChangeOffset(TileEntityPlaceable tileEntity) {
         this.tileEntity = tileEntity;
@@ -30,6 +31,7 @@ public class GuiChangeOffset extends GuiScreenCustom {
         this.fieldOffsetY = this.setNumberField(this.width - 70, 50, 60, 20, String.valueOf(this.tileEntity.getOffsetY()), true);
         this.fieldOffsetZ = this.setNumberField(this.width - 70, 80, 60, 20, String.valueOf(this.tileEntity.getOffsetZ()), true);
         this.fieldRotationYaw = this.setNumberField(this.width - 70, 110, 60, 20, String.valueOf(this.tileEntity.getRotation()), true);
+        this.fieldScale = this.setNumberField(this.width - 70, 140, 60, 20, String.valueOf(this.tileEntity.getScale()), true);
     }
 
     @Override
@@ -41,6 +43,7 @@ public class GuiChangeOffset extends GuiScreenCustom {
         this.drawCenteredString(this.fontRendererObj, "Offset Y", this.width - 70, 40, 0xFFFFFF);
         this.drawCenteredString(this.fontRendererObj, "Offset Z", this.width - 70, 70, 0xFFFFFF);
         this.drawCenteredString(this.fontRendererObj, "Rotation Yaw", this.width - 70, 100, 0xFFFFFF);
+        this.drawCenteredString(this.fontRendererObj, "Scale", this.width - 70, 130, 0xFFFFFF);
     }
 
     @Override
@@ -60,8 +63,15 @@ public class GuiChangeOffset extends GuiScreenCustom {
         float offsetY = this.getFieldValue(this.fieldOffsetY, this.tileEntity.getOffsetY());
         float offsetZ = this.getFieldValue(this.fieldOffsetZ, this.tileEntity.getOffsetZ());
         float rotation = this.getFieldValue(this.fieldRotationYaw, this.tileEntity.getRotation());
+        float scale = this.getFieldValue(this.fieldScale, this.tileEntity.getScale());
+
+        // Validate scale (0.01 to 10.0)
+        if (scale < 0.01F) scale = 0.01F;
+        if (scale > 10.0F) scale = 10.0F;
+
         this.tileEntity.setOffset(offsetX, offsetY, offsetZ, false);
         this.tileEntity.setRotation(rotation, false);
+        this.tileEntity.setScale(scale, false);
     }
 
     private void sendPacket() {

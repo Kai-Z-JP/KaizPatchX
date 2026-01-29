@@ -7,6 +7,7 @@ import net.minecraft.util.MathHelper;
 
 public abstract class TileEntityPlaceable extends TileEntityCustom {
     private float offsetX, offsetY, offsetZ, rotation;
+    private float scale = 1.0F;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
@@ -18,6 +19,7 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
                 false
         );
         this.setRotation(nbt.getFloat("Yaw"), false);
+        this.scale = nbt.hasKey("Scale") ? nbt.getFloat("Scale") : 1.0F;
     }
 
     @Override
@@ -27,6 +29,7 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
         nbt.setFloat("offsetX", this.offsetX);
         nbt.setFloat("offsetY", this.offsetY);
         nbt.setFloat("offsetZ", this.offsetZ);
+        nbt.setFloat("Scale", this.scale);
     }
 
     public float getOffsetX() {
@@ -66,5 +69,17 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
     public void setRotation(EntityPlayer player, float rotationInterval, boolean synch) {
         int yaw = MathHelper.floor_double(NGTMath.normalizeAngle(-player.rotationYaw + 180.0D + (rotationInterval / 2.0D)) / (double) rotationInterval);
         this.setRotation((float) yaw * rotationInterval, synch);
+    }
+
+    public float getScale() {
+        return this.scale;
+    }
+
+    public void setScale(float scale, boolean sync) {
+        this.scale = scale;
+        if (sync) {
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+        }
     }
 }

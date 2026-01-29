@@ -54,9 +54,11 @@ public class RenderMachine extends TileEntitySpecialRenderer {
             }
         }
         GL11.glTranslatef(0.0F, -0.5F, 0.0F);
-        GL11.glTranslatef(par1.getOffsetX(), 0.0F, 0.0F);
-        GL11.glTranslatef(0.0F, par1.getOffsetY(), 0.0F);
-        GL11.glTranslatef(0.0F, 0.0F, par1.getOffsetZ());
+        GL11.glTranslatef(par1.getOffsetX(), par1.getOffsetY(), par1.getOffsetZ());
+
+        float scale = par1.getScale();
+        GL11.glScalef(scale, scale, scale);
+
         float yaw = par1.getRotation();
         if (cfg.rotateByMetadata && par1.getBlockMetadata() == 0) {
             yaw = -yaw;

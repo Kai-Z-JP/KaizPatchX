@@ -18,6 +18,8 @@ public class RenderRailroadSign extends TileEntitySpecialRenderer {
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4, (float) par6 + 0.5F);
 
         GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
+        float scale = tileEntity.getScale();
+        GL11.glScalef(scale, scale, scale);
 
         GL11.glPushMatrix();
         float f0 = 1.25F;

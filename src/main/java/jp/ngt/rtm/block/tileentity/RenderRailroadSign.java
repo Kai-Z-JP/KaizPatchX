@@ -21,14 +21,20 @@ public class RenderRailroadSign extends TileEntitySpecialRenderer {
         float scale = tileEntity.getScale();
         GL11.glScalef(scale, scale, scale);
 
-        GL11.glPushMatrix();
         float f0 = 1.25F;
         boolean flipVertical = tileEntity.getWorldObj().getBlock(tileEntity.xCoord, tileEntity.yCoord + 1, tileEntity.zCoord) != Blocks.air;
         if (flipVertical) {
             f0 = -0.25F;
         }
         GL11.glTranslatef(0.0F, f0, 0.0F);
-        GL11.glRotatef(tileEntity.getRotation(), 0.0F, 1.0F, 0.0F);
+        float roll = tileEntity.getRotationRoll();
+        GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
+        float pitch = tileEntity.getRotationPitch();
+        GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
+        float yaw = tileEntity.getRotationYaw();
+        GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
+
+        GL11.glPushMatrix();
 
         Tessellator tessellator = Tessellator.instance;
         this.bindTexture(tileEntity.getProperty().getTexture());

@@ -82,12 +82,18 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
     public AxisAlignedBB getRenderBoundingBox() {
         float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
 
-        float rotation = this.getRotation();
-        float rad = NGTMath.toRadians(rotation);
+        float pitch = this.getRotationPitch();
+        float pitchRad = NGTMath.toRadians(pitch);
+        float yaw = this.getRotationYaw();
+        float yawRad = NGTMath.toRadians(yaw);
+        float roll = this.getRotationRoll();
+        float rollRad = NGTMath.toRadians(roll);
 
         List<Vec3> vertexList = IntStream.range(0, 4).mapToObj(i -> {
             Vec3 vec = Vec3.createVectorHelper(box[i / 2 * 3] - 0.5, 0, box[i % 2 * 3 + 2] - 0.5);
-            vec.rotateAroundY(rad);
+            vec.rotateAroundX(pitchRad);
+            vec.rotateAroundY(yawRad);
+            vec.rotateAroundZ(rollRad);
             return vec.addVector(0.5, 0.0, 0.5);
         }).collect(Collectors.toList());
 

@@ -59,7 +59,11 @@ public class RenderMachine extends TileEntitySpecialRenderer {
         float scale = par1.getScale();
         GL11.glScalef(scale, scale, scale);
 
-        float yaw = par1.getRotation();
+        float roll = par1.getRotationRoll();
+        GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
+        float pitch = par1.getRotationPitch();
+        GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
+        float yaw = par1.getRotationYaw();
         if (cfg.rotateByMetadata && par1.getBlockMetadata() == 0) {
             yaw = -yaw;
         }

@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 
 public abstract class TileEntityPlaceable extends TileEntityCustom {
-    private float offsetX, offsetY, offsetZ, rotation;
+    private float offsetX, offsetY, offsetZ, roll, pitch, yaw;
     private float scale = 1.0F;
 
     @Override
@@ -18,14 +18,18 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
                 nbt.getFloat("offsetZ"),
                 false
         );
-        this.setRotation(nbt.getFloat("Yaw"), false);
+        this.setRotationYaw(nbt.getFloat("Yaw"), false);
+        this.setRotationRoll(nbt.getFloat("RotationRoll"), false);
+        this.setRotationPitch(nbt.getFloat("RotationPitch"), false);
         this.scale = nbt.hasKey("Scale") ? nbt.getFloat("Scale") : 1.0F;
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setFloat("Yaw", this.rotation);
+        nbt.setFloat("Yaw", this.yaw);
+        nbt.setFloat("RotationRoll", this.roll);
+        nbt.setFloat("RotationPitch", this.pitch);
         nbt.setFloat("offsetX", this.offsetX);
         nbt.setFloat("offsetY", this.offsetY);
         nbt.setFloat("offsetZ", this.offsetZ);
@@ -54,16 +58,45 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
         }
     }
 
-    public float getRotation() {
-        return this.rotation;
+    public float getRotationRoll() {
+        return this.roll;
     }
 
-    public void setRotation(float par1, boolean synch) {
-        this.rotation = par1 % 360.0F;
-        if (synch) {
-            this.markDirty();
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+    public void setRotationRoll(float roll, boolean sync) {
+        this.roll = roll % 360.0F;
+        if (sync) {
+            this.syncUpdate();
         }
+    }
+
+    public float getRotationPitch() {
+        return this.pitch;
+    }
+
+    public void setRotationPitch(float pitch, boolean sync) {
+        this.pitch = pitch % 360.0F;
+        if (sync) {
+            this.syncUpdate();
+        }
+    }
+
+    public float getRotationYaw() {
+        return this.yaw;
+    }
+
+    public void setRotationYaw(float yaw, boolean sync) {
+        this.yaw = yaw % 360.0F;
+        if (sync) {
+            this.syncUpdate();
+        }
+    }
+
+    public float getRotation() {
+        return this.getRotationYaw();
+    }
+
+    public void setRotation(float par1, boolean sync) {
+        this.setRotationYaw(par1, sync);
     }
 
     public void setRotation(EntityPlayer player, float rotationInterval, boolean synch) {
@@ -78,8 +111,12 @@ public abstract class TileEntityPlaceable extends TileEntityCustom {
     public void setScale(float scale, boolean sync) {
         this.scale = scale;
         if (sync) {
-            this.markDirty();
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            this.syncUpdate();
         }
+    }
+
+    private void syncUpdate() {
+        this.markDirty();
+        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 }

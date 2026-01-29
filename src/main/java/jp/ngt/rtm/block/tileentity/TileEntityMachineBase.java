@@ -34,11 +34,6 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     public boolean isGettingPower;
     protected Vec3 normal;
 
-    /**
-     * メタで保存してた方向データを更新したか
-     */
-    private boolean yawFixed;
-
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
@@ -47,9 +42,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
             s = this.getDefaultName();
         }
         this.setModelName(s);
-        this.pitch = nbt.getFloat("Pitch");
 
-        this.yawFixed = nbt.hasKey("Yaw");
         this.getResourceState().readFromNBT(nbt.getCompoundTag("State"));
 
         boolean gettingPower = nbt.getBoolean("isGettingPower");
@@ -65,7 +58,6 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setString("ModelName", this.modelName);
-        nbt.setFloat("Pitch", this.pitch);
         nbt.setTag("State", this.getResourceState().writeToNBT());
         nbt.setBoolean("isGettingPower", this.isGettingPower);
     }
@@ -99,7 +91,6 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     @Override
     public void setRotation(float par1, boolean synch) {
         super.setRotation(par1, synch);
-        this.yawFixed = true;
     }
 
     public float getPitch() {
@@ -142,12 +133,18 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     public AxisAlignedBB getRenderBoundingBox() {
         float[] box = this.getResourceState().getResourceSet().getConfig().renderAABB;
 
-        float rotation = this.getRotation();
-        float rad = NGTMath.toRadians(rotation);
+        float pitch = this.getRotationPitch();
+        float pitchRad = NGTMath.toRadians(pitch);
+        float yaw = this.getRotationYaw();
+        float yawRad = NGTMath.toRadians(yaw);
+        float roll = this.getRotationRoll();
+        float rollRad = NGTMath.toRadians(roll);
 
         List<Vec3> vertexList = IntStream.range(0, 4).mapToObj(i -> {
             Vec3 vec = Vec3.createVectorHelper(box[i / 2 * 3] - 0.5, 0, box[i % 2 * 3 + 2] - 0.5);
-            vec.rotateAroundY(rad);
+            vec.rotateAroundX(pitchRad);
+            vec.rotateAroundY(yawRad);
+            vec.rotateAroundZ(rollRad);
             return vec.addVector(0.5, 0.0, 0.5);
         }).collect(Collectors.toList());
 

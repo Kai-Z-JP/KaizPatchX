@@ -20,7 +20,11 @@ public class RenderFlag extends TileEntitySpecialRenderer {
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glTranslatef((float) par2 + 0.5F, (float) par4 + 1.0F, (float) par6 + 0.5F);
-        float yaw = tileEntity.getRotation();
+        float roll = tileEntity.getRotationRoll();
+        GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
+        float pitch = tileEntity.getRotationPitch();
+        GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
+        float yaw = tileEntity.getRotationYaw();
         GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
 
         FlagProperty property = tileEntity.getProperty();

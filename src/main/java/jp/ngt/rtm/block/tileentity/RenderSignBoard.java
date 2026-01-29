@@ -58,7 +58,12 @@ public class RenderSignBoard extends TileEntitySpecialRenderer {
         }
 
         GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
-        GL11.glRotatef(tileEntity.getRotation(), 0.0F, 1.0F, 0.0F);
+        float roll = tileEntity.getRotationRoll();
+        GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
+        float pitch = tileEntity.getRotationPitch();
+        GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
+        float yaw = tileEntity.getRotationYaw();
+        GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
         float scale = tileEntity.getScale();
         GL11.glScalef(scale, scale, scale);
 

@@ -25,11 +25,25 @@ public class SignalPartsRenderer extends TileEntityPartsRenderer<ModelSetSignalC
         return ((TileEntitySignal) par1).getBlockDirection();
     }
 
+    public float getPitch(TileEntity par1) {
+        if (par1 == null) {
+            return 0.0F;
+        }
+        return ((TileEntitySignal) par1).getRotationPitch();
+    }
+
+    public float getRoll(TileEntity par1) {
+        if (par1 == null) {
+            return 0.0F;
+        }
+        return ((TileEntitySignal) par1).getRotationRoll();
+    }
+
     public float getRotation(TileEntity par1) {
         if (par1 == null) {
             return 0.0F;
         }
-        return ((TileEntitySignal) par1).getRotation();
+        return ((TileEntitySignal) par1).getRotationYaw();
     }
 
     public int getSignal(TileEntity par1) {

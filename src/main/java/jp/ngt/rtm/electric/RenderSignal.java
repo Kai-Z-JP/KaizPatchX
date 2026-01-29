@@ -28,6 +28,11 @@ public class RenderSignal extends TileEntitySpecialRenderer {
         GL11.glTranslatef(tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
         float scale = tileEntity.getScale();
         GL11.glScalef(scale, scale, scale);
+
+        float roll = tileEntity.getRotationRoll();
+        GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
+        float pitch = tileEntity.getRotationPitch();
+        GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
         float dir = tileEntity.getBlockDirection();
         GL11.glRotatef(dir, 0.0F, 1.0F, 0.0F);
         int pass = MinecraftForgeClient.getRenderPass();

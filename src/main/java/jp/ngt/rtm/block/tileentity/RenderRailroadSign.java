@@ -48,6 +48,7 @@ public class RenderRailroadSign extends TileEntitySpecialRenderer {
         tessellator.draw();
         GL11.glPopMatrix();
 
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         if (flipVertical) {
             GL11.glTranslatef(0.0F, -0.5F, 0.0F);

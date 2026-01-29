@@ -8,10 +8,12 @@ import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.util.NGTUtilClient;
+import jp.ngt.rtm.ClientProxy;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.RenderMirror;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
+import jp.ngt.rtm.gui.camera.Camera;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.Display;
@@ -46,6 +48,11 @@ public final class RTMTickHandlerClient {
         World world = NGTUtilClient.getMinecraft().theWorld;
         if (!NGTUtilClient.getMinecraft().isGamePaused() && world != null) {
             if (event.phase == Phase.START) {
+                byte viewMode = ClientProxy.getViewMode();
+                if (viewMode == 4) {
+                    Camera.INSTANCE.updateKeyState();
+                }
+
                 if (!RenderMirror.INSTANCE.finishRender) {
                     RenderMirror.INSTANCE.update();
                 }

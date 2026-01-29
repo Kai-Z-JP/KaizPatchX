@@ -212,7 +212,6 @@ public final class Camera {
             renderDOF(mc, guiW, guiH);
         }
         GL11.glEnable(2929);
-        updateKeyState();
         renderText(mc, guiW, guiH);
     }
 
@@ -360,7 +359,7 @@ public final class Camera {
                 String.format("Focus:[%c][%c] [%c]", CameraKey.FOCUS_OUT.chara, CameraKey.FOCUS_IN.chara, CameraKey.FOCUS_MODE.chara), x, y, color);
     }
 
-    private void updateKeyState() {
+    public void updateKeyState() {
         this.scale = CameraKeySet.ZOOM.updateValue(this.scale);
         float defaultFov = (Minecraft.getMinecraft()).gameSettings.fovSetting;
         double d0 = Math.tan(NGTMath.toRadians(defaultFov * 0.5F)) / this.scale;

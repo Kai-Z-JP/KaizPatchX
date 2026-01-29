@@ -14,14 +14,17 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.entity.train.util.FormationManager;
+import jp.ngt.rtm.item.ItemWrench;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.network.ConnectionManager;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ReportedException;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 public final class RTMEventHandler {
@@ -86,6 +89,18 @@ public final class RTMEventHandler {
             CrashReport report = RTMCore.proxy.getCrashReport();
             RTMCore.proxy.postReportCrash();
             throw new ReportedException(report);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerAnimationEvent(PlayerInteractEvent event) {
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+            EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
+            ItemStack heldItem = player.getHeldItem();
+            if (heldItem != null && heldItem.getItem() instanceof ItemWrench) {
+                ItemWrench wrench = (ItemWrench) heldItem.getItem();
+                wrench.toggleModeLock(heldItem, player);
+            }
         }
     }
 }

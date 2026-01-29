@@ -17,6 +17,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -128,6 +129,17 @@ public class ItemWrench extends Item {
     }
 
     private void changeMode(World world, ItemStack itemStack, EntityPlayer player) {
+        if (isModeLocked(itemStack)) {
+            if (!world.isRemote) {
+                NGTLog.sendChatMessage(player, EnumChatFormatting.RED + "Mode change is locked!");
+                int i = itemStack.getItemDamage();
+                String mode = StatCollector.translateToLocal("description.wrench.mode_" + i);
+                EnumChatFormatting color = this.getColorForMode(i);
+                NGTLog.sendChatMessage(player, EnumChatFormatting.GOLD + "Current mode: " + color + mode);
+            }
+            return;
+        }
+
         int i = (itemStack.getItemDamage() + 1) % 12;
         if (i >= 3 && i <= 5) {
             i = 6;
@@ -135,25 +147,53 @@ public class ItemWrench extends Item {
         itemStack.setItemDamage(i);
         if (!world.isRemote) {
             String mode = StatCollector.translateToLocal("description.wrench.mode_" + i);
-            EnumChatFormatting color;
-            switch (i) {
-                case 0:
-                    color = EnumChatFormatting.RED;
-                    break;
-                case 1:
-                    color = EnumChatFormatting.AQUA;
-                    break;
-                case 2:
-                    color = EnumChatFormatting.LIGHT_PURPLE;
-                    break;
-                default:
-                    color = EnumChatFormatting.WHITE;
-                    break;
-            }
+            EnumChatFormatting color = this.getColorForMode(i);
             NGTLog.sendChatMessage(player, "message.wrench.mode", color + mode);
         } else {
             RTMCore.proxy.playSound(player, new ResourceLocation("gui.button.press"), 1.0F, 1.0F);
         }
+    }
+
+    private EnumChatFormatting getColorForMode(int mode) {
+        switch (mode) {
+            case 0:
+                return EnumChatFormatting.RED;
+            case 1:
+                return EnumChatFormatting.AQUA;
+            case 2:
+                return EnumChatFormatting.LIGHT_PURPLE;
+            default:
+                return EnumChatFormatting.WHITE;
+        }
+    }
+
+    public void toggleModeLock(ItemStack itemStack, EntityPlayer player) {
+        boolean locked = isModeLocked(itemStack);
+        setModeLocked(itemStack, !locked);
+
+        if (!player.worldObj.isRemote) {
+            if (!locked) {
+                NGTLog.sendChatMessage(player, EnumChatFormatting.GOLD + "Wrench mode change locked!");
+            } else {
+                NGTLog.sendChatMessage(player, EnumChatFormatting.GREEN + "Wrench mode change unlocked!");
+            }
+        } else {
+            RTMCore.proxy.playSound(player, new ResourceLocation("random.click"), 0.5F, locked ? 0.6F : 1.0F);
+        }
+    }
+
+    public boolean isModeLocked(ItemStack itemStack) {
+        if (itemStack.hasTagCompound()) {
+            return itemStack.getTagCompound().getBoolean("ModeLocked");
+        }
+        return false;
+    }
+
+    private void setModeLocked(ItemStack itemStack, boolean locked) {
+        if (!itemStack.hasTagCompound()) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
+        itemStack.getTagCompound().setBoolean("ModeLocked", locked);
     }
 
     private void placeMarker(EntityPlayer player, World world, int x, int y, int z, BlockMarker block, int damage) {
@@ -231,6 +271,15 @@ public class ItemWrench extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+        if (isModeLocked(itemStack)) {
+            list.add(EnumChatFormatting.GOLD + "Mode Change: LOCKED");
+            list.add(EnumChatFormatting.GRAY + "Right-click in air while sneaking to unlock");
+        } else {
+            list.add(EnumChatFormatting.GREEN + "Mode Change: UNLOCKED");
+            list.add(EnumChatFormatting.GRAY + "Right-click in air while sneaking to lock");
+        }
+        list.add("");
+
         for (int i = 0; i < 12; ++i) {
             if (i >= 3 && i <= 5) {
                 continue;

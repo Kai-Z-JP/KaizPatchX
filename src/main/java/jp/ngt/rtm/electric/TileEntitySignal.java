@@ -12,7 +12,6 @@ import jp.ngt.rtm.modelpack.ScriptExecuter;
 import jp.ngt.rtm.modelpack.modelset.ModelSetSignal;
 import jp.ngt.rtm.modelpack.modelset.ModelSetSignalClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
-import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -184,8 +183,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetSignalClient modelSet = (ModelSetSignalClient) this.getModelSet();
-        ModelObject modelObj = modelSet.model;
-        return pass == 0 || (modelObj.light || modelObj.alphaBlend) && pass >= 1;
+        return pass == 0 || (modelSet.model.light || modelSet.model.alphaBlend) && pass >= 1;
     }
 
     @Override

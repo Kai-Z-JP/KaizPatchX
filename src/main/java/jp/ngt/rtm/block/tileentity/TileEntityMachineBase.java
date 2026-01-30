@@ -13,7 +13,6 @@ import jp.ngt.rtm.modelpack.ScriptExecuter;
 import jp.ngt.rtm.modelpack.modelset.ModelSetMachine;
 import jp.ngt.rtm.modelpack.modelset.ModelSetMachineClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
-import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -118,8 +117,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetMachineClient modelSet = (ModelSetMachineClient) this.getModelSet();
-        ModelObject modelObj = modelSet.modelObj;
-        return pass == 0 || (modelObj.light || modelObj.alphaBlend) && pass >= 0;
+        return pass == 0 || (modelSet.modelObj.light || modelSet.modelObj.alphaBlend) && pass >= 0;
     }
 
     @Override

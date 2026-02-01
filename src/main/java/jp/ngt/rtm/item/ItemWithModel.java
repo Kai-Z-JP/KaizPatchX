@@ -168,10 +168,6 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         }
     }
 
-    private static float getRotation(ItemStack itemStack) {
-        return itemStack.hasTagCompound() ? itemStack.getTagCompound().getFloat("yaw") : 0;
-    }
-
     private static void setOffset(ItemStack itemStack, float offsetX, float offsetY, float offsetZ) {
         if (!itemStack.hasTagCompound()) {
             itemStack.setTagCompound(new NBTTagCompound());
@@ -182,7 +178,11 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         nbt.setFloat("offsetZ", offsetZ);
     }
 
-    private static void setRotation(ItemStack itemStack, float rotation) {
+    private static float getRotationYaw(ItemStack itemStack) {
+        return itemStack.hasTagCompound() ? itemStack.getTagCompound().getFloat("yaw") : 0;
+    }
+
+    private static void setRotationYaw(ItemStack itemStack, float rotation) {
         if (!itemStack.hasTagCompound()) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
@@ -194,13 +194,13 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         if (ItemWithModel.hasOffset(itemStack)) {
             float[] offset = ItemWithModel.getOffset(itemStack);
             tile.setOffset(offset[0], offset[1], offset[2], true);
-            tile.setRotation(ItemWithModel.getRotation(itemStack), true);
+            tile.setRotationYaw(ItemWithModel.getRotationYaw(itemStack), true);
         }
     }
 
     public static void copyOffsetToItemStack(TileEntityPlaceable tileEntity, ItemStack itemStack) {
         ItemWithModel.setOffset(itemStack, tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
-        ItemWithModel.setRotation(itemStack, tileEntity.getRotation());
+        ItemWithModel.setRotationYaw(itemStack, tileEntity.getRotationYaw());
     }
 
     protected String getResourceName(ItemStack itemStack) {
@@ -212,5 +212,10 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         String itemStackName = super.getItemStackDisplayName(itemStack);
         String resourceName = this.getResourceName(itemStack);
         return String.format("%s (%s)", itemStackName, resourceName);
+    }
+
+    @Override
+    public boolean hasEffect(ItemStack itemStack, int pass) {
+        return ItemWithModel.hasOffset(itemStack) || !this.getModelState(itemStack).getDataMap().getEntries().isEmpty();
     }
 }

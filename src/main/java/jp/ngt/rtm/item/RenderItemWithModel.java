@@ -5,10 +5,12 @@ import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.cfg.ModelConfig;
 import jp.ngt.rtm.modelpack.modelset.IModelSetClient;
 import jp.ngt.rtm.modelpack.modelset.ModelSetBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -56,6 +58,11 @@ public class RenderItemWithModel implements IItemRenderer {
         } else if (type == ItemRenderType.INVENTORY) {
             GL11.glDisable(GL11.GL_LIGHTING);
             this.renderQuad();
+        }
+
+        if (item.hasEffect(0)) {
+            TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+            RenderItem.getInstance().renderEffect(texturemanager, 0, 0);
         }
 
         GL11.glPopMatrix();

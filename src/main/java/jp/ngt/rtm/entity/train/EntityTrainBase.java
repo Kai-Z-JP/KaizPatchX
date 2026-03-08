@@ -66,7 +66,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     public int brakeCount = 72;
     public int atsCount;
     @SideOnly(Side.CLIENT)
-    public int brakeAirCount = MAX_AIR_COUNT;
+    public int brakeAirCount;
     @SideOnly(Side.CLIENT)
     public boolean complessorActive;
 
@@ -77,6 +77,9 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         this.setSize(TRAIN_WIDTH, TRAIN_HEIGHT);
         this.yOffset = TRAIN_HEIGHT;
         this.noClip = true;
+        if (world.isRemote) {
+            brakeAirCount = MAX_AIR_COUNT;
+        }
     }
 
     public EntityTrainBase(World world, String s) {

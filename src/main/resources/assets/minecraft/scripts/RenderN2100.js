@@ -84,7 +84,7 @@ function renderHeadLight(entity, pass, par3) {
     var tailLight = false;
 
     if (entity != null) {
-        mode = entity.getTrainStateData(TrainState.TrainStateType.State_Light);////0:消灯,1:前照灯,2:尾灯
+        mode = entity.getTrainStateData(TrainState.TrainStateType.State_Light.id);////0:消灯,1:前照灯,2:尾灯
 
         if (mode > 0) {
             dir = entity.getTrainDirection();

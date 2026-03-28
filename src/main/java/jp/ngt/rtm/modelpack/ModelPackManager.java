@@ -2,6 +2,7 @@ package jp.ngt.rtm.modelpack;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.compat.AngelicaCompat;
 import jp.ngt.ngtlib.io.FileType;
 import jp.ngt.ngtlib.io.NGTClassUtil;
 import jp.ngt.ngtlib.io.NGTJson;
@@ -243,7 +244,9 @@ public final class ModelPackManager {
 
     public String getScript(String fileName) {
         try {
-            return this.loadScript(fileName);
+            String rawScript = this.loadScript(fileName);
+
+            return AngelicaCompat.isAvailable() ? AngelicaCompat.transformScript(rawScript) : rawScript;
         } catch (IOException e) {
             throw new ModelPackException("Failed to load script", fileName, e);
         }

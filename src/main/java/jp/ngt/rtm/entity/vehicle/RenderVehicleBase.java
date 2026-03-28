@@ -85,7 +85,7 @@ public final class RenderVehicleBase extends Render {
 
         //EntityRenderer.1412->pass=1
         int pass = MinecraftForgeClient.getRenderPass();
-        if (pass == 0) {
+        if (pass != 1) {
             for (int i = 0; i < 2; ++i)//0;通常, 1:発光
             {
                 if (i == 1 && !modelSet.vehicleModel.light) {
@@ -125,7 +125,7 @@ public final class RenderVehicleBase extends Render {
                     GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
                 }
             }
-        } else if (pass == 1) {
+        } else {
             if (modelSet.vehicleModel.alphaBlend)//半透明部分描画
             {
                 GL11.glAlphaFunc(GL11.GL_LESS, 1.0F);//a<1.0
@@ -145,11 +145,11 @@ public final class RenderVehicleBase extends Render {
             GL11.glShadeModel(GL11.GL_FLAT);
         }
 
-        if (pass == 0) {
+        if (pass != 1) {
             if (modelSet.rollsignTexture != null) {
                 this.renderRollsign(vehicle, modelSet);
             }
-        } else if (pass == 1) {
+        } else {
             if (!NGTUtilClient.usingShader()) {
                 GL11.glDisable(GL11.GL_CULL_FACE);
                 this.renderLightEffect(vehicle, modelSet);

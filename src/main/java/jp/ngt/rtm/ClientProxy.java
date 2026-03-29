@@ -6,6 +6,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.compat.AngelicaCompat;
 import jp.ngt.ngtlib.io.NGTFileLoadException;
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
@@ -160,6 +161,8 @@ public class ClientProxy extends CommonProxy {
         ModelPackManager.INSTANCE.registerType("ModelWire", WireConfig.class, ModelSetWireClient.class);
         ModelPackManager.INSTANCE.registerType("ModelConnector", ConnectorConfig.class, ModelSetConnectorClient.class);
         ModelPackManager.INSTANCE.registerType("ModelOrnament", OrnamentConfig.class, ModelSetOrnamentClient.class);
+
+        AngelicaCompat.init();
 
         ModelPackLoadThread thread = new ModelPackLoadThread(Side.CLIENT);
         thread.start();

@@ -16,3 +16,5 @@ commands.protect.usage=/protect <임의의 암호화 코드> : 보호 키 획득
 commands.usage.usage=/usage : 손에 들고 있는 아이템이나 타고 있는 탈것의 사용법을 알려줍니다.
 
 gui.warning=인증 키를 입력하세요!
+gui.applyDone=적용 후 닫기
+gui.apply=적용

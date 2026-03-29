@@ -11,3 +11,5 @@ commands.ngt.usage=/ngt '激活码'
 commands.ngt.invalid_command=命令字符不正确
 
 gui.warning=请输入激活码！
+gui.applyDone=应用并关闭
+gui.apply=应用

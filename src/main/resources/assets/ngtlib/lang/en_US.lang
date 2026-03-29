@@ -16,3 +16,5 @@ commands.protect.usage=/protect <code> : Get protection key
 commands.usage.usage=/usage : Show usage of item and vehicle
 
 gui.warning=Please enter the authentication key!
+gui.applyDone=Apply & Done
+gui.apply=Apply

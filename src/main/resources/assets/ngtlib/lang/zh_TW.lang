@@ -13,3 +13,5 @@ commands.ngt.usage=/ngt '驗證碼'
 commands.ngt.invalid_command=命令字符不正確
 
 gui.warning=請輸入驗證碼!!
+gui.applyDone=套用並關閉
+gui.apply=套用

@@ -16,3 +16,5 @@ commands.protect.usage=/protect <任意の暗号化コード> : 保護鍵取得
 commands.usage.usage=/usage : 手に持ったアイテムや乗車中の乗り物の使用方法を表示
 
 gui.warning=認証キーを入力してください！
+gui.applyDone=適用して閉じる
+gui.apply=適用

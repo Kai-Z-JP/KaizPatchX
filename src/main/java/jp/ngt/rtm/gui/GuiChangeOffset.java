@@ -31,8 +31,9 @@ public class GuiChangeOffset extends GuiScreenCustom {
         super.initGui();
 
         this.buttonList.clear();
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 105, this.height - 28, 100, 20, I18n.format("gui.done")));
-        this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 100, 20, I18n.format("gui.cancel")));
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 158, this.height - 28, 100, 20, I18n.format("gui.applyDone")));
+        this.buttonList.add(new GuiButton(2, this.width / 2 - 50, this.height - 28, 100, 20, I18n.format("gui.apply")));
+        this.buttonList.add(new GuiButton(1, this.width / 2 + 58, this.height - 28, 100, 20, I18n.format("gui.cancel")));
 
         this.fieldOffsetX = this.setNumberField(this.width - 70, 20, 60, 20, String.valueOf(this.tileEntity.getOffsetX()), true);
         this.fieldOffsetY = this.setNumberField(this.width - 70, 50, 60, 20, String.valueOf(this.tileEntity.getOffsetY()), true);
@@ -64,10 +65,15 @@ public class GuiChangeOffset extends GuiScreenCustom {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
-            this.mc.displayGuiScreen(null);
+            // Apply & Done
             this.sendPacket();
-        } else if (button.id == 1) {
             this.mc.displayGuiScreen(null);
+        } else if (button.id == 1) {
+            // Cancel
+            this.mc.displayGuiScreen(null);
+        } else if (button.id == 2) {
+            // Apply
+            this.sendPacket();
         }
 
         super.actionPerformed(button);

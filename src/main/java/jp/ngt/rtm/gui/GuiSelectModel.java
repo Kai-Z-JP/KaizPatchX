@@ -108,10 +108,11 @@ public class GuiSelectModel extends GuiScreenCustom {
         this.currentScroll = 0;
 
         String keyword = this.searchField.getText();
-        if (keyword == null || keyword.length() == 0) {
+        if (keyword == null || keyword.isEmpty()) {
             this.modelListSelect.addAll(this.modelListAll);
         } else {
-            this.modelListAll.stream().filter(set -> set.getConfig().tags.contains(keyword)).forEach(set -> this.modelListSelect.add(set));
+            String keywordLower = keyword.toLowerCase();
+            this.modelListAll.stream().filter(set -> set.getConfig().tags.toLowerCase().contains(keywordLower)).forEach(set -> this.modelListSelect.add(set));
         }
 
         //名前順にソート

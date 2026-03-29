@@ -2,10 +2,8 @@ package jp.ngt.ngtlib.renderer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.kaiz.kaizpatch.compat.AngelicaCompat;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.shader.TesselatorVertexState;
 import net.minecraft.client.util.QuadComparator;
 import org.lwjgl.opengl.GL11;
@@ -67,159 +65,78 @@ public final class NGTTessellator implements IRenderer {
     public int draw() {
         if (!this.isDrawing) {
             throw new IllegalStateException("Not tesselating!");
-        }
-        this.isDrawing = false;
-
-        if (AngelicaCompat.isAvailable()) {
-            // Angelica環境: MinecraftのTessellatorに委譲
-            return drawWithMinecraftTessellator();
         } else {
-            // 通常環境: 従来の頂点配列モードで描画
-            return drawVertexArray();
-        }
-    }
+            this.isDrawing = false;
 
-    /**
-     * Angelica環境用: MinecraftのTessellatorに委譲して描画
-     */
-    private int drawWithMinecraftTessellator() {
-        Tessellator mc = Tessellator.instance;
-        mc.startDrawing(this.drawMode);
+            int offs = 0;
+            while (offs < this.vertexCount) {
+                int vtc = Math.min(this.vertexCount - offs, NATIVE_BUFFER_SIZE >> 5);
+                intBuffer.clear();
+                intBuffer.put(this.rawBuffer, offs << 3, vtc << 3);
+                byteBuffer.position(0);
+                byteBuffer.limit(vtc << 5);
+                offs += vtc;
 
-        for (int i = 0; i < this.vertexCount; i++) {
-            int base = i * 8;
-
-            // 法線を設定
-            if (this.hasNormals) {
-                int n = this.rawBuffer[base + 6];
-                float nx = ((byte) (n & 0xFF)) / 127.0f;
-                float ny = ((byte) ((n >> 8) & 0xFF)) / 127.0f;
-                float nz = ((byte) ((n >> 16) & 0xFF)) / 127.0f;
-                mc.setNormal(nx, ny, nz);
-            }
-
-            // ブライトネスを設定
-            if (this.hasBrightness) {
-                mc.setBrightness(this.rawBuffer[base + 7]);
-            }
-
-            // 色を設定
-            if (this.hasColor) {
-                int c = this.rawBuffer[base + 5];
-                int r, g, b, a;
-                if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN) {
-                    r = c & 0xFF;
-                    g = (c >> 8) & 0xFF;
-                    b = (c >> 16) & 0xFF;
-                    a = (c >> 24) & 0xFF;
-                } else {
-                    r = (c >> 24) & 0xFF;
-                    g = (c >> 16) & 0xFF;
-                    b = (c >> 8) & 0xFF;
-                    a = c & 0xFF;
+                if (this.hasTexture) {
+                    floatBuffer.position(3);
+                    GL11.glTexCoordPointer(2, 32, floatBuffer);
+                    GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
                 }
-                mc.setColorRGBA(r, g, b, a);
+
+                if (this.hasBrightness) {
+                    OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
+                    shortBuffer.position(14);
+                    GL11.glTexCoordPointer(2, 32, shortBuffer);
+                    GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                    OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+                }
+
+                if (this.hasColor) {
+                    byteBuffer.position(20);
+                    GL11.glColorPointer(4, true, 32, byteBuffer);
+                    GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+                }
+
+                if (this.hasNormals) {
+                    byteBuffer.position(24);
+                    GL11.glNormalPointer(32, byteBuffer);
+                    GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+                }
+
+                floatBuffer.position(0);
+                GL11.glVertexPointer(3, 32, floatBuffer);
+                GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+                GL11.glDrawArrays(this.drawMode, 0, vtc);
+                GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+
+                if (this.hasTexture) {
+                    GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                }
+
+                if (this.hasBrightness) {
+                    OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
+                    GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+                    OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+                }
+
+                if (this.hasColor) {
+                    GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                }
+
+                if (this.hasNormals) {
+                    GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+                }
             }
 
-            // 頂点座標を取得
-            float x = Float.intBitsToFloat(this.rawBuffer[base]);
-            float y = Float.intBitsToFloat(this.rawBuffer[base + 1]);
-            float z = Float.intBitsToFloat(this.rawBuffer[base + 2]);
-
-            // テクスチャ座標付きで頂点を追加
-            if (this.hasTexture) {
-                float u = Float.intBitsToFloat(this.rawBuffer[base + 3]);
-                float v = Float.intBitsToFloat(this.rawBuffer[base + 4]);
-                mc.addVertexWithUV(x, y, z, u, v);
-            } else {
-                mc.addVertex(x, y, z);
+            if (this.rawBufferSize > 0x20000 && this.rawBufferIndex < (this.rawBufferSize << 3)) {
+                this.rawBufferSize = 0x10000;
+                this.rawBuffer = new int[this.rawBufferSize];
             }
+
+            int i = this.rawBufferIndex << 2;
+            this.reset();
+            return i;
         }
-
-        int result = mc.draw();
-
-        // バッファサイズの縮小（メモリ節約）
-        if (this.rawBufferSize > 0x20000 && this.rawBufferIndex < (this.rawBufferSize << 3)) {
-            this.rawBufferSize = 0x10000;
-            this.rawBuffer = new int[this.rawBufferSize];
-        }
-
-        this.reset();
-        return result;
-    }
-
-    /**
-     * 通常環境用: 頂点配列モード（glDrawArrays）で描画
-     */
-    private int drawVertexArray() {
-        int offs = 0;
-        while (offs < this.vertexCount) {
-            int vtc = Math.min(this.vertexCount - offs, NATIVE_BUFFER_SIZE >> 5);
-            intBuffer.clear();
-            intBuffer.put(this.rawBuffer, offs << 3, vtc << 3);
-            byteBuffer.position(0);
-            byteBuffer.limit(vtc << 5);
-            offs += vtc;
-
-            if (this.hasTexture) {
-                floatBuffer.position(3);
-                GL11.glTexCoordPointer(2, 32, floatBuffer);
-                GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-            }
-
-            if (this.hasBrightness) {
-                OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
-                shortBuffer.position(14);
-                GL11.glTexCoordPointer(2, 32, shortBuffer);
-                GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-                OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
-            }
-
-            if (this.hasColor) {
-                byteBuffer.position(20);
-                GL11.glColorPointer(4, true, 32, byteBuffer);
-                GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
-            }
-
-            if (this.hasNormals) {
-                byteBuffer.position(24);
-                GL11.glNormalPointer(32, byteBuffer);
-                GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-            }
-
-            floatBuffer.position(0);
-            GL11.glVertexPointer(3, 32, floatBuffer);
-            GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-            GL11.glDrawArrays(this.drawMode, 0, vtc);
-            GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-
-            if (this.hasTexture) {
-                GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-            }
-
-            if (this.hasBrightness) {
-                OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
-                GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-                OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
-            }
-
-            if (this.hasColor) {
-                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
-            }
-
-            if (this.hasNormals) {
-                GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-            }
-        }
-
-        if (this.rawBufferSize > 0x20000 && this.rawBufferIndex < (this.rawBufferSize << 3)) {
-            this.rawBufferSize = 0x10000;
-            this.rawBuffer = new int[this.rawBufferSize];
-        }
-
-        int i = this.rawBufferIndex << 2;
-        this.reset();
-        return i;
     }
 
     public TesselatorVertexState getVertexState(float x, float y, float z) {

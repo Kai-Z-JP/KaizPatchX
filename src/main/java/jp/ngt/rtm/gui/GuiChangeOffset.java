@@ -22,6 +22,11 @@ public class GuiChangeOffset extends GuiScreenCustom {
     }
 
     @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
+    @Override
     public void initGui() {
         super.initGui();
 

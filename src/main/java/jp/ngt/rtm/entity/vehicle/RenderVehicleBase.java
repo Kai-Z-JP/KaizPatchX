@@ -14,9 +14,11 @@ import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.cfg.VehicleBaseConfig.Light;
 import jp.ngt.rtm.modelpack.cfg.VehicleBaseConfig.Rollsign;
+import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.render.PartsRenderer;
 import jp.ngt.rtm.util.RenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
@@ -59,6 +61,10 @@ public final class RenderVehicleBase extends Render {
             GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
             float[] fa = modelSet.getConfig().offset;
             GL11.glTranslated(fa[0], fa[1], fa[2]);
+
+            if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+                this.debugCollision(vehicle);
+            }
 
             this.renderVehicleMain(vehicle, modelSet, par9);
         } else {
@@ -418,5 +424,17 @@ public final class RenderVehicleBase extends Render {
     @Override
     public void doRender(Entity par1, double par2, double par4, double par6, float par8, float par9) {
         this.renderVehicleBase((EntityVehicleBase) par1, par2, par4, par6, par8, par9);
+    }
+
+    private void debugCollision(EntityVehicleBase vehicle) {
+        if (MinecraftForgeClient.getRenderPass() == 1) {
+            ModelSetVehicleBase modelSet = (ModelSetVehicleBase) vehicle.getResourceState().getResourceSet();
+            if (modelSet != null) {
+                if (modelSet.getCollisionObj() != null) {
+                    modelSet.getCollisionObj().checkAndRenderCollision(
+                            Minecraft.getMinecraft().thePlayer, vehicle, vehicle.getResourceState().exclusionParts);
+                }
+            }
+        }
     }
 }

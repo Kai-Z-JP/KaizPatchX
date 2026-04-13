@@ -11,6 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -65,6 +67,17 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
             return tile.isCollidedTrain;
         }
         return false;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+        if (this.worldObj.isRemote) {
+            TileEntityLargeRailCore core = this.getRailCore();
+            if (core != null) {
+                core.shouldRerenderRail = true;
+            }
+        }
     }
 
     @Override

@@ -28,8 +28,6 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
     protected List<Connection> connections = new ArrayList<>();
 
     public boolean isActivated;
-    private int signal;
-    private int prevSignal = -1;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
@@ -150,63 +148,55 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
     }
 
     /**
-     * 信号受信
+     * BFS伝播でこのノードが信号を受け取ったときに呼ばれる。
+     * サブクラスでオーバーライドして処理を実装する（例: エンティティへの転送）。
      */
-    public void onGetElectricity(int x, int y, int z, int level, int counter) {
-        if (level == 0) {
-            if (this.prevSignal < 0) {
-                this.prevSignal = 0;
-            }
-        } else if (level > 0) {
-            if (level != this.prevSignal) {
-                this.prevSignal = level;
-            }
-        }
+    protected void onReceiveSignal(int level) {
     }
 
     /**
-     * 信号送信
+     * BFS伝播でDIRECT接続先へ信号を適用するときに呼ばれる。
+     * TileEntityConnector がオーバーライドして IProvideElectricity に転送する。
      */
-    protected void sendElectricity(Connection connection, int level, int counter) {
-        TileEntityElectricalWiring tile = connection.getElectricalWiring(this.worldObj);
-        if (tile != null)//counter < 128
-        {
-            tile.onGetElectricity(this.xCoord, this.yCoord, this.zCoord, level, ++counter);
+    protected void applyToDirectConnection(Connection c, int level) {
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        if (this.worldObj != null && !this.worldObj.isRemote && this.isBlockTile()) {
+            ElectricalWiringManager.get(this.worldObj).register(this);
         }
     }
 
-    /**
-     * 全てに信号送信
-     */
-    protected void sendElectricityToAll(int level) {
-        this.connections.stream().filter(connection -> connection.type != ConnectionType.NONE).forEach(connection -> this.sendElectricity(connection, level, 0));
+    @Override
+    public void invalidate() {
+        if (this.worldObj != null && !this.worldObj.isRemote && this.isBlockTile()) {
+            ElectricalWiringManager.get(this.worldObj).onNodeRemoved(this.xCoord, this.yCoord, this.zCoord);
+        }
+        super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if (this.worldObj != null && !this.worldObj.isRemote && this.isBlockTile()) {
+            ElectricalWiringManager.get(this.worldObj).unregister(this);
+        }
+        super.onChunkUnload();
     }
 
     @Override
     public void updateEntity() {
         super.updateEntity();
 
-        if (this.worldObj.isRemote) {
-            if (this.isActivated) {
-                Random random = this.worldObj.rand;
-                IntStream.range(0, 3).forEach(d -> {
-                    double d1 = (float) this.xCoord + random.nextFloat();
-                    double d2 = (float) this.yCoord + random.nextFloat();
-                    double d3 = (float) this.zCoord + random.nextFloat();
-                    this.worldObj.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
-                });
-            }
-        } else {
-            //接続が有効かを確認
-            List<Connection> list = new ArrayList<>(this.connections);
-            list.stream().filter(connection -> !connection.isAvailable(this.worldObj) || connection.type == ConnectionType.NONE).forEach(connection -> this.setConnectionTo(connection.x, connection.y, connection.z, ConnectionType.NONE, ""));
-
-            //信号の処理
-            if (this.prevSignal >= 0 && this.prevSignal != this.signal) {
-                this.signal = this.prevSignal;
-                this.sendElectricityToAll(this.signal);
-            }
-            this.prevSignal = -1;
+        if (this.worldObj.isRemote && this.isActivated) {
+            Random random = this.worldObj.rand;
+            IntStream.range(0, 3).forEach(d -> {
+                double d1 = (float) this.xCoord + random.nextFloat();
+                double d2 = (float) this.yCoord + random.nextFloat();
+                double d3 = (float) this.zCoord + random.nextFloat();
+                this.worldObj.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
+            });
         }
     }
 
@@ -373,7 +363,9 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
      * ブロック破壊時に呼ばれる
      */
     public void onBlockBreaked() {
-        this.connections.forEach(connection -> this.sendElectricity(connection, 0, 0));
+        if (this.worldObj != null && !this.worldObj.isRemote) {
+            ElectricalWiringManager.get(this.worldObj).propagateSignal(this, 0);
+        }
     }
 
     @Override

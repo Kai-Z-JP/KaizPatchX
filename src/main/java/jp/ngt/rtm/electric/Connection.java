@@ -105,11 +105,8 @@ public class Connection {
                     this.connectedObject = TileEntityElectricalWiring.getWireEntity(world, x, y, z);
                     return (TileEntityElectricalWiring) this.connectedObject;
                 } else {
-                    TileEntity te = world.getTileEntity(this.x, this.y, this.z);
-                    if (te instanceof TileEntityElectricalWiring) {
-                        this.connectedObject = te;
-                        return (TileEntityElectricalWiring) this.connectedObject;
-                    }
+                    this.connectedObject = ElectricalWiringManager.get(world).getTile(this.x, this.y, this.z);
+                    return (TileEntityElectricalWiring) this.connectedObject;
                 }
             }
         }

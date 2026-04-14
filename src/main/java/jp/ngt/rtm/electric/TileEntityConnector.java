@@ -11,23 +11,12 @@ public class TileEntityConnector extends TileEntityConnectorBase {
     private int prevOutputSignal = -1;
 
     @Override
-    public void onGetElectricity(int x, int y, int z, int level, int counter) {
-        if (this.getBlockMetadata() < METADATA)//in
-        {
-            super.onGetElectricity(x, y, z, level, counter);
-        }
-    }
-
-    @Override
-    protected void sendElectricity(Connection connection, int level, int counter) {
-        if (this.getBlockMetadata() < METADATA && connection.type == ConnectionType.DIRECT)//in
-        {
-            IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
+    protected void applyToDirectConnection(Connection c, int level) {
+        if (this.getBlockMetadata() < METADATA) { // 入力モードのみデバイスへ転送
+            IProvideElectricity provider = c.getIProvideElectricity(this.worldObj);
             if (provider != null) {
                 provider.setElectricity(this.xCoord, this.yCoord, this.zCoord, level);
             }
-        } else {
-            super.sendElectricity(connection, level, counter);
         }
     }
 
@@ -45,16 +34,13 @@ public class TileEntityConnector extends TileEntityConnectorBase {
 
     private void checkSignalOutput() {
         Connection connection = this.getBlockConnection();
-        if (connection == null) {
-            return;
-        }
+        if (connection == null) return;
 
         IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
         if (provider != null) {
             int level = provider.getElectricity();
             if (level != this.prevOutputSignal) {
-                //this.onGetElectricity(connection.x, connection.y, connection.z, level, 0);
-                this.sendElectricityToAll(level);
+                ElectricalWiringManager.get(this.worldObj).propagateSignal(this, level);
                 this.prevOutputSignal = level;
             }
         }

@@ -17,6 +17,7 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     private String modelName = "";
     private ModelSetConnector myModelSet;
     public Vec3 wirePos = Vec3.ZERO;
+    private int cachedBlockMeta = -1;
 
     public TileEntityConnectorBase() {
     }
@@ -27,6 +28,9 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
+        if (nbt.hasKey("blockMeta")) {
+            this.cachedBlockMeta = nbt.getInteger("blockMeta");
+        }
         super.readFromNBT(nbt);
         String name;
         if (nbt.hasKey("ModelName") || !this.hasWorldObj()) {
@@ -46,6 +50,9 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
         }
         nbt.setString("ModelName", this.modelName);
         nbt.setTag("State", this.getResourceState().writeToNBT());
+        if (this.hasWorldObj()) {
+            nbt.setInteger("blockMeta", this.getBlockMetadata());
+        }
     }
 
     @Override
@@ -82,7 +89,7 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
             cfg = this.getModelSet().getConfig();
         }
         Vec3 vec = PooledVec3.create(cfg.wirePos[0], cfg.wirePos[1], cfg.wirePos[2]);
-        int meta = this.getBlockMetadata();
+        int meta = this.cachedBlockMeta >= 0 ? this.cachedBlockMeta : this.getBlockMetadata();
         switch (meta) {
             case 0:
                 vec = vec.rotateAroundZ((180.0F));

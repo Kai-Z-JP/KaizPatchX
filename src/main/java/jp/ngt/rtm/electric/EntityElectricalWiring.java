@@ -34,9 +34,20 @@ public abstract class EntityElectricalWiring extends EntityInstalledObject {
 
         if (this.tileEW.yCoord <= 0) {
             this.setTilePos();
+            if (!this.worldObj.isRemote) {
+                ElectricalWiringManager.get(this.worldObj).register(this.tileEW);
+            }
         }
 
         this.tileEW.updateEntity();
+    }
+
+    @Override
+    public void setDead() {
+        if (!this.worldObj.isRemote && this.tileEW.yCoord > 0) {
+            ElectricalWiringManager.get(this.worldObj).onNodeRemoved(this.tileEW.xCoord, this.tileEW.yCoord, this.tileEW.zCoord);
+        }
+        super.setDead();
     }
 
     private void setTilePos() {

@@ -11,6 +11,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEve
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.electric.ElectricalWiringManager;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityFloor;
 import jp.ngt.rtm.entity.train.util.FormationManager;
@@ -59,6 +60,14 @@ public final class RTMEventHandler {
             event.player.mountEntity(null);
             ((EntityTrainBase) ridingEntity).setEBNotch();
         }
+        if (!event.player.worldObj.isRemote) {
+            ElectricalWiringManager.get(event.player.worldObj).removePlayerConnections(event.player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onUnloadWorld(WorldEvent.Unload event) {
+        ElectricalWiringManager.onWorldUnload(event.world);
     }
 
     @SubscribeEvent

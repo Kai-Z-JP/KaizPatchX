@@ -13,12 +13,8 @@ public class TileEntityDummyEW extends TileEntityElectricalWiring {
     }
 
     @Override
-    public void onGetElectricity(int x, int y, int z, int level, int counter) {
-        super.onGetElectricity(x, y, z, level, counter);
-
-        if (!(x == this.xCoord && y == this.yCoord && z == this.zCoord)) {
-            this.entityEW.setElectricity(level);
-        }
+    protected void onReceiveSignal(int level) {
+        this.entityEW.setElectricity(level);
     }
 
     @Override
@@ -28,7 +24,7 @@ public class TileEntityDummyEW extends TileEntityElectricalWiring {
         if (!this.worldObj.isRemote) {
             int level = this.entityEW.getElectricity();
             if (level >= 0 && level != this.prevSignal) {
-                this.onGetElectricity(this.xCoord, this.yCoord, this.zCoord, level, 0);
+                ElectricalWiringManager.get(this.worldObj).propagateSignal(this, level);
                 this.prevSignal = level;
             }
         }

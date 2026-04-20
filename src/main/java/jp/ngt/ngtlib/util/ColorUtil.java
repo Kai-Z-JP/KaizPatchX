@@ -49,6 +49,20 @@ public final class ColorUtil {
     }
 
     /**
+     * 加算
+     */
+    public static int add(int src, int dst) {
+        int r = add2(getR(src), getR(dst));
+        int g = add2(getG(src), getG(dst));
+        int b = add2(getB(src), getB(dst));
+        return encode(r, g, b);
+    }
+
+    private static int add2(int src, int dst) {
+        return (src + dst) & 0xFF;
+    }
+
+    /**
      * @return {color, alpha}
      */
     public static int[] alphaBlending(int srcColor, int srcAlpha, int dstColor, int dstAlpha) {

@@ -4,7 +4,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.renderer.*;
+import jp.ngt.ngtlib.renderer.GLHelper;
+import jp.ngt.ngtlib.renderer.IRenderer;
+import jp.ngt.ngtlib.renderer.NGTRenderHelper;
+import jp.ngt.ngtlib.renderer.PolygonRenderer;
 import jp.ngt.ngtlib.renderer.model.Face;
 import jp.ngt.ngtlib.renderer.model.GroupObject;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRailClient;
@@ -62,7 +65,11 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      */
     protected void renderRailStatic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
         boolean hasGLList = this.prepareStaticDisplayList(tileEntity);
-        if (!hasGLList) {
+        if (hasGLList && tileEntity.shouldRerenderRail && !this.shouldRefreshDisplayList(tileEntity)) {
+            tileEntity.shouldRerenderRail = false;
+        }
+
+        if (!hasGLList || tileEntity.shouldRerenderRail) {
             this.compileStaticRailParts(tileEntity, x, y, z, par8);
             hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
         }
@@ -103,7 +110,11 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         boolean hasGLList = this.prepareStaticDisplayList(tileEntity);
-        if (!hasGLList) {
+        if (hasGLList && tileEntity.shouldRerenderRail && !this.shouldRefreshDisplayList(tileEntity)) {
+            tileEntity.shouldRerenderRail = false;
+        }
+
+        if (!hasGLList || tileEntity.shouldRerenderRail) {
             GLHelper.startCompile(tileEntity.glLists[this.currentRailIndex]);//GL_COMPILE_AND_EXECUTEは画面がチラつく
             try {
                 hasGLList = this.renderStaticPartsGeometry(tileEntity);
@@ -118,15 +129,13 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     }
 
     private boolean prepareStaticDisplayList(TileEntityLargeRailCore tileEntity) {
+        int size = tileEntity.subRails.size() + 1;
         boolean hasGLList = true;
-        if (tileEntity.glLists == null) {
-            tileEntity.glLists = new DisplayList[tileEntity.subRails.size() + 1];
-            hasGLList = false;
-        } else if (tileEntity.glLists.length != tileEntity.subRails.size() + 1) {
+        if (tileEntity.glLists != null && tileEntity.glLists.length != size) {
             Arrays.stream(tileEntity.glLists).forEach(GLHelper::deleteGLList);
-            tileEntity.glLists = new DisplayList[tileEntity.subRails.size() + 1];
             hasGLList = false;
         }
+        tileEntity.ensureRenderCacheCapacity();
 
         if (hasGLList) {
             hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
@@ -134,8 +143,6 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 
         if (!hasGLList) {
             tileEntity.glLists[this.currentRailIndex] = GLHelper.generateGLList(tileEntity.glLists[this.currentRailIndex]);
-        } else if (tileEntity.shouldRerenderRail) {
-            hasGLList = false;
         }
 
         return hasGLList;
@@ -166,10 +173,26 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
+        tileEntity.setStaticRenderKey(this.currentRailIndex, this.createStaticRenderKey(fa, brightness));
         FloatBuffer fb = this.createMatrix(fa);
         this.tessellateParts(tileEntity, fb, brightness, this.modelSet.model.model.getGroupObjects());
         tileEntity.shouldRerenderRail = false;
         return true;
+    }
+
+    private boolean shouldRefreshDisplayList(TileEntityLargeRailCore tileEntity) {
+        float[][] fa = this.createRailPos(tileEntity);
+        if (fa == null || fa.length <= 1) {
+            return true;
+        }
+
+        int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
+        int currentKey = this.createStaticRenderKey(fa, brightness);
+        return currentKey != tileEntity.getStaticRenderKey(this.currentRailIndex);
+    }
+
+    private int createStaticRenderKey(float[][] fa, int[] brightness) {
+        return 31 * Arrays.deepHashCode(fa) + Arrays.hashCode(brightness);
     }
 
     private void renderStaticDisplayList(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6) {

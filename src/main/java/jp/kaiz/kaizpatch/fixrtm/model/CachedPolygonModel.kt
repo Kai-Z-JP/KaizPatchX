@@ -76,12 +76,12 @@ object CachedPolygonModel {
             " cached-model",
             String.format(
                 Locale.ROOT,
-                "  mem: %.1f/%.1f MiB, loaded=%d, protected=%d, sec=%.1f",
+                "  mem: %.1f/%.1f MiB, loaded=%d, protected=%d, sec=%d",
                 bytesToMiB(lruSnapshot.totalWeight),
                 bytesToMiB(lruSnapshot.maxWeight),
                 lruSnapshot.loadedCount,
+                lruSnapshot.protectedCount,
                 configuredProtectionMillis() / 1000,
-                lruSnapshot.protectedCount
             ),
             String.format(
                 Locale.ROOT,

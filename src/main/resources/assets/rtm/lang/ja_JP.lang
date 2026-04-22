@@ -179,6 +179,8 @@ state.interior_light.on_0=車内灯:ON
 state.interior_light.on_1=車内灯:Rainbow
 
 message.train.concatenation_mode=連結モード
+message.train.already_concatenation_mode=すでに連結モードです
+message.train.start_auto_concatenation=自動連結を開始します
 message.train.concatenated=連結完了
 message.train.deconcatenation=連結解除
 message.train.obstacle=障害物があります。(%1$s)

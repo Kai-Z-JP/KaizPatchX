@@ -706,8 +706,18 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                     if (itemstack.getItem() == RTMItem.crowbar) {
                         if (id1 >= 0) {
                             if (this.getConnectedTrain(id1) == null) {
-                                bogie.isActivated = true;
-                                NGTLog.sendChatMessage(player, "message.train.concatenation_mode");
+                                if (bogie.isActivated) {
+                                    if (this.getNotch() == 0) {
+                                        this.setTrainDirection(id1);
+                                        this.setNotch(1);
+                                        NGTLog.sendChatMessage(player, "message.train.start_auto_concatenation");
+                                    } else {
+                                        NGTLog.sendChatMessage(player, "message.train.already_concatenation_mode");
+                                    }
+                                } else {
+                                    bogie.isActivated = true;
+                                    NGTLog.sendChatMessage(player, "message.train.concatenation_mode");
+                                }
                             } else {
                                 this.formation.onDisconnectedTrain(this, id1);
                                 NGTLog.sendChatMessage(player, "message.train.deconcatenation");

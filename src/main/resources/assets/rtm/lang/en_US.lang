@@ -179,6 +179,8 @@ state.interior_light.on_0=IL:ON
 state.interior_light.on_1=IL:Rainbow
 
 message.train.concatenation_mode=Concatenation Mode
+message.train.already_concatenation_mode=Already in Concatenation Mode
+message.train.start_auto_concatenation=Start auto concatenation
 message.train.concatenated=Concatenated
 message.train.deconcatenation=Deconcatenation
 message.train.obstacle=There is an obstacle. (%1$s)

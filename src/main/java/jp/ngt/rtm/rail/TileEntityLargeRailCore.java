@@ -43,6 +43,8 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
 
     @SideOnly(Side.CLIENT)
     public DisplayList[] glLists;
+    @SideOnly(Side.CLIENT)
+    private int[] staticRenderKeys;
     /**
      * レールを再描画するかどうか(明るさ変更等)
      */
@@ -207,6 +209,30 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
             Arrays.stream(this.glLists).forEach(GLHelper::deleteGLList);
         }
         this.glLists = new DisplayList[this.subRails.size() + 1];
+        this.staticRenderKeys = new int[this.subRails.size() + 1];
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void ensureRenderCacheCapacity() {
+        int size = this.subRails.size() + 1;
+        if (this.glLists == null || this.glLists.length != size) {
+            this.glLists = new DisplayList[size];
+        }
+        if (this.staticRenderKeys == null || this.staticRenderKeys.length != size) {
+            this.staticRenderKeys = new int[size];
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getStaticRenderKey(int index) {
+        this.ensureRenderCacheCapacity();
+        return this.staticRenderKeys[index];
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setStaticRenderKey(int index, int key) {
+        this.ensureRenderCacheCapacity();
+        this.staticRenderKeys[index] = key;
     }
 
 

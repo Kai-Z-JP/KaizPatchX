@@ -11,5 +11,6 @@ interface FIXModelPack {
     val sha1Hash: String
     val file: File
     val domains: Set<String>
+    fun hasFile(location: ResourceLocation): Boolean
     fun getFile(location: ResourceLocation): FIXResource?
 }

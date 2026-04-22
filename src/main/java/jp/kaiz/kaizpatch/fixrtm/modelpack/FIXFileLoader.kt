@@ -80,6 +80,13 @@ object FIXFileLoader {
         throw FileNotFoundException("$location")
     }
 
+    fun getPack(location: ResourceLocation): FIXModelPack {
+        packs[location.resourceDomain].orEmpty().forEach { fixModelPack ->
+            if (fixModelPack.hasFile(location)) return fixModelPack
+        }
+        throw FileNotFoundException("$location")
+    }
+
     fun getInputStream(location: ResourceLocation): InputStream = getResource(location).inputStream
 
     private fun loadModelPack(file: File): FIXModelPack? {
@@ -134,9 +141,15 @@ object FIXFileLoader {
             this.ignoreCaseMap = ignoreCaseMap
         }
 
+        override fun hasFile(location: ResourceLocation): Boolean {
+            var path = "assets/${location.resourceDomain}/${location.resourcePath}"
+            path = ignoreCaseMap[path.lowercase()] ?: path
+            return zipFile.getEntry(path) != null
+        }
+
         override fun getFile(location: ResourceLocation): FIXResource? {
             var path = "assets/${location.resourceDomain}/${location.resourcePath}"
-            path = ignoreCaseMap[path] ?: path
+            path = ignoreCaseMap[path.lowercase()] ?: path
             val file = zipFile.getEntry(path) ?: return null
             return FIXResource(this, zipFile.getInputStream(file))
         }
@@ -154,6 +167,11 @@ object FIXFileLoader {
                     domains.add(assetDir.name)
             }
             this.domains = domains
+        }
+
+        override fun hasFile(location: ResourceLocation): Boolean {
+            val path = "assets/${location.resourceDomain}/${location.resourcePath}"
+            return file.resolve(path).isFile
         }
 
         override fun getFile(location: ResourceLocation): FIXResource? {

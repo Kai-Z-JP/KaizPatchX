@@ -4,7 +4,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.ngtlib.math.NGTMath;
-import jp.ngt.ngtlib.renderer.*;
+import jp.ngt.ngtlib.renderer.GLHelper;
+import jp.ngt.ngtlib.renderer.IRenderer;
+import jp.ngt.ngtlib.renderer.NGTRenderHelper;
+import jp.ngt.ngtlib.renderer.PolygonRenderer;
 import jp.ngt.ngtlib.renderer.model.Face;
 import jp.ngt.ngtlib.renderer.model.GroupObject;
 import jp.ngt.rtm.modelpack.modelset.ModelSetRailClient;
@@ -26,6 +29,8 @@ import java.util.stream.IntStream;
 public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClient> {
     protected int currentRailIndex;
     private final FloatBuffer convBuf;
+    private boolean isCompilingStaticRail;
+    private boolean renderedStaticGeometry;
 
     public RailPartsRenderer(String... par1) {
         super(par1);
@@ -59,7 +64,19 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * 形状固定の部分を描画
      */
     protected void renderRailStatic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
-        ScriptUtil.doScriptFunction(this.script, "renderRailStatic", tileEntity, x, y, z, par8, 0);
+        boolean hasGLList = this.prepareStaticDisplayList(tileEntity);
+        if (hasGLList && tileEntity.shouldRerenderRail && !this.shouldRefreshDisplayList(tileEntity)) {
+            tileEntity.shouldRerenderRail = false;
+        }
+
+        if (!hasGLList || tileEntity.shouldRerenderRail) {
+            this.compileStaticRailParts(tileEntity, x, y, z, par8);
+            hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
+        }
+
+        if (hasGLList) {
+            this.renderStaticDisplayList(tileEntity, x, y, z);
+        }
     }
 
     /**
@@ -87,54 +104,130 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * スクリプトから呼び出し
      */
     public void renderStaticParts(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6) {
-        boolean hasGLList = true;
-        if (tileEntity.glLists == null) {
-            tileEntity.glLists = new DisplayList[tileEntity.subRails.size() + 1];
-            hasGLList = false;
-        } else if (tileEntity.glLists.length != tileEntity.subRails.size() + 1) {
-            Arrays.stream(tileEntity.glLists).forEach(GLHelper::deleteGLList);
-            tileEntity.glLists = new DisplayList[tileEntity.subRails.size() + 1];
-            hasGLList = false;
-        }
-        if (hasGLList) {
-            hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
-        }
-        if (!hasGLList) {
-            tileEntity.glLists[this.currentRailIndex] = GLHelper.generateGLList(tileEntity.glLists[this.currentRailIndex]);
-        } else if (tileEntity.shouldRerenderRail) {
-            hasGLList = false;
+        if (this.isCompilingStaticRail) {
+            this.renderStaticPartsGeometry(tileEntity);
+            return;
         }
 
-        if (!hasGLList)//ディスプレイリスト生成
-        {
-            float[][] fa = this.createRailPos(tileEntity);
-            if (fa != null && fa.length > 1) {
-                int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
-                FloatBuffer fb = this.createMatrix(fa);
+        boolean hasGLList = this.prepareStaticDisplayList(tileEntity);
+        if (hasGLList && tileEntity.shouldRerenderRail && !this.shouldRefreshDisplayList(tileEntity)) {
+            tileEntity.shouldRerenderRail = false;
+        }
 
-                GLHelper.startCompile(tileEntity.glLists[this.currentRailIndex]);//GL_COMPILE_AND_EXECUTEは画面がチラつく
-                this.tessellateParts(tileEntity, fb, brightness, this.modelSet.model.model.getGroupObjects());
+        if (!hasGLList || tileEntity.shouldRerenderRail) {
+            GLHelper.startCompile(tileEntity.glLists[this.currentRailIndex]);//GL_COMPILE_AND_EXECUTEは画面がチラつく
+            try {
+                hasGLList = this.renderStaticPartsGeometry(tileEntity);
+            } finally {
                 GLHelper.endCompile();
-                tileEntity.shouldRerenderRail = false;
-                hasGLList = true;
-            } else {
-                tileEntity.shouldRerenderRail = true;
-                hasGLList = false;
             }
         }
 
-        if (hasGLList)//ディスプレイリスト描画
-        {
-            RailPosition rp = tileEntity.getRailPositions()[0];
-            double x = rp.posX - (double) rp.blockX;
-            double y = rp.posY - (double) rp.blockY - 0.0625D;
-            double z = rp.posZ - (double) rp.blockZ;
-            GL11.glPushMatrix();
-            GL11.glTranslatef((float) (par2 + x), (float) (par4 + y), (float) (par6 + z));
-            this.bindTexture(this.getModelObject().textures[0].material.texture);//ディスプレイリストに入れると生成重い
-            GLHelper.callList(tileEntity.glLists[this.currentRailIndex]);
-            GL11.glPopMatrix();
+        if (hasGLList) {
+            this.renderStaticDisplayList(tileEntity, par2, par4, par6);
         }
+    }
+
+    private boolean prepareStaticDisplayList(TileEntityLargeRailCore tileEntity) {
+        int size = tileEntity.subRails.size() + 1;
+        boolean hasGLList = true;
+        if (tileEntity.glLists != null && tileEntity.glLists.length != size) {
+            Arrays.stream(tileEntity.glLists).forEach(GLHelper::deleteGLList);
+            hasGLList = false;
+        }
+        tileEntity.ensureRenderCacheCapacity();
+
+        if (hasGLList) {
+            hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
+        }
+
+        if (!hasGLList) {
+            tileEntity.glLists[this.currentRailIndex] = GLHelper.generateGLList(tileEntity.glLists[this.currentRailIndex]);
+        }
+
+        return hasGLList;
+    }
+
+    private void compileStaticRailParts(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
+        GLHelper.startCompile(tileEntity.glLists[this.currentRailIndex]);//GL_COMPILE_AND_EXECUTEは画面がチラつく
+        this.isCompilingStaticRail = true;
+        this.renderedStaticGeometry = false;
+        try {
+            ScriptUtil.doScriptFunction(this.script, "renderRailStatic", tileEntity, x, y, z, par8, 0);
+            if (!this.renderedStaticGeometry) {
+                tileEntity.shouldRerenderRail = false;
+            }
+        } finally {
+            this.renderedStaticGeometry = false;
+            this.isCompilingStaticRail = false;
+            GLHelper.endCompile();
+        }
+    }
+
+    private boolean renderStaticPartsGeometry(TileEntityLargeRailCore tileEntity) {
+        this.renderedStaticGeometry = true;
+        float[][] fa = this.createRailPos(tileEntity);
+        if (fa == null || fa.length <= 1) {
+            tileEntity.shouldRerenderRail = true;
+            return false;
+        }
+
+        int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
+        FloatBuffer fb = this.createMatrix(fa);
+        List<GroupObject> groups = this.modelSet.model.model.getGroupObjects();
+        if (groups.isEmpty()) {
+            tileEntity.shouldRerenderRail = true;
+            return false;
+        }
+        tileEntity.setStaticRenderKey(this.currentRailIndex, this.createStaticRenderKey(fa, brightness));
+        this.tessellateParts(tileEntity, fb, brightness, groups);
+        tileEntity.shouldRerenderRail = false;
+        return true;
+    }
+
+    private boolean shouldRefreshDisplayList(TileEntityLargeRailCore tileEntity) {
+        if (this.modelSet.model.model.getGroupObjects().isEmpty()) {
+            return true;
+        }
+
+        float[][] fa = this.createRailPos(tileEntity);
+        if (fa == null || fa.length <= 1) {
+            return true;
+        }
+
+        int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
+        int currentKey = this.createStaticRenderKey(fa, brightness);
+        return currentKey != tileEntity.getStaticRenderKey(this.currentRailIndex);
+    }
+
+    private int createStaticRenderKey(float[][] fa, int[] brightness) {
+        int key = 31 * Arrays.deepHashCode(fa) + Arrays.hashCode(brightness);
+        return 31 * key + this.createModelRenderKey();
+    }
+
+    private int createModelRenderKey() {
+        int key = this.modelSet.getConfig().getName().hashCode();
+        key = 31 * key + Arrays.hashCode(this.getAllObjNames());
+        key = 31 * key + Arrays.hashCode(
+                Arrays.stream(this.getModelObject().textures)
+                        .map(texture -> texture == null || texture.material == null || texture.material.texture == null
+                                ? ""
+                                : texture.material.texture.toString())
+                        .toArray(String[]::new)
+        );
+        return key;
+    }
+
+    private void renderStaticDisplayList(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6) {
+        RailPosition rp = tileEntity.getRailPositions()[0];
+        double x = rp.posX - (double) rp.blockX;
+        double y = rp.posY - (double) rp.blockY - 0.0625D;
+        double z = rp.posZ - (double) rp.blockZ;
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float) (par2 + x), (float) (par4 + y), (float) (par6 + z));
+        this.bindTexture(this.getModelObject().textures[0].material.texture);//ディスプレイリストに入れると生成重い
+        GLHelper.callList(tileEntity.glLists[this.currentRailIndex]);
+        GL11.glPopMatrix();
     }
 
     /**

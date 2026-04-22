@@ -2,6 +2,7 @@ package jp.ngt.rtm.modelpack.modelset;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.VecAccuracy;
@@ -30,6 +31,7 @@ public class ModelSetFirearmClient extends ModelSetFirearm implements IModelSetC
     public ModelSetFirearmClient(FirearmConfig par1) {
         super(par1);
         this.model = ModelPackManager.INSTANCE.loadModel(par1.firearmModel, GL11.GL_TRIANGLES, true, par1);
+        CachedModelUtil.compact(this.model);
         this.texture = ModelPackManager.INSTANCE.getResource(par1.firearmTexture);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
     }

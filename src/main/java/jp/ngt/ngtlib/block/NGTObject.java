@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
  * RenderBlocksによるブロックの描画等に使用
  */
 public class NGTObject {
+    private static final int MAX_LOADED_NGTO = 256;
     private static final List<NGTObject> loadedNGTO = new ArrayList<>();
 
     public long objId;
@@ -36,6 +37,7 @@ public class NGTObject {
     public int origX, origY, origZ;
     @Deprecated
     private int lightValue = -1;
+    private final int contentHash;
 
     public static NGTObject createNGTO(List<BlockSet> blocks, int w, int h, int d, int x, int y, int z) {
         return createNGTO(blocks, new NBTTagList(), w, h, d, x, y, z);
@@ -47,9 +49,22 @@ public class NGTObject {
 
     public static NGTObject createNGTO(long id, List<BlockSet> blocks, NBTTagList nbt, int w, int h, int d, int x, int y, int z) {
         NGTObject ngto = new NGTObject(id, blocks, nbt, w, h, d, x, y, z);
-        int index = loadedNGTO.indexOf(ngto);
-        if (index >= 0) {
-            return loadedNGTO.get(index);
+        synchronized (loadedNGTO) {
+            for (int i = loadedNGTO.size() - 1; i >= 0; --i) {
+                NGTObject loaded = loadedNGTO.get(i);
+                if (loaded.contentHash == ngto.contentHash && loaded.equals(ngto)) {
+                    if (i != loadedNGTO.size() - 1) {
+                        loadedNGTO.remove(i);
+                        loadedNGTO.add(loaded);
+                    }
+                    return loaded;
+                }
+            }
+
+            loadedNGTO.add(ngto);
+            while (loadedNGTO.size() > MAX_LOADED_NGTO) {
+                loadedNGTO.remove(0);
+            }
         }
         return ngto;
     }
@@ -64,8 +79,22 @@ public class NGTObject {
         this.origX = x;
         this.origY = y;
         this.origZ = z;
+        this.contentHash = this.computeContentHash();
+    }
 
-        loadedNGTO.add(this);
+    private int computeContentHash() {
+        int result = 1;
+        result = 31 * result + this.xSize;
+        result = 31 * result + this.ySize;
+        result = 31 * result + this.zSize;
+        result = 31 * result + this.blockList.size();
+        for (BlockSet set : this.blockList) {
+            result = 31 * result + Block.getIdFromBlock(set.block);
+            result = 31 * result + set.metadata;
+            result = 31 * result + (set.nbt != null ? set.nbt.hashCode() : 0);
+        }
+        result = 31 * result + (this.entityList != null ? this.entityList.hashCode() : 0);
+        return result;
     }
 
     /**
@@ -343,7 +372,7 @@ public class NGTObject {
 
     @Override
     public int hashCode() {
-        return ((this.xSize << 20) & 1024) | ((this.ySize << 10) & 1024) | ((this.zSize) & 1024);
+        return this.contentHash;
     }
 
     @Override

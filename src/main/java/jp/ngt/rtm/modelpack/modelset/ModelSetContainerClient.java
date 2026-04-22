@@ -1,5 +1,6 @@
 package jp.ngt.rtm.modelpack.modelset;
 
+import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
 import jp.ngt.ngtlib.renderer.model.ModelLoader;
 import jp.ngt.ngtlib.renderer.model.VecAccuracy;
@@ -27,6 +28,7 @@ public class ModelSetContainerClient extends ModelSetContainer implements IModel
     public ModelSetContainerClient(ContainerConfig par1) {
         super(par1);
         this.model = ModelPackManager.INSTANCE.loadModel(par1.containerModel, GL11.GL_TRIANGLES, true, par1);
+        CachedModelUtil.compact(this.model);
         this.texture = ModelPackManager.INSTANCE.getResource(par1.containerTexture);
         this.buttonTexture = ModelPackManager.INSTANCE.getResource(par1.buttonTexture);
     }

@@ -7,7 +7,6 @@
 package jp.kaiz.kaizpatch.fixrtm.model
 
 import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader
-import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXModelPack
 import jp.ngt.ngtlib.io.FileType
 import jp.ngt.ngtlib.renderer.model.ModelLoader
 import jp.ngt.ngtlib.renderer.model.PolygonModel
@@ -21,23 +20,22 @@ import java.io.InputStream
 fun loadModel(resource: ResourceLocation, par1: VecAccuracy, vararg args: Any?): PolygonModel? {
     val fileName = resource.toString()
     try {
-        val (pack, streams) = inputStreams(resource)
+        val pack = FIXFileLoader.getPack(resource)
+        CachedPolygonModel.getCachedModel(pack, resource, par1)?.let {
+            return CachedPolygonModel.createCachedModel(pack, resource, par1, it)
+        }
 
-        CachedPolygonModel.getCachedModel(pack, resource, par1)?.let { return it }
-
-        val model = ModelLoader.loadModel(streams, fileName, par1, *args)
-
-        CachedPolygonModel.putCachedModel(pack, resource, par1, model)
-
-        return model
+        val streams = inputStreams(resource)
+        val model = ModelLoader.loadModel(streams, fileName, par1, *args) ?: return null
+        CachedPolygonModel.putCachedModelSync(pack, resource, par1, model)
+        return CachedPolygonModel.createCachedModel(pack, resource, par1, model)
     } catch (var10: IOException) {
         throw ModelFormatException("Failed to load model : $fileName", var10)
     }
 }
 
-private fun inputStreams(resource: ResourceLocation): Pair<FIXModelPack, Array<InputStream?>> {
-    val mainResource = FIXFileLoader.getResource(resource)
-    val mainStream: InputStream = mainResource.inputStream
+private fun inputStreams(resource: ResourceLocation): Array<InputStream?> {
+    val mainStream: InputStream = FIXFileLoader.getInputStream(resource)
     if (FileType.OBJ.match(resource.resourcePath)) {
         val mtlFileName = resource.resourcePath.replace(".obj", ".mtl")
         val mtlFile = ResourceLocation(resource.resourceDomain, mtlFileName)
@@ -46,8 +44,8 @@ private fun inputStreams(resource: ResourceLocation): Pair<FIXModelPack, Array<I
             is2 = FIXFileLoader.getInputStream(mtlFile)
         } catch (var9: IOException) {
         }
-        return mainResource.pack to arrayOf(mainStream, is2)
+        return arrayOf(mainStream, is2)
     } else {
-        return mainResource.pack to arrayOf(mainStream)
+        return arrayOf(mainStream)
     }
 }

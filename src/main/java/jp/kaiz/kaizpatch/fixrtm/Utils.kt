@@ -43,6 +43,10 @@ val fixRTMCommonExecutor = Executors.newFixedThreadPool(
     Runtime.getRuntime().availableProcessors(),
     threadFactoryWithPrefix("fixrtm-common-executor")
 )
+val cachedModelLoaderExecutor = Executors.newFixedThreadPool(
+    maxOf(Runtime.getRuntime().availableProcessors() / 2, 1),
+    threadFactoryWithPrefix("kaizpatch-cached-model-async-loader")
+)
 
 fun File.directoryDigestBaseStream() = SequenceInputStream(Iterators.asEnumeration(
     this.sortedWalk()

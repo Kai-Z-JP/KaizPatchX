@@ -173,14 +173,23 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
-        tileEntity.setStaticRenderKey(this.currentRailIndex, this.createStaticRenderKey(fa, brightness));
         FloatBuffer fb = this.createMatrix(fa);
-        this.tessellateParts(tileEntity, fb, brightness, this.modelSet.model.model.getGroupObjects());
+        List<GroupObject> groups = this.modelSet.model.model.getGroupObjects();
+        if (groups.isEmpty()) {
+            tileEntity.shouldRerenderRail = true;
+            return false;
+        }
+        tileEntity.setStaticRenderKey(this.currentRailIndex, this.createStaticRenderKey(fa, brightness));
+        this.tessellateParts(tileEntity, fb, brightness, groups);
         tileEntity.shouldRerenderRail = false;
         return true;
     }
 
     private boolean shouldRefreshDisplayList(TileEntityLargeRailCore tileEntity) {
+        if (this.modelSet.model.model.getGroupObjects().isEmpty()) {
+            return true;
+        }
+
         float[][] fa = this.createRailPos(tileEntity);
         if (fa == null || fa.length <= 1) {
             return true;
@@ -192,7 +201,21 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     }
 
     private int createStaticRenderKey(float[][] fa, int[] brightness) {
-        return 31 * Arrays.deepHashCode(fa) + Arrays.hashCode(brightness);
+        int key = 31 * Arrays.deepHashCode(fa) + Arrays.hashCode(brightness);
+        return 31 * key + this.createModelRenderKey();
+    }
+
+    private int createModelRenderKey() {
+        int key = this.modelSet.getConfig().getName().hashCode();
+        key = 31 * key + Arrays.hashCode(this.getAllObjNames());
+        key = 31 * key + Arrays.hashCode(
+                Arrays.stream(this.getModelObject().textures)
+                        .map(texture -> texture == null || texture.material == null || texture.material.texture == null
+                                ? ""
+                                : texture.material.texture.toString())
+                        .toArray(String[]::new)
+        );
+        return key;
     }
 
     private void renderStaticDisplayList(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6) {

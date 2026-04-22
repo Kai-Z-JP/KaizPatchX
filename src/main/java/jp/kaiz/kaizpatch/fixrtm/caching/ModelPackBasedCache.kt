@@ -40,7 +40,6 @@ class ModelPackBasedCache(
                 deserialize = taggedFileManager::deserialize,
                 withTwoCharDir = false
             )
-            cache.loadAll()
             caches[modelPack] = cache
         }
 
@@ -55,7 +54,15 @@ class ModelPackBasedCache(
         caches[pack]?.putCachedValue(sha1, model)
     }
 
+    fun putSync(pack: FIXModelPack, sha1: String, model: Any) {
+        caches[pack]?.putCachedValueSync(sha1, model)
+    }
+
     fun discord(pack: FIXModelPack, sha1: String) {
         caches[pack]?.discordCachedValue(sha1)
+    }
+
+    fun getFile(pack: FIXModelPack, sha1: String): File? {
+        return caches[pack]?.getCachedFile(sha1)
     }
 }

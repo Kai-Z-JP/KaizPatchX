@@ -35,6 +35,8 @@ public class RTMConfig {
     public static int loadSpeed;
     public static boolean expandPlayableSoundCount;
     public static boolean markerDistanceMoreRealPosition = true;
+    public static int fixRTMCachedModelMemoryLimitMiB;
+    public static int fixRTMCachedModelProtectSeconds;
 
     public static float trainRunningSoundRange;
     public static float trainJointSoundRange;
@@ -103,6 +105,12 @@ public class RTMConfig {
 
         RTMConfig.loadSpeed = cfg.getInt(
                 "ModelPack load speed", CATEGORY_LOAD, 2, 1, 3, "1:Slow 2:Default 3:Fast");
+        RTMConfig.fixRTMCachedModelMemoryLimitMiB = cfg.getInt(
+                "cached model memory limit MiB", CATEGORY_LOAD, 256, 16, 8192,
+                "Maximum in-memory size of cached polygon models. Models used within the protection window are kept even if this limit is exceeded.");
+        RTMConfig.fixRTMCachedModelProtectSeconds = cfg.getInt(
+                "cached model protect seconds", CATEGORY_LOAD, 10, 0, 600,
+                "Do not evict cached polygon models that were used within this number of seconds.");
 
         RTMConfig.markerDistanceMoreRealPosition = cfg.getBoolean(
                 "markerDistancesMoreRealPosition", CATEGORY_MARKER, true, "shows distance signs of marker at more real position");

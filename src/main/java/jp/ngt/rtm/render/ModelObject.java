@@ -2,6 +2,7 @@ package jp.ngt.rtm.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
 import jp.ngt.ngtlib.io.FileType;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.renderer.model.IModelNGT;
@@ -78,6 +79,7 @@ public class ModelObject {
 
         this.renderer = (par3 == null) ? this.getPartsRenderer(par1.rendererPath, this.model, args) : par3;
         this.renderer.init(par2, this);
+        CachedModelUtil.compact(this.model);
     }
 
     /**

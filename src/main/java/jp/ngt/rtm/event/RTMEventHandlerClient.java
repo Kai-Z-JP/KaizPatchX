@@ -3,6 +3,7 @@ package jp.ngt.rtm.event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
 import jp.ngt.ngtlib.renderer.GLHelper;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.ClientProxy;
@@ -47,6 +48,15 @@ public final class RTMEventHandlerClient {
             Camera.INSTANCE.onRenderGameOverlayPre();
         }
         this.guiIngame.onRenderGui(event);
+    }
+
+    @SubscribeEvent
+    public void onRenderDebugText(RenderGameOverlayEvent.Text event) {
+        if (!Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+            return;
+        }
+
+        event.left.addAll(CachedModelUtil.getDebugLines());
     }
 
     @SubscribeEvent

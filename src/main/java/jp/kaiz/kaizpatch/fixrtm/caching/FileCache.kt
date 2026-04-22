@@ -18,7 +18,6 @@ class FileCache<TValue>(
     private val deserialize: (InputStream) -> TValue,
     private val withTwoCharDir: Boolean = true,
 ) {
-    private val cache = ConcurrentHashMap<String, TValue>()
     private var writings = Collections.newSetFromMap<String>(ConcurrentHashMap())
     private val baseDigestFile = baseDir.resolve("base-digest")
     val cacheDiscarded: Boolean
@@ -36,34 +35,8 @@ class FileCache<TValue>(
         }
     }
 
-    fun loadAll() {
-        baseDir.listFiles()
-            ?.asSequence().orEmpty()
-            .let { filesInBaseDir ->
-                if (withTwoCharDir) {
-                    filesInBaseDir
-                        .filter { it.isDirectory }
-                        .filter { isHex2(it.name) }
-                        .flatMap { it.listFiles()?.asSequence().orEmpty() }
-                } else {
-                    filesInBaseDir
-                }
-            }
-            .filter { it.isFile }
-            .filter { isHex40(it.name) }
-            .forEach { file ->
-                executor.submit {
-                    if (cache[file.name] == null)
-                        readCache(file, file.name)
-                }
-            }
-    }
-
-    private fun getCacheValue(sha1: String) = cache[sha1]
-
     fun getCachedValue(sha1: String): TValue? {
         require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
-        getCacheValue(sha1)?.let { return it }
         if (sha1 in writings) return null
         val file = getFile(sha1)
         if (!file.exists()) return null
@@ -72,8 +45,7 @@ class FileCache<TValue>(
 
     private fun readCache(file: File, sha1: String): TValue? {
         try {
-            return deserialize(file.inputStream().buffered())
-                .also { cache[sha1] = it }
+            return file.inputStream().buffered().use(deserialize)
         } catch (e: IOException) {
             file.delete()
             return null
@@ -83,26 +55,38 @@ class FileCache<TValue>(
 
     fun putCachedValue(sha1: String, value: TValue) {
         require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
-        executor.submit {
-            val file = getFile(sha1).prepare()
-            writings.add(sha1)
-            try {
-                val bas = ByteArrayOutputStream()
-                serialize(bas, value)
-                file.outputStream().buffered().use { bas.writeTo(it) }
-            } catch (e: IOException) {
-                file.delete()
-            } catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            } finally {
-                writings.remove(sha1)
-            }
-        }
+        executor.submit { writeCache(sha1, value) }
+    }
+
+    fun putCachedValueSync(sha1: String, value: TValue) {
+        require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
+        writeCache(sha1, value)
     }
 
     fun discordCachedValue(sha1: String) {
         require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
         getFile(sha1).delete()
+    }
+
+    fun getCachedFile(sha1: String): File {
+        require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
+        return getFile(sha1)
+    }
+
+    private fun writeCache(sha1: String, value: TValue) {
+        val file = getFile(sha1).prepare()
+        writings.add(sha1)
+        try {
+            val bas = ByteArrayOutputStream()
+            serialize(bas, value)
+            file.outputStream().buffered().use { bas.writeTo(it) }
+        } catch (_: IOException) {
+            file.delete()
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        } finally {
+            writings.remove(sha1)
+        }
     }
 
     private fun getFile(sha1In: String): File {
@@ -124,10 +108,6 @@ class FileCache<TValue>(
     }
 
     companion object {
-        private fun hexDigest(c: Char) = c in '0'..'9' || c in 'a'..'f'
-        private fun isHex2(v: String) = v.length == 2 && v.all { hexDigest(it) }
-        private fun isHex40(v: String) = v.length == 40 && v.all { hexDigest(it) }
-
         private fun hexDigestIgnoreCase(c: Char) = c in '0'..'9' || c in 'a'..'f' || c in 'A'..'F'
         private fun isHex40IgnoreCase(v: String) = v.length == 40 && v.all { hexDigestIgnoreCase(it) }
     }

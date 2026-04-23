@@ -23,6 +23,7 @@ import java.util.List;
 public final class GLHelper {
     public static final GLHelper INSTANCE = new GLHelper();
     public static final Locker LOCKER = new Locker();
+    private static final ThreadLocal<Integer> COMPILE_DEPTH = ThreadLocal.withInitial(() -> 0);
 
     private final List<DisplayList> activeGLLists = new ArrayList<>();
     private final List<DisplayList> deleteGLLists = new ArrayList<>();
@@ -98,16 +99,44 @@ public final class GLHelper {
 
     public static void startCompile(DisplayList par1) {
         LOCKER.lock();
-        GL11.glNewList(par1.value, GL11.GL_COMPILE);
+        incrementCompileDepth();
+        try {
+            GL11.glNewList(par1.value, GL11.GL_COMPILE);
+        } catch (RuntimeException e) {
+            decrementCompileDepth();
+            LOCKER.unlock();
+            throw e;
+        }
     }
 
     public static void endCompile() {
-        GL11.glEndList();
-        LOCKER.unlock();
+        try {
+            GL11.glEndList();
+        } finally {
+            decrementCompileDepth();
+            LOCKER.unlock();
+        }
     }
 
     public static void callList(DisplayList par1) {
         GL11.glCallList(par1.value);
+    }
+
+    public static boolean isCompiling() {
+        return COMPILE_DEPTH.get() > 0;
+    }
+
+    private static void incrementCompileDepth() {
+        COMPILE_DEPTH.set(COMPILE_DEPTH.get() + 1);
+    }
+
+    private static void decrementCompileDepth() {
+        int depth = COMPILE_DEPTH.get() - 1;
+        if (depth <= 0) {
+            COMPILE_DEPTH.remove();
+        } else {
+            COMPILE_DEPTH.set(depth);
+        }
     }
 
     public static void setColor(int rgb, int alpha) {

@@ -52,7 +52,9 @@ public class Parts {
             model.renderOnly(smoothing, this.objNames);
         } else {
             int i = renderer.currentMatId;
-            if (!GLHelper.isValid(this.gLists[i])) {
+            if (GLHelper.isCompiling()) {
+                NGTRenderHelper.renderCustomModel(model, (byte) i, smoothing, this.objNames);
+            } else if (!GLHelper.isValid(this.gLists[i])) {
                 this.gLists[i] = GLHelper.generateGLList();
                 GLHelper.startCompile(this.gLists[i]);
                 NGTRenderHelper.renderCustomModel(model, (byte) i, smoothing, this.objNames);

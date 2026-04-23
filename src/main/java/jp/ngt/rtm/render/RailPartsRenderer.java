@@ -153,7 +153,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         this.isCompilingStaticRail = true;
         this.renderedStaticGeometry = false;
         try {
-            ScriptUtil.doScriptFunction(this.script, "renderRailStatic", tileEntity, x, y, z, par8, 0);
+            ScriptUtil.doScriptFunction(this.script, "renderRailStatic", tileEntity, 0.0D, 0.0D, 0.0D, par8, 0);
             if (!this.renderedStaticGeometry) {
                 tileEntity.shouldRerenderRail = false;
             }

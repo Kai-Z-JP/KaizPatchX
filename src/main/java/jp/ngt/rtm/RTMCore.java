@@ -52,6 +52,7 @@ public final class RTMCore {
     public static short guiIdSelectEntityModel = getNextGuiID();
     public static short guiIdSelectTileEntityModel = getNextGuiID();
     public static short guiIdSelectItemModel = getNextGuiID();
+    public static short guiIdRailItemSettings = getNextGuiID();
     public static short guiIdFreightCar = getNextGuiID();
     public static short guiIdItemContainer = getNextGuiID();
     public static short guiIdSelectTexture = getNextGuiID();

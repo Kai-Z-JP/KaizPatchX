@@ -55,6 +55,8 @@ public class RTMGuiHandler implements IGuiHandler {
             }
         } else if (ID == RTMCore.guiIdNPC) {
             return new ContainerNPC(player, (EntityNPC) world.getEntityByID(x));
+        } else if (ID == RTMCore.guiIdRailItemSettings) {
+            return new ContainerRailItemSettings(player.inventory);
         }
         return null;
     }
@@ -78,6 +80,8 @@ public class RTMGuiHandler implements IGuiHandler {
         } else if (ID == RTMCore.guiIdSelectItemModel) {
             Item item = player.inventory.getCurrentItem().getItem();
             return new GuiSelectModel(world, (IModelSelectorWithType) item);
+        } else if (ID == RTMCore.guiIdRailItemSettings) {
+            return new GuiRailItemSettings(player.inventory);
         } else if (ID == RTMCore.guiIdFreightCar) {
             Entity entity = world.getEntityByID(x);
             if (entity instanceof EntityFreightCar) {

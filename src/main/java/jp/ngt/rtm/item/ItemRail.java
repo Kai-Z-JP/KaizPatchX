@@ -39,6 +39,17 @@ public class ItemRail extends ItemWithModel {
     }
 
     @Override
+    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+        if (player.isSneaking() && player.capabilities.isCreativeMode) {
+            if (!world.isRemote) {
+                player.openGui(RTMCore.instance, RTMCore.guiIdRailItemSettings, world, 0, 0, 0);
+            }
+            return itemStack;
+        }
+        return super.onItemRightClick(itemStack, world, player);
+    }
+
+    @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int p_77648_7_, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
         Block block = world.getBlock(x, y, z);
         if (block instanceof BlockMarker) {
@@ -128,7 +139,7 @@ public class ItemRail extends ItemWithModel {
     public static void writePropToItem(RailProperty prop, ItemStack itemStack) {
         NBTTagCompound nbtP = new NBTTagCompound();
         prop.writeToNBT(nbtP);
-        NBTTagCompound nbt = new NBTTagCompound();
+        NBTTagCompound nbt = itemStack.hasTagCompound() ? itemStack.getTagCompound() : new NBTTagCompound();
         nbt.setTag("Property", nbtP);
         itemStack.setTagCompound(nbt);
     }

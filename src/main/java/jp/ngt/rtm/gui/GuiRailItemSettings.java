@@ -8,7 +8,6 @@ import jp.ngt.ngtlib.gui.GuiNumberField;
 import jp.ngt.ngtlib.renderer.NGTRenderHelper;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.network.PacketRailItemSettings;
-import jp.ngt.rtm.network.PacketRailItemSettingsSlot;
 import jp.ngt.rtm.rail.util.RailProperty;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
@@ -67,7 +66,6 @@ public class GuiRailItemSettings extends GuiContainerCustom {
             this.noBallast = this.noBallastButton.isChecked();
             if (this.noBallast && this.container.getBallastStack() != null) {
                 this.container.clearBallastStackClient();
-                RTMCore.NETWORK_WRAPPER.sendToServer(new PacketRailItemSettingsSlot());
             }
         }
     }

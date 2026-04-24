@@ -32,7 +32,6 @@ public final class RTMPacket {
         registerPacket(PacketMoveMM.class, PacketMoveMM.class, Side.CLIENT);
         registerPacket(PacketSyncItem.class, PacketSyncItem.class, Side.SERVER);
         registerPacket(PacketRailItemSettings.class, PacketRailItemSettings.class, Side.SERVER);
-        registerPacket(PacketRailItemSettingsSlot.class, PacketRailItemSettingsSlot.class, Side.SERVER);
     }
 
     public static <REQ extends IMessage, REPLY extends IMessage> void registerPacket(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {

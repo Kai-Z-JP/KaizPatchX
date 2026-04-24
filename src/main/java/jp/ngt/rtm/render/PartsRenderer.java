@@ -2,6 +2,7 @@ package jp.ngt.rtm.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.compat.AngelicaCompat;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.io.ScriptUtil;
 import jp.ngt.ngtlib.math.NGTMath;
@@ -69,7 +70,7 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 
     public Parts registerParts(Parts par1) {
         this.partsList.add(par1);
-        if (par1 instanceof ActionParts) {
+        if (par1 instanceof ActionParts && !AngelicaCompat.isAvailable()) {
             ActionParts actionParts = (ActionParts) par1;
             actionParts.id = this.targetsList.size() + 1;
             this.targetsList.add(actionParts);

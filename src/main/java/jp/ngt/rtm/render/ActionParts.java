@@ -11,6 +11,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
@@ -35,8 +36,9 @@ public class ActionParts extends Parts {
 
     private void setupOutlineModel(PartsRenderer renderer) {
         GroupObject[] objs = getObjects(renderer.modelObj.model);
-        this.outlineModels = new GroupObject[objs.length];
-        IntStream.range(0, objs.length).forEach(i -> {
+        this.outlineModels = IntStream.range(0, objs.length)
+                .filter(i -> objs[i] != null)
+                .mapToObj(i -> {
             GroupObject go = objs[i].copy("outline_" + i);
             go.smoothingAngle = 180.0F;
             go.calcVertexNormals(VecAccuracy.MEDIUM);
@@ -47,8 +49,8 @@ public class ActionParts extends Parts {
                 });
                 face.calculateFaceNormal(VecAccuracy.MEDIUM);
             });
-            this.outlineModels[i] = go;
-        });
+                    return go;
+                }).toArray(GroupObject[]::new);
     }
 
     public void render(PartsRenderer renderer) {
@@ -73,7 +75,7 @@ public class ActionParts extends Parts {
         GLHelper.disableLighting();
         GL11.glDisable(3553);
         GLHelper.setColor(color, 255);
-        Arrays.stream(this.outlineModels).forEach(obj -> obj.render(false));
+        Arrays.stream(this.outlineModels).filter(Objects::nonNull).forEach(obj -> obj.render(false));
         GLHelper.setColor(16777215, 255);
         GL11.glEnable(3553);
         GLHelper.enableLighting();

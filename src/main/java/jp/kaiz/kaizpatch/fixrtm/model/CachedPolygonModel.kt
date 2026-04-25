@@ -67,6 +67,18 @@ object CachedPolygonModel {
         }
     }
 
+    fun pin(model: IModelNGT?) {
+        if (model is AsyncCachedModel) {
+            model.pinLoadedModel()
+        }
+    }
+
+    fun prepareSharedUse(model: IModelNGT?) {
+        if (model is AsyncCachedModel) {
+            model.ensureLoadedForSharedUse()
+        }
+    }
+
     fun getDebugLines(): List<String> {
         val modelSnapshot = snapshotModels()
         val lruSnapshot = LoadedModelLru.snapshot()
@@ -196,9 +208,19 @@ object CachedPolygonModel {
         private val state = AtomicReference(LoadState.READY)
 
         @Volatile
+        private var pinned = false
+
+        @Volatile
         private var loadedModel: PolygonModel? = initialModel
 
+        init {
+            syncModelView(initialModel)
+        }
+
         fun compactLoadedModel() {
+            if (pinned) {
+                return
+            }
             if (loadedModel != null) {
                 logger.info(
                     "Discarding cached model from memory: model={}, reason=post-init-compact, weight={} bytes",
@@ -206,11 +228,59 @@ object CachedPolygonModel {
                     header.weight
                 )
             }
+            clearModelView()
             loadedModel = null
             if (state.get() == LoadState.READY) {
                 state.set(LoadState.UNLOADED)
             }
             LoadedModelLru.remove(this)
+        }
+
+        fun pinLoadedModel() {
+            pinned = true
+            LoadedModelLru.remove(this)
+        }
+
+        @Synchronized
+        fun ensureLoadedForSharedUse() {
+            val current = loadedModel
+            if (current != null) {
+                syncModelView(current)
+                if (state.get() != LoadState.READY) {
+                    state.set(LoadState.READY)
+                }
+                touchLoadedModel()
+                return
+            }
+
+            logger.info(
+                "Restoring cached model for shared reuse: model={}, type={}, weight={} bytes",
+                header.modelName,
+                header.type.extension,
+                header.weight
+            )
+            val model = try {
+                loader()
+            } catch (t: Throwable) {
+                logger.warn("Failed to restore cached model for shared reuse", t)
+                null
+            }
+
+            if (model == null) {
+                state.set(LoadState.FAILED)
+                logger.warn(
+                    "Cached model restore for shared reuse failed: model={}, type={}, weight={} bytes",
+                    header.modelName,
+                    header.type.extension,
+                    header.weight
+                )
+                return
+            }
+
+            loadedModel = model
+            syncModelView(model)
+            state.set(LoadState.READY)
+            touchLoadedModel()
         }
 
         override fun renderAll(smoothing: Boolean) {
@@ -301,6 +371,7 @@ object CachedPolygonModel {
                 }
 
                 loadedModel = model
+                syncModelView(model)
                 state.set(LoadState.READY)
                 logger.info(
                     "Completed dynamic cached model load: model={}, type={}, weight={} bytes",
@@ -313,12 +384,18 @@ object CachedPolygonModel {
         }
 
         private fun touchLoadedModel() {
+            if (pinned) {
+                return
+            }
             LoadedModelLru.touch(this, header.weight)
         }
 
         fun currentState(): LoadState = state.get()
 
         fun evictLoadedModel(reason: String) {
+            if (pinned) {
+                return
+            }
             if (state.compareAndSet(LoadState.READY, LoadState.UNLOADED)) {
                 logger.info(
                     "Discarding cached model from memory: model={}, reason={}, weight={} bytes",
@@ -326,8 +403,22 @@ object CachedPolygonModel {
                     reason,
                     header.weight
                 )
+                clearModelView()
                 loadedModel = null
             }
+        }
+
+        private fun syncModelView(model: PolygonModel) {
+            drawMode = model.drawMode
+            accuracy = model.accuracy
+            System.arraycopy(model.sizeBox, 0, sizeBox, 0, sizeBox.size)
+            groupObjects.clear()
+            groupObjects.addAll(model.groupObjects)
+        }
+
+        private fun clearModelView() {
+            groupObjects.clear()
+            Arrays.fill(sizeBox, 0.0F)
         }
     }
 

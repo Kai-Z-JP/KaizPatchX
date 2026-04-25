@@ -3,6 +3,7 @@ package jp.ngt.rtm.modelpack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.kaiz.kaizpatch.compat.AngelicaCompat;
+import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
 import jp.ngt.ngtlib.io.FileType;
 import jp.ngt.ngtlib.io.NGTClassUtil;
 import jp.ngt.ngtlib.io.NGTJson;
@@ -168,7 +169,9 @@ public final class ModelPackManager {
         }
 
         if (addModelMap && this.modelFileMap.containsKey(modelName)) {
-            return this.modelFileMap.get(modelName);
+            IModelNGT model = this.modelFileMap.get(modelName);
+            CachedModelUtil.prepareSharedUse(model);
+            return model;
         }
 
         VecAccuracy accuracy = (cfg.accuracy == null || cfg.accuracy.equals(VecAccuracy.MEDIUM.toString())) ? VecAccuracy.MEDIUM : VecAccuracy.LOW;
@@ -203,6 +206,7 @@ public final class ModelPackManager {
     private IModelNGT loadJavaModel(String modelName, boolean addModelMap) {
         if (this.modelFileMap.containsKey(modelName)) {
             IModelNGT obj = this.modelFileMap.get(modelName);
+            CachedModelUtil.prepareSharedUse(obj);
             if (addModelMap) {
                 return obj;
             }

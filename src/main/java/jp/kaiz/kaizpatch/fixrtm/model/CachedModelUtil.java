@@ -12,6 +12,14 @@ public final class CachedModelUtil {
         CachedPolygonModel.INSTANCE.compact(model);
     }
 
+    public static void pin(IModelNGT model) {
+        CachedPolygonModel.INSTANCE.pin(model);
+    }
+
+    public static void prepareSharedUse(IModelNGT model) {
+        CachedPolygonModel.INSTANCE.prepareSharedUse(model);
+    }
+
     public static List<String> getDebugLines() {
         return CachedPolygonModel.INSTANCE.getDebugLines();
     }

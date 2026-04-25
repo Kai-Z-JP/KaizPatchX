@@ -5,10 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
 import jp.ngt.ngtlib.io.FileType;
 import jp.ngt.ngtlib.renderer.GLHelper;
-import jp.ngt.ngtlib.renderer.model.IModelNGT;
-import jp.ngt.ngtlib.renderer.model.MCModel;
-import jp.ngt.ngtlib.renderer.model.Material;
-import jp.ngt.ngtlib.renderer.model.TextureSet;
+import jp.ngt.ngtlib.renderer.model.*;
 import jp.ngt.ngtlib.util.NGTUtilClient;
 import jp.ngt.rtm.modelpack.ModelPackException;
 import jp.ngt.rtm.modelpack.ModelPackManager;
@@ -78,8 +75,18 @@ public class ModelObject {
         }
 
         this.renderer = (par3 == null) ? this.getPartsRenderer(par1.rendererPath, this.model, args) : par3;
+        long modelSignatureBeforeInit = this.renderer.getScript() != null ? this.createModelSignature(this.model) : 0L;
         this.renderer.init(par2, this);
-        CachedModelUtil.compact(this.model);
+        if (this.renderer.getScript() != null) {
+            long modelSignatureAfterInit = this.createModelSignature(this.model);
+            if (modelSignatureBeforeInit != modelSignatureAfterInit) {
+                CachedModelUtil.pin(this.model);
+            } else {
+                CachedModelUtil.compact(this.model);
+            }
+        } else {
+            CachedModelUtil.compact(this.model);
+        }
     }
 
     /**
@@ -208,5 +215,56 @@ public class ModelObject {
 
     protected Map<String, String> getTextureMap(String[][] par1) {
         return Arrays.stream(par1).collect(Collectors.toMap(sa -> sa[0], sa -> sa[1], (a, b) -> b));
+    }
+
+    private long createModelSignature(IModelNGT model) {
+        long hash = 1469598103934665603L;
+        hash = mix(hash, model.getDrawMode());
+        hash = mix(hash, model.getType().getExtension().hashCode());
+
+        for (Entry<String, Material> entry : model.getMaterials().entrySet()) {
+            hash = mix(hash, entry.getKey().hashCode());
+            Material material = entry.getValue();
+            hash = mix(hash, material.id);
+            hash = mix(hash, material.texture != null ? material.texture.toString().hashCode() : 0);
+        }
+
+        for (GroupObject groupObject : model.getGroupObjects()) {
+            hash = mix(hash, groupObject.name != null ? groupObject.name.hashCode() : 0);
+            hash = mix(hash, groupObject.drawMode);
+            hash = mix(hash, Float.floatToIntBits(groupObject.smoothingAngle));
+            hash = mix(hash, groupObject.faces.size());
+
+            for (Face face : groupObject.faces) {
+                hash = mix(hash, face.materialId);
+                hash = mix(hash, face.vertices.length);
+                hash = mix(hash, face.faceNormal != null ? vertexHash(face.faceNormal) : 0);
+
+                for (int i = 0; i < face.vertices.length; ++i) {
+                    hash = mix(hash, vertexHash(face.vertices[i]));
+                    hash = mix(hash, textureHash(face.textureCoordinates[i]));
+                    hash = mix(hash, face.vertexNormals != null && face.vertexNormals[i] != null ? vertexHash(face.vertexNormals[i]) : 0);
+                }
+            }
+        }
+
+        return hash;
+    }
+
+    private int vertexHash(Vertex vertex) {
+        int hash = Float.floatToIntBits(vertex.getX());
+        hash = 31 * hash + Float.floatToIntBits(vertex.getY());
+        hash = 31 * hash + Float.floatToIntBits(vertex.getZ());
+        return hash;
+    }
+
+    private int textureHash(TextureCoordinate coordinate) {
+        int hash = Float.floatToIntBits(coordinate.getU());
+        hash = 31 * hash + Float.floatToIntBits(coordinate.getV());
+        return hash;
+    }
+
+    private long mix(long current, int value) {
+        return (current ^ value) * 1099511628211L;
     }
 }

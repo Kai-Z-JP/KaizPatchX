@@ -1,3 +1,5 @@
+importPackage(Packages.jp.ngt.rtm.rail.util);
+
 function renderRailDynamic2(tileEntity, par2, par4, par6) {
     if (tileEntity.getSwitch() == null) {
         return;

@@ -13,6 +13,7 @@ import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXModelPack
 import jp.kaiz.kaizpatch.fixrtm.readUTFNullable
 import jp.kaiz.kaizpatch.fixrtm.util.DigestUtils
 import jp.kaiz.kaizpatch.fixrtm.writeUTFNullable
+import jp.ngt.ngtlib.NGTCore
 import jp.ngt.ngtlib.io.FileType
 import jp.ngt.ngtlib.renderer.model.*
 import jp.ngt.rtm.RTMConfig
@@ -148,6 +149,23 @@ object CachedPolygonModel {
     private fun bytesToMiB(bytes: Long): Double = bytes / (1024.0 * 1024.0)
     private fun configuredMaxWeight(): Long = RTMConfig.fixRTMCachedModelMemoryLimitMiB.toLong() * 1024L * 1024L
     private fun configuredProtectionMillis(): Long = RTMConfig.fixRTMCachedModelProtectSeconds.toLong() * 1000L
+    private fun debugInfo(message: String, vararg args: Any?) {
+        if (NGTCore.debugLog) {
+            logger.info(message, *args)
+        }
+    }
+
+    private fun debugWarn(message: String, throwable: Throwable) {
+        if (NGTCore.debugLog) {
+            logger.warn(message, throwable)
+        }
+    }
+
+    private fun debugWarn(message: String, vararg args: Any?) {
+        if (NGTCore.debugLog) {
+            logger.warn(message, *args)
+        }
+    }
 
     private object Serializer : TaggedFileManager.Serializer<PolygonModel> {
         override val type: Class<PolygonModel> get() = PolygonModel::class.java
@@ -222,7 +240,7 @@ object CachedPolygonModel {
                 return
             }
             if (loadedModel != null) {
-                logger.info(
+                debugInfo(
                     "Discarding cached model from memory: model={}, reason=post-init-compact, weight={} bytes",
                     header.modelName,
                     header.weight
@@ -253,7 +271,7 @@ object CachedPolygonModel {
                 return
             }
 
-            logger.info(
+            debugInfo(
                 "Restoring cached model for shared reuse: model={}, type={}, weight={} bytes",
                 header.modelName,
                 header.type.extension,
@@ -262,13 +280,13 @@ object CachedPolygonModel {
             val model = try {
                 loader()
             } catch (t: Throwable) {
-                logger.warn("Failed to restore cached model for shared reuse", t)
+                debugWarn("Failed to restore cached model for shared reuse", t)
                 null
             }
 
             if (model == null) {
                 state.set(LoadState.FAILED)
-                logger.warn(
+                debugWarn(
                     "Cached model restore for shared reuse failed: model={}, type={}, weight={} bytes",
                     header.modelName,
                     header.type.extension,
@@ -336,7 +354,7 @@ object CachedPolygonModel {
                 return
             }
 
-            logger.info(
+            debugInfo(
                 "Queueing dynamic cached model load: model={}, type={}, weight={} bytes",
                 header.modelName,
                 header.type.extension,
@@ -347,7 +365,7 @@ object CachedPolygonModel {
                     return@submit
                 }
                 val model = try {
-                    logger.info(
+                    debugInfo(
                         "Starting dynamic cached model load: model={}, type={}, weight={} bytes",
                         header.modelName,
                         header.type.extension,
@@ -355,13 +373,13 @@ object CachedPolygonModel {
                     )
                     loader()
                 } catch (t: Throwable) {
-                    logger.warn("Failed to restore cached model asynchronously", t)
+                    debugWarn("Failed to restore cached model asynchronously", t)
                     null
                 }
 
                 if (model == null) {
                     state.set(LoadState.FAILED)
-                    logger.warn(
+                    debugWarn(
                         "Dynamic cached model load failed: model={}, type={}, weight={} bytes",
                         header.modelName,
                         header.type.extension,
@@ -373,7 +391,7 @@ object CachedPolygonModel {
                 loadedModel = model
                 syncModelView(model)
                 state.set(LoadState.READY)
-                logger.info(
+                debugInfo(
                     "Completed dynamic cached model load: model={}, type={}, weight={} bytes",
                     header.modelName,
                     header.type.extension,
@@ -397,7 +415,7 @@ object CachedPolygonModel {
                 return
             }
             if (state.compareAndSet(LoadState.READY, LoadState.UNLOADED)) {
-                logger.info(
+                debugInfo(
                     "Discarding cached model from memory: model={}, reason={}, weight={} bytes",
                     header.modelName,
                     reason,

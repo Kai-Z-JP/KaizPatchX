@@ -153,7 +153,11 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         this.isCompilingStaticRail = true;
         this.renderedStaticGeometry = false;
         try {
-            ScriptUtil.doScriptFunction(this.script, "renderRailStatic", tileEntity, 0.0D, 0.0D, 0.0D, par8, 0);
+            double[] origin = this.getRailRenderOrigin(tileEntity);
+            // Static display lists are translated again at draw time, so scripts that
+            // apply the rail origin manually need the inverse offset while compiling.
+            ScriptUtil.doScriptFunction(this.script, "renderRailStatic",
+                    tileEntity, -origin[0], -origin[1], -origin[2], par8, 0);
             if (!this.renderedStaticGeometry) {
                 tileEntity.shouldRerenderRail = false;
             }
@@ -219,15 +223,21 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     }
 
     private void renderStaticDisplayList(TileEntityLargeRailCore tileEntity, double par2, double par4, double par6) {
-        RailPosition rp = tileEntity.getRailPositions()[0];
-        double x = rp.posX - (double) rp.blockX;
-        double y = rp.posY - (double) rp.blockY - 0.0625D;
-        double z = rp.posZ - (double) rp.blockZ;
+        double[] origin = this.getRailRenderOrigin(tileEntity);
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) (par2 + x), (float) (par4 + y), (float) (par6 + z));
+        GL11.glTranslatef((float) (par2 + origin[0]), (float) (par4 + origin[1]), (float) (par6 + origin[2]));
         this.bindTexture(this.getModelObject().textures[0].material.texture);//ディスプレイリストに入れると生成重い
         GLHelper.callList(tileEntity.glLists[this.currentRailIndex]);
         GL11.glPopMatrix();
+    }
+
+    public double[] getRailRenderOrigin(TileEntityLargeRailCore tileEntity) {
+        RailPosition rp = tileEntity.getRailPositions()[0];
+        return new double[]{
+                rp.posX - (double) rp.blockX,
+                rp.posY - (double) rp.blockY - 0.0625D,
+                rp.posZ - (double) rp.blockZ
+        };
     }
 
     /**

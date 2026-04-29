@@ -80,7 +80,7 @@ public class ModelObject {
             this.model = this.createInitModel(filePath, par2, sharedModel);
             long modelSignatureBeforeInit = this.createModelSignature(this.model);
             this.renderer.init(par2, this);
-            this.finishScriptInit(sharedModel, modelSignatureBeforeInit);
+            this.finishScriptInit(filePath, par1.rendererPath, sharedModel, modelSignatureBeforeInit);
         } else {
             this.model = sharedModel;
             this.renderer.init(par2, this);
@@ -126,10 +126,15 @@ public class ModelObject {
         return ModelPackManager.INSTANCE.loadModel(filePath, GL11.GL_TRIANGLES, false, modelSet.getConfig());
     }
 
-    private void finishScriptInit(IModelNGT sharedModel, long modelSignatureBeforeInit) {
+    private void finishScriptInit(String filePath, String rendererPath, IModelNGT sharedModel, long modelSignatureBeforeInit) {
         long modelSignatureAfterInit = this.createModelSignature(this.model);
         if (modelSignatureBeforeInit != modelSignatureAfterInit) {
-            CachedModelUtil.pin(this.model);
+            IModelNGT persistedModel = rendererPath == null ? null : CachedModelUtil.persistScriptedModel(filePath, rendererPath, this.model);
+            if (persistedModel != null) {
+                this.model = persistedModel;
+            } else {
+                CachedModelUtil.pin(this.model);
+            }
         } else if (CachedModelUtil.supportsIsolatedInitCopy(sharedModel)) {
             this.model = sharedModel;
             CachedModelUtil.compact(this.model);

@@ -9,6 +9,7 @@ import jp.kaiz.kaizpatch.fixrtm.cachedModelLoaderExecutor
 import jp.kaiz.kaizpatch.fixrtm.caching.ModelPackBasedCache
 import jp.kaiz.kaizpatch.fixrtm.caching.TaggedFileManager
 import jp.kaiz.kaizpatch.fixrtm.fixCacheDir
+import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXFileLoader
 import jp.kaiz.kaizpatch.fixrtm.modelpack.FIXModelPack
 import jp.kaiz.kaizpatch.fixrtm.readUTFNullable
 import jp.kaiz.kaizpatch.fixrtm.util.DigestUtils
@@ -28,6 +29,10 @@ object CachedPolygonModel {
         fixCacheDir.resolve("polygon-model"),
         0x0000 to Serializer
     )
+    private val scriptedCache = ModelPackBasedCache(
+        fixCacheDir.resolve("polygon-model-scripted"),
+        0x0000 to Serializer
+    )
     private val logger = LogManager.getLogger("CachedPolygonModel")
     private val trackedModels =
         Collections.synchronizedSet(Collections.newSetFromMap(WeakHashMap<AsyncCachedModel, Boolean>()))
@@ -35,7 +40,7 @@ object CachedPolygonModel {
     val type = FileType("fixrtm-cached-polygon-model-file", "fixrtm cached polygon model file.")
 
     fun getCachedModel(pack: FIXModelPack, resource: ResourceLocation, accuracy: VecAccuracy): PolygonModel? {
-        return getCachedModel(pack, cacheKey(resource, accuracy))
+        return getCachedModel(cache, pack, cacheKey(resource, accuracy))
     }
 
     fun putCachedModel(pack: FIXModelPack, resource: ResourceLocation, accuracy: VecAccuracy, model: PolygonModel) {
@@ -53,13 +58,7 @@ object CachedPolygonModel {
         model: PolygonModel
     ): PolygonModel {
         val sha1 = cacheKey(resource, accuracy)
-        val cacheFile = cache.getFile(pack, sha1)
-            ?: error("cache file missing for $resource")
-        return AsyncCachedModel(
-            header = ModelHeader.from(resource.toString(), model, cacheFile.length()),
-            initialModel = model,
-            loader = { getCachedModel(pack, sha1) }
-        ).also { trackedModels += it }
+        return createCachedModel(cache, pack, sha1, resource.toString(), model)
     }
 
     fun compact(model: IModelNGT?) {
@@ -81,6 +80,31 @@ object CachedPolygonModel {
         }
 
         return model.deepCopy()
+    }
+
+    fun persistScriptedModel(modelFile: String, rendererScript: String, model: IModelNGT?): IModelNGT? {
+        if (model !is PolygonModel) {
+            return null
+        }
+
+        val resource = ResourceLocation("minecraft", "models/$modelFile")
+        val pack = try {
+            FIXFileLoader.getPack(resource)
+        } catch (_: Throwable) {
+            return null
+        }
+        val cacheKey = scriptedCacheKey(modelFile, rendererScript)
+        val snapshot = model.deepCopy()
+        scriptedCache.putSync(pack, cacheKey, snapshot)
+        val cachedModel = createCachedModel(
+            scriptedCache,
+            pack,
+            cacheKey,
+            "scripted:$modelFile|$rendererScript",
+            snapshot
+        )
+        prepareSharedUse(cachedModel)
+        return cachedModel
     }
 
     fun pin(model: IModelNGT?) {
@@ -129,8 +153,28 @@ object CachedPolygonModel {
         return DigestUtils.sha1Hex("cached-model:$accuracy:$resource")
     }
 
-    private fun getCachedModel(pack: FIXModelPack, sha1: String): PolygonModel? {
+    private fun scriptedCacheKey(modelFile: String, rendererScript: String): String {
+        return DigestUtils.sha1Hex("scripted-model:v1:$modelFile:$rendererScript")
+    }
+
+    private fun getCachedModel(cache: ModelPackBasedCache, pack: FIXModelPack, sha1: String): PolygonModel? {
         return cache.get(pack, sha1, Serializer)
+    }
+
+    private fun createCachedModel(
+        cache: ModelPackBasedCache,
+        pack: FIXModelPack,
+        sha1: String,
+        modelName: String,
+        model: PolygonModel
+    ): PolygonModel {
+        val cacheFile = cache.getFile(pack, sha1)
+            ?: error("cache file missing for $modelName")
+        return AsyncCachedModel(
+            header = ModelHeader.from(modelName, model, cacheFile.length()),
+            initialModel = model,
+            loader = { getCachedModel(cache, pack, sha1) }
+        ).also { trackedModels += it }
     }
 
     private fun snapshotModels(): ModelStateSnapshot {

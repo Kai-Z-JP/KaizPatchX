@@ -16,6 +16,10 @@ public final class CachedModelUtil {
         return CachedPolygonModel.INSTANCE.supportsIsolatedInitCopy(model);
     }
 
+    public static IModelNGT persistScriptedModel(String modelFile, String rendererScript, IModelNGT model) {
+        return CachedPolygonModel.INSTANCE.persistScriptedModel(modelFile, rendererScript, model);
+    }
+
     public static void compact(IModelNGT model) {
         CachedPolygonModel.INSTANCE.compact(model);
     }

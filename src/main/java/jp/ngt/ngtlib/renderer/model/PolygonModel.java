@@ -2,24 +2,18 @@ package jp.ngt.ngtlib.renderer.model;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.ngt.ngtlib.io.FileType;
 import jp.ngt.ngtlib.renderer.IRenderer;
 import jp.ngt.ngtlib.renderer.NGTTessellator;
 import kotlin.Pair;
 import net.minecraftforge.client.model.ModelFormatException;
 import org.lwjgl.opengl.GL11;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.SequenceInputStream;
+import java.io.*;
 import java.lang.ref.SoftReference;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -266,6 +260,10 @@ public abstract class PolygonModel implements IModelNGT {
         return this.groupObjects;
     }
 
+    public PolygonModel deepCopy() {
+        return new PolygonModelSnapshot(this);
+    }
+
     /////////////////////////////////////////////////////////////////////////////
 
     protected final float getFloat(String s) {
@@ -324,5 +322,69 @@ public abstract class PolygonModel implements IModelNGT {
     private void preParse(String line) {
         line = repS.matcher(line).replaceAll(" ").trim();//空白文字を置換
         this.parseLine(line, ++lineCount);
+    }
+
+    private static final class PolygonModelSnapshot extends PolygonModel {
+        private final FileType type;
+        private final Map<String, Material> materials;
+
+        private PolygonModelSnapshot(PolygonModel source) {
+            super(source.fileName, source.drawMode, source.accuracy);
+            this.type = source.getType();
+            System.arraycopy(source.sizeBox, 0, this.sizeBox, 0, this.sizeBox.length);
+            this.materials = copyMaterialsFrom(source);
+            copyGroupsFrom(source);
+        }
+
+        private Map<String, Material> copyMaterialsFrom(PolygonModel source) {
+            Map<String, Material> copiedMaterials = new HashMap<>(source.getMaterials().size());
+            source.getMaterials().forEach((key, material) -> copiedMaterials.put(key, new Material(material.id, material.texture)));
+            return copiedMaterials;
+        }
+
+        private void copyGroupsFrom(PolygonModel source) {
+            source.groupObjects.stream()
+                    .map(group -> deepCopyGroup(group, source.accuracy))
+                    .forEach(this.groupObjects::add);
+        }
+
+        private static GroupObject deepCopyGroup(GroupObject sourceGroup, VecAccuracy accuracy) {
+            GroupObject copiedGroup = new GroupObject(sourceGroup.name, sourceGroup.drawMode);
+            copiedGroup.smoothingAngle = sourceGroup.smoothingAngle;
+            sourceGroup.faces.stream().map(face -> deepCopyFace(face, accuracy)).forEach(copiedGroup.faces::add);
+            copiedGroup.calcVertexNormals(accuracy);
+            return copiedGroup;
+        }
+
+        private static Face deepCopyFace(Face sourceFace, VecAccuracy accuracy) {
+            Face copiedFace = new Face(sourceFace.vertices.length, sourceFace.materialId);
+            for (int index = 0; index < sourceFace.vertices.length; ++index) {
+                copiedFace.addVertex(
+                        index,
+                        sourceFace.vertices[index].copy(accuracy),
+                        sourceFace.textureCoordinates[index].copy());
+            }
+            return copiedFace;
+        }
+
+        @Override
+        public Map<String, Material> getMaterials() {
+            return this.materials;
+        }
+
+        @Override
+        public FileType getType() {
+            return this.type;
+        }
+
+        @Override
+        protected void parseLine(String currentLine, int lineCount) {
+            throw new UnsupportedOperationException("PolygonModelSnapshot does not parse source data directly");
+        }
+
+        @Override
+        protected void postInit() {
+            throw new UnsupportedOperationException("PolygonModelSnapshot does not initialize source data directly");
+        }
     }
 }

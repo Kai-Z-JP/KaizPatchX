@@ -68,6 +68,21 @@ object CachedPolygonModel {
         }
     }
 
+    fun supportsIsolatedInitCopy(model: IModelNGT?): Boolean {
+        return model is AsyncCachedModel || model is PolygonModel
+    }
+
+    fun copyForIsolatedInit(model: IModelNGT?): IModelNGT? {
+        if (model is AsyncCachedModel) {
+            return model.copyForScriptInit()
+        }
+        if (model !is PolygonModel) {
+            return null
+        }
+
+        return model.deepCopy()
+    }
+
     fun pin(model: IModelNGT?) {
         if (model is AsyncCachedModel) {
             model.pinLoadedModel()
@@ -257,6 +272,13 @@ object CachedPolygonModel {
         fun pinLoadedModel() {
             pinned = true
             LoadedModelLru.remove(this)
+        }
+
+        @Synchronized
+        fun copyForScriptInit(): PolygonModel? {
+            ensureLoadedForSharedUse()
+            val current = loadedModel ?: return null
+            return current.deepCopy()
         }
 
         @Synchronized

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @SideOnly(Side.CLIENT)
 public class ModelObject {
     /*ポリゴンモデル*/
-    public final IModelNGT model;
+    public IModelNGT model;
     /*材質ごとのテクスチャ*/
     public final TextureSet[] textures;
     /*専用レンダラ*/
@@ -40,7 +40,8 @@ public class ModelObject {
 
     public ModelObject(ModelSource par1, ModelSetBase par2, PartsRenderer par3, Object... args) {
         String filePath = par1.modelFile;
-        this.model = ModelPackManager.INSTANCE.loadModel(filePath, GL11.GL_TRIANGLES, true, par2.getConfig());
+        IModelNGT sharedModel = ModelPackManager.INSTANCE.loadModel(filePath, GL11.GL_TRIANGLES, true, par2.getConfig());
+        this.model = sharedModel;
 
         Material[] materials = this.getMaterials(this.getTextureMap(par1.textures));
         this.textures = new TextureSet[materials.length];
@@ -67,24 +68,22 @@ public class ModelObject {
         }
         this.light = flag_l;
         this.alphaBlend = flag_a;
-        this.useTexture = !(this.model.getType() == FileType.NGTO || this.model.getType() == FileType.NGTZ);
+        this.useTexture = !(sharedModel.getType() == FileType.NGTO || sharedModel.getType() == FileType.NGTZ);
 
         if (this.textures[0] == null)//もしものため([0]で参照した場合)
         {
             this.textures[0] = new TextureSet(new Material((byte) 0, new ResourceLocation("hoge")), 0, false);
         }
 
-        this.renderer = (par3 == null) ? this.getPartsRenderer(par1.rendererPath, this.model, args) : par3;
-        long modelSignatureBeforeInit = this.renderer.getScript() != null ? this.createModelSignature(this.model) : 0L;
-        this.renderer.init(par2, this);
+        this.renderer = (par3 == null) ? this.getPartsRenderer(par1.rendererPath, sharedModel, args) : par3;
         if (this.renderer.getScript() != null) {
-            long modelSignatureAfterInit = this.createModelSignature(this.model);
-            if (modelSignatureBeforeInit != modelSignatureAfterInit) {
-                CachedModelUtil.pin(this.model);
-            } else {
-                CachedModelUtil.compact(this.model);
-            }
+            this.model = this.createInitModel(filePath, par2, sharedModel);
+            long modelSignatureBeforeInit = this.createModelSignature(this.model);
+            this.renderer.init(par2, this);
+            this.finishScriptInit(sharedModel, modelSignatureBeforeInit);
         } else {
+            this.model = sharedModel;
+            this.renderer.init(par2, this);
             CachedModelUtil.compact(this.model);
         }
     }
@@ -115,6 +114,27 @@ public class ModelObject {
             return new MCModelRenderer(String.valueOf(b0));
         } else {
             return new BasicPartsRenderer();
+        }
+    }
+
+    private IModelNGT createInitModel(String filePath, ModelSetBase modelSet, IModelNGT sharedModel) {
+        // Shared cached models are treated as read-only; scripted init always runs on an isolated instance.
+        IModelNGT isolatedModel = CachedModelUtil.copyForIsolatedInit(sharedModel);
+        if (isolatedModel != null) {
+            return isolatedModel;
+        }
+        return ModelPackManager.INSTANCE.loadModel(filePath, GL11.GL_TRIANGLES, false, modelSet.getConfig());
+    }
+
+    private void finishScriptInit(IModelNGT sharedModel, long modelSignatureBeforeInit) {
+        long modelSignatureAfterInit = this.createModelSignature(this.model);
+        if (modelSignatureBeforeInit != modelSignatureAfterInit) {
+            CachedModelUtil.pin(this.model);
+        } else if (CachedModelUtil.supportsIsolatedInitCopy(sharedModel)) {
+            this.model = sharedModel;
+            CachedModelUtil.compact(this.model);
+        } else {
+            CachedModelUtil.compact(this.model);
         }
     }
 

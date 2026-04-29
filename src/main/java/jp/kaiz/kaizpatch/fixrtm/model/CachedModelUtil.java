@@ -8,6 +8,14 @@ public final class CachedModelUtil {
     private CachedModelUtil() {
     }
 
+    public static IModelNGT copyForIsolatedInit(IModelNGT model) {
+        return CachedPolygonModel.INSTANCE.copyForIsolatedInit(model);
+    }
+
+    public static boolean supportsIsolatedInitCopy(IModelNGT model) {
+        return CachedPolygonModel.INSTANCE.supportsIsolatedInitCopy(model);
+    }
+
     public static void compact(IModelNGT model) {
         CachedPolygonModel.INSTANCE.compact(model);
     }

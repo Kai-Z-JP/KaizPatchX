@@ -268,7 +268,7 @@ public final class ModelPackManager {
             if (matcher.find()) {
                 String path = matcher.group(1);
                 String rep = this.loadScript(path);
-                rawScript = matcher.replaceFirst(rep);
+                rawScript = matcher.replaceFirst(Matcher.quoteReplacement(rep));
             } else {
                 break;
             }

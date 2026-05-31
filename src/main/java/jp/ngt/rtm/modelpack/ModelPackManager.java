@@ -52,6 +52,7 @@ public final class ModelPackManager {
      * モデルファイルのキャッシュ
      */
     private final Map<String, IModelNGT> modelFileMap = new ConcurrentHashMap<>();
+    private final Map<String, Object> modelFileLocks = new ConcurrentHashMap<>();
     private final Map<String, Map<String, ResourceLocation>> resourceMap = new ConcurrentHashMap<>();
     /**
      * Scriptキャッシュ
@@ -168,12 +169,26 @@ public final class ModelPackManager {
             return this.loadJavaModel(modelName, addModelMap);
         }
 
-        if (addModelMap && this.modelFileMap.containsKey(modelName)) {
-            IModelNGT model = this.modelFileMap.get(modelName);
-            CachedModelUtil.prepareSharedUse(model);
-            return model;
+        if (addModelMap) {
+            Object lock = this.modelFileLocks.computeIfAbsent(modelName, key -> new Object());
+            synchronized (lock) {
+                IModelNGT cachedModel = this.modelFileMap.get(modelName);
+                if (cachedModel != null) {
+                    CachedModelUtil.prepareSharedUse(cachedModel);
+                    return cachedModel;
+                }
+
+                IModelNGT model = this.loadModelDirect(modelName, drawMode, cfg);
+                this.modelFileMap.put(modelName, model);
+                return model;
+            }
         }
 
+        return this.loadModelDirect(modelName, drawMode, cfg);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private IModelNGT loadModelDirect(String modelName, int drawMode, ModelConfig cfg) {
         VecAccuracy accuracy = (cfg.accuracy == null || cfg.accuracy.equals(VecAccuracy.MEDIUM.toString())) ? VecAccuracy.MEDIUM : VecAccuracy.LOW;
         String resource = "models/" + modelName;
         IModelNGT model;
@@ -193,10 +208,6 @@ public final class ModelPackManager {
 
         if (model == null) {
             throw new ModelPackException("Can't find model file", cfg.getName());
-        }
-
-        if (addModelMap) {
-            this.modelFileMap.put(modelName, model);
         }
 
         return model;

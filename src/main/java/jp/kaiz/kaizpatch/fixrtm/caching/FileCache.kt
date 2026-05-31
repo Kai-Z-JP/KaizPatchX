@@ -6,6 +6,9 @@ package jp.kaiz.kaizpatch.fixrtm.caching
 
 import jp.kaiz.kaizpatch.fixrtm.mkParent
 import java.io.*
+import java.nio.file.AtomicMoveNotSupportedException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
@@ -19,6 +22,7 @@ class FileCache<TValue>(
     private val withTwoCharDir: Boolean = true,
 ) {
     private var writings = Collections.newSetFromMap<String>(ConcurrentHashMap())
+    private val fileLocks = Array(64) { Any() }
     private val baseDigestFile = baseDir.resolve("base-digest")
     val cacheDiscarded: Boolean
 
@@ -37,10 +41,12 @@ class FileCache<TValue>(
 
     fun getCachedValue(sha1: String): TValue? {
         require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
-        if (sha1 in writings) return null
-        val file = getFile(sha1)
-        if (!file.exists()) return null
-        return readCache(file, sha1)
+        synchronized(lockFor(sha1)) {
+            if (sha1 in writings) return null
+            val file = getFile(sha1)
+            if (!file.exists()) return null
+            return readCache(file, sha1)
+        }
     }
 
     private fun readCache(file: File, sha1: String): TValue? {
@@ -65,7 +71,9 @@ class FileCache<TValue>(
 
     fun discordCachedValue(sha1: String) {
         require(isHex40IgnoreCase(sha1)) { "invalid sha hash" }
-        getFile(sha1).delete()
+        synchronized(lockFor(sha1)) {
+            getFile(sha1).delete()
+        }
     }
 
     fun getCachedFile(sha1: String): File {
@@ -74,19 +82,44 @@ class FileCache<TValue>(
     }
 
     private fun writeCache(sha1: String, value: TValue) {
-        val file = getFile(sha1).prepare()
-        writings.add(sha1)
-        try {
-            val bas = ByteArrayOutputStream()
-            serialize(bas, value)
-            file.outputStream().buffered().use { bas.writeTo(it) }
-        } catch (_: IOException) {
-            file.delete()
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        } finally {
-            writings.remove(sha1)
+        synchronized(lockFor(sha1)) {
+            val file = getFile(sha1).prepare()
+            var tempFile: File? = null
+            writings.add(sha1)
+            try {
+                val bas = ByteArrayOutputStream()
+                serialize(bas, value)
+                tempFile = File.createTempFile(file.name, ".tmp", file.parentFile)
+                tempFile.outputStream().buffered().use { bas.writeTo(it) }
+                replaceCacheFile(tempFile, file)
+                tempFile = null
+            } catch (_: IOException) {
+                tempFile?.delete()
+            } catch (throwable: Throwable) {
+                tempFile?.delete()
+                throwable.printStackTrace()
+            } finally {
+                writings.remove(sha1)
+            }
         }
+    }
+
+    private fun replaceCacheFile(tempFile: File, file: File) {
+        try {
+            Files.move(
+                tempFile.toPath(),
+                file.toPath(),
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE
+            )
+        } catch (_: AtomicMoveNotSupportedException) {
+            Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
+
+    private fun lockFor(sha1: String): Any {
+        val index = (sha1.hashCode() and Int.MAX_VALUE) % fileLocks.size
+        return fileLocks[index]
     }
 
     private fun getFile(sha1In: String): File {

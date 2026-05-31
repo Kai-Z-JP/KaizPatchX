@@ -92,6 +92,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         this.dataWatcher.addObject(20, this.getDefaultName());
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetVehicleBaseClient<T> modelSet = (ModelSetVehicleBaseClient<T>) this.getModelSet();

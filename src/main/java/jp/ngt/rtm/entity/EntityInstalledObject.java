@@ -36,6 +36,7 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
         this.renderDistanceWeight = 10.0D;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetMachineClient modelSet = (ModelSetMachineClient) this.getModelSet();

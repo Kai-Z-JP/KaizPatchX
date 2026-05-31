@@ -115,6 +115,7 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
 
     public abstract MachineType getMachineType();
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetMachineClient modelSet = (ModelSetMachineClient) this.getModelSet();

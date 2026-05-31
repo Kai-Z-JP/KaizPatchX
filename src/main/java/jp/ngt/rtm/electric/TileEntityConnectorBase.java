@@ -1,5 +1,7 @@
 package jp.ngt.rtm.electric;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.math.PooledVec3;
 import jp.ngt.ngtlib.math.Vec3;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
@@ -150,6 +152,7 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetConnectorClient modelSet = (ModelSetConnectorClient) this.getModelSet();

@@ -181,6 +181,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         return this.myModelSet;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetSignalClient modelSet = (ModelSetSignalClient) this.getModelSet();

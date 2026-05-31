@@ -70,6 +70,7 @@ public abstract class TileEntityOrnament extends TileEntityPlaceable implements 
         return this.randomScale;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetOrnamentClient modelSet = (ModelSetOrnamentClient) this.getModelSet();

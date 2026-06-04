@@ -15,7 +15,6 @@ import jp.ngt.rtm.modelpack.cfg.VehicleBaseConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
-import jp.ngt.rtm.render.ModelObject;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -96,8 +95,7 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
     @Override
     public boolean shouldRenderInPass(int pass) {
         ModelSetVehicleBaseClient<T> modelSet = (ModelSetVehicleBaseClient<T>) this.getModelSet();
-        ModelObject modelObj = modelSet.vehicleModel;
-        return pass == 0 || (modelObj.light || modelObj.alphaBlend) && pass >= 0;
+        return pass == 0 || (modelSet.vehicleModel.light || modelSet.vehicleModel.alphaBlend) && pass >= 0;
     }
 
     @Override

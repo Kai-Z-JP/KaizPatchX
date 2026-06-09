@@ -60,7 +60,7 @@ object TrainProtectionPluginManager {
         }
 
         try {
-            train.enableProtectionPlugin(id)
+            train.setProtectionPluginEnabled(id, true)
         } catch (e: Exception) {
             NGTLog.debug("[RTM] Failed to enable train protection plugin: $id")
             e.printStackTrace()

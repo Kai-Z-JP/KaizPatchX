@@ -1101,11 +1101,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }
     }
 
-    public boolean enableProtectionPlugin(String id) {
-        TrainProtectionPlugin plugin = TrainProtectionPluginManager.getPlugin(id);
-        return this.attachProtectionPlugin(id, plugin);
-    }
-
     public void setProtectionPluginEnabled(String id, boolean enabled) {
         if (enabled) {
             this.enableProtectionPlugin(id);
@@ -1117,14 +1112,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }
     }
 
-    private boolean attachProtectionPlugin(String id, TrainProtectionPlugin plugin) {
+    private void attachProtectionPlugin(String id, TrainProtectionPlugin plugin) {
         if (id == null || id.isEmpty() || plugin == null) {
-            return false;
+            return;
         }
         TrainProtectionPlugin oldPlugin = this.protectionPlugins.get(id);
         if (oldPlugin == plugin) {
             this.setProtectionPluginState(id, true);
-            return true;
+            return;
         }
         if (oldPlugin != null) {
             this.onProtectionPluginUnregister(id, oldPlugin);
@@ -1132,10 +1127,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         this.protectionPlugins.put(id, plugin);
         this.onProtectionPluginRegister(id, plugin);
         this.setProtectionPluginState(id, true);
-        return true;
     }
 
-    public void disableProtectionPlugin(String id) {
+    private void enableProtectionPlugin(String id) {
+        TrainProtectionPlugin plugin = TrainProtectionPluginManager.getPlugin(id);
+        this.attachProtectionPlugin(id, plugin);
+    }
+
+    private void disableProtectionPlugin(String id) {
         TrainProtectionPlugin plugin = this.protectionPlugins.remove(id);
         if (plugin != null) {
             this.onProtectionPluginUnregister(id, plugin);

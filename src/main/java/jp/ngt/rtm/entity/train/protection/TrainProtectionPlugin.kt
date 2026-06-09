@@ -18,7 +18,6 @@ abstract class TrainProtectionPlugin {
     /**
      * @return この保安装置がATSキーを処理するか デフォルトのATS処理をスキップする場合はtrue
      */
-    open fun onATSKeyDown(context: TrainProtectionContext, player: EntityPlayer): Boolean {
-        return false
+    open fun onATSKeyDown(context: TrainProtectionContext, player: EntityPlayer) {
     }
 }

@@ -15,9 +15,9 @@ import jp.ngt.rtm.electric.WireManager;
 import jp.ngt.rtm.entity.npc.EntityMotorman;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
-import jp.ngt.rtm.entity.train.protection.ScriptTrainProtectionPlugin;
 import jp.ngt.rtm.entity.train.protection.TrainProtectionContext;
 import jp.ngt.rtm.entity.train.protection.TrainProtectionPlugin;
+import jp.ngt.rtm.entity.train.protection.TrainProtectionPluginManager;
 import jp.ngt.rtm.entity.train.util.*;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
@@ -68,7 +68,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      * notch x -18
      */
     public int brakeCount = 72;
-    public int atsCount;
     private final Map<String, TrainProtectionPlugin> protectionPlugins = new LinkedHashMap<>();
     @SideOnly(Side.CLIENT)
     public int brakeAirCount;
@@ -99,6 +98,9 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         //this.bogieController.moveTrainWithBogie(this, 0.0F);
         world.spawnEntityInWorld(this);
         this.formation = FormationManager.getInstance().createNewFormation(this);
+        if (!world.isRemote) {
+            TrainProtectionPluginManager.enableDefaultPlugins(this);
+        }
     }
 
 	/*@Override
@@ -218,7 +220,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         } else//!isRemote
         {
             this.updateChunks();
-            this.updateATS();
         }
     }
 
@@ -429,16 +430,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         float sw = (NGTMath.getSin(this.wave) + NGTMath.getSin(this.wave * cfg.rollVariationCoefficient)) * 0.5F;
         this.rotationRoll = roll + sw * cfg.rollWidthCoefficient;
         //できればPID制御したい
-    }
-
-    protected void updateATS() {
-        if (this.atsCount > 0) {
-            ++this.atsCount;
-            if (this.atsCount >= 100) {
-                this.stopTrain(false);
-                this.atsCount = 0;
-            }
-        }
     }
 
     @Override
@@ -1072,58 +1063,52 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }
     }
 
-    public void registerProtectionPlugin(String id, TrainProtectionPlugin plugin) {
+    public boolean enableProtectionPlugin(String id) {
+        TrainProtectionPlugin plugin = TrainProtectionPluginManager.getPlugin(id);
+        return this.attachProtectionPlugin(id, plugin);
+    }
+
+    private boolean attachProtectionPlugin(String id, TrainProtectionPlugin plugin) {
         if (id == null || id.isEmpty() || plugin == null) {
-            return;
+            return false;
         }
         TrainProtectionPlugin oldPlugin = this.protectionPlugins.get(id);
         if (oldPlugin == plugin) {
-            return;
+            return true;
         }
         if (oldPlugin != null) {
             this.onProtectionPluginUnregister(id, oldPlugin);
         }
         this.protectionPlugins.put(id, plugin);
         this.onProtectionPluginRegister(id, plugin);
+        return true;
     }
 
-    public void registerProtectionPlugin(String id, Object jsPlugin) {
-        if (jsPlugin instanceof TrainProtectionPlugin) {
-            this.registerProtectionPlugin(id, (TrainProtectionPlugin) jsPlugin);
-        } else {
-            this.registerProtectionPlugin(id, new ScriptTrainProtectionPlugin(jsPlugin));
-        }
-    }
-
-    public boolean unregisterProtectionPlugin(String id) {
+    public void disableProtectionPlugin(String id) {
         TrainProtectionPlugin plugin = this.protectionPlugins.remove(id);
         if (plugin != null) {
             this.onProtectionPluginUnregister(id, plugin);
-            return true;
         }
-        return false;
     }
 
     public boolean hasProtectionPlugin(String id) {
         return this.protectionPlugins.containsKey(id);
     }
 
-    public boolean onProtectionPluginATSKeyDown(EntityPlayer player) {
+    public void onProtectionPluginATSKeyDown(EntityPlayer player) {
         if (this.protectionPlugins.isEmpty()) {
-            return false;
+            return;
         }
 
-        boolean handled = false;
         for (Map.Entry<String, TrainProtectionPlugin> entry : new ArrayList<>(this.protectionPlugins.entrySet())) {
             try {
                 TrainProtectionContext context = new TrainProtectionContext(this, entry.getKey(), this.getNotch(), this.getSpeed());
-                handled |= entry.getValue().onATSKeyDown(context, player);
+                entry.getValue().onATSKeyDown(context, player);
             } catch (Exception e) {
                 NGTLog.debug("[RTM] Failed to notify train protection plugin ATS key down: " + entry.getKey());
                 e.printStackTrace();
             }
         }
-        return handled;
     }
 
     private void onProtectionPluginUnregister(String id, TrainProtectionPlugin plugin) {
@@ -1198,18 +1183,10 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         int signal = this.getSignal();
         if (par1 > 0 && signal != -1) {
             this.setSignal2(par1);
-
-            if (par1 == 1 && this.getSpeed() > 0.0F) {
-                ++this.atsCount;
-            }
         }
     }
 
     public void setSignal2(int par1) {
-        if (par1 == -1) {
-            this.atsCount = 0;
-        }
-
         this.setByteToDataWatcher(TrainStateType.State_Signal.id, (byte) par1);
     }
 

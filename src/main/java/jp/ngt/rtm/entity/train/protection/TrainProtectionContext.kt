@@ -4,11 +4,11 @@ import jp.ngt.rtm.entity.train.EntityTrainBase
 import jp.ngt.rtm.modelpack.state.DataMap
 import net.minecraft.world.World
 
-class TrainProtectionContext(
+class TrainProtectionContext @JvmOverloads constructor(
     val train: EntityTrainBase,
-    val protectionPluginId: String,
-    val notch: Int,
-    val speed: Float
+    val protectionPluginId: String = "",
+    val notch: Int = train.notch,
+    val speed: Float = train.speed
 ) {
     val world: World
         get() = train.worldObj

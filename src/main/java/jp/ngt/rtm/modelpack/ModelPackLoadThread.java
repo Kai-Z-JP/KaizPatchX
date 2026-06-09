@@ -7,6 +7,8 @@ import jp.ngt.ngtlib.io.NGTJson;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.RTMConfig;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.entity.train.protection.TrainProtectionPluginConfig;
+import jp.ngt.rtm.entity.train.protection.TrainProtectionPluginManager;
 import jp.ngt.rtm.modelpack.texture.TextureManager;
 import jp.ngt.rtm.network.PacketModelPack;
 import jp.ngt.rtm.network.PacketNotice;

@@ -7,6 +7,13 @@ import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 public final class TrainSpeedManager {
     private static final float[] BRAKE = {-0.0005F, -0.001F, -0.0015F, -0.002F, -0.0025F, -0.003F, -0.0035F, -0.01F};
 
+    public static int clampBrakeNotch(int notch, TrainConfig cfg) {
+        if (notch >= 0) {
+            return 0;
+        }
+        return -Math.min(cfg.deccelerations.length - 1, -notch);
+    }
+
     public static float getAcceleration(EntityTrainBase train, int notch, float prevSpeed, TrainConfig cfg) {
         if (notch == 0) {
             return 0.0F;
@@ -20,7 +27,8 @@ public final class TrainSpeedManager {
                             train.getModelSet().serverSE,
                             "getAcceleration",
                             train,
-                            prevSpeed);
+                            prevSpeed,
+                            notch);
                     return obj != null ? Float.parseFloat(obj.toString()) : 0.0f;
                 } else {
                     return cfg.accelerateions[Math.min(cfg.accelerateions.length - 1, notch)];
@@ -33,7 +41,8 @@ public final class TrainSpeedManager {
                         train.getModelSet().serverSE,
                         "getDeceleration",
                         train,
-                        prevSpeed);
+                        prevSpeed,
+                        notch);
                 deceleration = obj != null ? Float.parseFloat(obj.toString()) : 0.0f;
             } else {
                 deceleration = cfg.deccelerations[Math.min(cfg.deccelerations.length - 1, -notch)];

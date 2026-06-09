@@ -50,5 +50,8 @@ object RtmDefaultTrainProtectionPlugin : TrainProtectionPlugin() {
 
     override fun onUnregister(train: EntityTrainBase) {
         train.resourceState.dataMap.namespace(ID).remove(ATS_COUNT, DATA_FLAG)
+        if (train.signal == ACKNOWLEDGED_SIGNAL) {
+            train.setSignal2(0)
+        }
     }
 }

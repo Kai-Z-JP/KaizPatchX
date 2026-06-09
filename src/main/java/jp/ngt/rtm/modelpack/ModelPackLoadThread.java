@@ -135,12 +135,25 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
 
     private void loadModelFromConfig() {
         this.setValue(0, 1, "Loading Train Models");
-        Pattern pattern = Pattern.compile("Model.*\\.json");
-        List<File> fileList = NGTFileLoader.findFile(file -> pattern.matcher(file.getName()).matches());
+        Pattern modelPattern = Pattern.compile("Model.*\\.json");
+        List<File> fileList = NGTFileLoader.findFile(file -> modelPattern.matcher(file.getName()).matches());
+        List<File> protectionPluginFiles = NGTFileLoader.findFile(file -> TrainProtectionPluginConfig.CONFIG_FILE_PATTERN.matcher(file.getName()).matches());
 
         List<File> signBoards = TextureManager.INSTANCE.loadTextures(this);
         List<File> railRoadSigns = TextureManager.INSTANCE.loadRailRoadSigns(this);
         List<File> flags = TextureManager.INSTANCE.loadFlags(this);
+
+        this.setValue(0, 2, "Loading Train Protection Plugins");
+        protectionPluginFiles.stream().filter(Objects::nonNull).forEach(file -> {
+            try {
+                String jsonText = NGTJson.readFromJson(file);
+
+                TrainProtectionPluginConfig config = (TrainProtectionPluginConfig) NGTJson.getObjectFromJson(jsonText, TrainProtectionPluginConfig.class);
+                TrainProtectionPluginManager.register(config);
+            } catch (Throwable e) {
+                throw new ModelPackException("Can't load train protection plugin", file.getAbsolutePath(), e);
+            }
+        });
 
         this.setValue(0, 4, "Registering All Models");
         this.setMaxValue(1, fileList.size(), "");

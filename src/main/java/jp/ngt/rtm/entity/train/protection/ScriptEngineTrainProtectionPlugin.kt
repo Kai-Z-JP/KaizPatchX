@@ -7,8 +7,8 @@ import javax.script.ScriptEngine
 import javax.script.ScriptException
 
 class ScriptEngineTrainProtectionPlugin(private val engine: ScriptEngine) : ScriptTrainProtectionPlugin() {
-    override fun onServerTick(context: TrainProtectionContext): Int {
-        return callIntFunction("onServerTick", context)
+    override fun onServerTick(context: TrainProtectionContext) {
+        callVoidFunction("onServerTick", context)
     }
 
     override fun onRegister(train: EntityTrainBase) {
@@ -21,16 +21,6 @@ class ScriptEngineTrainProtectionPlugin(private val engine: ScriptEngine) : Scri
 
     override fun onATSKeyDown(context: TrainProtectionContext, player: EntityPlayer) {
         callVoidFunction("onATSKeyDown", context, player)
-    }
-
-    private fun callIntFunction(name: String, vararg args: Any): Int {
-        return try {
-            toInt((engine as Invocable).invokeFunction(name, *args))
-        } catch (_: NoSuchMethodException) {
-            0
-        } catch (e: ScriptException) {
-            throw RuntimeException(e)
-        }
     }
 
     private fun callVoidFunction(name: String, vararg args: Any) {

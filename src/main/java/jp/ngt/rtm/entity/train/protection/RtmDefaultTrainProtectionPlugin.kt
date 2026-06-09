@@ -14,7 +14,7 @@ object RtmDefaultTrainProtectionPlugin : TrainProtectionPlugin() {
     private const val WARNING_TICKS = 100
     private const val DATA_FLAG = 0
 
-    override fun onServerTick(context: TrainProtectionContext): Int {
+    override fun onServerTick(context: TrainProtectionContext) {
         var count = context.dataMap.getInt(ATS_COUNT)
         if (count <= 0 && context.signal == STOP_SIGNAL && context.speed > 0.0F) {
             count = 1
@@ -23,7 +23,7 @@ object RtmDefaultTrainProtectionPlugin : TrainProtectionPlugin() {
         }
 
         if (count <= 0) {
-            return 0
+            return
         }
 
         if (count >= WARNING_TICKS) {
@@ -32,7 +32,6 @@ object RtmDefaultTrainProtectionPlugin : TrainProtectionPlugin() {
         } else {
             context.dataMap.setInt(ATS_COUNT, count, DATA_FLAG)
         }
-        return 0
     }
 
     override fun onATSKeyDown(context: TrainProtectionContext, player: EntityPlayer) {

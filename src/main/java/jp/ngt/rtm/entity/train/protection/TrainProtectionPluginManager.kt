@@ -30,12 +30,7 @@ object TrainProtectionPluginManager {
     fun register(config: TrainProtectionPluginConfig) {
         config.checkFields()
 
-        entries[config.id] = Entry(
-            id = config.id,
-            displayName = config.displayName,
-            defaultEnabled = config.defaultEnabled,
-            plugin = createPlugin(config),
-        )
+        putProtectionPlugin(config.id, config.displayName, createPlugin(config), config.defaultEnabled)
     }
 
     @JvmStatic
@@ -100,7 +95,8 @@ object TrainProtectionPluginManager {
         plugin: TrainProtectionPlugin,
         defaultEnabled: Boolean,
     ): Boolean {
-        if (id.isEmpty()) {
+        if (id.isEmpty() || id.contains(':')) {
+            NGTLog.debug("[RTM] Invalid train protection plugin ID: `$id`")
             return false
         }
         entries[id] = Entry(

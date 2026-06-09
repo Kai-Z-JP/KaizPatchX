@@ -18,8 +18,7 @@ public final class TrainSpeedManager {
         if (notch == 0) {
             return 0.0F;
         } else if (notch > 0) {
-            --notch;
-            if (prevSpeed >= cfg.maxSpeed[Math.min(cfg.maxSpeed.length - 1, notch)]) {
+            if (prevSpeed >= cfg.maxSpeed[Math.min(cfg.maxSpeed.length - 1, notch - 1)]) {
                 return 0.0F;
             } else {
                 if (cfg.useVariableAcceleration) {
@@ -31,7 +30,7 @@ public final class TrainSpeedManager {
                             notch);
                     return obj != null ? Float.parseFloat(obj.toString()) : 0.0f;
                 } else {
-                    return cfg.accelerateions[Math.min(cfg.accelerateions.length - 1, notch)];
+                    return cfg.accelerateions[Math.min(cfg.accelerateions.length - 1, notch - 1)];
                 }
             }
         } else {

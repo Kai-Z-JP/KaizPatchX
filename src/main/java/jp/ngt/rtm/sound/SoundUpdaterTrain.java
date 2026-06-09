@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.rtm.entity.train.EntityBogie;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
+import jp.ngt.rtm.entity.train.protection.RtmDefaultTrainProtectionPlugin;
 import jp.ngt.rtm.entity.train.util.EnumNotch;
 import jp.ngt.rtm.entity.train.util.Formation;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
@@ -29,22 +30,22 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
 
     @Override
     public void update() {
+        boolean defaultProtectionEnabled = this.theTrain.isProtectionPluginEnabled(RtmDefaultTrainProtectionPlugin.ID);
+        if (!defaultProtectionEnabled) {
+            this.stopATSSounds();
+        }
+
         EntityBogie bogie = this.theTrain.getBogie(this.theTrain.getTrainDirection());
         if (bogie == null) {
             return;
         }
 
         int signal = this.theTrain.getSignal();
-        if (this.theTrain.isControlCar() && Math.abs(this.theTrain.getSpeed()) > 0.0F) {
+        if (defaultProtectionEnabled && this.theTrain.isControlCar() && Math.abs(this.theTrain.getSpeed()) > 0.0F) {
             switch (signal) {
                 case 1:
                     if (this.currentSignal != 1) {
-                        if (this.atsSound[0] != null) {
-                            this.atsSound[0].stop();
-                        }
-                        if (this.atsSound[1] != null) {
-                            this.atsSound[1].stop();
-                        }
+                        this.stopATSSounds();
 
                         ModelSetVehicleBaseClient<TrainConfig> modelSet = (ModelSetVehicleBaseClient<TrainConfig>) this.theTrain.getModelSet();
 
@@ -60,6 +61,7 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
                     if (this.currentSignal != -1) {
                         if (this.atsSound[1] != null) {
                             this.atsSound[1].stop();
+                            this.atsSound[1] = null;
                         }
                         this.currentSignal = -1;
                     }
@@ -67,17 +69,23 @@ public class SoundUpdaterTrain extends SoundUpdaterVehicle {
             }
         } else {
             if (signal != -1 && this.currentSignal != 0) {
-                if (this.atsSound[0] != null) {
-                    this.atsSound[0].stop();
-                }
-                if (this.atsSound[1] != null) {
-                    this.atsSound[1].stop();
-                }
-                this.currentSignal = 0;
+                this.stopATSSounds();
             }
         }
 
         super.update();
+    }
+
+    private void stopATSSounds() {
+        if (this.atsSound[0] != null) {
+            this.atsSound[0].stop();
+            this.atsSound[0] = null;
+        }
+        if (this.atsSound[1] != null) {
+            this.atsSound[1].stop();
+            this.atsSound[1] = null;
+        }
+        this.currentSignal = 0;
     }
 
     @Override

@@ -1113,7 +1113,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     private void attachProtectionPlugin(String id, TrainProtectionPlugin plugin) {
-        if (id == null || id.isEmpty() || plugin == null) {
+        if (id == null || id.isEmpty() || id.contains(":") || plugin == null) {
             return;
         }
         TrainProtectionPlugin oldPlugin = this.protectionPlugins.get(id);

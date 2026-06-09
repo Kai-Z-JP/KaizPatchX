@@ -608,7 +608,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             for (Map.Entry<String, TrainProtectionPlugin> entry : new ArrayList<>(this.protectionPlugins.entrySet())) {
                 try {
                     TrainProtectionContext context = new TrainProtectionContext(this, entry.getKey(), physicalNotch, speed);
-                    internalNotch = this.selectInternalNotch(internalNotch, entry.getValue().onServerTick(context));
+                    entry.getValue().onServerTick(context);
+                    internalNotch = this.selectInternalNotch(internalNotch, context.getRequestedInternalNotch());
                 } catch (Exception e) {
                     NGTLog.debug("[RTM] Failed to update train protection plugin: " + entry.getKey());
                     e.printStackTrace();

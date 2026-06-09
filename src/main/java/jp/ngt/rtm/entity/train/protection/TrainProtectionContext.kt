@@ -18,4 +18,14 @@ class TrainProtectionContext @JvmOverloads constructor(
 
     val dataMap: DataMap.NamespaceView
         get() = train.resourceState.dataMap.namespace(protectionPluginId)
+
+    /**
+     * 内部ノッチ要求。0は制御要求がないことを意味します。
+     */
+    var requestedInternalNotch: Int = 0
+        private set
+
+    fun requestInternalNotch(notch: Int) {
+        requestedInternalNotch = notch
+    }
 }

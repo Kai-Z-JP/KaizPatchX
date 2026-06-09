@@ -6,18 +6,17 @@ import net.minecraft.entity.player.EntityPlayer
 import java.lang.reflect.InvocationTargetException
 
 class RawScriptTrainProtectionPlugin(private val scriptPlugin: Any?) : ScriptTrainProtectionPlugin() {
-    override fun onServerTick(context: TrainProtectionContext): Int {
-        val plugin = scriptPlugin ?: return 0
+    override fun onServerTick(context: TrainProtectionContext) {
+        val plugin = scriptPlugin ?: return
 
         if (plugin is ScriptObjectMirror) {
-            return if (plugin.hasMember("onServerTick")) {
-                toInt(plugin.callMember("onServerTick", context))
-            } else {
-                0
+            if (plugin.hasMember("onServerTick")) {
+                plugin.callMember("onServerTick", context)
             }
+            return
         }
 
-        return callJavaMethod("onServerTick", arrayOf(TrainProtectionContext::class.java), arrayOf(context))
+        callVoidMethod("onServerTick", arrayOf(TrainProtectionContext::class.java), arrayOf(context))
     }
 
     override fun onRegister(train: EntityTrainBase) {
@@ -33,7 +32,7 @@ class RawScriptTrainProtectionPlugin(private val scriptPlugin: Any?) : ScriptTra
 
         if (plugin is ScriptObjectMirror) {
             if (plugin.hasMember("onATSKeyDown")) {
-                toBoolean(plugin.callMember("onATSKeyDown", context, player))
+                plugin.callMember("onATSKeyDown", context, player)
             }
             return
         }
@@ -45,12 +44,11 @@ class RawScriptTrainProtectionPlugin(private val scriptPlugin: Any?) : ScriptTra
         )
     }
 
-    private fun callJavaMethod(name: String, parameterTypes: Array<Class<*>>, args: Array<Any>): Int {
-        return try {
+    private fun callJavaMethod(name: String, parameterTypes: Array<Class<*>>, args: Array<Any>) {
+        try {
             val method = scriptPlugin!!.javaClass.getMethod(name, *parameterTypes)
-            toInt(method.invoke(scriptPlugin, *args))
+            method.invoke(scriptPlugin, *args)
         } catch (_: NoSuchMethodException) {
-            0
         } catch (e: IllegalAccessException) {
             throw RuntimeException(e)
         } catch (e: InvocationTargetException) {

@@ -5,9 +5,10 @@ import net.minecraft.entity.player.EntityPlayer
 
 abstract class TrainProtectionPlugin {
     /**
-     * @return 内部ノッチ要求 0は制御要求がないことを意味します
+     * ServerTickごとに呼び出されます。
+     * 内部ノッチを要求する場合は context.requestInternalNotch(notch) を呼び出します。
      */
-    abstract fun onServerTick(context: TrainProtectionContext): Int
+    abstract fun onServerTick(context: TrainProtectionContext)
 
     open fun onRegister(train: EntityTrainBase) {
     }

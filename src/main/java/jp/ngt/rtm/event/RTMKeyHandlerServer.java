@@ -37,8 +37,8 @@ public final class RTMKeyHandlerServer {
             }
         } else if (keyCode == RTMCore.KEY_ATS) {
             EntityTrainBase train = this.getRidingTrain(player);
-            if (train == null || !train.onProtectionPluginATSKeyDown(player)) {
-                this.setATS(player);
+            if (train != null) {
+                train.onProtectionPluginATSKeyDown(player);
             }
         }
     }
@@ -67,18 +67,6 @@ public final class RTMKeyHandlerServer {
                 } else {
                     RTMCore.proxy.playSound(train, new ResourceLocation(sa[0], sa[1]), vol, 1.0F, range);
                 }
-            }
-        }
-    }
-
-    private void setATS(EntityPlayer player) {
-        EntityTrainBase train = this.getRidingTrain(player);
-        if (train != null) {
-            int signal = train.getSignal();
-            if (signal == 1) {
-                train.setSignal2(-1);
-            } else if (signal == -1 && train.getNotch() == -8) {
-                train.setSignal2(0);
             }
         }
     }

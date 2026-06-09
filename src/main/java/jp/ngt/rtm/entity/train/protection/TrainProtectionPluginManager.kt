@@ -2,14 +2,20 @@ package jp.ngt.rtm.entity.train.protection
 
 import jp.ngt.ngtlib.io.NGTLog
 import jp.ngt.ngtlib.io.ScriptUtil
+import jp.ngt.rtm.RTMCore
 import jp.ngt.rtm.entity.train.EntityTrainBase
 import jp.ngt.rtm.modelpack.ModelPackManager
 import jp.ngt.rtm.modelpack.cfg.TrainConfig
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase
+import jp.ngt.rtm.network.PacketTrainProtectionPluginList
+import net.minecraft.entity.player.EntityPlayerMP
 import java.util.concurrent.ConcurrentHashMap
 
 object TrainProtectionPluginManager {
     private val entries: MutableMap<String, Entry> = ConcurrentHashMap()
+
+    @Volatile
+    private var syncedPluginInfos: List<TrainProtectionPluginInfo> = emptyList()
 
     init {
         putProtectionPlugin(
@@ -36,6 +42,15 @@ object TrainProtectionPluginManager {
     fun enableDefaultPlugins(train: EntityTrainBase) {
         for (id in getDefaultPluginIds(train)) {
             enablePlugin(train, id)
+        }
+    }
+
+    @JvmStatic
+    fun enableSavedPlugins(train: EntityTrainBase) {
+        for (info in getLocalPluginInfos()) {
+            if (train.isProtectionPluginEnabled(info.id)) {
+                enablePlugin(train, info.id)
+            }
         }
     }
 
@@ -100,6 +115,27 @@ object TrainProtectionPluginManager {
     @JvmStatic
     fun getPlugin(id: String): TrainProtectionPlugin? {
         return entries[id]?.plugin
+    }
+
+    @JvmStatic
+    fun getPluginInfos(): List<TrainProtectionPluginInfo> {
+        return syncedPluginInfos
+    }
+
+    @JvmStatic
+    fun setSyncedPluginInfos(pluginInfos: List<TrainProtectionPluginInfo>) {
+        syncedPluginInfos = pluginInfos.sortedBy { it.id }
+    }
+
+    @JvmStatic
+    fun sendPluginInfos(player: EntityPlayerMP) {
+        RTMCore.NETWORK_WRAPPER.sendTo(PacketTrainProtectionPluginList(getLocalPluginInfos()), player)
+    }
+
+    private fun getLocalPluginInfos(): List<TrainProtectionPluginInfo> {
+        return entries.values
+            .sortedBy { it.id }
+            .map { TrainProtectionPluginInfo(it.id, it.displayName, it.defaultEnabled) }
     }
 
     private fun createPlugin(config: TrainProtectionPluginConfig): TrainProtectionPlugin {

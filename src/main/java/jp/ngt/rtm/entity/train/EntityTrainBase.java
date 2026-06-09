@@ -27,6 +27,7 @@ import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
 import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.network.PacketNotice;
 import jp.ngt.rtm.network.PacketSetTrainState;
+import jp.ngt.rtm.network.PacketTrainProtectionPluginState;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
 import jp.ngt.rtm.world.IChunkLoader;
@@ -35,6 +36,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.*;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
@@ -46,6 +48,9 @@ import org.apache.commons.codec.binary.Base64;
 import java.util.*;
 
 public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> implements IChunkLoader {
+    private static final String NBT_PROTECTION_PLUGINS = "TrainProtectionPlugins";
+    private static final String NBT_PROTECTION_PLUGIN_ID = "Id";
+
     private static final byte DW_Bogie0 = 21;
     private static final byte DW_Bogie1 = 22;
     private static final byte DW_FormationData = 23;
@@ -69,6 +74,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      */
     public int brakeCount = 72;
     private final Map<String, TrainProtectionPlugin> protectionPlugins = new LinkedHashMap<>();
+    private final Set<String> enabledProtectionPluginIds = new LinkedHashSet<>();
     @SideOnly(Side.CLIENT)
     public int brakeAirCount;
     @SideOnly(Side.CLIENT)
@@ -143,6 +149,21 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         nbt.setInteger("trainDir", this.getTrainDirection());
         nbt.setString("byteArray", this.dataWatcher.getWatchableObjectString(DW_ByteArray));
         nbt.setByte("cabDir", this.dataWatcher.getWatchableObjectByte(DW_CabDir));
+        this.writeProtectionPlugins(nbt);
+    }
+
+    private void writeProtectionPlugins(NBTTagCompound nbt) {
+        NBTTagList list = new NBTTagList();
+        for (String id : this.enabledProtectionPluginIds) {
+            if (id == null || id.isEmpty()) {
+                continue;
+            }
+
+            NBTTagCompound entry = new NBTTagCompound();
+            entry.setString(NBT_PROTECTION_PLUGIN_ID, id);
+            list.appendTag(entry);
+        }
+        nbt.setTag(NBT_PROTECTION_PLUGINS, list);
     }
 
     private void writeFormationData(NBTTagCompound nbt) {
@@ -169,6 +190,22 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         this.setTrainDirection(nbt.getInteger("trainDir"));
         this.dataWatcher.updateObject(DW_ByteArray, nbt.getString("byteArray"));
         this.dataWatcher.updateObject(DW_CabDir, nbt.getByte("cabDir"));
+        this.readProtectionPlugins(nbt);
+        if (!this.worldObj.isRemote) {
+            TrainProtectionPluginManager.enableSavedPlugins(this);
+        }
+    }
+
+    private void readProtectionPlugins(NBTTagCompound nbt) {
+        this.enabledProtectionPluginIds.clear();
+        NBTTagList list = nbt.getTagList(NBT_PROTECTION_PLUGINS, 10);
+        for (int i = 0; i < list.tagCount(); ++i) {
+            NBTTagCompound entry = list.getCompoundTagAt(i);
+            String id = entry.getString(NBT_PROTECTION_PLUGIN_ID);
+            if (id != null && !id.isEmpty()) {
+                this.enabledProtectionPluginIds.add(id);
+            }
+        }
     }
 
     private void readFormationData(NBTTagCompound nbt) {
@@ -1068,12 +1105,24 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         return this.attachProtectionPlugin(id, plugin);
     }
 
+    public void setProtectionPluginEnabled(String id, boolean enabled) {
+        if (enabled) {
+            this.enableProtectionPlugin(id);
+        } else {
+            this.disableProtectionPlugin(id);
+        }
+        if (!this.worldObj.isRemote) {
+            PacketTrainProtectionPluginState.sendToClient(this, id, this.isProtectionPluginEnabled(id));
+        }
+    }
+
     private boolean attachProtectionPlugin(String id, TrainProtectionPlugin plugin) {
         if (id == null || id.isEmpty() || plugin == null) {
             return false;
         }
         TrainProtectionPlugin oldPlugin = this.protectionPlugins.get(id);
         if (oldPlugin == plugin) {
+            this.setProtectionPluginState(id, true);
             return true;
         }
         if (oldPlugin != null) {
@@ -1081,6 +1130,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         }
         this.protectionPlugins.put(id, plugin);
         this.onProtectionPluginRegister(id, plugin);
+        this.setProtectionPluginState(id, true);
         return true;
     }
 
@@ -1089,10 +1139,29 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         if (plugin != null) {
             this.onProtectionPluginUnregister(id, plugin);
         }
+        this.setProtectionPluginState(id, false);
     }
 
     public boolean hasProtectionPlugin(String id) {
         return this.protectionPlugins.containsKey(id);
+    }
+
+    public boolean isProtectionPluginEnabled(String id) {
+        return this.enabledProtectionPluginIds.contains(id);
+    }
+
+    public void applyProtectionPluginState(String id, boolean enabled) {
+        this.setProtectionPluginState(id, enabled);
+    }
+
+    private void setProtectionPluginState(String id, boolean enabled) {
+        if (id != null && !id.isEmpty()) {
+            if (enabled) {
+                this.enabledProtectionPluginIds.add(id);
+            } else {
+                this.enabledProtectionPluginIds.remove(id);
+            }
+        }
     }
 
     public void onProtectionPluginATSKeyDown(EntityPlayer player) {

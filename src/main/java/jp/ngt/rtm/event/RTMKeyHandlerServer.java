@@ -36,7 +36,10 @@ public final class RTMKeyHandlerServer {
                 ((EntityArtillery) player.ridingEntity).onFireKeyDown(player);
             }
         } else if (keyCode == RTMCore.KEY_ATS) {
-            this.setATS(player);
+            EntityTrainBase train = this.getRidingTrain(player);
+            if (train == null || !train.onProtectionPluginATSKeyDown(player)) {
+                this.setATS(player);
+            }
         }
     }
 

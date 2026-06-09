@@ -15,12 +15,16 @@ import jp.ngt.rtm.electric.WireManager;
 import jp.ngt.rtm.entity.npc.EntityMotorman;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityVehiclePart;
+import jp.ngt.rtm.entity.train.protection.ScriptTrainProtectionPlugin;
+import jp.ngt.rtm.entity.train.protection.TrainProtectionContext;
+import jp.ngt.rtm.entity.train.protection.TrainProtectionPlugin;
 import jp.ngt.rtm.entity.train.util.*;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.entity.vehicle.EntityVehicleBase;
 import jp.ngt.rtm.item.ItemTrain;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
+import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.network.PacketNotice;
 import jp.ngt.rtm.network.PacketSetTrainState;
 import jp.ngt.rtm.rail.TileEntityLargeRailBase;
@@ -65,6 +69,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      */
     public int brakeCount = 72;
     public int atsCount;
+    private final Map<String, TrainProtectionPlugin> protectionPlugins = new LinkedHashMap<>();
     @SideOnly(Side.CLIENT)
     public int brakeAirCount;
     @SideOnly(Side.CLIENT)
@@ -494,6 +499,8 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     protected void updateSpeed() {
         int notch = this.getNotch();
+        ModelSetVehicleBase<TrainConfig> set = this.getModelSet();
+        TrainConfig cfg = set.getConfig();
 
 //		if (this.riddenByEntity == null || !(this.riddenByEntity instanceof EntityPlayer || this.riddenByEntity instanceof EntityMotorman)) {
 //			if (notch > 0) {
@@ -503,10 +510,15 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
         boolean isBrakeDisabled = true;
         float speed = this.trainSpeed;
+        if (!this.worldObj.isRemote) {
+            this.updateInternalNotch(notch, speed);
+        }
+        int controlNotch = this.getControlNotch(notch, this.getInternalNotch(), cfg);
+        int brakeNotch = controlNotch < 0 ? controlNotch : notch;
 
         //ブレーキ処理, 全ての車両で
-        if (notch < 0) {
-            int max = notch * -18;
+        if (brakeNotch < 0) {
+            int max = brakeNotch * -18;
             if (this.brakeCount < max) {
                 ++this.brakeCount;
                 if (this.worldObj.isRemote) {
@@ -529,8 +541,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         //速度処理, 先頭車のみ
         if (this.isControlCar()) {
             if (isBrakeDisabled && !this.worldObj.isRemote) {
-                ModelSetVehicleBase<TrainConfig> set = this.getModelSet();
-                float acceleration = TrainSpeedManager.getAcceleration(this, notch, Math.abs(speed), set.getConfig());
+                float acceleration = TrainSpeedManager.getAcceleration(this, controlNotch, Math.abs(speed), cfg);
                 TrainState dir = this.getTrainState(10);
                 if ((dir == TrainState.Direction_Back && speed > 0) || (dir == TrainState.Direction_Front && speed < 0)) {
                     acceleration = Math.abs(acceleration);
@@ -541,12 +552,12 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
                 speed += acceleration;
 
-                if (notch >= 0)//ブレーキ解
+                if (controlNotch >= 0)//ブレーキ解
                 {
                     float deceleration;
                     if (this.rotationPitch == 0.0F) {
 //						float f1 = 0.0002F;
-                        float f1 = -set.getConfig().deccelerations[0];
+                        float f1 = -cfg.deccelerations[0];
                         deceleration = speed > 0.0F ? f1 : (speed < 0.0F ? -f1 : 0.0F);
                     } else//坂
                     {
@@ -561,6 +572,38 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
                 this.setSpeed(speed);
             }
         }
+    }
+
+    private void updateInternalNotch(int physicalNotch, float speed) {
+        int internalNotch = 0;
+        if (!this.protectionPlugins.isEmpty()) {
+            for (Map.Entry<String, TrainProtectionPlugin> entry : new ArrayList<>(this.protectionPlugins.entrySet())) {
+                try {
+                    TrainProtectionContext context = new TrainProtectionContext(this, entry.getKey(), physicalNotch, speed);
+                    internalNotch = this.selectInternalNotch(internalNotch, entry.getValue().onServerTick(context));
+                } catch (Exception e) {
+                    NGTLog.debug("[RTM] Failed to update train protection plugin: " + entry.getKey());
+                    e.printStackTrace();
+                }
+            }
+        }
+        this.applyInternalNotch(internalNotch);
+    }
+
+    private int getControlNotch(int physicalNotch, int internalNotch, TrainConfig cfg) {
+        if (internalNotch == 0) {
+            return physicalNotch;
+        }
+
+        if (internalNotch > 0) {
+            return physicalNotch == 0 ? internalNotch : physicalNotch;
+        }
+
+        if (physicalNotch < 0) {
+            return Math.min(physicalNotch, internalNotch);
+        }
+
+        return TrainSpeedManager.clampBrakeNotch(internalNotch, cfg);
     }
 
     protected void moveTrain() {
@@ -1014,6 +1057,94 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         return this.getByteFromDataWatcher(TrainStateType.State_Notch.id);
     }
 
+    public int getInternalNotch() {
+        return this.getByteFromDataWatcher(TrainStateType.State_InternalNotch.id);
+    }
+
+    private int selectInternalNotch(int current, int candidate) {
+        return candidate != 0 && (current == 0 || candidate < current) ? candidate : current;
+    }
+
+    private void applyInternalNotch(int notch) {
+        int data = Math.max(Byte.MIN_VALUE, Math.min(Byte.MAX_VALUE, notch));
+        if (this.getByteFromDataWatcher(TrainStateType.State_InternalNotch.id) != data) {
+            this.setByteToDataWatcher(TrainStateType.State_InternalNotch.id, (byte) data);
+        }
+    }
+
+    public void registerProtectionPlugin(String id, TrainProtectionPlugin plugin) {
+        if (id == null || id.isEmpty() || plugin == null) {
+            return;
+        }
+        TrainProtectionPlugin oldPlugin = this.protectionPlugins.get(id);
+        if (oldPlugin == plugin) {
+            return;
+        }
+        if (oldPlugin != null) {
+            this.onProtectionPluginUnregister(id, oldPlugin);
+        }
+        this.protectionPlugins.put(id, plugin);
+        this.onProtectionPluginRegister(id, plugin);
+    }
+
+    public void registerProtectionPlugin(String id, Object jsPlugin) {
+        if (jsPlugin instanceof TrainProtectionPlugin) {
+            this.registerProtectionPlugin(id, (TrainProtectionPlugin) jsPlugin);
+        } else {
+            this.registerProtectionPlugin(id, new ScriptTrainProtectionPlugin(jsPlugin));
+        }
+    }
+
+    public boolean unregisterProtectionPlugin(String id) {
+        TrainProtectionPlugin plugin = this.protectionPlugins.remove(id);
+        if (plugin != null) {
+            this.onProtectionPluginUnregister(id, plugin);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasProtectionPlugin(String id) {
+        return this.protectionPlugins.containsKey(id);
+    }
+
+    public boolean onProtectionPluginATSKeyDown(EntityPlayer player) {
+        if (this.protectionPlugins.isEmpty()) {
+            return false;
+        }
+
+        boolean handled = false;
+        for (Map.Entry<String, TrainProtectionPlugin> entry : new ArrayList<>(this.protectionPlugins.entrySet())) {
+            try {
+                TrainProtectionContext context = new TrainProtectionContext(this, entry.getKey(), this.getNotch(), this.getSpeed());
+                handled |= entry.getValue().onATSKeyDown(context, player);
+            } catch (Exception e) {
+                NGTLog.debug("[RTM] Failed to notify train protection plugin ATS key down: " + entry.getKey());
+                e.printStackTrace();
+            }
+        }
+        return handled;
+    }
+
+    private void onProtectionPluginUnregister(String id, TrainProtectionPlugin plugin) {
+        try {
+            this.getResourceState().getDataMap().namespace(id).clear(DataMap.SYNC_FLAG);
+            plugin.onUnregister(this);
+        } catch (Exception e) {
+            NGTLog.debug("[RTM] Failed to unregister train protection plugin: " + id);
+            e.printStackTrace();
+        }
+    }
+
+    private void onProtectionPluginRegister(String id, TrainProtectionPlugin plugin) {
+        try {
+            plugin.onRegister(this);
+        } catch (Exception e) {
+            NGTLog.debug("[RTM] Failed to register train protection plugin: " + id);
+            e.printStackTrace();
+        }
+    }
+
     /**
      * プレーヤーが変更したとき呼ぶ
      */
@@ -1086,7 +1217,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
      * 0:direction<br>
      * 1:notch<br>
      * 2:signal<br>
-     * 3:<br>
+     * 3:internal_notch<br>
      * 4:door<br>
      * 5:light<br>
      * 6:pantograph<br>

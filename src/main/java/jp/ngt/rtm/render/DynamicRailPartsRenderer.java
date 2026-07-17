@@ -137,11 +137,10 @@ public class DynamicRailPartsRenderer extends RailPartsRenderer {
         int endIndex = par3 ? halfMax : max;
 
         double[] origPos = rms.getRailPos(max, 0);
-        int[] startPos = tileEntity.getStartPoint();
-        float[] revXZ = RailPosition.REVISION[tileEntity.getRailPositions()[0].direction];
+        RailPosition originRP = tileEntity.getRailPositions()[0];
         //レール全体の始点からの移動差分
-        float moveX = (float) (origPos[1] - ((double) startPos[0] + 0.5D + (double) revXZ[0]));
-        float moveZ = (float) (origPos[0] - ((double) startPos[2] + 0.5D + (double) revXZ[1]));
+        float moveX = (float) (origPos[1] - originRP.posX);
+        float moveZ = (float) (origPos[0] - originRP.posZ);
         //向きによって移動量を反転させる
         float dirFixture = ((par3 && dir == RailDir.LEFT) || (!par3 && dir == RailDir.RIGHT)) ? -1.0F : 1.0F;
 

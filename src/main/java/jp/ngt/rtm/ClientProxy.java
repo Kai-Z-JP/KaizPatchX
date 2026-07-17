@@ -7,6 +7,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.kaiz.kaizpatch.compat.AngelicaCompat;
+import jp.kaiz.kaizpatch.rtm.rail.TileEntityLargeRailSectionCore;
 import jp.ngt.ngtlib.io.NGTFileLoadException;
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTJson;
@@ -100,6 +101,7 @@ public class ClientProxy extends CommonProxy {
 
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluorescent.class, new RenderFluorescent());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailNormalCore.class, RenderLargeRail.INSTANCE);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSectionCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSwitchCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLargeRailSlopeCore.class, RenderLargeRail.INSTANCE);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurnTableCore.class, new RenderTurntable());

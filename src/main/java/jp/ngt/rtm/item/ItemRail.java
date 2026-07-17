@@ -200,7 +200,7 @@ public class ItemRail extends ItemWithModel {
 
     public static ItemStack copyItemFromRail(TileEntityLargeRailCore core) {
         ItemStack stack = ItemRail.getRailItem(core.getProperty());
-        RailPosition[] rps = core.getRailPositions();
+        RailPosition[] rps = core.getLogicalRailPositions();
         setRPToItem(stack, rps);
         String shape = core.getRailShapeName();
         stack.getTagCompound().setString("ShapeName", shape);
@@ -217,6 +217,7 @@ public class ItemRail extends ItemWithModel {
             int origY = topRP.blockY;
             int origZ = topRP.blockZ;
             for (RailPosition rp : rps) {
+                Vec3 offset = PooledVec3.create(rp.offsetX, rp.offsetY, rp.offsetZ).rotateAroundY(difDir * 45.0F);
                 double dif2X = (rp.blockX + 0.5D) - (origX + 0.5D);
                 double dif2Y = (rp.blockY + 0.5D) - (origY + 0.5D);
                 double dif2Z = (rp.blockZ + 0.5D) - (origZ + 0.5D);
@@ -227,6 +228,9 @@ public class ItemRail extends ItemWithModel {
                 rp.blockZ = MathHelper.floor_double(z + 0.5D + vec.getZ());
                 rp.direction = (byte) ((rp.direction + difDir + 8) & 7);
                 rp.anchorYaw = MathHelper.wrapAngleTo180_float(rp.anchorYaw + difDir * 45.0F);
+                rp.offsetX = offset.getX();
+                rp.offsetY = offset.getY();
+                rp.offsetZ = offset.getZ();
                 rp.init();
             }
             RailProperty state = ItemRail.getProperty(stack);

@@ -26,7 +26,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -183,7 +182,7 @@ public class BlockLargeRailBase extends BlockContainer {
         TileEntityLargeRailCore core = tile0.getRailCore();
         if (!world.isRemote && core != null && !core.breaking) {
             core.breaking = true;
-            Arrays.stream(core.getAllRailMaps()).forEach(rm -> rm.breakRail(world, core.getProperty(), core));
+            core.breakLogicalRail();
         }
         super.breakBlock(world, x, y, z, block, meta);
     }

@@ -5,9 +5,9 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import jp.kaiz.kaizpatch.rtm.rail.TileEntityLargeRailSectionCore;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.rail.TileEntityLargeRailCore;
-import jp.ngt.rtm.rail.TileEntityLargeRailNormalCore;
 import jp.ngt.rtm.rail.TileEntityLargeRailSlopeCore;
 import jp.ngt.rtm.rail.TileEntityLargeRailSwitchCore;
 import jp.ngt.rtm.rail.util.RailPosition;
@@ -47,6 +47,9 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
         this.property = new NBTTagCompound();
         NBTTagCompound nbt = new NBTTagCompound();
         tile.writeRailProperties(nbt);
+        if (tile instanceof TileEntityLargeRailSectionCore) {
+            ((TileEntityLargeRailSectionCore) tile).writeSectionData(nbt);
+        }
         this.property = nbt;
         this.railPositions = tile.getRailPositions();
 
@@ -114,7 +117,8 @@ public class PacketLargeRailCore implements IMessage, IMessageHandler<PacketLarg
             tile0.setStartPoint(message.sX, message.sY, message.sZ);
             tile0.readRailProperties(message.property);
             tile0.setRailPositions(message.railPositions);
-            if (message.dataType == TYPE_NORMAL && tile instanceof TileEntityLargeRailNormalCore) {
+            if (message.dataType == TYPE_NORMAL && tile instanceof TileEntityLargeRailSectionCore) {
+                ((TileEntityLargeRailSectionCore) tile).readSectionData(message.property);
             } else if (message.dataType == TYPE_SLOPE && tile instanceof TileEntityLargeRailSlopeCore) {
                 TileEntityLargeRailSlopeCore tile1 = (TileEntityLargeRailSlopeCore) tile;
                 tile1.setSlopeType(message.type);

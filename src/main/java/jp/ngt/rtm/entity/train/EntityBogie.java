@@ -279,6 +279,7 @@ public class EntityBogie extends Entity implements Lockable {
             {
             } else//新しいレール上に移動
             {
+                boolean sameLogicalRail = this.currentRailObj != null && this.currentRailObj.isSameLogicalRail(coreObj);
                 RailMap railMap;
                 if (coreObj instanceof TileEntityLargeRailSwitchCore) {
                     TileEntityLargeRailSwitchCore switchObj = (TileEntityLargeRailSwitchCore) coreObj;
@@ -287,7 +288,7 @@ public class EntityBogie extends Entity implements Lockable {
                     railMap = coreObj.getRailMap(this);
                 }
 
-                if (this.currentRailMap != null && !this.currentRailMap.canConnect(railMap)) {
+                if (this.currentRailMap != null && !sameLogicalRail && !this.currentRailMap.canConnect(railMap)) {
                     return true;
                 }
 
@@ -295,7 +296,9 @@ public class EntityBogie extends Entity implements Lockable {
                 this.currentRailMap = railMap;
                 this.split = (int) (this.currentRailMap.getLength() * (double) SPLITS_PER_METER);
                 this.prevPosIndex = -1;
-                this.onChangeRail(coreObj);
+                if (!sameLogicalRail) {
+                    this.onChangeRail(coreObj);
+                }
             }
 
             return true;

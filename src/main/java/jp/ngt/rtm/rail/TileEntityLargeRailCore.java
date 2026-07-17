@@ -157,8 +157,47 @@ public abstract class TileEntityLargeRailCore extends TileEntityLargeRailBase {
         return this.railPositions;
     }
 
+    /**
+     * アイテム化やマーカー復元で利用する、レール全体の端点
+     */
+    public RailPosition[] getLogicalRailPositions() {
+        return this.railPositions;
+    }
+
+    public boolean isSameLogicalRail(TileEntityLargeRailCore other) {
+        return this == other;
+    }
+
+    public boolean isLogicalRailOccupied() {
+        return this.isCollidedTrain;
+    }
+
+    public int getRailRenderMinimumSplit() {
+        return 0;
+    }
+
+    public int getRailRenderEndOffset() {
+        return 0;
+    }
+
+    public boolean shouldRenderRailStartCap() {
+        return true;
+    }
+
+    public boolean shouldRenderRailEndCap() {
+        return true;
+    }
+
+    public void breakLogicalRail() {
+        RailMap[] maps = this.getAllRailMaps();
+        if (maps != null) {
+            Arrays.stream(maps).forEach(rm -> rm.breakRail(this.worldObj, this.getProperty(), this));
+        }
+    }
+
     public void setRailPositions(RailPosition[] par1) {
         this.railPositions = par1;
+        this.railmap = null;
     }
 
     public RailProperty getProperty() {

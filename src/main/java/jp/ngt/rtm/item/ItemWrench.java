@@ -91,7 +91,7 @@ public class ItemWrench extends Item {
             TileEntityLargeRailCore targetRailCore = targetRail.getRailCore();
             if (targetRailCore != null) {
                 world.setBlockToAir(x, y, z);
-                RailPosition[] rps = targetRailCore.getRailPositions();
+                RailPosition[] rps = targetRailCore.getLogicalRailPositions();
                 Arrays.stream(rps).forEach(rp -> {
                     if (rp != null) {
                         int meta = directionMetaMap[rp.direction];

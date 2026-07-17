@@ -64,7 +64,7 @@ public class TileEntityLargeRailBase extends TileEntityCustom implements ILargeR
     public boolean isTrainOnRail() {
         TileEntityLargeRailCore tile = this.getRailCore();
         if (tile != null) {
-            return tile.isCollidedTrain;
+            return tile.isLogicalRailOccupied();
         }
         return false;
     }

@@ -178,7 +178,7 @@ public class ClientProxy extends CommonProxy {
         try {
             fileList.stream()
                     .map(NGTJson::readFromJson)
-                    .map(json -> (PackInfo) NGTJson.getObjectFromJson(json, PackInfo.class))
+                    .map(json -> NGTJson.getObjectFromJson(json, PackInfo.class))
                     .filter(Objects::nonNull)
                     .forEach(VersionChecker::addToCheckList);
         } catch (NGTFileLoadException e) {

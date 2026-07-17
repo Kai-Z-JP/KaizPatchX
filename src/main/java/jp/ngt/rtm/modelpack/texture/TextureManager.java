@@ -36,7 +36,7 @@ public final class TextureManager {
                 .map(file -> new CrashableFutureTask<Void>(() -> {
                     String json = NGTJson.readFromJson(file);
                     try {
-                        TextureProperty property = (TextureProperty) NGTJson.getObjectFromJson(json, type.type);
+                        TextureProperty property = NGTJson.getObjectFromJson(json, type.type);
                         if (property != null) {
                             property.init();
                             map.put(property.texture, property);

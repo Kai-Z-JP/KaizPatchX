@@ -28,7 +28,7 @@ public final class NGTJson {
      *
      * @throws NGTFileLoadException jsonの書式が不正な場合にスロー
      */
-    public static Object getObjectFromJson(String json, Class<?> clazz) throws NGTFileLoadException {
+    public static <T> T getObjectFromJson(String json, Class<T> clazz) throws NGTFileLoadException {
         try {
             return getGson().fromJson(json, clazz);
         } catch (Exception e) {

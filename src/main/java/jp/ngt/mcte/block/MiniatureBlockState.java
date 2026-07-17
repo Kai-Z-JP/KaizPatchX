@@ -88,7 +88,7 @@ public class MiniatureBlockState {
 
     public void setAABB(String par1) {
         try {
-            this.mbb = (MiniatureBB) NGTJson.getObjectFromJson(par1, MiniatureBB.class);
+            this.mbb = NGTJson.getObjectFromJson(par1, MiniatureBB.class);
         } catch (NGTFileLoadException e) {
             this.mbb = new MiniatureBB();
         }

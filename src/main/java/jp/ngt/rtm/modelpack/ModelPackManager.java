@@ -81,7 +81,7 @@ public final class ModelPackManager {
      */
     public String registerModelset(String type, String json) {
         TypeEntry entry = this.typeMap.get(type);
-        ModelConfig cfg = (ModelConfig) NGTJson.getObjectFromJson(json, entry.cfgClass);
+        ModelConfig cfg = NGTJson.getObjectFromJson(json, entry.cfgClass);
         cfg.init();
         ModelSetBase set = this.getNewModelSet(entry, new Class[]{entry.cfgClass}, cfg);
 //		NGTLog.debug("Register model : " + cfg.getName() + "(" + type + ")");

@@ -292,9 +292,9 @@ public class ItemInstalledObject extends ItemWithModel {
         entity.rotationYaw = yaw;
         entity.rotationPitch = -rm0.getRailPitch(split, i0) * (invert ? -1.0F : 1.0F);
         entity.rotationRoll = rm0.getCant(split, i0) * (invert ? -1.0F : 1.0F);
-        world.spawnEntityInWorld(entity);
         entity.setModelName(this.getModelName(stack));
         entity.getResourceState().readFromNBT(this.getModelState(stack).writeToNBT());
+        world.spawnEntityInWorld(entity);
         return true;
     }
 

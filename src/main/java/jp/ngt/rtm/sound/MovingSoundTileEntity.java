@@ -27,6 +27,15 @@ public class MovingSoundTileEntity extends MovingSoundCustom<TileEntity> {
             return;
         }
 
+        if (this.entity.getWorldObj() != null) {
+            TileEntity te = this.entity.getWorldObj().getTileEntity(
+                    this.entity.xCoord, this.entity.yCoord, this.entity.zCoord);
+            if (te != this.entity) {
+                this.donePlaying = true;
+                return;
+            }
+        }
+
         super.update();
     }
 }

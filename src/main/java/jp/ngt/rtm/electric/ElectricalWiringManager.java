@@ -10,6 +10,7 @@ public class ElectricalWiringManager {
     private static final Map<Integer, ElectricalWiringManager> INSTANCES = new HashMap<>();
 
     private final Map<Long, TileEntityElectricalWiring> registry = new HashMap<>();
+    private long topologyRevision;
 
     public static ElectricalWiringManager get(World world) {
         int dimId = world.provider.dimensionId;
@@ -26,11 +27,29 @@ public class ElectricalWiringManager {
     }
 
     public void register(TileEntityElectricalWiring tile) {
-        registry.put(pack(tile.xCoord, tile.yCoord, tile.zCoord), tile);
+        TileEntityElectricalWiring previous = registry.put(pack(tile.xCoord, tile.yCoord, tile.zCoord), tile);
+        if (previous != tile) {
+            this.markTopologyChanged();
+        }
     }
 
     public void unregister(TileEntityElectricalWiring tile) {
-        registry.remove(pack(tile.xCoord, tile.yCoord, tile.zCoord));
+        long key = pack(tile.xCoord, tile.yCoord, tile.zCoord);
+        if (registry.get(key) == tile) {
+            registry.remove(key);
+            this.markTopologyChanged();
+        }
+    }
+
+    /**
+     * 配線ノードのロード・アンロードや接続変更を信号源へ通知するための世代番号。
+     */
+    public long getTopologyRevision() {
+        return this.topologyRevision;
+    }
+
+    public void markTopologyChanged() {
+        ++this.topologyRevision;
     }
 
     /**
@@ -38,7 +57,9 @@ public class ElectricalWiringManager {
      * ブロック破壊・エンティティ死亡時に呼ぶ。
      */
     public void onNodeRemoved(int x, int y, int z) {
-        registry.remove(pack(x, y, z));
+        if (registry.remove(pack(x, y, z)) != null) {
+            this.markTopologyChanged();
+        }
         for (TileEntityElectricalWiring tile : new ArrayList<>(registry.values())) {
             if (tile.getConnection(x, y, z) != null) {
                 tile.setConnectionTo(x, y, z, ConnectionType.NONE, "");

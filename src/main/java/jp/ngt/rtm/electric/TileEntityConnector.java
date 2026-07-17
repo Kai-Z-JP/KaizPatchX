@@ -9,6 +9,7 @@ public class TileEntityConnector extends TileEntityConnectorBase {
     private static final int METADATA = 6;
 
     private int prevOutputSignal = -1;
+    private long lastTopologyRevision = -1L;
 
     @Override
     protected void applyToDirectConnection(Connection c, int level) {
@@ -39,9 +40,12 @@ public class TileEntityConnector extends TileEntityConnectorBase {
         IProvideElectricity provider = connection.getIProvideElectricity(this.worldObj);
         if (provider != null) {
             int level = provider.getElectricity();
-            if (level != this.prevOutputSignal) {
-                ElectricalWiringManager.get(this.worldObj).propagateSignal(this, level);
+            ElectricalWiringManager manager = ElectricalWiringManager.get(this.worldObj);
+            long topologyRevision = manager.getTopologyRevision();
+            if (level != this.prevOutputSignal || topologyRevision != this.lastTopologyRevision) {
+                manager.propagateSignal(this, level);
                 this.prevOutputSignal = level;
+                this.lastTopologyRevision = manager.getTopologyRevision();
             }
         }
     }

@@ -105,6 +105,7 @@ public abstract class TileEntityElectricalWiring extends TileEntityPlaceable {
         }
 
         if (!this.worldObj.isRemote && flag) {
+            ElectricalWiringManager.get(this.worldObj).markTopologyChanged();
             this.markDirty();
             if (this instanceof TileEntityDummyEW) {
                 RTMCore.NETWORK_WRAPPER.sendToAll(new PacketWire(this));

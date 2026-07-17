@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 
 public abstract class EntityElectricalWiring extends EntityInstalledObject {
     public final TileEntityDummyEW tileEW;
+    private boolean registeredWithWiringManager;
 
     public EntityElectricalWiring(World world) {
         super(world);
@@ -34,9 +35,10 @@ public abstract class EntityElectricalWiring extends EntityInstalledObject {
 
         if (this.tileEW.yCoord <= 0) {
             this.setTilePos();
-            if (!this.worldObj.isRemote) {
-                ElectricalWiringManager.get(this.worldObj).register(this.tileEW);
-            }
+        }
+        if (!this.worldObj.isRemote && !this.registeredWithWiringManager) {
+            ElectricalWiringManager.get(this.worldObj).register(this.tileEW);
+            this.registeredWithWiringManager = true;
         }
 
         this.tileEW.updateEntity();
@@ -44,8 +46,9 @@ public abstract class EntityElectricalWiring extends EntityInstalledObject {
 
     @Override
     public void setDead() {
-        if (!this.worldObj.isRemote && this.tileEW.yCoord > 0) {
+        if (!this.worldObj.isRemote && (this.registeredWithWiringManager || this.tileEW.yCoord > 0)) {
             ElectricalWiringManager.get(this.worldObj).onNodeRemoved(this.tileEW.xCoord, this.tileEW.yCoord, this.tileEW.zCoord);
+            this.registeredWithWiringManager = false;
         }
         super.setDead();
     }

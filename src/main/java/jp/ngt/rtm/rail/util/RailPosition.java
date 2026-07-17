@@ -74,6 +74,15 @@ public class RailPosition {
 
     public double posX, posY, posZ;
 
+    /**
+     * REVISIONおよびマーカー高さから算出した標準位置に対する追加オフセット。
+     * 中間レールのようにブロック端の任意座標を曲線端点として使う場合に使用する。
+     * <p>
+     * なお、ブロックの端であることを保証する責任はRailPositionではなく設定側にあるため、
+     * 適切なバリデーションを行ってください。ブロックは端でない場合、転線が行われないことがあります。
+     */
+    public double offsetX, offsetY, offsetZ;
+
     public RailPosition(int x, int y, int z, byte dir) {
         this(x, y, z, dir, (byte) 0);
     }
@@ -98,14 +107,25 @@ public class RailPosition {
     }
 
     public void init() {
-        this.posX = (double) this.blockX + 0.5D + (double) REVISION[this.direction][0];
-        this.posY = (double) this.blockY + (double) (this.height + 1) * BlockLargeRailBase.THICKNESS;
-        this.posZ = (double) this.blockZ + 0.5D + (double) REVISION[this.direction][1];
+        this.posX = (double) this.blockX + 0.5D + (double) REVISION[this.direction][0] + this.offsetX;
+        this.posY = (double) this.blockY + (double) (this.height + 1) * BlockLargeRailBase.THICKNESS + this.offsetY;
+        this.posZ = (double) this.blockZ + 0.5D + (double) REVISION[this.direction][1] + this.offsetZ;
+    }
+
+    /**
+     * このRailPositionが表す曲線端点をワールド座標で直接指定する。
+     */
+    public void setPosition(double x, double y, double z) {
+        this.offsetX = x - ((double) this.blockX + 0.5D + (double) REVISION[this.direction][0]);
+        this.offsetY = y - ((double) this.blockY + (double) (this.height + 1) * BlockLargeRailBase.THICKNESS);
+        this.offsetZ = z - ((double) this.blockZ + 0.5D + (double) REVISION[this.direction][1]);
+        this.init();
     }
 
     public void addHeight(double par1) {
         int h2 = (int) (par1 / 0.0625D);
         this.height = (byte) (this.height + h2);
+        this.init();
     }
 
     public static RailPosition readFromNBT(NBTTagCompound nbt) {
@@ -126,6 +146,16 @@ public class RailPosition {
         rp.constLimitHN = nbt.getFloat("Const_Limit_HN");
         rp.constLimitWP = nbt.getFloat("Const_Limit_WP");
         rp.constLimitWN = nbt.getFloat("Const_Limit_WN");
+        if (nbt.hasKey("OffsetX")) {
+            rp.offsetX = nbt.getDouble("OffsetX");
+        }
+        if (nbt.hasKey("OffsetY")) {
+            rp.offsetY = nbt.getDouble("OffsetY");
+        }
+        if (nbt.hasKey("OffsetZ")) {
+            rp.offsetZ = nbt.getDouble("OffsetZ");
+        }
+        rp.init();
         return rp;
     }
 
@@ -147,13 +177,23 @@ public class RailPosition {
         nbt.setFloat("Const_Limit_WP", this.constLimitWP);
         nbt.setFloat("Const_Limit_WN", this.constLimitWN);
 
+        if (this.offsetX != 0.0D) {
+            nbt.setDouble("OffsetX", this.offsetX);
+        }
+        if (this.offsetY != 0.0D) {
+            nbt.setDouble("OffsetY", this.offsetY);
+        }
+        if (this.offsetZ != 0.0D) {
+            nbt.setDouble("OffsetZ", this.offsetZ);
+        }
+
         nbt.setByte("SwitchType", this.switchType);
         return nbt;
     }
 
     public void setHeight(byte par1) {
         this.height = par1;
-        this.posY = (double) this.blockY + (double) (par1 + 1) * 0.0625D;
+        this.init();
     }
 
     /**

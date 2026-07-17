@@ -40,8 +40,13 @@ public final class StraightLine implements ILine {
 
     @Override
     public double[] getPoint(int par1, int par2) {
-        int i0 = par2 < 0 ? 0 : (Math.min(par2, par1));
-        double d0 = (double) i0 / (double) par1;
+        double d0 = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getPoint(d0);
+    }
+
+    @Override
+    public double[] getPoint(double ratio) {
+        double d0 = Math.max(0.0D, Math.min(1.0D, ratio));
         double x = this.startX + ((this.endX - this.startX) * d0);
         double y = this.startY + ((this.endY - this.startY) * d0);
         return new double[]{x, y};
@@ -64,6 +69,11 @@ public final class StraightLine implements ILine {
 
     @Override
     public double getSlope(int par1, int par2) {
+        return this.slopeAngle;
+    }
+
+    @Override
+    public double getSlope(double ratio) {
         return this.slopeAngle;
     }
 

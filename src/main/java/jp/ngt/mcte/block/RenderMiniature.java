@@ -62,6 +62,12 @@ public final class RenderMiniature extends TileEntitySpecialRenderer {
         GL11.glTranslatef(-x, 0.0F, -z);
 
         MCTEWorld world = tile.getDummyWorld();
+        world.setRenderTransform(
+                tile.scale,
+                tile.offsetX, tile.offsetY, tile.offsetZ,
+                tile.getOffsetX(), tile.getOffsetY(), tile.getOffsetZ(),
+                tile.getRotation(), tile.attachSide
+        );
         int pass = MinecraftForgeClient.getRenderPass();
         if (pass == -1) {
             pass = 0;

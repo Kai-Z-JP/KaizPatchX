@@ -7,6 +7,7 @@ import jp.ngt.ngtlib.block.NGTObject;
 import jp.ngt.ngtlib.world.NGTWorld;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -17,6 +18,14 @@ public class MCTEWorld extends NGTWorld {
     public boolean updated;
     private long tickCount;
     private final List<BUEntry> updateList = new ArrayList<>();
+
+    private boolean hasRenderTransform;
+    private double renderScale;
+    private double modelOffsetX, modelOffsetY, modelOffsetZ;
+    private double placementOffsetX, placementOffsetY, placementOffsetZ;
+    private double renderYawCos = 1.0D;
+    private double renderYawSin;
+    private byte renderAttachSide = 1;
 
     public MCTEWorld(World par1, NGTObject par2, int x2, int y2, int z2) {
         super(par1, par2, x2, y2, z2);
@@ -151,8 +160,76 @@ public class MCTEWorld extends NGTWorld {
 
 
     @SideOnly(Side.CLIENT)
+    public void setRenderTransform(float scale,
+                                   float modelOffsetX, float modelOffsetY, float modelOffsetZ,
+                                   float placementOffsetX, float placementOffsetY, float placementOffsetZ,
+                                   float yaw, byte attachSide) {
+        this.hasRenderTransform = true;
+        this.renderScale = scale;
+        this.modelOffsetX = modelOffsetX;
+        this.modelOffsetY = modelOffsetY;
+        this.modelOffsetZ = modelOffsetZ;
+        this.placementOffsetX = placementOffsetX;
+        this.placementOffsetY = placementOffsetY;
+        this.placementOffsetZ = placementOffsetZ;
+
+        double yawRadians = Math.toRadians(yaw);
+        this.renderYawCos = snapRotationValue(Math.cos(yawRadians));
+        this.renderYawSin = snapRotationValue(Math.sin(yawRadians));
+        this.renderAttachSide = attachSide;
+    }
+
+    private static double snapRotationValue(double value) {
+        return Math.abs(value) < 1.0E-7D ? 0.0D : value;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
     public int getLightBrightnessForSkyBlocks(int x, int y, int z, int defaultValue) {
-        return this.world.getLightBrightnessForSkyBlocks(this.posX + x, this.posY + y, this.posZ + z, defaultValue);
+        if (!this.hasRenderTransform) {
+            return this.world.getLightBrightnessForSkyBlocks(this.posX, this.posY, this.posZ, defaultValue);
+        }
+
+        double localX = ((double) x + 0.5D - (double) this.blockObject.xSize * 0.5D) * this.renderScale + this.modelOffsetX;
+        double localY = ((double) y + 0.5D) * this.renderScale + this.modelOffsetY;
+        double localZ = ((double) z + 0.5D - (double) this.blockObject.zSize * 0.5D) * this.renderScale + this.modelOffsetZ;
+
+        double rotatedX = localX * this.renderYawCos + localZ * this.renderYawSin + this.placementOffsetX;
+        double rotatedY = localY + this.placementOffsetY - 0.5D;
+        double rotatedZ = localZ * this.renderYawCos - localX * this.renderYawSin + this.placementOffsetZ;
+
+        double attachedX = rotatedX;
+        double attachedY = rotatedY;
+        double attachedZ = rotatedZ;
+        switch (this.renderAttachSide) {
+            case 0:
+                attachedX = -rotatedX;
+                attachedY = -rotatedY;
+                break;
+            case 2:
+                attachedY = rotatedZ;
+                attachedZ = -rotatedY;
+                break;
+            case 3:
+                attachedY = -rotatedZ;
+                attachedZ = rotatedY;
+                break;
+            case 4:
+                attachedX = -rotatedY;
+                attachedY = rotatedX;
+                break;
+            case 5:
+                attachedX = rotatedY;
+                attachedY = -rotatedX;
+                break;
+            default:
+                break;
+        }
+
+        int worldX = MathHelper.floor_double((double) this.posX + 0.5D + attachedX);
+        int worldY = MathHelper.floor_double((double) this.posY + 0.5D + attachedY);
+        int worldZ = MathHelper.floor_double((double) this.posZ + 0.5D + attachedZ);
+        return this.world.getLightBrightnessForSkyBlocks(worldX, worldY, worldZ, defaultValue);
     }
 
     @Override

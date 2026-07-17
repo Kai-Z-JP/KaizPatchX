@@ -7,6 +7,7 @@ import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.NGTVec;
 import jp.ngt.ngtlib.util.PermissionManager;
 import jp.ngt.rtm.*;
+import jp.ngt.rtm.item.ItemBlockMarker;
 import jp.ngt.rtm.item.ItemRail;
 import jp.ngt.rtm.item.ItemWrench;
 import jp.ngt.rtm.rail.util.*;
@@ -79,6 +80,15 @@ public class BlockMarker extends BlockContainer {
         playerFacing = playerFacing / 2 + (playerFacing % 2 == 0 ? 0 : 4);
         int i = meta / 4;
         world.setBlock(x, y, z, this, playerFacing + i * 4, 2);
+
+        if (itemStack.getItem() instanceof ItemBlockMarker) {
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileEntityMarker) {
+                ((TileEntityMarker) tile).setMarkerHeight(ItemBlockMarker.getMarkerHeight(itemStack));
+                tile.markDirty();
+                world.markBlockForUpdate(x, y, z);
+            }
+        }
     }
 
     @Override

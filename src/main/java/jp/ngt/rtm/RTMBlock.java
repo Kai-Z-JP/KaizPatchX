@@ -10,6 +10,7 @@ import jp.ngt.rtm.block.BlockMirror.MirrorType;
 import jp.ngt.rtm.block.tileentity.*;
 import jp.ngt.rtm.electric.*;
 import jp.ngt.rtm.electric.TileEntitySignalConverter.*;
+import jp.ngt.rtm.item.ItemBlockMarker;
 import jp.ngt.rtm.rail.BlockMarker;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCompressed;
@@ -166,9 +167,9 @@ public final class RTMBlock {
 
         RTMRail.init();
 
-        RTMCore.registerRtmPrefixed(marker, ItemBlockCustomColor.class, "rtm:marker");
-        RTMCore.registerRtmPrefixed(markerSwitch, ItemBlockCustomColor.class, "rtm:markerSwitch");
-        RTMCore.registerRtmPrefixed(markerStraight, ItemBlockCustomColor.class, "rtm:markerStraight");
+        RTMCore.registerRtmPrefixed(marker, ItemBlockMarker.class, "rtm:marker");
+        RTMCore.registerRtmPrefixed(markerSwitch, ItemBlockMarker.class, "rtm:markerSwitch");
+        RTMCore.registerRtmPrefixed(markerStraight, ItemBlockMarker.class, "rtm:markerStraight");
         RTMCore.registerRtmPrefixed(markerVoid, ItemBlockCustomColor.class, "rtm:markerVoid");
 
         RTMCore.registerRtmPrefixed(fluorescent, "rtm:fluorescent");

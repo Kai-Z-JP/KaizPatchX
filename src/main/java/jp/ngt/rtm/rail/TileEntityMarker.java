@@ -99,12 +99,7 @@ public class TileEntityMarker extends TileEntity {
     @Override
     public void updateEntity() {
         super.updateEntity();
-
-        if (this.rp == null) {
-            byte dir = BlockMarker.getMarkerDir(this.getBlockType(), this.getBlockMetadata());
-            byte type = (byte) (this.getBlockType() == RTMBlock.markerSwitch ? 1 : 0);
-            this.rp = new RailPosition(this.xCoord, this.yCoord, this.zCoord, dir, type);
-        }
+        this.ensureMarkerRP();
 //		if (this.getWorldObj().isRemote) {
 //			if (this.count >= 60) {
 //				this.updateStartPos();
@@ -131,6 +126,20 @@ public class TileEntityMarker extends TileEntity {
 
     public void setMarkerRP(RailPosition par1) {
         this.rp = par1;
+    }
+
+    public void setMarkerHeight(int height) {
+        this.ensureMarkerRP();
+        int clampedHeight = Math.max(0, Math.min(15, height));
+        this.rp.setHeight((byte) clampedHeight);
+    }
+
+    private void ensureMarkerRP() {
+        if (this.rp == null) {
+            byte dir = BlockMarker.getMarkerDir(this.getBlockType(), this.getBlockMetadata());
+            byte type = (byte) (this.getBlockType() == RTMBlock.markerSwitch ? 1 : 0);
+            this.rp = new RailPosition(this.xCoord, this.yCoord, this.zCoord, dir, type);
+        }
     }
 
     private RailPosition getMarkerRP(int[] pos) {

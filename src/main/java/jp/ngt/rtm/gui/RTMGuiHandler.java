@@ -82,6 +82,8 @@ public class RTMGuiHandler implements IGuiHandler {
             return new GuiSelectModel(world, (IModelSelectorWithType) item);
         } else if (ID == RTMCore.guiIdRailItemSettings) {
             return new GuiRailItemSettings(player.inventory);
+        } else if (ID == RTMCore.guiIdMarkerItemSettings) {
+            return new GuiMarkerItemSettings(player.inventory);
         } else if (ID == RTMCore.guiIdFreightCar) {
             Entity entity = world.getEntityByID(x);
             if (entity instanceof EntityFreightCar) {

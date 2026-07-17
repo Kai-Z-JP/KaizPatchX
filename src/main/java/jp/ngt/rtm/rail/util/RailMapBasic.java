@@ -144,7 +144,12 @@ public class RailMapBasic extends RailMap {
      * @return {z, x}
      */
     public double[] getRailPos(int par1, int par2) {
-        return this.lineHorizontal.getPoint(par1, par2);
+        double ratio = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getRailPos(ratio);
+    }
+
+    public double[] getRailPos(double ratio) {
+        return this.lineHorizontal.getPoint(ratio);
     }
 
     /**
@@ -153,9 +158,14 @@ public class RailMapBasic extends RailMap {
      * @return y
      */
     public double getRailHeight(int par1, int par2) {
+        double ratio = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getRailHeight(ratio);
+    }
+
+    public double getRailHeight(double ratio) {
         float railWidth = 3.0F;//本来はRailConfigから取得すべし
-        double height = this.lineVertical.getPoint(par1, par2)[1];
-        float cant = this.getCant(par1, par2);
+        double height = this.lineVertical.getPoint(ratio)[1];
+        float cant = this.getRailRoll(ratio);
         if (cant != 0.0F) {
             double h2 = Math.abs(NGTMath.sin(cant) * railWidth * 0.5F);
             height += h2;
@@ -167,7 +177,12 @@ public class RailMapBasic extends RailMap {
      * @return 0~360
      */
     public float getRailYaw(int par1, int par2) {
-        return NGTMath.toDegrees((float) this.lineHorizontal.getSlope(par1, par2));
+        double ratio = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getRailYaw(ratio);
+    }
+
+    public float getRailYaw(double ratio) {
+        return NGTMath.toDegrees((float) this.lineHorizontal.getSlope(ratio));
     }
 
     /**
@@ -176,20 +191,30 @@ public class RailMapBasic extends RailMap {
      * @return 0~360
      */
     public float getRailPitch(int par1, int par2) {
-        return NGTMath.toDegrees((float) this.lineVertical.getSlope(par1, par2));
+        double ratio = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getRailPitch(ratio);
+    }
+
+    public float getRailPitch(double ratio) {
+        return NGTMath.toDegrees((float) this.lineVertical.getSlope(ratio));
     }
 
     /**
      * @return カント
      */
     public float getRailRoll(int split, int t) {
-        float ft = 2.0F * t / split;
+        double ratio = split == 0 ? 0.0D : (double) t / (double) split;
+        return this.getRailRoll(ratio);
+    }
+
+    public float getRailRoll(double ratio) {
+        float ft = (float) (2.0D * Math.max(0.0D, Math.min(1.0D, ratio)));
         float c1 = (ft <= 1.0F) ? ((1.0F - ft) * this.startRP.cantEdge) : ((ft - 1.0F) * -this.endRP.cantEdge);
         float c2 = (ft <= 1.0F) ? (ft * this.startRP.cantCenter) : ((2.0F - ft) * this.startRP.cantCenter);
         float cunt = c1 + c2;
         float rand = 0.0F;
         if (this.startRP.cantRandom > 0.0F) {
-            float x = (float) (getLength() * t / split) * this.startRP.cantRandom;
+            float x = (float) (getLength() * ratio) * this.startRP.cantRandom;
             float scale = 3.0F;
             rand = NGTMath.getSin(x) + NGTMath.getSin(x * 0.51F) + NGTMath.getSin(x * 0.252F) + NGTMath.getSin(x * 0.1253F) * 0.25F * scale;
         }

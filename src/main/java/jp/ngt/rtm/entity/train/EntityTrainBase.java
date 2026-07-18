@@ -1157,6 +1157,10 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         return this.enabledProtectionPluginIds.contains(id);
     }
 
+    public DataMap.NamespaceView getProtectionPluginData(String id) {
+        return this.getResourceState().getDataMap().namespace(id);
+    }
+
     public void applyProtectionPluginState(String id, boolean enabled) {
         this.setProtectionPluginState(id, enabled);
     }

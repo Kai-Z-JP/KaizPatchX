@@ -30,7 +30,13 @@ object TrainProtectionPluginManager {
     fun register(config: TrainProtectionPluginConfig) {
         config.checkFields()
 
-        putProtectionPlugin(config.id, config.displayName, createPlugin(config), config.defaultEnabled)
+        putProtectionPlugin(
+            config.id,
+            config.displayName,
+            createPlugin(config),
+            config.defaultEnabled,
+            config.hidden
+        )
     }
 
     @JvmStatic
@@ -94,6 +100,7 @@ object TrainProtectionPluginManager {
         displayName: String,
         plugin: TrainProtectionPlugin,
         defaultEnabled: Boolean,
+        hidden: Boolean = false,
     ): Boolean {
         if (id.isEmpty() || id.contains(':')) {
             NGTLog.debug("[RTM] Invalid train protection plugin ID: `$id`")
@@ -103,6 +110,7 @@ object TrainProtectionPluginManager {
             id = id,
             displayName = displayName,
             defaultEnabled = defaultEnabled,
+            hidden = hidden,
             plugin = plugin
         )
         return true
@@ -131,7 +139,7 @@ object TrainProtectionPluginManager {
     private fun getLocalPluginInfos(): List<TrainProtectionPluginInfo> {
         return entries.values
             .sortedBy { it.id }
-            .map { TrainProtectionPluginInfo(it.id, it.displayName, it.defaultEnabled) }
+            .map { TrainProtectionPluginInfo(it.id, it.displayName, it.defaultEnabled, it.hidden) }
     }
 
     private fun createPlugin(config: TrainProtectionPluginConfig): TrainProtectionPlugin {
@@ -142,6 +150,7 @@ object TrainProtectionPluginManager {
         val id: String,
         val displayName: String,
         val defaultEnabled: Boolean,
+        val hidden: Boolean,
         val plugin: TrainProtectionPlugin
     )
 }

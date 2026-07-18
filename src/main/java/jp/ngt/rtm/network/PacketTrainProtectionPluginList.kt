@@ -21,6 +21,7 @@ class PacketTrainProtectionPluginList() : IMessage, IMessageHandler<PacketTrainP
             ByteBufUtils.writeUTF8String(buffer, plugin.id)
             ByteBufUtils.writeUTF8String(buffer, plugin.displayName)
             buffer.writeBoolean(plugin.defaultEnabled)
+            buffer.writeBoolean(plugin.hidden)
         }
     }
 
@@ -32,6 +33,7 @@ class PacketTrainProtectionPluginList() : IMessage, IMessageHandler<PacketTrainP
                 TrainProtectionPluginInfo(
                     ByteBufUtils.readUTF8String(buffer),
                     ByteBufUtils.readUTF8String(buffer),
+                    buffer.readBoolean(),
                     buffer.readBoolean()
                 )
             )

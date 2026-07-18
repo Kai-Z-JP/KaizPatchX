@@ -10,7 +10,9 @@ class TrainProtectionPluginConfig @JvmOverloads constructor(
     @JvmField
     var scriptPath: String = "",
     @JvmField
-    var defaultEnabled: Boolean = false
+    var defaultEnabled: Boolean = false,
+    @JvmField
+    var hidden: Boolean = false
 ) {
     companion object {
         @JvmField

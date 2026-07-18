@@ -119,7 +119,7 @@ class TrainControlPanelProtectionPage(gui: GuiTrainControlPanel) : TrainControlP
     }
 
     private fun refreshProtectionPlugins() {
-        protectionPlugins = TrainProtectionPluginManager.getPluginInfos()
+        protectionPlugins = TrainProtectionPluginManager.getPluginInfos().filterNot { it.hidden }
         protectionScroll = max(0, min(protectionScroll, protectionMaxScroll))
     }
 

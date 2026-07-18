@@ -6,5 +6,7 @@ class TrainProtectionPluginInfo(
     @JvmField
     val displayName: String,
     @JvmField
-    val defaultEnabled: Boolean
+    val defaultEnabled: Boolean,
+    @JvmField
+    val hidden: Boolean
 )

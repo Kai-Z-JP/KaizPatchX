@@ -1014,8 +1014,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     private byte clampTrainStateData(int id, byte data) {
         TrainStateType trainStateType = TrainState.getStateType(id);
         if (trainStateType == TrainStateType.State_Notch) {
-            TrainConfig cfg = this.getModelSet().getConfig();
-            return NGTMath.clamp(data, (byte) -(cfg.deccelerations.length - 1), (byte) cfg.maxSpeed.length);
+            return NGTMath.clamp(data, (byte) this.getEBNotch(), (byte) this.getMaxNotch());
         } else {
             return NGTMath.clamp(data, trainStateType.min, trainStateType.max);
         }
@@ -1086,6 +1085,14 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
         return this.getByteFromDataWatcher(TrainStateType.State_Notch.id);
     }
 
+    public int getMaxNotch() {
+        return this.getModelSet().getConfig().maxSpeed.length;
+    }
+
+    public int getEBNotch() {
+        return -(this.getModelSet().getConfig().deccelerations.length - 1);
+    }
+
     public int getInternalNotch() {
         return this.getByteFromDataWatcher(TrainStateType.State_InternalNotch.id);
     }
@@ -1095,7 +1102,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
     }
 
     private void applyInternalNotch(int notch) {
-        int data = Math.max(Byte.MIN_VALUE, Math.min(Byte.MAX_VALUE, notch));
+        int data = Math.max(this.getEBNotch(), Math.min(this.getMaxNotch(), notch));
         if (this.getByteFromDataWatcher(TrainStateType.State_InternalNotch.id) != data) {
             this.setByteToDataWatcher(TrainStateType.State_InternalNotch.id, (byte) data);
         }
@@ -1235,7 +1242,7 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     public void setEBNotch() {
         int prevNotch = this.getNotch();
-        int EB_NOTCH = -(this.getModelSet().getConfig().deccelerations.length - 1);
+        int EB_NOTCH = this.getEBNotch();
         if (prevNotch != EB_NOTCH) {
             this.setByteToDataWatcher(TrainStateType.State_Notch.id, (byte) EB_NOTCH);
         }

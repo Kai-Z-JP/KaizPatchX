@@ -138,6 +138,7 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         return this.signalLevel;
     }
 
+    @Deprecated
     @SideOnly(Side.CLIENT)
     public void setSignal(int par1) {
         this.signalLevel = par1;

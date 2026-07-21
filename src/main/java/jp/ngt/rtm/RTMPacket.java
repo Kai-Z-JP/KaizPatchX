@@ -17,7 +17,6 @@ public final class RTMPacket {
         registerPacket(PacketNoticeHandlerServer.class, PacketNotice.class, Side.SERVER);
         registerPacket(PacketRTMKey.class, PacketRTMKey.class, Side.SERVER);
         registerPacket(PacketSelectModel.class, PacketSelectModel.class, Side.SERVER);
-        registerPacket(PacketSignal.class, PacketSignal.class, Side.CLIENT);
         registerPacket(PacketWire.class, PacketWire.class, Side.CLIENT);
         registerPacket(PacketTextureHolder.class, PacketTextureHolder.class, Side.SERVER);
         registerPacket(PacketSetTrainState.class, PacketSetTrainState.class, Side.SERVER);

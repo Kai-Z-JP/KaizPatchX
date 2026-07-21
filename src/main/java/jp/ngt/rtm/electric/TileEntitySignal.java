@@ -133,7 +133,6 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         return (float) this.blockDirection * 90.0F;
     }
 
-    @SideOnly(Side.CLIENT)
     public int getSignal() {
         return this.signalLevel;
     }

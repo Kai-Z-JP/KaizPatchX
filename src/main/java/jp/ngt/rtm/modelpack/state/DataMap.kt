@@ -239,9 +239,20 @@ class DataMap {
     fun getHex(key: String) = rootNamespace().getHex(key)
     fun setHex(key: String, value: Int, flag: Int) = rootNamespace().setHex(key, value, flag)
     fun getList(key: String) = rootNamespace().getList(key)
+    fun getArray(key: String) = rootNamespace().getArray(key)
     fun getListElementType(key: String) = rootNamespace().getListElementType(key)
-    fun setList(key: String, value: Collection<*>, elementType: String, flag: Int) =
-        rootNamespace().setList(key, value, elementType, flag)
+
+    fun setList(key: String, value: Collection<*>, dataType: DataType, flag: Int) =
+        rootNamespace().setList(key, value, dataType, flag)
+
+    inline fun <reified T> setList(key: String, value: Collection<T>, flag: Int) =
+        setList(key, value, DataType.inferElementType<T>(), flag)
+
+    fun setArray(key: String, value: Array<*>, dataType: DataType, flag: Int) =
+        rootNamespace().setList(key, value.toList(), dataType, flag)
+
+    inline fun <reified T> setArray(key: String, value: Array<T>, flag: Int) =
+        setList(key, value.toList(), flag)
 
     class NamespaceView internal constructor(
         private val dataMap: DataMap,
@@ -295,14 +306,20 @@ class DataMap {
         fun getList(key: String): List<Any> =
             dataMap.get<DataEntryList>(keyOf(key))?.get()?.toList() ?: emptyList()
 
-        fun getListElementType(key: String): String =
-            dataMap.get<DataEntryList>(keyOf(key))?.elementType?.key.orEmpty()
+        fun getArray(key: String): Array<Any> = getList(key).toTypedArray()
+        fun getListElementType(key: String): DataType? = dataMap.get<DataEntryList>(keyOf(key))?.elementType
 
-        fun setList(key: String, value: Collection<*>, elementType: String, flag: Int) {
-            val type = DataEntryList.supportedElementType(elementType)
-                ?: throw IllegalArgumentException("Unsupported list element type: $elementType")
-            dataMap.set(keyOf(key), DataEntryList.fromValues(type, value, flag))
-        }
+        fun setList(key: String, value: Collection<*>, dataType: DataType, flag: Int) =
+            dataMap.set(keyOf(key), DataEntryList.fromValues(dataType, value, flag))
+
+        inline fun <reified T> setList(key: String, value: Collection<T>, flag: Int) =
+            setList(key, value, DataType.inferElementType<T>(), flag)
+
+        fun setArray(key: String, value: Array<*>, dataType: DataType, flag: Int) =
+            setList(key, value.toList(), dataType, flag)
+
+        inline fun <reified T> setArray(key: String, value: Array<T>, flag: Int) =
+            setList(key, value.toList(), flag)
     }
 
     private class DataKey private constructor(

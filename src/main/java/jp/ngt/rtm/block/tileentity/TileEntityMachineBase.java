@@ -7,11 +7,9 @@ import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.MachineType;
-import jp.ngt.rtm.modelpack.DataFormProvider;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.ScriptExecuter;
-import jp.ngt.rtm.modelpack.cfg.DataFormConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetMachine;
 import jp.ngt.rtm.modelpack.modelset.ModelSetMachineClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
@@ -24,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class TileEntityMachineBase extends TileEntityPlaceable implements IModelSelectorWithType, DataFormProvider {
+public abstract class TileEntityMachineBase extends TileEntityPlaceable implements IModelSelectorWithType {
     private final ResourceState state = new ResourceState(this);
     private ModelSetMachine myModelSet;
     private String modelName = "";
@@ -172,16 +170,6 @@ public abstract class TileEntityMachineBase extends TileEntityPlaceable implemen
             }
         }
         return this.myModelSet;
-    }
-
-    @Override
-    public DataFormConfig getDataFormConfig() {
-        return this.getModelSet().getConfig().customForm;
-    }
-
-    @Override
-    public String getDataFormPermission() {
-        return RTMCore.CHANGE_MODEL;
     }
 
     @Override

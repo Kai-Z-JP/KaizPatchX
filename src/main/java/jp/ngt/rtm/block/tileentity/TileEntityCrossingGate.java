@@ -1,9 +1,12 @@
 package jp.ngt.rtm.block.tileentity;
 
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.MachineType;
+import jp.ngt.rtm.modelpack.DataFormProvider;
+import jp.ngt.rtm.modelpack.cfg.DataFormConfig;
 import jp.ngt.rtm.sound.SoundPlayer;
 
-public class TileEntityCrossingGate extends TileEntityMachineBase {
+public class TileEntityCrossingGate extends TileEntityMachineBase implements DataFormProvider {
     /**
      * 棒の動き
      */
@@ -69,6 +72,16 @@ public class TileEntityCrossingGate extends TileEntityMachineBase {
                 this.soundPlayer.stopSound();
             }
         }
+    }
+
+    @Override
+    public DataFormConfig getDataFormConfig() {
+        return this.getModelSet().getConfig().customForm;
+    }
+
+    @Override
+    public String getDataFormPermission() {
+        return RTMCore.CHANGE_MODEL;
     }
 
     @Override

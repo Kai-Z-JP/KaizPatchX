@@ -1,11 +1,14 @@
 package jp.ngt.rtm.block.tileentity;
 
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.electric.MachineType;
+import jp.ngt.rtm.modelpack.DataFormProvider;
+import jp.ngt.rtm.modelpack.cfg.DataFormConfig;
 import jp.ngt.rtm.render.MachinePartsRenderer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 
-public class TileEntityLight extends TileEntityMachineBase {
+public class TileEntityLight extends TileEntityMachineBase implements DataFormProvider {
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
@@ -23,6 +26,16 @@ public class TileEntityLight extends TileEntityMachineBase {
             MachinePartsRenderer.rotateVec(this.normal, this.getBlockMetadata(), pitch, yaw);
         }
         return this.normal;
+    }
+
+    @Override
+    public DataFormConfig getDataFormConfig() {
+        return this.getModelSet().getConfig().customForm;
+    }
+
+    @Override
+    public String getDataFormPermission() {
+        return RTMCore.CHANGE_MODEL;
     }
 
     @Override

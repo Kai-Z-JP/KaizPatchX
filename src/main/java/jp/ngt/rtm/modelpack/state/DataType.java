@@ -9,6 +9,7 @@ public enum DataType {
     STRING("String"),
     VEC("Vec"),
     HEX("Hex"),
+    LIST("List"),
     ;
 
     public final String key;

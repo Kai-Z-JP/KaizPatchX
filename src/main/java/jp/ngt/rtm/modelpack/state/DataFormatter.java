@@ -14,6 +14,8 @@ import java.util.stream.IntStream;
 public final class DataFormatter {
     private final Map<String, IDataFilter> filterMap = new HashMap<>();
     private final Map<String, String[]> suggestionMap = new HashMap<>();
+    private final Map<String, DataType> typeMap = new HashMap<>();
+    private final Map<String, DMInitValue> definitionMap = new HashMap<>();
     private final DMInitValue[] initValues;
 
     public DataFormatter(@Nullable ResourceConfig cfg) {
@@ -32,45 +34,25 @@ public final class DataFormatter {
     }
 
     private void addValue(DataType type, DMInitValue val) {
-        IDataFilter filter;
+        this.typeMap.put(val.key, type);
+        this.definitionMap.put(val.key, val);
+        this.filterMap.put(val.key, data -> DataTypeHandlers.validateCandidate(type, data, val));
 
-        if ((type == DataType.INT || type == DataType.HEX) && val.minmax != null) {
-            filter = data -> {
-                int iData = data instanceof String ? Integer.parseInt((String) data) : (int) data;
-                return iData >= val.minmax[0] && iData <= val.minmax[1];
-            };
-        } else if (type == DataType.DOUBLE && val.minmax != null) {
-            filter = data -> {
-                double dData = data instanceof String ? Double.parseDouble((String) data) : (double) data;
-                return dData >= val.minmax[0] && dData <= val.minmax[1];
-            };
-        } else if (type == DataType.STRING && val.pattern != null) {
-            filter = data -> {
-                String s0 = (String) data;
-                String start = val.pattern[0];
-                String contains = val.pattern[1];
-                String end = val.pattern[2];
-                return (start.isEmpty() || s0.startsWith(start)) && (contains.isEmpty() || s0.contains(contains)) && (end.isEmpty() || s0.endsWith(end));
-            };
-        } else {
-            filter = null;
-        }
-
-        if (filter != null) {
-            this.filterMap.put(val.key, filter);
-        }
-
-        if (type == DataType.BOOLEAN) {
+        DataType suggestionType = type == DataType.LIST
+                ? DataEntryList.supportedElementType(val.elementType)
+                : type;
+        if (suggestionType == DataType.BOOLEAN) {
             val.suggestions = new String[]{String.valueOf(false), String.valueOf(true)};
         } else {
-            if (val.suggestions != null) {
+            if (val.suggestions != null && val.suggestions.length > 0) {
                 /*if (val.suggestions[0].equals("-file")) {
                     if (filter != null) {
                         List<File> list = ModelPackManager.INSTANCE.fileCache;
                         val.suggestions = list.stream().map(File::getAbsolutePath).filter(filter::check).map(DataFormatter::pathToRL).toArray(String[]::new);
                     }
                 } else */
-                if (val.suggestions[0].equals("-value")) {
+                if (val.suggestions[0].equals("-value") && val.minmax != null
+                        && val.minmax.length >= 2 && val.minmax[1] >= val.minmax[0]) {
                     int min = (int) val.minmax[0];
                     int max = (int) val.minmax[1];
                     val.suggestions = new String[max - min + 1];
@@ -104,18 +86,35 @@ public final class DataFormatter {
 
         Arrays.stream(this.initValues).forEach(val -> {
             String key = val.key;
-            String value = String.format("(%s)%s", val.type, val.value);
             if (!dm.contains(key)) {
-                if (!dm.set(key, value, flag)) {
-                    NGTLog.debug("Failed to set value : %s=%s", key, value);
+                DataType type = DataType.getType(val.type);
+                if (type == null) {
+                    NGTLog.debug("Failed to set value with invalid type : %s", key);
+                    return;
+                }
+                try {
+                    DataEntry<?> entry = DataTypeHandlers.createDefault(type, val, flag);
+                    dm.setEntry(key, entry, flag);
+                } catch (RuntimeException e) {
+                    NGTLog.debug("Failed to set value : %s=%s", key, val.value);
                 }
             }
         });
     }
 
     public boolean check(String key, DataEntry value) {
-        IDataFilter filter = this.filterMap.get(key);
-        return filter == null || filter.check(value.get());
+        DataType type = this.typeMap.get(key);
+        DMInitValue definition = this.definitionMap.get(key);
+        return type == null || definition == null || DataTypeHandlers.validateEntry(type, value, definition) == null;
+    }
+
+    public DataTypeValidationResult parseAndValidate(String key, String rawValue, int flag) {
+        DataType type = this.typeMap.get(key);
+        DMInitValue definition = this.definitionMap.get(key);
+        if (type == null || definition == null) {
+            return new DataTypeValidationResult(null, "Missing data definition");
+        }
+        return DataTypeHandlers.parseAndValidate(type, rawValue, definition, flag);
     }
 
     public IDataFilter getFilter(String key) {

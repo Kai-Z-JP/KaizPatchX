@@ -143,8 +143,8 @@ class DataMap {
         }
 
         val sync = flag and SYNC_FLAG != 0
-        val onServerSide = NGTUtil.isServer()
-        if (onServerSide || !sync || entity == null || entity is Item) {
+        val onServerSide = sync && NGTUtil.isServer()
+        if (!sync || onServerSide || entity == null || entity is Item) {
             map[key] = value
         }
 
@@ -157,9 +157,9 @@ class DataMap {
 
     private fun remove(key: DataKey, flag: Int): Boolean {
         val sync = flag and SYNC_FLAG != 0
-        val onServerSide = NGTUtil.isServer()
+        val onServerSide = sync && NGTUtil.isServer()
         var removed = false
-        if (onServerSide || !sync || entity == null || entity is Item) {
+        if (!sync || onServerSide || entity == null || entity is Item) {
             removed = map.remove(key) != null
         }
 
@@ -186,11 +186,15 @@ class DataMap {
         val matcher = VAL_TYPE.matcher(value)
         val entry: DataEntry<*>? = if (matcher.find()) {
             val type = matcher.group().replace("(", "").replace(")", "")
-            val val2 = matcher.replaceAll("")
+            val val2 = value.substring(matcher.end())
             DataEntry.getEntry(type, val2, flag)
         } else {
             val current = get<DataEntry<*>>(key) ?: return false
-            DataEntry.getEntry(current.type.key, value, flag)
+            if (current is DataEntryList) {
+                DataEntryList.fromString(value, current.elementType, flag)
+            } else {
+                DataEntry.getEntry(current.type.key, value, flag)
+            }
         }
 
         return if (entry != null) {
@@ -209,13 +213,17 @@ class DataMap {
     }
 
     fun getArg() =
-        map.entries.joinToString(",") { (key, value) -> "${key.toCompatKey()}=(${value.type.key})${value.get()}" }
+        map.entries.joinToString(",") { (key, value) -> "${key.toCompatKey()}=(${value.typeName})$value" }
 
     fun setArg(par1: String?, overwrite: Boolean) {
+        setArg(par1, overwrite, SYNC_FLAG or SAVE_FLAG)
+    }
+
+    fun setArg(par1: String?, overwrite: Boolean, flag: Int) {
         val array = convertArg(par1)
         array
             .filter { sa -> !contains(sa[0]) || overwrite }
-            .forEach { sa -> set(sa[0], "(${sa[1]})${sa[2]}", SYNC_FLAG or SAVE_FLAG) }
+            .forEach { sa -> set(sa[0], "(${sa[1]})${sa[2]}", flag) }
     }
 
     fun getInt(key: String) = rootNamespace().getInt(key)
@@ -230,6 +238,10 @@ class DataMap {
     fun setVec(key: String, value: Vec3, flag: Int) = rootNamespace().setVec(key, value, flag)
     fun getHex(key: String) = rootNamespace().getHex(key)
     fun setHex(key: String, value: Int, flag: Int) = rootNamespace().setHex(key, value, flag)
+    fun getList(key: String) = rootNamespace().getList(key)
+    fun getListElementType(key: String) = rootNamespace().getListElementType(key)
+    fun setList(key: String, value: Collection<*>, elementType: String, flag: Int) =
+        rootNamespace().setList(key, value, elementType, flag)
 
     class NamespaceView internal constructor(
         private val dataMap: DataMap,
@@ -280,6 +292,17 @@ class DataMap {
         fun setVec(key: String, value: Vec3, flag: Int) = dataMap.set(keyOf(key), DataEntryVec(value, flag))
         fun getHex(key: String): Int = getValue<DataEntryHex, Int>(key, 0)
         fun setHex(key: String, value: Int, flag: Int) = dataMap.set(keyOf(key), DataEntryHex(value, flag))
+        fun getList(key: String): List<Any> =
+            dataMap.get<DataEntryList>(keyOf(key))?.get()?.toList() ?: emptyList()
+
+        fun getListElementType(key: String): String =
+            dataMap.get<DataEntryList>(keyOf(key))?.elementType?.key.orEmpty()
+
+        fun setList(key: String, value: Collection<*>, elementType: String, flag: Int) {
+            val type = DataEntryList.supportedElementType(elementType)
+                ?: throw IllegalArgumentException("Unsupported list element type: $elementType")
+            dataMap.set(keyOf(key), DataEntryList.fromValues(type, value, flag))
+        }
     }
 
     private class DataKey private constructor(
@@ -322,7 +345,7 @@ class DataMap {
         const val SYNC_FLAG: Int = 1
         const val SAVE_FLAG: Int = 2
 
-        private val VAL_TYPE: Pattern = Pattern.compile("\\([a-zA-Z]+\\)")
+        private val VAL_TYPE: Pattern = Pattern.compile("^\\([a-zA-Z]+(?:<[a-zA-Z]+>)?\\)")
 
         fun getNamespacedKey(namespace: String, key: String): String {
             val prefix = getNamespacePrefix(namespace)
@@ -347,7 +370,7 @@ class DataMap {
          */
         @JvmStatic
         fun convertArg(par1: String?): Array<Array<String>> {
-            val parts = par1?.split(",") ?: return emptyArray()
+            val parts = par1?.let(::splitArguments) ?: return emptyArray()
             val array = Array(parts.size) { emptyArray<String>() }
             for (i in array.indices) {
                 val s = parts[i]
@@ -364,6 +387,35 @@ class DataMap {
                 }
             }
             return array
+        }
+
+        private fun splitArguments(value: String): List<String> {
+            val parts = ArrayList<String>()
+            var start = 0
+            var depth = 0
+            var quoted = false
+            var escaped = false
+            value.forEachIndexed { index, char ->
+                if (quoted) {
+                    when {
+                        escaped -> escaped = false
+                        char == '\\' -> escaped = true
+                        char == '"' -> quoted = false
+                    }
+                } else {
+                    when (char) {
+                        '"' -> quoted = true
+                        '[', '{' -> depth++
+                        ']', '}' -> depth = maxOf(0, depth - 1)
+                        ',' -> if (depth == 0) {
+                            parts += value.substring(start, index)
+                            start = index + 1
+                        }
+                    }
+                }
+            }
+            parts += value.substring(start)
+            return parts
         }
     }
 }

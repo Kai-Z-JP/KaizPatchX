@@ -62,6 +62,19 @@ public abstract class ResourceConfig {
         public String key;
         public String value;
         /**
+         * List要素の型
+         */
+        public String elementType;
+        /**
+         * Listの初期値
+         */
+        public String[] values;
+        /**
+         * Listの最小・最大要素数
+         */
+        public Integer minItems;
+        public Integer maxItems;
+        /**
          * 入力候補
          */
         public String[] suggestions;

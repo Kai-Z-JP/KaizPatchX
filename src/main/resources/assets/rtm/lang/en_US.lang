@@ -50,6 +50,7 @@ item.rtm:installedObject.20.name=Flag
 item.rtm:installedObject.21.name=Stair
 item.rtm:installedObject.22.name=Scaffold
 item.rtm:installedObject.23.name=Speaker
+item.rtm:installedObject.24.name=Transponder
 item.rtm:material.0.name=Shaft
 item.rtm:material.1.name=Wheel
 item.rtm:material.2.name=Diesel Engine

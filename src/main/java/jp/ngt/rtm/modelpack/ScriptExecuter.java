@@ -27,9 +27,13 @@ public class ScriptExecuter implements ICommandSender {
     }
 
     public void execScript(IModelSelector selector) {
-        this.caller = selector;
-        this.callMethod(selector, "onUpdate", selector, this);
+        this.execScript(selector, "onUpdate", selector, this);
         ++this.count;
+    }
+
+    public Object execScript(IModelSelector selector, String eventName, Object... args) {
+        this.caller = selector;
+        return this.callMethod(selector, eventName, args);
     }
 
     public void execCommand(String command) {

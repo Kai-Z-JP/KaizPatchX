@@ -9,5 +9,6 @@ public enum MachineType {
     BumpingPost,
     Antenna_Send,
     Antenna_Receive,
-    Speaker
+    Speaker,
+    Transponder
 }

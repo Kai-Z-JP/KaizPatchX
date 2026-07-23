@@ -1,0 +1,66 @@
+{
+    "name": "Transponder_01",
+    "model": {
+        "modelFile": "ATC01.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/atc.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/machine/button_ATC_01.png",
+    "machineType": "Transponder",
+    "serverScriptPath": "scripts/TransponderSignal.js",
+    "followRailAngle": true,
+    "smoothing": false,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "defaultValues": [
+        {
+            "type": "Int",
+            "key": "signalLevel",
+            "value": "1",
+            "minmax": [
+                -1,
+                127
+            ]
+        },
+        {
+            "type": "Boolean",
+            "key": "frontCarOnly",
+            "value": "true"
+        },
+        {
+            "type": "Boolean",
+            "key": "facingDirectionOnly",
+            "value": "false"
+        }
+    ],
+    "customForm": {
+        "title": "Transponder",
+        "columns": 1,
+        "fields": [
+            {
+                "key": "signalLevel",
+                "label": "Signal Level",
+                "row": 0,
+                "column": 0
+            },
+            {
+                "key": "frontCarOnly",
+                "label": "Front Car Only",
+                "row": 1,
+                "column": 0
+            },
+            {
+                "key": "facingDirectionOnly",
+                "label": "Facing Direction Only",
+                "row": 2,
+                "column": 0
+            }
+        ]
+    },
+    "tags": "Transponder"
+}

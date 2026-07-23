@@ -136,6 +136,9 @@ class DataMap {
     fun setEntry(namespace: String, key: String, value: DataEntry<*>, flag: Int) =
         set(DataKey.of(namespace, key), value, flag)
 
+    fun setEntry(key: String, value: DataEntry<*>, flag: Int) =
+        set(DataKey.parseCompatKey(key), value, flag)
+
     private fun set(key: DataKey, value: DataEntry<*>, flag: Int = value.flag) {
         if (!dataFormatter.check(key.toCompatKey(), value)) {
             NGTLog.debug("Invalid data : %s=%s", key.toCompatKey(), value.toString())

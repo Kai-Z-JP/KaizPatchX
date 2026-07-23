@@ -18,7 +18,7 @@ interface DataTypeHandler {
 
     fun createDefault(definition: ResourceConfig.DMInitValue, flag: Int): DataEntry<*>
 
-    fun validateConstraints(definition: ResourceConfig.DMInitValue): String?
+    fun validateConstraints(definition: ResourceConfig.DMInitValue): String? = null
 
     fun validateEntry(
         entry: DataEntry<*>,
@@ -34,13 +34,13 @@ interface DataTypeHandler {
 
     fun format(value: Any): String
 
-    fun parseElement(rawValue: String): Any
+    fun parseElement(rawValue: String): Any = throw nestedListError()
 
-    fun coerceElement(value: Any?): Any
+    fun coerceElement(value: Any?): Any = throw nestedListError()
 
-    fun createElementEntry(rawValue: String, flag: Int): DataEntry<*>
+    fun createElementEntry(value: Any?, flag: Int): DataEntry<*> = throw nestedListError()
 
-    fun defaultElementValue(): String
+    fun defaultElementValue(): String = throw nestedListError()
 }
 
 object DataTypeHandlers {
@@ -141,8 +141,8 @@ object DataTypeHandlers {
     fun coerceElementValue(type: DataType, value: Any?): Any = elementHandler(type).coerceElement(value)
 
     @JvmStatic
-    fun createElementEntry(type: DataType, rawValue: String, flag: Int): DataEntry<*> =
-        elementHandler(type).createElementEntry(rawValue, flag)
+    fun createElementEntry(type: DataType, value: Any?, flag: Int): DataEntry<*> =
+        elementHandler(type).createElementEntry(value, flag)
 
     @JvmStatic
     fun formatValue(type: DataType, value: Any): String = elementHandler(type).format(value)
@@ -156,26 +156,28 @@ object DataTypeHandlers {
     }
 }
 
-private abstract class ScalarDataTypeHandler<T : Any>(
-    final override val type: DataType
+private class ScalarDataTypeHandler<T : Any>(
+    override val type: DataType,
+    private val defaultValue: T,
+    private val parseScalar: (String) -> T,
+    private val coerceScalar: (Any?) -> T,
+    private val createEntry: (T, Int) -> DataEntry<*>,
+    private val formatScalar: (T) -> String = Any::toString,
+    private val constraints: (ResourceConfig.DMInitValue) -> String? = { null },
+    private val validator: (T, ResourceConfig.DMInitValue) -> String? = { _, _ -> null },
+    private val defaultFactory: (ResourceConfig.DMInitValue) -> T = {
+        parseScalar(it.value ?: "null")
+    }
 ) : DataTypeHandler {
-    protected abstract fun parseScalar(rawValue: String): T
-
-    protected abstract fun coerceScalar(value: Any?): T
-
-    protected abstract fun createEntry(value: T, flag: Int): DataEntry<*>
-
-    protected abstract fun formatScalar(value: T): String
-
-    protected open fun validateTyped(value: T, definition: ResourceConfig.DMInitValue): String? = null
 
     override fun parse(rawValue: String, definition: ResourceConfig.DMInitValue, flag: Int): DataEntry<*> =
         createEntry(parseScalar(rawValue), flag)
 
     override fun createDefault(definition: ResourceConfig.DMInitValue, flag: Int): DataEntry<*> =
-        parse(definition.value ?: "null", definition, flag)
+        createEntry(defaultFactory(definition), flag)
 
-    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? = null
+    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? =
+        constraints(definition)
 
     override fun validateEntry(
         entry: DataEntry<*>,
@@ -198,7 +200,7 @@ private abstract class ScalarDataTypeHandler<T : Any>(
         } catch (_: RuntimeException) {
             return "Invalid ${type.key} value"
         }
-        validateTyped(typedValue, definition)?.let { return it }
+        validator(typedValue, definition)?.let { return it }
         if (includeSuggestions && !matchesSuggestions(typedValue, definition.suggestions)) {
             return "Value is not one of the configured suggestions"
         }
@@ -228,184 +230,86 @@ private abstract class ScalarDataTypeHandler<T : Any>(
 
     override fun coerceElement(value: Any?): Any = coerceScalar(value)
 
-    override fun createElementEntry(rawValue: String, flag: Int): DataEntry<*> =
-        createEntry(parseScalar(rawValue), flag)
+    override fun createElementEntry(value: Any?, flag: Int): DataEntry<*> =
+        createEntry(coerceScalar(value), flag)
+
+    override fun defaultElementValue(): String = formatScalar(defaultValue)
 }
 
-private object IntDataTypeHandler : ScalarDataTypeHandler<Int>(DataType.INT) {
-    override fun parseScalar(rawValue: String): Int = if (rawValue.isEmpty()) 0 else rawValue.toInt()
-
-    override fun coerceScalar(value: Any?): Int = when (value) {
-        is Number -> value.toInt()
-        is String -> parseScalar(value)
-        else -> throw IllegalArgumentException("Int value is required")
-    }
-
-    override fun createEntry(value: Int, flag: Int): DataEntry<*> = DataEntryInt(value, flag)
-
-    override fun formatScalar(value: Int): String = value.toString()
-
-    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? =
-        validateMinMax(definition, type)
-
-    override fun validateTyped(value: Int, definition: ResourceConfig.DMInitValue): String? =
-        validateNumberRange(value.toDouble(), definition)
-
-    override fun defaultElementValue(): String = "0"
-}
-
-private object HexDataTypeHandler : ScalarDataTypeHandler<Int>(DataType.HEX) {
-    override fun parseScalar(rawValue: String): Int = if (rawValue.isEmpty()) 0 else Integer.decode(rawValue)
-
-    override fun coerceScalar(value: Any?): Int = when (value) {
-        is Number -> value.toInt()
-        is String -> parseScalar(value)
-        else -> throw IllegalArgumentException("Hex value is required")
-    }
-
-    override fun createEntry(value: Int, flag: Int): DataEntry<*> = DataEntryHex(value, flag)
-
-    override fun formatScalar(value: Int): String = "0x${value.toString(16)}"
-
-    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? =
-        validateMinMax(definition, type)
-
-    override fun validateTyped(value: Int, definition: ResourceConfig.DMInitValue): String? =
-        validateNumberRange(value.toDouble(), definition)
-
-    override fun defaultElementValue(): String = "0x0"
-}
-
-private object DoubleDataTypeHandler : ScalarDataTypeHandler<Double>(DataType.DOUBLE) {
-    override fun parseScalar(rawValue: String): Double =
-        (if (rawValue.isEmpty()) 0.0 else rawValue.toDouble()).also {
-            require(it.isFinite()) { "Double value must be finite" }
+private fun <T : Number> numericHandler(
+    type: DataType,
+    defaultValue: T,
+    parse: (String) -> T,
+    convert: (Number) -> T,
+    createEntry: (T, Int) -> DataEntry<*>,
+    format: (T) -> String = Any::toString
+) = ScalarDataTypeHandler(
+    type,
+    defaultValue,
+    parse,
+    { value ->
+        when (value) {
+            is Number -> convert(value)
+            is String -> parse(value)
+            else -> throw IllegalArgumentException("${type.key} value is required")
         }
+    },
+    createEntry,
+    format,
+    { validateMinMax(it, type) },
+    { value, definition -> validateNumberRange(value.toDouble(), definition) }
+)
 
-    override fun coerceScalar(value: Any?): Double = when (value) {
-        is Number -> value.toDouble().also { require(it.isFinite()) { "Double value must be finite" } }
-        is String -> parseScalar(value)
-        else -> throw IllegalArgumentException("Double value is required")
-    }
-
-    override fun createEntry(value: Double, flag: Int): DataEntry<*> = DataEntryDouble(value, flag)
-
-    override fun formatScalar(value: Double): String = value.toString()
-
-    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? =
-        validateMinMax(definition, type)
-
-    override fun validateTyped(value: Double, definition: ResourceConfig.DMInitValue): String? {
-        if (!value.isFinite()) {
-            return "Double value must be finite"
+private val IntDataTypeHandler = numericHandler(
+    DataType.INT, 0,
+    { if (it.isEmpty()) 0 else it.toInt() },
+    Number::toInt,
+    ::DataEntryInt
+)
+private val HexDataTypeHandler = numericHandler(
+    DataType.HEX, 0,
+    { if (it.isEmpty()) 0 else Integer.decode(it) },
+    Number::toInt,
+    ::DataEntryHex,
+    { "0x${it.toString(16)}" }
+)
+private val DoubleDataTypeHandler = numericHandler(
+    DataType.DOUBLE, 0.0,
+    { finite(if (it.isEmpty()) 0.0 else it.toDouble()) },
+    { finite(it.toDouble()) },
+    ::DataEntryDouble
+)
+private val BooleanDataTypeHandler = ScalarDataTypeHandler(
+    DataType.BOOLEAN, false,
+    ::strictBoolean,
+    { it as? Boolean ?: (it as? String)?.let(::strictBoolean) ?: error("Boolean value is required") },
+    ::DataEntryBoolean,
+    defaultFactory = { it.value?.let(::strictBoolean) ?: false }
+)
+private val StringDataTypeHandler = ScalarDataTypeHandler(
+    DataType.STRING, "",
+    { it },
+    { it as? String ?: error("String value is required") },
+    ::DataEntryString,
+    { it },
+    ::validateStringPattern,
+    ::validateString
+)
+private val VecDataTypeHandler = ScalarDataTypeHandler(
+    DataType.VEC, Vec3.ZERO,
+    { DataEntryVec.fromString(it).also(::requireFinite) },
+    { value ->
+        when (value) {
+            is Vec3 -> value.also(::requireFinite)
+            is String -> DataEntryVec.fromString(value).also(::requireFinite)
+            else -> error("Vec value is required")
         }
-        return validateNumberRange(value, definition)
-    }
-
-    override fun defaultElementValue(): String = "0.0"
-}
-
-private object BooleanDataTypeHandler : ScalarDataTypeHandler<Boolean>(DataType.BOOLEAN) {
-    override fun parseScalar(rawValue: String): Boolean = when (rawValue) {
-        "true" -> true
-        "false" -> false
-        else -> throw IllegalArgumentException("Boolean value must be true or false")
-    }
-
-    override fun coerceScalar(value: Any?): Boolean = when (value) {
-        is Boolean -> value
-        is String -> parseScalar(value)
-        else -> throw IllegalArgumentException("Boolean value is required")
-    }
-
-    override fun createEntry(value: Boolean, flag: Int): DataEntry<*> = DataEntryBoolean(value, flag)
-
-    override fun createDefault(definition: ResourceConfig.DMInitValue, flag: Int): DataEntry<*> =
-        createEntry(definition.value?.let(::parseScalar) ?: false, flag)
-
-    override fun formatScalar(value: Boolean): String = value.toString()
-
-    override fun defaultElementValue(): String = "false"
-}
-
-private object StringDataTypeHandler : ScalarDataTypeHandler<String>(DataType.STRING) {
-    override fun parseScalar(rawValue: String): String = rawValue
-
-    override fun coerceScalar(value: Any?): String =
-        value as? String ?: throw IllegalArgumentException("String value is required")
-
-    override fun createEntry(value: String, flag: Int): DataEntry<*> = DataEntryString(value, flag)
-
-    override fun formatScalar(value: String): String = value
-
-    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? {
-        val pattern = definition.pattern ?: return null
-        if (pattern.size < 3 || pattern.take(3).any { it == null }) {
-            return "String pattern must contain start, contains and end values"
-        }
-        return null
-    }
-
-    override fun validateTyped(value: String, definition: ResourceConfig.DMInitValue): String? {
-        val pattern = definition.pattern ?: return null
-        if (pattern.size < 3) {
-            return "String pattern must contain start, contains and end values"
-        }
-        val start = pattern[0]
-        val contains = pattern[1]
-        val end = pattern[2]
-        return if ((start.isEmpty() || value.startsWith(start)) &&
-            (contains.isEmpty() || value.contains(contains)) &&
-            (end.isEmpty() || value.endsWith(end))
-        ) {
-            null
-        } else {
-            "String value does not match the configured pattern"
-        }
-    }
-
-    override fun defaultElementValue(): String = ""
-}
-
-private object VecDataTypeHandler : ScalarDataTypeHandler<Vec3>(DataType.VEC) {
-    override fun parseScalar(rawValue: String): Vec3 = DataEntryVec.fromString(rawValue).also(::requireFinite)
-
-    override fun coerceScalar(value: Any?): Vec3 = when (value) {
-        is Vec3 -> value.also(::requireFinite)
-        is String -> parseScalar(value)
-        else -> throw IllegalArgumentException("Vec value is required")
-    }
-
-    override fun createEntry(value: Vec3, flag: Int): DataEntry<*> = DataEntryVec(value, flag)
-
-    override fun formatScalar(value: Vec3): String = "${value.x} ${value.y} ${value.z}"
-
-    override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? =
-        validateMinMax(definition, type)
-
-    override fun validateTyped(value: Vec3, definition: ResourceConfig.DMInitValue): String? {
-        if (!value.x.isFinite() || !value.y.isFinite() || !value.z.isFinite()) {
-            return "Vec components must be finite"
-        }
-        val range = definition.minmax ?: return null
-        return if (value.x in range[0]..range[1] &&
-            value.y in range[0]..range[1] &&
-            value.z in range[0]..range[1]
-        ) {
-            null
-        } else {
-            "Vec component is outside the configured range"
-        }
-    }
-
-    override fun defaultElementValue(): String = "0.0 0.0 0.0"
-
-    private fun requireFinite(value: Vec3) {
-        require(value.x.isFinite() && value.y.isFinite() && value.z.isFinite()) {
-            "Vec components must be finite"
-        }
-    }
-}
+    },
+    ::DataEntryVec,
+    { "${it.x} ${it.y} ${it.z}" },
+    { validateMinMax(it, DataType.VEC) },
+    ::validateVec
+)
 
 private object ListDataTypeHandler : DataTypeHandler {
     override val type: DataType = DataType.LIST
@@ -414,32 +318,24 @@ private object ListDataTypeHandler : DataTypeHandler {
         rawValue: String,
         definition: ResourceConfig.DMInitValue,
         flag: Int
-    ): DataEntry<*> = DataEntryList.fromString(rawValue, expectedElementType(definition), flag)
+    ): DataEntry<*> = DataEntryList.fromString(rawValue, requireElementType(definition), flag)
 
     override fun createDefault(definition: ResourceConfig.DMInitValue, flag: Int): DataEntry<*> {
-        val elementType = expectedElementType(definition)
-        return definition.values?.let { DataEntryList.fromStrings(elementType, it.asList(), flag) }
+        val elementType = requireElementType(definition)
+        return definition.values?.let { DataEntryList.fromValues(elementType, it.asList(), flag) }
             ?: DataEntryList.fromString(definition.value, elementType, flag)
     }
 
     override fun validateConstraints(definition: ResourceConfig.DMInitValue): String? {
-        val elementType = try {
-            expectedElementType(definition)
-        } catch (_: RuntimeException) {
-            return "Invalid List element type"
-        }
+        val elementType = elementType(definition) ?: return "Invalid List element type"
         val minItems = minItems(definition)
         val maxItems = maxItems(definition)
-        if (minItems !in 0..DataTypeHandlers.MAX_LIST_ITEMS) {
-            return "List minItems is out of range"
+        return when {
+            minItems !in 0..DataTypeHandlers.MAX_LIST_ITEMS -> "List minItems is out of range"
+            maxItems !in 0..DataTypeHandlers.MAX_LIST_ITEMS -> "List maxItems is out of range"
+            minItems > maxItems -> "List minItems is greater than maxItems"
+            else -> DataTypeHandlers.get(elementType).validateConstraints(definition)
         }
-        if (maxItems !in 0..DataTypeHandlers.MAX_LIST_ITEMS) {
-            return "List maxItems is out of range"
-        }
-        if (minItems > maxItems) {
-            return "List minItems is greater than maxItems"
-        }
-        return DataTypeHandlers.get(elementType).validateConstraints(definition)
     }
 
     override fun validateEntry(
@@ -447,18 +343,12 @@ private object ListDataTypeHandler : DataTypeHandler {
         definition: ResourceConfig.DMInitValue,
         includeSuggestions: Boolean
     ): String? {
-        if (entry !is DataEntryList) {
-            return "Expected List value"
-        }
-        val elementType = try {
-            expectedElementType(definition)
-        } catch (_: RuntimeException) {
-            return "Invalid List element type"
-        }
-        if (entry.elementType != elementType) {
+        val list = entry as? DataEntryList ?: return "Expected List value"
+        val elementType = elementType(definition) ?: return "Invalid List element type"
+        if (list.elementType != elementType) {
             return "List element type does not match the definition"
         }
-        return validateList(entry.get(), elementType, definition, includeSuggestions)
+        return validateList(list.get(), elementType, definition, includeSuggestions)
     }
 
     override fun validateValue(
@@ -467,11 +357,7 @@ private object ListDataTypeHandler : DataTypeHandler {
         includeSuggestions: Boolean
     ): String? {
         val values = value as? List<*> ?: return "Invalid List value"
-        val elementType = try {
-            expectedElementType(definition)
-        } catch (_: RuntimeException) {
-            return "Invalid List element type"
-        }
+        val elementType = elementType(definition) ?: return "Invalid List element type"
         return validateList(values, elementType, definition, includeSuggestions)
     }
 
@@ -507,24 +393,69 @@ private object ListDataTypeHandler : DataTypeHandler {
     override fun format(value: Any): String =
         (value as? DataEntryList)?.toString() ?: throw IllegalArgumentException("List entry is required")
 
-    override fun parseElement(rawValue: String): Any = throw unsupportedNestedList()
-
-    override fun coerceElement(value: Any?): Any = throw unsupportedNestedList()
-
-    override fun createElementEntry(rawValue: String, flag: Int): DataEntry<*> = throw unsupportedNestedList()
-
-    override fun defaultElementValue(): String = throw unsupportedNestedList()
-
-    private fun expectedElementType(definition: ResourceConfig.DMInitValue): DataType =
+    private fun elementType(definition: ResourceConfig.DMInitValue): DataType? =
         DataEntryList.supportedElementType(definition.elementType)
-            ?: throw IllegalArgumentException("Invalid List element type")
+
+    private fun requireElementType(definition: ResourceConfig.DMInitValue): DataType =
+        requireNotNull(elementType(definition)) { "Invalid List element type" }
 
     private fun minItems(definition: ResourceConfig.DMInitValue): Int = definition.minItems ?: 0
 
     private fun maxItems(definition: ResourceConfig.DMInitValue): Int =
         definition.maxItems ?: DataTypeHandlers.DEFAULT_MAX_LIST_ITEMS
 
-    private fun unsupportedNestedList() = IllegalArgumentException("Nested lists are not supported")
+}
+
+private fun nestedListError() = IllegalArgumentException("Nested lists are not supported")
+
+private fun finite(value: Double): Double = value.also {
+    require(it.isFinite()) { "Double value must be finite" }
+}
+
+private fun strictBoolean(value: String): Boolean = when (value) {
+    "true" -> true
+    "false" -> false
+    else -> throw IllegalArgumentException("Boolean value must be true or false")
+}
+
+private fun validateStringPattern(definition: ResourceConfig.DMInitValue): String? =
+    definition.pattern
+        ?.takeIf { it.size < 3 || it.take(3).any { part -> part == null } }
+        ?.let { "String pattern must contain start, contains and end values" }
+
+private fun validateString(value: String, definition: ResourceConfig.DMInitValue): String? {
+    val pattern = definition.pattern ?: return null
+    if (pattern.size < 3) {
+        return "String pattern must contain start, contains and end values"
+    }
+    return if (value.matches(pattern[0], pattern[1], pattern[2])) {
+        null
+    } else {
+        "String value does not match the configured pattern"
+    }
+}
+
+private fun String.matches(start: String, contains: String, end: String): Boolean =
+    (start.isEmpty() || startsWith(start)) &&
+            (contains.isEmpty() || contains(contains)) &&
+            (end.isEmpty() || endsWith(end))
+
+private fun requireFinite(value: Vec3) {
+    require(value.x.isFinite() && value.y.isFinite() && value.z.isFinite()) {
+        "Vec components must be finite"
+    }
+}
+
+private fun validateVec(value: Vec3, definition: ResourceConfig.DMInitValue): String? {
+    if (!value.x.isFinite() || !value.y.isFinite() || !value.z.isFinite()) {
+        return "Vec components must be finite"
+    }
+    val range = definition.minmax ?: return null
+    return if (listOf(value.x, value.y, value.z).all { it in range[0]..range[1] }) {
+        null
+    } else {
+        "Vec component is outside the configured range"
+    }
 }
 
 private fun validateMinMax(definition: ResourceConfig.DMInitValue, type: DataType): String? {

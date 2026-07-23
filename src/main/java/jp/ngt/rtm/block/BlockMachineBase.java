@@ -8,6 +8,7 @@ import jp.ngt.rtm.block.tileentity.TileEntityMachineBase;
 import jp.ngt.rtm.electric.MachineType;
 import jp.ngt.rtm.item.ItemInstalledObject;
 import jp.ngt.rtm.item.ItemWithModel;
+import jp.ngt.rtm.modelpack.DataFormProvider;
 import jp.ngt.rtm.modelpack.cfg.MachineConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -48,15 +49,24 @@ public abstract class BlockMachineBase extends BlockContainer {
 
     protected boolean clickMachine(World world, int x, int y, int z, EntityPlayer player) {
         if (world.isRemote) {
-            if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
-                player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
-                return true;
-            }
-
+            int guiId;
             if (player.isSneaking()) {
-                player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
-                return true;
+                guiId = RTMCore.guiIdSelectTileEntityModel;
+            } else {
+                if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                    guiId = RTMCore.guiIdChangeOffset;
+                } else {
+                    TileEntity tile = world.getTileEntity(x, y, z);
+                    if (!(tile instanceof DataFormProvider)
+                            || ((DataFormProvider) tile).getDataFormConfig() == null
+                            || !((DataFormProvider) tile).getDataFormConfig().isValid()) {
+                        return false;
+                    }
+                    guiId = RTMCore.guiIdDataForm;
+                }
             }
+            player.openGui(RTMCore.instance, guiId, world, x, y, z);
+            return true;
         }
         return false;
     }

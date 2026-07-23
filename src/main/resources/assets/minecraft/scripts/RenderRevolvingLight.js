@@ -16,7 +16,8 @@ function render(entity, pass, par3) {
 
     var state = renderer.getLightState(entity);
     var tick = renderer.getTick(entity);
-    var rotation = (tick % 24) * 15.0;
+    var rotationSpeed = entity ? entity.getResourceState().getDataMap().getDouble("rotationSpeed") : 0;
+    var rotation = ((tick + par3) * rotationSpeed) % 360;
 
     if (pass === 0) {
         base.render(renderer);

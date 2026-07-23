@@ -18,11 +18,19 @@ public abstract class DataEntry<T> {
 
     public abstract DataType getType();
 
+    public String getTypeName() {
+        return this.getType().key;
+    }
+
     public T get() {
         return this.data;
     }
 
     public static DataEntry getEntry(String type, String data, int flag) {
+        DataType listElementType = DataEntryList.elementTypeFromTypeName(type);
+        if (listElementType != null) {
+            return DataEntryList.fromString(data, listElementType, flag);
+        }
         DataType dType = DataType.getType(type);
 
         if (dType == DataType.INT) {
@@ -37,11 +45,13 @@ public abstract class DataEntry<T> {
         } else if (dType == DataType.STRING) {
             return new DataEntryString(data, flag);
         } else if (dType == DataType.VEC) {
-            Vec3 vec = DataEntryVec.fromString(data);
+            Vec3 vec = data.isEmpty() ? new Vec3(0.0D, 0.0D, 0.0D) : DataEntryVec.fromString(data);
             return new DataEntryVec(vec, flag);
         } else if (dType == DataType.HEX) {
             int i = data.isEmpty() ? 0 : Integer.decode(data);
             return new DataEntryHex(i, flag);
+        } else if (dType == DataType.LIST) {
+            return DataEntryList.fromString(data, DataType.STRING, flag);
         }
         return null;
     }

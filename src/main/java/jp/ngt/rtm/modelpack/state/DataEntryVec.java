@@ -30,7 +30,10 @@ public final class DataEntryVec extends DataEntry<Vec3> {
     }
 
     public static Vec3 fromString(String par1) {
-        String[] sa = par1.split(" ");
+        String[] sa = par1.trim().split("\\s+");
+        if (sa.length != 3) {
+            throw new IllegalArgumentException("Vec requires exactly three components");
+        }
         return new Vec3(Double.parseDouble(sa[0]), Double.parseDouble(sa[1]), Double.parseDouble(sa[2]));
     }
 }

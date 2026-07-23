@@ -71,6 +71,7 @@ public final class RTMCore {
     public static short guiIdSpeaker = getNextGuiID();
     public static short guiIdCamera = getNextGuiID();
     public static short guiIdChangeOffset = getNextGuiID();
+    public static short guiIdDataForm = getNextGuiID();
 
     public static final byte KEY_Forward = 0;
     public static final byte KEY_Back = 1;

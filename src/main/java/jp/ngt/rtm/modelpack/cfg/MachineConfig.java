@@ -22,6 +22,7 @@ public class MachineConfig extends ModelConfig implements IConfigWithType {
     public boolean rotateByMetadata;
     public boolean followRailAngle;//ATCなどをカントに追従
     public int[] brightness;
+    public DataFormConfig customForm;
 
     @Override
     public void init() {
@@ -29,6 +30,10 @@ public class MachineConfig extends ModelConfig implements IConfigWithType {
 
         if (this.brightness == null || this.brightness.length < 2) {
             this.brightness = new int[]{0, 0};
+        }
+
+        if (this.customForm != null) {
+            this.customForm.initialize(this.defaultValues, this.name);
         }
     }
 

@@ -1,0 +1,269 @@
+{
+    "name": "Transponder_Debug",
+    "model": {
+        "modelFile": "ATC01.mqo",
+        "textures": [
+            [
+                "default",
+                "textures/machine/atc.png",
+                ""
+            ]
+        ]
+    },
+    "buttonTexture": "textures/machine/button_ATC_01.png",
+    "machineType": "Transponder",
+    "serverScriptPath": "scripts/TransponderSignal.js",
+    "followRailAngle": true,
+    "smoothing": false,
+    "doCulling": true,
+    "accuracy": "LOW",
+    "defaultValues": [
+        {
+            "type": "String",
+            "key": "textValue",
+            "value": "debug-value",
+            "pattern": [
+                "debug-",
+                "",
+                ""
+            ]
+        },
+        {
+            "type": "String",
+            "key": "mode",
+            "value": "alpha",
+            "suggestions": [
+                "alpha",
+                "beta",
+                "gamma"
+            ]
+        },
+        {
+            "type": "Int",
+            "key": "signalLevel",
+            "value": "42",
+            "minmax": [
+                -1,
+                127
+            ]
+        },
+        {
+            "type": "Double",
+            "key": "doubleValue",
+            "value": "0.5",
+            "minmax": [
+                -10.0,
+                10.0
+            ]
+        },
+        {
+            "type": "Hex",
+            "key": "hexValue",
+            "value": "0x2a",
+            "minmax": [
+                0,
+                255
+            ]
+        },
+        {
+            "type": "Boolean",
+            "key": "frontCarOnly",
+            "value": "true"
+        },
+        {
+            "type": "Vec",
+            "key": "vectorValue",
+            "value": "1.0 2.0 3.0",
+            "minmax": [
+                -100.0,
+                100.0
+            ]
+        },
+        {
+            "type": "List",
+            "elementType": "String",
+            "key": "stringList",
+            "values": [
+                "alpha",
+                "beta"
+            ],
+            "minItems": 0,
+            "maxItems": 5,
+            "suggestions": [
+                "alpha",
+                "beta",
+                "gamma"
+            ]
+        },
+        {
+            "type": "List",
+            "elementType": "Int",
+            "key": "intList",
+            "values": [
+                "0",
+                "10"
+            ],
+            "minItems": 0,
+            "maxItems": 5,
+            "minmax": [
+                -100,
+                100
+            ]
+        },
+        {
+            "type": "List",
+            "elementType": "Double",
+            "key": "doubleList",
+            "values": [
+                "0.25",
+                "0.5"
+            ],
+            "minItems": 0,
+            "maxItems": 5,
+            "minmax": [
+                -1.0,
+                1.0
+            ]
+        },
+        {
+            "type": "List",
+            "elementType": "Hex",
+            "key": "hexList",
+            "values": [
+                "0x0",
+                "0xff"
+            ],
+            "minItems": 0,
+            "maxItems": 5,
+            "minmax": [
+                0,
+                255
+            ]
+        },
+        {
+            "type": "List",
+            "elementType": "Boolean",
+            "key": "booleanList",
+            "values": [
+                "true",
+                "false"
+            ],
+            "minItems": 0,
+            "maxItems": 5
+        },
+        {
+            "type": "List",
+            "elementType": "Vec",
+            "key": "vectorList",
+            "values": [
+                "0.0 0.0 0.0",
+                "1.0 2.0 3.0"
+            ],
+            "minItems": 0,
+            "maxItems": 5,
+            "minmax": [
+                -10.0,
+                10.0
+            ]
+        }
+    ],
+    "customForm": {
+        "title": "Transponder Debug",
+        "columns": 2,
+        "fields": [
+            {
+                "text": "Scalar fields あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。",
+                "row": 0,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "key": "textValue",
+                "label": "String / Pattern(debug-*)",
+                "row": 1,
+                "column": 0
+            },
+            {
+                "key": "mode",
+                "label": "String / Suggestions",
+                "row": 1,
+                "column": 1
+            },
+            {
+                "key": "signalLevel",
+                "label": "Int / Signal Level",
+                "row": 2,
+                "column": 0
+            },
+            {
+                "key": "doubleValue",
+                "label": "Double",
+                "row": 2,
+                "column": 1
+            },
+            {
+                "key": "hexValue",
+                "label": "Hex",
+                "row": 3,
+                "column": 0
+            },
+            {
+                "key": "frontCarOnly",
+                "label": "Boolean",
+                "row": 3,
+                "column": 1
+            },
+            {
+                "key": "vectorValue",
+                "label": "Vec",
+                "row": 4,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "text": "List fields",
+                "row": 5,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "key": "stringList",
+                "label": "List<String> / Suggestions",
+                "row": 6,
+                "column": 0
+            },
+            {
+                "key": "intList",
+                "label": "List<Int>",
+                "row": 6,
+                "column": 1
+            },
+            {
+                "key": "doubleList",
+                "label": "List<Double>",
+                "row": 7,
+                "column": 0
+            },
+            {
+                "key": "hexList",
+                "label": "List<Hex>",
+                "row": 7,
+                "column": 1
+            },
+            {
+                "key": "booleanList",
+                "label": "List<Boolean>",
+                "row": 8,
+                "column": 0
+            },
+            {
+                "key": "vectorList",
+                "label": "List<Vec>",
+                "row": 9,
+                "column": 0,
+                "columnSpan": 2
+            }
+        ]
+    },
+    "tags": "Transponder"
+}

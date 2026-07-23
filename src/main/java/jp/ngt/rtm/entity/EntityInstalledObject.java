@@ -190,6 +190,10 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
 
     protected abstract String getDefaultName();
 
+    protected ScriptExecuter getScriptExecuter() {
+        return this.executer;
+    }
+
     @Override
     public ItemStack getPickedResult(MovingObjectPosition target) {
         ItemStack itemStack = this.getItem();

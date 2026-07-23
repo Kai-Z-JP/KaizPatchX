@@ -8,10 +8,7 @@ import jp.ngt.rtm.block.OrnamentType;
 import jp.ngt.rtm.block.tileentity.*;
 import jp.ngt.rtm.electric.Connection.ConnectionType;
 import jp.ngt.rtm.electric.*;
-import jp.ngt.rtm.entity.EntityATC;
-import jp.ngt.rtm.entity.EntityBumpingPost;
-import jp.ngt.rtm.entity.EntityInstalledObject;
-import jp.ngt.rtm.entity.EntityTrainDetector;
+import jp.ngt.rtm.entity.*;
 import jp.ngt.rtm.modelpack.cfg.ConnectorConfig;
 import jp.ngt.rtm.modelpack.cfg.MachineConfig;
 import jp.ngt.rtm.modelpack.cfg.OrnamentConfig;
@@ -226,6 +223,10 @@ public class ItemInstalledObject extends ItemWithModel {
             if (par7 == 1 && this.setEntityOnRail(world, new EntityTrainDetector(world), par4, par5 - 1, par6, player, itemStack)) {
                 block = Blocks.stone;
             }
+        } else if (type == IstlObjType.TRANSPONDER) {
+            if (par7 == 1 && this.setEntityOnRail(world, new EntityTransponder(world), par4, par5 - 1, par6, player, itemStack)) {
+                block = Blocks.stone;
+            }
         } else if (type == IstlObjType.INSULATOR) {
             world.setBlock(par4, par5, par6, RTMBlock.insulator, par7, 2);
             TileEntityInsulator tile = (TileEntityInsulator) world.getTileEntity(par4, par5, par6);
@@ -347,7 +348,7 @@ public class ItemInstalledObject extends ItemWithModel {
         this.icons[IstlObjType.STAIR.id] = register.registerIcon("rtm:stair");
         this.icons[IstlObjType.SCAFFOLD.id] = register.registerIcon("rtm:scaffold");
         this.icons[IstlObjType.SPEAKER.id] = register.registerIcon("rtm:speaker");
-        this.icons[24] = missing;
+        this.icons[IstlObjType.TRANSPONDER.id] = register.registerIcon("rtm:itemATC");
     }
 
     @Override
@@ -398,7 +399,7 @@ public class ItemInstalledObject extends ItemWithModel {
         STAIR(21, OrnamentConfig.TYPE, OrnamentType.Stair.toString(), "ScaffoldStair01"),
         SCAFFOLD(22, OrnamentConfig.TYPE, OrnamentType.Scaffold.toString(), "Scaffold01"),
         SPEAKER(23, MachineConfig.TYPE, MachineType.Speaker.toString(), "Speaker01"),
-        //		MECHANISM(24, "", "", ""),
+        TRANSPONDER(24, MachineConfig.TYPE, MachineType.Transponder.toString(), "Transponder_01"),
         NONE(-1, "", "", "");
 
         public final byte id;

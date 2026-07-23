@@ -16,6 +16,8 @@ public class SignalConfig extends ModelConfig {
      */
     public boolean rotateBody;
 
+    public DataFormConfig customForm;
+
     @Deprecated
     public String signalModel;
     @Deprecated
@@ -55,6 +57,10 @@ public class SignalConfig extends ModelConfig {
 
         this.modelPartsFixture.initParts();
         this.modelPartsBody.initParts();
+
+        if (this.customForm != null) {
+            this.customForm.initialize(this.defaultValues, this.signalName);
+        }
     }
 
     @Override

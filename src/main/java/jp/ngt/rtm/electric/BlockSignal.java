@@ -9,6 +9,7 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.RTMItem;
 import jp.ngt.rtm.item.ItemSignal;
 import jp.ngt.rtm.item.ItemWithModel;
+import jp.ngt.rtm.modelpack.DataFormProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -54,15 +55,24 @@ public class BlockSignal extends BlockContainer implements IBlockConnective {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (world.isRemote) {
-            if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
-                player.openGui(RTMCore.instance, RTMCore.guiIdChangeOffset, player.worldObj, x, y, z);
-                return true;
-            }
-
+            int guiId;
             if (player.isSneaking()) {
-                player.openGui(RTMCore.instance, RTMCore.guiIdSelectTileEntityModel, player.worldObj, x, y, z);
-                return true;
+                guiId = RTMCore.guiIdSelectTileEntityModel;
+            } else {
+                if (NGTUtil.isEquippedItem(player, RTMItem.crowbar)) {
+                    guiId = RTMCore.guiIdChangeOffset;
+                } else {
+                    TileEntity tile = world.getTileEntity(x, y, z);
+                    if (!(tile instanceof DataFormProvider)
+                            || ((DataFormProvider) tile).getDataFormConfig() == null
+                            || !((DataFormProvider) tile).getDataFormConfig().isValid()) {
+                        return false;
+                    }
+                    guiId = RTMCore.guiIdDataForm;
+                }
             }
+            player.openGui(RTMCore.instance, guiId, world, x, y, z);
+            return true;
         }
         return true;
     }

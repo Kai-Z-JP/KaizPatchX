@@ -5,10 +5,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import jp.ngt.ngtlib.block.TileEntityPlaceable;
 import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.RTMBlock;
+import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.TileEntityPole;
+import jp.ngt.rtm.modelpack.DataFormProvider;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.ModelPackManager;
 import jp.ngt.rtm.modelpack.ScriptExecuter;
+import jp.ngt.rtm.modelpack.cfg.DataFormConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetSignal;
 import jp.ngt.rtm.modelpack.modelset.ModelSetSignalClient;
 import jp.ngt.rtm.modelpack.state.ResourceState;
@@ -18,7 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntitySignal extends TileEntityPlaceable implements IProvideElectricity, IModelSelector {
+public class TileEntitySignal extends TileEntityPlaceable implements IProvideElectricity, IModelSelector, DataFormProvider {
     private final ResourceState state = new ResourceState(this);
     public int blockDirection;
     private String modelName = "";
@@ -199,6 +202,16 @@ public class TileEntitySignal extends TileEntityPlaceable implements IProvideEle
         return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 2, 1)
                 .offset(this.xCoord, this.yCoord, this.zCoord)
                 .offset(this.getOffsetX(), this.getOffsetY(), this.getOffsetZ());
+    }
+
+    @Override
+    public DataFormConfig getDataFormConfig() {
+        return this.getModelSet().getConfig().customForm;
+    }
+
+    @Override
+    public String getDataFormPermission() {
+        return RTMCore.CHANGE_MODEL;
     }
 
     @Override

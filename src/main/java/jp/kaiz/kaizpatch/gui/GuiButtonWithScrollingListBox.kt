@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11
 import kotlin.math.min
 
 
-class GuiButtonWithScrollingListBox(
+open class GuiButtonWithScrollingListBox(
     id: Int,
     xPosition: Int,
     yPosition: Int,
@@ -48,8 +48,7 @@ class GuiButtonWithScrollingListBox(
             val currentIndex = index()
             drawCenteredString(
                 mc.fontRenderer,
-                if (displayStringList.size > currentIndex) displayFormat.format(displayStringList[currentIndex])
-                else displayFormat.format("null"),
+                displayFormat.format(displayStringList.getOrNull(currentIndex) ?: "null"),
                 xPosition + width / 2, yPosition + (height - 8) / 2, l
             )
         }

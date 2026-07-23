@@ -16,6 +16,7 @@ import jp.ngt.rtm.entity.train.EntityFreightCar;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.entity.train.parts.EntityContainer;
 import jp.ngt.rtm.gui.rail.GuiRailMarker;
+import jp.ngt.rtm.modelpack.DataFormProvider;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.IModelSelectorWithType;
 import jp.ngt.rtm.modelpack.texture.ITextureHolder;
@@ -144,6 +145,11 @@ public class RTMGuiHandler implements IGuiHandler {
             return new GuiCamera(player);
         } else if (ID == RTMCore.guiIdChangeOffset) {
             return new GuiChangeOffset((TileEntityPlaceable) world.getTileEntity(x, y, z));
+        } else if (ID == RTMCore.guiIdDataForm) {
+            Object target = y >= 0 ? world.getTileEntity(x, y, z) : world.getEntityByID(x);
+            if (target instanceof DataFormProvider) {
+                return new GuiDataForm((DataFormProvider) target);
+            }
         }
         return null;
     }

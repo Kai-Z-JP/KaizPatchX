@@ -1,6 +1,7 @@
 package jp.ngt.rtm.modelpack.state;
 
 import jp.ngt.ngtlib.io.NGTLog;
+import jp.ngt.ngtlib.util.NGTUtil;
 import jp.ngt.rtm.modelpack.cfg.ResourceConfig;
 import jp.ngt.rtm.modelpack.cfg.ResourceConfig.DMInitValue;
 
@@ -99,11 +100,13 @@ public final class DataFormatter {
     public void initDataMap(DataMap dm) {
         dm.setFormatter(this);
 
+        int flag = DataMap.SAVE_FLAG | (NGTUtil.isServer() ? DataMap.SYNC_FLAG : 0);
+
         Arrays.stream(this.initValues).forEach(val -> {
             String key = val.key;
             String value = String.format("(%s)%s", val.type, val.value);
             if (!dm.contains(key)) {
-                if (!dm.set(key, value, DataMap.SYNC_FLAG | DataMap.SAVE_FLAG)) {
+                if (!dm.set(key, value, flag)) {
                     NGTLog.debug("Failed to set value : %s=%s", key, value);
                 }
             }

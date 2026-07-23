@@ -161,6 +161,7 @@ internal object DataFormComponentFactory {
                 ListFormComponent(field, resolvedDefinition, currentEntry)
             }
 
+            DataType.VEC -> VectorFormComponent(field, resolvedDefinition, currentEntry)
             null -> null
             else -> ScalarFormComponent(field, resolvedDefinition, currentEntry)
         }
@@ -197,6 +198,8 @@ internal object DataFormMetrics {
     const val MAX_TEXT_FIELD_LENGTH = 1024
     const val VECTOR_COMPONENT_COUNT = 3
     const val VECTOR_FIELD_GAP = 3
+    const val VECTOR_PASTE_BUTTON_WIDTH = 18
+    const val VECTOR_PASTE_BUTTON_TEXT = "v"
     const val LIST_ITEM_HEIGHT = 22
     const val LIST_INDEX_WIDTH = 18
     const val LIST_INDEX_TEXT_OFFSET = 5

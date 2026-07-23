@@ -98,7 +98,12 @@ internal class ListFormComponent(
         when {
             resolvedElementType == DataType.VEC -> {
                 val components = parseVector(elementValue) ?: listOf("0", "0", "0")
-                visibleFields[index] = context.createVectorFields(controlX, absoluteY, elementWidth, components)
+                val input = context.createVectorInput(controlX, absoluteY, elementWidth, components)
+                visibleFields[index] = input.fields
+                buttonActions[input.pasteButtonId] = {
+                    input.pasteClipboard()
+                    DataFormActionResult()
+                }
             }
 
             resolvedElementType == DataType.BOOLEAN -> {

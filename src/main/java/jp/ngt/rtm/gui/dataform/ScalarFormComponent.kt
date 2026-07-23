@@ -33,12 +33,10 @@ internal class ScalarFormComponent(
         fields = emptyList()
         buttonId = null
         mutableLabels.clear()
-        val axes = if (type == DataType.VEC) " (X / Y / Z)" else ""
-        context.addMainLabel(field.resolvedLabel() + axes, mutableLabels)
+        context.addMainLabel(field.resolvedLabel(), mutableLabels)
 
         val controlY = context.localY + DataFormMetrics.LABEL_HEIGHT
-        val usesButton = type != DataType.VEC &&
-                (type == DataType.BOOLEAN || !definition.suggestions.isNullOrEmpty())
+        val usesButton = type == DataType.BOOLEAN || !definition.suggestions.isNullOrEmpty()
         val controlHeight = if (usesButton) {
             DataFormMetrics.BUTTON_HEIGHT
         } else {
@@ -51,15 +49,6 @@ internal class ScalarFormComponent(
         val absoluteY = context.guiTop + controlY
         val suggestions = definition.suggestions?.asList().orEmpty()
         when {
-            type == DataType.VEC -> fields = context.createVectorFields(
-                absoluteX,
-                absoluteY,
-                context.controlWidth,
-                parseVector(value)
-                    ?: parseVector(definition.value)
-                    ?: listOf("0", "0", "0")
-            )
-
             type == DataType.BOOLEAN -> {
                 val id = context.allocateControlId()
                 val button = context.createButton(
@@ -99,11 +88,7 @@ internal class ScalarFormComponent(
 
     override fun syncValue() {
         if (fields.isNotEmpty()) {
-            value = if (type == DataType.VEC) {
-                fields.joinToString(" ") { it.text.trim() }
-            } else {
-                fields.single().text
-            }
+            value = fields.single().text
         }
     }
 

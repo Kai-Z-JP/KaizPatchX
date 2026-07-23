@@ -26,6 +26,7 @@ public final class RTMEntity {
         EntityRegistry.registerModEntity(EntityMotorman.class, "RTM.E.Motorman", getNextId(), mod, RANGE, 3, true);
         EntityRegistry.registerModEntity(EntityATC.class, "RTM.E.ATC", getNextId(), mod, 160, FREQ_INSTALLED, false);
         EntityRegistry.registerModEntity(EntityTrainDetector.class, "RTM.E.TrainDetector", getNextId(), mod, 160, FREQ_INSTALLED, false);
+        EntityRegistry.registerModEntity(EntityTransponder.class, "RTM.E.Transponder", getNextId(), mod, 160, FREQ_INSTALLED, false);
         EntityRegistry.registerModEntity(EntityContainer.class, "RTM.E.Container", getNextId(), mod, 160, FREQ_VEHICLE, false);
         EntityRegistry.registerModEntity(EntityArtillery.class, "RTM.E.Artillery", getNextId(), mod, 160, FREQ_VEHICLE, false);
         EntityRegistry.registerModEntity(EntityBullet.class, "RTM.E.Bullet", getNextId(), mod, 256, 3, true);

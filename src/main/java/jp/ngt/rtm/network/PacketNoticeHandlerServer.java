@@ -11,7 +11,6 @@ import jp.ngt.rtm.entity.train.EntityTrainBase;
 import jp.ngt.rtm.gui.ContainerRTMWorkBench;
 import jp.ngt.rtm.gui.ContainerTrainControlPanel;
 import jp.ngt.rtm.modelpack.ModelPackUploadThread;
-import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.rail.TileEntityMarker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,8 +61,6 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
                     String[] sa = s2.split(TrainCommand.SEPARATOR);
                     ((EntityMotorman) entity).setMacro(sa);
                 }
-            } else if (msg.startsWith("DM")) {
-                DataMap.receivePacket(msg, message, world, false);
             } else if (msg.startsWith("notch")) {
                 Entity entity = message.getEntity(world);
                 if (entity instanceof EntityTrainBase) {

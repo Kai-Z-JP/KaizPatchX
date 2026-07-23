@@ -9,7 +9,6 @@ import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.block.tileentity.TileEntityMovingMachine;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.parts.EntityArtillery;
-import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.rail.TileEntityMarker;
 import jp.ngt.rtm.rail.TileEntityTurnTableCore;
 import net.minecraft.entity.Entity;
@@ -53,11 +52,6 @@ public class PacketNoticeHandlerClient implements IMessageHandler<PacketNotice, 
                 } else {
                     MacroRecorder.INSTANCE.start(world);
                 }
-            } else if (msg.startsWith("DM")) {
-                if (world == null) {
-                    return null;
-                }
-                DataMap.receivePacket(msg, message, world, true);
             } else if (msg.startsWith("use1122marker")) {
                 String[] sa0 = msg.split(",");
                 boolean use1122marker = sa0[1].equals("flip") ? !RTMConfig.use1122Marker : Boolean.parseBoolean(sa0[1]);

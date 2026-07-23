@@ -15,6 +15,8 @@ public final class RTMPacket {
         registerPacket(PacketLargeRailCore.class, PacketLargeRailCore.class, Side.CLIENT);
         registerPacket(PacketNoticeHandlerClient.class, PacketNotice.class, Side.CLIENT);
         registerPacket(PacketNoticeHandlerServer.class, PacketNotice.class, Side.SERVER);
+        registerPacket(PacketDataMap.class, PacketDataMap.class, Side.CLIENT);
+        registerPacket(PacketDataMap.class, PacketDataMap.class, Side.SERVER);
         registerPacket(PacketRTMKey.class, PacketRTMKey.class, Side.SERVER);
         registerPacket(PacketSelectModel.class, PacketSelectModel.class, Side.SERVER);
         registerPacket(PacketWire.class, PacketWire.class, Side.CLIENT);

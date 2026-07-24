@@ -23,10 +23,10 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClient> {
+    private static final int BRIGHTNESS_PENDING_RENDER_KEY = Integer.MIN_VALUE;
     protected int currentRailIndex;
     private final FloatBuffer convBuf;
     private boolean isCompilingStaticRail;
@@ -65,11 +65,18 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      */
     protected void renderRailStatic(TileEntityLargeRailCore tileEntity, double x, double y, double z, float par8) {
         boolean hasGLList = this.prepareStaticDisplayList(tileEntity);
-        if (hasGLList && tileEntity.shouldRerenderRail && !this.shouldRefreshDisplayList(tileEntity)) {
-            tileEntity.shouldRerenderRail = false;
+        boolean brightnessReady = true;
+        boolean refreshRequested = tileEntity.shouldRerenderRail
+                || tileEntity.getStaticRenderKey(this.currentRailIndex) == BRIGHTNESS_PENDING_RENDER_KEY;
+        if (hasGLList && refreshRequested) {
+            brightnessReady = this.areRailBrightnessPositionsLoaded(tileEntity);
+            if (brightnessReady && !this.shouldRefreshDisplayList(tileEntity)) {
+                tileEntity.shouldRerenderRail = false;
+                refreshRequested = false;
+            }
         }
 
-        if (!hasGLList || tileEntity.shouldRerenderRail) {
+        if (!hasGLList || (refreshRequested && brightnessReady)) {
             this.compileStaticRailParts(tileEntity, x, y, z, par8);
             hasGLList = GLHelper.isValid(tileEntity.glLists[this.currentRailIndex]);
         }
@@ -110,11 +117,18 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         boolean hasGLList = this.prepareStaticDisplayList(tileEntity);
-        if (hasGLList && tileEntity.shouldRerenderRail && !this.shouldRefreshDisplayList(tileEntity)) {
-            tileEntity.shouldRerenderRail = false;
+        boolean brightnessReady = true;
+        boolean refreshRequested = tileEntity.shouldRerenderRail
+                || tileEntity.getStaticRenderKey(this.currentRailIndex) == BRIGHTNESS_PENDING_RENDER_KEY;
+        if (hasGLList && refreshRequested) {
+            brightnessReady = this.areRailBrightnessPositionsLoaded(tileEntity);
+            if (brightnessReady && !this.shouldRefreshDisplayList(tileEntity)) {
+                tileEntity.shouldRerenderRail = false;
+                refreshRequested = false;
+            }
         }
 
-        if (!hasGLList || tileEntity.shouldRerenderRail) {
+        if (!hasGLList || (refreshRequested && brightnessReady)) {
             GLHelper.startCompile(tileEntity.glLists[this.currentRailIndex]);//GL_COMPILE_AND_EXECUTEは画面がチラつく
             try {
                 hasGLList = this.renderStaticPartsGeometry(tileEntity);
@@ -171,11 +185,13 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     private boolean renderStaticPartsGeometry(TileEntityLargeRailCore tileEntity) {
         this.renderedStaticGeometry = true;
         float[][] fa = this.createRailPos(tileEntity);
-        if (fa == null || fa.length <= 1) {
+        if (fa == null || fa.length == 0 || (fa.length == 1 && tileEntity.getRailRenderMinimumSplit() == 0)) {
             tileEntity.shouldRerenderRail = true;
             return false;
         }
 
+        boolean brightnessReady = this.areRailBrightnessPositionsLoaded(
+                tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
         int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
         FloatBuffer fb = this.createMatrix(fa);
         List<GroupObject> groups = this.modelSet.model.model.getGroupObjects();
@@ -183,9 +199,12 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
             tileEntity.shouldRerenderRail = true;
             return false;
         }
-        tileEntity.setStaticRenderKey(this.currentRailIndex, this.createStaticRenderKey(fa, brightness));
+        int renderKey = brightnessReady
+                ? this.createStaticRenderKey(fa, brightness)
+                : BRIGHTNESS_PENDING_RENDER_KEY;
+        tileEntity.setStaticRenderKey(this.currentRailIndex, renderKey);
         this.tessellateParts(tileEntity, fb, brightness, groups);
-        tileEntity.shouldRerenderRail = false;
+        tileEntity.shouldRerenderRail = !brightnessReady;
         return true;
     }
 
@@ -195,7 +214,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         float[][] fa = this.createRailPos(tileEntity);
-        if (fa == null || fa.length <= 1) {
+        if (fa == null || fa.length == 0 || (fa.length == 1 && tileEntity.getRailRenderMinimumSplit() == 0)) {
             return true;
         }
 
@@ -246,21 +265,23 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * @return {x, y, z, yaw, pitch, roll}
      */
     protected float[][] createRailPos(TileEntityLargeRailCore par1) {
-        float[] rev = RailPosition.REVISION[par1.getRailPositions()[0].direction];
+        RailPosition originRP = par1.getRailPositions()[0];
         RailMap[] rms = par1.getAllRailMaps();
         if (rms != null) {
             List<float[]> list = new ArrayList<>();
             for (RailMap rm : rms) {
                 int max = (int) ((float) rm.getLength() * 2.0F);
+                max = Math.max(max, par1.getRailRenderMinimumSplit());
                 double[] stPoint = rm.getRailPos(max, 0);
                 //double startH = rm.getRailHeight(max, 0);//カント付けた時端が沈む
                 double startH = rm.getStartRP().posY;
-                float moveX = (float) (stPoint[1] - ((double) par1.getStartPoint()[0] + 0.5D + (double) rev[0]));
-                float moveZ = (float) (stPoint[0] - ((double) par1.getStartPoint()[2] + 0.5D + (double) rev[1]));
+                float moveX = (float) (stPoint[1] - originRP.posX);
+                float moveZ = (float) (stPoint[0] - originRP.posZ);
                 //RM未初期化状態でのリスト生成を防止
                 //if(moveX == 0.0F && moveZ == 0.0F){return null;}
 
-                for (int i = 0; i < max + 1; ++i) {
+                int endIndex = Math.max(0, max - par1.getRailRenderEndOffset());
+                for (int i = 0; i <= endIndex; ++i) {
                     double[] curPoint = rm.getRailPos(max, i);
                     float[] array = {
                             moveX + (float) (curPoint[1] - stPoint[1]),
@@ -301,14 +322,52 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * レール上の明るさを一括取得
      */
     protected final int[] getRailBrightness(World world, int x, int y, int z, float[][] rp) {
-        int[] fa = new int[rp.length];
-        IntStream.range(0, rp.length).forEach(i -> {
+        final int unavailable = Integer.MIN_VALUE;
+        int[] brightness = new int[rp.length];
+        int fallback = this.getBrightness(world, x, y, z);
+        int previous = unavailable;
+        for (int i = 0; i < rp.length; ++i) {
             int x0 = x + MathHelper.floor_double(rp[i][0]);
             int y0 = y + MathHelper.floor_double(rp[i][1]);
             int z0 = z + MathHelper.floor_double(rp[i][2]);
-            fa[i] = this.getBrightness(world, x0, y0, z0);
-        });
-        return fa;
+            if (world.blockExists(x0, y0, z0)) {
+                brightness[i] = this.getBrightness(world, x0, y0, z0);
+                previous = brightness[i];
+                fallback = brightness[i];
+            } else if (previous != unavailable) {
+                brightness[i] = previous;
+            } else {
+                brightness[i] = unavailable;
+            }
+        }
+
+        int next = fallback;
+        for (int i = brightness.length - 1; i >= 0; --i) {
+            if (brightness[i] == unavailable) {
+                brightness[i] = next;
+            } else {
+                next = brightness[i];
+            }
+        }
+        return brightness;
+    }
+
+    private boolean areRailBrightnessPositionsLoaded(TileEntityLargeRailCore tileEntity) {
+        float[][] positions = this.createRailPos(tileEntity);
+        return positions != null && this.areRailBrightnessPositionsLoaded(
+                tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, positions);
+    }
+
+    private boolean areRailBrightnessPositionsLoaded(World world, int x, int y, int z, float[][] positions) {
+        for (float[] position : positions) {
+            int x0 = x + MathHelper.floor_double(position[0]);
+            int y0 = y + MathHelper.floor_double(position[1]);
+            int z0 = z + MathHelper.floor_double(position[2]);
+            if (!world.blockExists(x0, y0, z0)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -344,9 +403,13 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         for (int i = 0; i < capacity; ++i) {
             tessellator.setBrightness(brightness[i]);
             for (GroupObject group : gObjList) {
-                if (group.name.startsWith("side") && !(i == 0 || i == capacity - 1)) {
-                    continue;
-                }//レールの端以外は断面を描画しない, +1~2fps
+                if (group.name.startsWith("side")) {
+                    boolean isStartCap = i == 0 && tileEntity.shouldRenderRailStartCap();
+                    boolean isEndCap = i == capacity - 1 && tileEntity.shouldRenderRailEndCap();
+                    if (!isStartCap && !isEndCap) {
+                        continue;
+                    }
+                }//レール全体の端以外は断面を描画しない, +1~2fps
 
                 if (!this.shouldRenderObject(tileEntity, group.name, capacity, i)) {
                     continue;
@@ -373,11 +436,10 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     public void renderRailMapStatic(TileEntityLargeRailSwitchCore tileEntity, RailMap rm, int max, int startIndex, int endIndex, Parts... pArray) {
         double[] origPos = rm.getRailPos(max, 0);
         double origHeight = rm.getRailHeight(max, 0);
-        int[] startPos = tileEntity.getStartPoint();
-        float[] revXZ = RailPosition.REVISION[tileEntity.getRailPositions()[0].direction];
+        RailPosition originRP = tileEntity.getRailPositions()[0];
         //レール全体の始点からの移動差分
-        float moveX = (float) (origPos[1] - ((double) startPos[0] + 0.5D + (double) revXZ[0]));
-        float moveZ = (float) (origPos[0] - ((double) startPos[2] + 0.5D + (double) revXZ[1]));
+        float moveX = (float) (origPos[1] - originRP.posX);
+        float moveZ = (float) (origPos[0] - originRP.posZ);
 
         //頂点-中間点
         for (int i = startIndex; i <= endIndex; i++) {

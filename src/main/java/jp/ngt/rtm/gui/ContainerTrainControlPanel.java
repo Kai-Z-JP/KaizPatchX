@@ -1,7 +1,9 @@
 package jp.ngt.rtm.gui;
 
 import jp.ngt.rtm.entity.train.EntityTrainBase;
+import jp.ngt.rtm.entity.train.protection.TrainProtectionPluginManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
 
@@ -19,6 +21,9 @@ public class ContainerTrainControlPanel extends ContainerPlayer {
         this.train = par1;
         this.player = par2;
         this.slotsList = this.inventorySlots;
+        if (!par2.worldObj.isRemote && par2 instanceof EntityPlayerMP) {
+            TrainProtectionPluginManager.sendPluginInfos((EntityPlayerMP) par2);
+        }
     }
 
     @Override

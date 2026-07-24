@@ -46,6 +46,15 @@ public class PacketNoticeHandlerServer implements IMessageHandler<PacketNotice, 
                         ((ContainerTrainControlPanel) container).setCurrentTab(tabIndex);
                     }
                 }
+            } else if (message.notice.startsWith("setTrainProtectionPlugin")) {
+                String[] sa = message.notice.split(",");
+                Entity entity = message.getEntity(world);
+                if (sa.length >= 3 && entity instanceof EntityTrainBase && player.openContainer instanceof ContainerTrainControlPanel) {
+                    ContainerTrainControlPanel container = (ContainerTrainControlPanel) player.openContainer;
+                    if (container.train == entity) {
+                        ((EntityTrainBase) entity).setProtectionPluginEnabled(sa[1], Boolean.parseBoolean(sa[2]));
+                    }
+                }
             } else if (message.notice.startsWith("workbench")) {
                 String[] sa = message.notice.split(",");
                 String name = sa[1];

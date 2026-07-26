@@ -2,6 +2,7 @@ package jp.ngt.rtm.entity.train;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.rtm.rail.util.RailTransitionResolver;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
@@ -360,6 +361,21 @@ public class EntityBogie extends Entity implements Lockable {
         this.worldObj.getChunkProvider().loadChunk(x >> 4, z >> 4);
         TileEntityLargeRailBase railObj = TileEntityLargeRailBase.getRailFromCoordinates(this.worldObj, px, py, pz);
         if (railObj == null) {
+            TileEntityLargeRailCore connectedCore = RailTransitionResolver.findConnectedCore(
+                    this.worldObj,
+                    this.currentRailObj,
+                    this.currentRailMap,
+                    this.split,
+                    this.prevPosIndex,
+                    this.posX,
+                    this.posZ,
+                    px,
+                    pz,
+                    this.movingYaw
+            );
+            if (connectedCore != null) {
+                return connectedCore;
+            }
             this.errorLog(px, pz, "Rail not found > x:%s z:%s");
             return null;
         }

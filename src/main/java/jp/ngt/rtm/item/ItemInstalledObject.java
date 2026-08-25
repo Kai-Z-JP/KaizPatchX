@@ -110,6 +110,7 @@ public class ItemInstalledObject extends ItemWithModel {
                 TileEntityFluorescent tile = (TileEntityFluorescent) world.getTileEntity(par4, par5, par6);
                 tile.setDir(dir);
                 tile.setRotation(player, player.isSneaking() ? 1.0F : 15.0F, true);
+                ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
                 tile.setModelName(this.getModelName(itemStack));
                 tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
             }
@@ -209,6 +210,7 @@ public class ItemInstalledObject extends ItemWithModel {
             world.setBlock(par4, par5, par6, block, 0, 3);
             block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
             TileEntityScaffoldStairs tile = (TileEntityScaffoldStairs) world.getTileEntity(par4, par5, par6);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
             tile.setModelName(this.getModelName(itemStack));
             tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
         } else if (type == IstlObjType.SCAFFOLD) {
@@ -216,6 +218,7 @@ public class ItemInstalledObject extends ItemWithModel {
             world.setBlock(par4, par5, par6, block, 0, 3);
             block.onBlockPlacedBy(world, par4, par5, par6, player, itemStack);//向き保存用
             TileEntityScaffold tile = (TileEntityScaffold) world.getTileEntity(par4, par5, par6);
+            ItemWithModel.applyOffsetToTileEntity(itemStack, tile);
             tile.setModelName(this.getModelName(itemStack));
             tile.getResourceState().readFromNBT(this.getModelState(itemStack).writeToNBT());
         } else if (type == IstlObjType.ATC) {

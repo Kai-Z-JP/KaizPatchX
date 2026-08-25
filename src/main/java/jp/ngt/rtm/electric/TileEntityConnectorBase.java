@@ -156,8 +156,8 @@ public abstract class TileEntityConnectorBase extends TileEntityElectricalWiring
     public boolean shouldRenderInPass(int pass) {
         ModelSetConnectorClient modelSet = (ModelSetConnectorClient) this.getModelSet();
         boolean lightingWire = this.connections.stream()
-                .map(c -> ((ModelSetWireClient) c.getModelSet()).modelObj)
-                .anyMatch(m -> m.light || m.alphaBlend);
+                .map(c -> ((ModelSetWireClient) c.getModelSet()))
+                .anyMatch(m -> m.modelObj.light || m.modelObj.alphaBlend);
         return pass == 0 || (modelSet.modelObj.light || modelSet.modelObj.alphaBlend || lightingWire) && pass >= 0;
     }
 

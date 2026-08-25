@@ -175,29 +175,37 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
         nbt.setFloat("offsetZ", offsetZ);
     }
 
-    private static float getRotationYaw(ItemStack itemStack) {
-        return itemStack.hasTagCompound() ? itemStack.getTagCompound().getFloat("yaw") : 0;
+    private static float getPlacementValue(ItemStack itemStack, String key, float defaultValue) {
+        if (!itemStack.hasTagCompound() || !itemStack.getTagCompound().hasKey(key)) {
+            return defaultValue;
+        }
+        return itemStack.getTagCompound().getFloat(key);
     }
 
-    private static void setRotationYaw(ItemStack itemStack, float rotation) {
+    private static void setPlacementValue(ItemStack itemStack, String key, float value) {
         if (!itemStack.hasTagCompound()) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
-        NBTTagCompound nbt = itemStack.getTagCompound();
-        nbt.setFloat("yaw", rotation);
+        itemStack.getTagCompound().setFloat(key, value);
     }
 
     public static void applyOffsetToTileEntity(ItemStack itemStack, TileEntityPlaceable tile) {
         if (ItemWithModel.hasOffset(itemStack)) {
             float[] offset = ItemWithModel.getOffset(itemStack);
             tile.setOffset(offset[0], offset[1], offset[2], true);
-            tile.setRotationYaw(ItemWithModel.getRotationYaw(itemStack), true);
+            tile.setRotationYaw(ItemWithModel.getPlacementValue(itemStack, "yaw", 0.0F), true);
+            tile.setRotationRoll(ItemWithModel.getPlacementValue(itemStack, "roll", 0.0F), true);
+            tile.setRotationPitch(ItemWithModel.getPlacementValue(itemStack, "pitch", 0.0F), true);
+            tile.setScale(ItemWithModel.getPlacementValue(itemStack, "scale", 1.0F), true);
         }
     }
 
     public static void copyOffsetToItemStack(TileEntityPlaceable tileEntity, ItemStack itemStack) {
         ItemWithModel.setOffset(itemStack, tileEntity.getOffsetX(), tileEntity.getOffsetY(), tileEntity.getOffsetZ());
-        ItemWithModel.setRotationYaw(itemStack, tileEntity.getRotationYaw());
+        ItemWithModel.setPlacementValue(itemStack, "yaw", tileEntity.getRotationYaw());
+        ItemWithModel.setPlacementValue(itemStack, "roll", tileEntity.getRotationRoll());
+        ItemWithModel.setPlacementValue(itemStack, "pitch", tileEntity.getRotationPitch());
+        ItemWithModel.setPlacementValue(itemStack, "scale", tileEntity.getScale());
     }
 
     protected String getResourceName(ItemStack itemStack) {

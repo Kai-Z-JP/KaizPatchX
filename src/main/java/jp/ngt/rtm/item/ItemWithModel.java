@@ -106,6 +106,7 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
     public boolean closeGui(String par1, ResourceState par2) {
         this.setModelName(this.selectedItem, par1);
         this.setModelState(this.selectedItem, par2);
+        NGTUtil.sendPacketToServer(this.selectedPlayer, this.selectedItem);
         return true;
     }
 
@@ -146,10 +147,6 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
             itemStack.setTagCompound(new NBTTagCompound());
         }
         itemStack.getTagCompound().setTag("State", state.writeToNBT());
-
-        if (this.selectedPlayer != null) {
-            NGTUtil.sendPacketToServer(this.selectedPlayer, itemStack);
-        }
     }
 
     public static boolean hasOffset(ItemStack itemStack) {

@@ -29,6 +29,11 @@ public class RenderEntityInstalledObject extends Render {
         GL11.glPushMatrix();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glTranslatef((float) par2, (float) par4, (float) par6);
+        GL11.glTranslated(
+                entity.getPreciseRenderPosX() - entity.posX,
+                entity.getPreciseRenderPosY() - entity.posY,
+                entity.getPreciseRenderPosZ() - entity.posZ
+        );
 
         if (entity instanceof EntityElectricalWiring) {
             TileEntity tile = ((EntityElectricalWiring) entity).tileEW;
@@ -45,12 +50,12 @@ public class RenderEntityInstalledObject extends Render {
                 }
             }
         }
-        GL11.glRotatef(entity.rotationYaw, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(entity.getPreciseRenderYaw(), 0.0F, 1.0F, 0.0F);
 
         ModelSetMachineClient modelSet = (ModelSetMachineClient) entity.getModelSet();
         MachineConfig cfg = modelSet.getConfig();
         if (cfg.followRailAngle) {
-            GL11.glRotatef(entity.rotationPitch, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(entity.getPreciseRenderPitch(), 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(entity.rotationRoll, 0.0F, 0.0F, 1.0F);
         }
         int pass = MinecraftForgeClient.getRenderPass();

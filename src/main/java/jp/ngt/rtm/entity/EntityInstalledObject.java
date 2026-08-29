@@ -28,6 +28,13 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
     private final ResourceState state = new ResourceState(this);
     private ModelSetMachine myModelSet;
     private final ScriptExecuter executer = new ScriptExecuter();
+    private boolean precisePositionSynced;
+    private double precisePosX;
+    private double precisePosY;
+    private double precisePosZ;
+    private boolean preciseRotationSynced;
+    private float preciseRotationYaw;
+    private float preciseRotationPitch;
     public float rotationRoll;
 
     public EntityInstalledObject(World world) {
@@ -57,6 +64,17 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
         this.setModelName(s);
         this.getResourceState().readFromNBT(nbt.getCompoundTag("State"));
         this.rotationRoll = nbt.getFloat("RotationRoll");
+        this.precisePositionSynced = nbt.hasKey("PositionX") && nbt.hasKey("PositionY") && nbt.hasKey("PositionZ");
+        if (this.precisePositionSynced) {
+            this.precisePosX = nbt.getDouble("PositionX");
+            this.precisePosY = nbt.getDouble("PositionY");
+            this.precisePosZ = nbt.getDouble("PositionZ");
+        }
+        this.preciseRotationSynced = nbt.hasKey("RotationYaw") && nbt.hasKey("RotationPitch");
+        if (this.preciseRotationSynced) {
+            this.preciseRotationYaw = nbt.getFloat("RotationYaw");
+            this.preciseRotationPitch = nbt.getFloat("RotationPitch");
+        }
     }
 
     @Override
@@ -64,6 +82,11 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
         nbt.setString("ModelName", this.getModelName());
         nbt.setTag("State", this.getResourceState().writeToNBT());
         nbt.setFloat("RotationRoll", this.rotationRoll);
+        nbt.setDouble("PositionX", this.posX);
+        nbt.setDouble("PositionY", this.posY);
+        nbt.setDouble("PositionZ", this.posZ);
+        nbt.setFloat("RotationYaw", this.rotationYaw);
+        nbt.setFloat("RotationPitch", this.rotationPitch);
     }
 
     @Override
@@ -139,6 +162,31 @@ public abstract class EntityInstalledObject extends Entity implements IModelSele
     public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int p_70056_9_) {
         this.setPosition(x, y, z);
         this.setRotation(yaw, pitch);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public double getPreciseRenderPosX() {
+        return this.precisePositionSynced ? this.precisePosX : this.posX;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public double getPreciseRenderPosY() {
+        return this.precisePositionSynced ? this.precisePosY : this.posY;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public double getPreciseRenderPosZ() {
+        return this.precisePositionSynced ? this.precisePosZ : this.posZ;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getPreciseRenderYaw() {
+        return this.preciseRotationSynced ? this.preciseRotationYaw : this.rotationYaw;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getPreciseRenderPitch() {
+        return this.preciseRotationSynced ? this.preciseRotationPitch : this.rotationPitch;
     }
 
     /*=====================================================================================*/

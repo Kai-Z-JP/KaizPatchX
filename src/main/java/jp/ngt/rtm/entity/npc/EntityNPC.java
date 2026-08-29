@@ -139,17 +139,16 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
 
     @Override
     public void onUpdate() {
+        if (!this.worldObj.isRemote) {
+            this.executer.execScript(this);
+        }
+
         //インベントリ開いてる間は止まらせる
         if (this.inventory.isOpening) {
             return;
         }
 
         super.onUpdate();
-
-        if (!this.worldObj.isRemote) {
-            this.executer.execScript(this);
-        }
-
         this.playerDummy.setPosition(this.posX, this.posY, this.posZ);
         this.playerDummy.rotationYaw = this.rotationYaw;
         this.playerDummy.rotationPitch = this.rotationPitch;

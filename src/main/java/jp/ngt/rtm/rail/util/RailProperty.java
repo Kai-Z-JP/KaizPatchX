@@ -13,15 +13,21 @@ public final class RailProperty {
     public final Block block;
     public final int blockMetadata;
     public final float blockHeight;
+    public final boolean autoSplit;
     public final String unlocalizedName;
 
     private ModelSetRail modelSet;
 
     public RailProperty(String par1, Block par2, int par3, float par4) {
+        this(par1, par2, par3, par4, true);
+    }
+
+    public RailProperty(String par1, Block par2, int par3, float par4, boolean autoSplit) {
         this.railModel = par1;
         this.block = par2;
         this.blockMetadata = par3;
         this.blockHeight = (par4 <= 0.0F) ? 0.0625F : par4;
+        this.autoSplit = autoSplit;
 
         Item item = Item.getItemFromBlock(par2);
         //空気ブロックとかでnull
@@ -38,7 +44,12 @@ public final class RailProperty {
         }
         int i0 = nbt.getInteger("BlockMetadata");
         float b0 = nbt.getFloat("BlockHeight");
-        return new RailProperty(s0, block, i0, b0);
+        boolean autoSplit = readAutoSplit(nbt);
+        return new RailProperty(s0, block, i0, b0, autoSplit);
+    }
+
+    static boolean readAutoSplit(NBTTagCompound nbt) {
+        return !nbt.hasKey("AutoSplit") || nbt.getBoolean("AutoSplit");
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
@@ -47,6 +58,7 @@ public final class RailProperty {
         nbt.setString("BlockName", s1);
         nbt.setInteger("BlockMetadata", this.blockMetadata);
         nbt.setFloat("BlockHeight", this.blockHeight);
+        nbt.setBoolean("AutoSplit", this.autoSplit);
     }
 
     public ModelSetRail getModelSet() {

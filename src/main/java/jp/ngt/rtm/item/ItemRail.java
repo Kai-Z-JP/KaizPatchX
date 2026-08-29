@@ -160,8 +160,29 @@ public class ItemRail extends ItemWithModel {
         if (prop == null) {
             prop = getDefaultProperty();
         }
-        prop = new RailProperty(name, prop.block, prop.blockMetadata, prop.blockHeight);
+        prop = new RailProperty(name, prop.block, prop.blockMetadata, prop.blockHeight, prop.autoSplit);
         writePropToItem(prop, itemStack);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean isSelectedItemAutoSplitEnabled() {
+        ItemStack itemStack = this.getSelectedItem();
+        RailProperty prop = itemStack == null ? null : getProperty(itemStack);
+        return prop == null || prop.autoSplit;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setSelectedItemAutoSplitEnabled(boolean autoSplit) {
+        ItemStack itemStack = this.getSelectedItem();
+        if (itemStack == null) {
+            return;
+        }
+
+        RailProperty prop = getProperty(itemStack);
+        if (prop == null) {
+            prop = getDefaultProperty();
+        }
+        writePropToItem(new RailProperty(prop.railModel, prop.block, prop.blockMetadata, prop.blockHeight, autoSplit), itemStack);
     }
 
     @Override

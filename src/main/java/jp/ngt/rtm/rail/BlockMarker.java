@@ -2,14 +2,14 @@ package jp.ngt.rtm.rail;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.rtm.rail.TileEntityLargeRailSectionCore;
+import jp.kaiz.kaizpatch.rtm.rail.util.RailChunkSectioner;
+import jp.kaiz.kaizpatch.rtm.rail.util.RailMapSection;
+import jp.kaiz.kaizpatch.rtm.rail.util.RailSection;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.NGTVec;
 import jp.ngt.ngtlib.util.PermissionManager;
-import jp.kaiz.kaizpatch.rtm.rail.util.RailChunkSectioner;
-import jp.kaiz.kaizpatch.rtm.rail.util.RailMapSection;
-import jp.kaiz.kaizpatch.rtm.rail.util.RailSection;
-import jp.kaiz.kaizpatch.rtm.rail.TileEntityLargeRailSectionCore;
 import jp.ngt.rtm.*;
 import jp.ngt.rtm.item.ItemBlockMarker;
 import jp.ngt.rtm.item.ItemRail;
@@ -234,9 +234,11 @@ public class BlockMarker extends BlockContainer {
         RailMapBasic railMap = new RailMapBasic(start, end, RailMapBasic.fixRTMRailMapVersionCurrent);
 
         if (makeRail && railMap.canPlaceRail(world, isCreative, prop)) {
-            List<RailSection> sections = RailChunkSectioner.split(railMap);
-            if (sections.size() > 1) {
-                return createSectionedRail(world, railMap, sections, prop, isCreative);
+            if (prop.autoSplit) {
+                List<RailSection> sections = RailChunkSectioner.split(railMap);
+                if (sections.size() > 1) {
+                    return createSectionedRail(world, railMap, sections, prop, isCreative);
+                }
             }
             //railMap.setRail(world, RTMRail.largeRailBase[shape[0]], x0, y0, z0);
             railMap.setRail(world, RTMRail.largeRailBase0, start.blockX, start.blockY, start.blockZ, prop);

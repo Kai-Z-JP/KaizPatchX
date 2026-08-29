@@ -43,7 +43,7 @@ public class Formation {
         long fid = nbt.getLong("FormationId");
         int num = nbt.getInteger("Size");
         Formation formation = new Formation(fid, num);
-        formation.direction = nbt.getByte("Direction");
+        formation.applySavedMetadata(nbt);
 
         if (withEntries) {
             NBTTagList tagList = nbt.getTagList("Entries", 10);
@@ -58,6 +58,21 @@ public class Formation {
         }
 
         return formation;
+    }
+
+    /**
+     * Forge chunk tickets can load train entities before WorldSavedData is
+     * deserialized. Merge the saved formation shape into that live formation
+     * instead of replacing its already restored entity references.
+     */
+    public void applySavedMetadata(NBTTagCompound nbt) {
+        int savedSize = Math.max(0, nbt.getInteger("Size"));
+        if (this.entries.length != savedSize) {
+            FormationEntry[] resized = new FormationEntry[savedSize];
+            System.arraycopy(this.entries, 0, resized, 0, Math.min(this.entries.length, savedSize));
+            this.entries = resized;
+        }
+        this.direction = nbt.getByte("Direction");
     }
 
     public void writeToNBT(NBTTagCompound nbt, boolean withEntries) {

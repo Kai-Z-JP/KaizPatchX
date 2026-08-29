@@ -5,6 +5,7 @@ import com.google.common.collect.ListMultimap;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.rtm.RTMCore;
+import jp.ngt.rtm.entity.train.EntityTrainBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -14,7 +15,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.*;
 import net.minecraftforge.event.entity.EntityEvent.EnteringChunk;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class RTMChunkManager implements LoadingCallback, OrderedLoadingCallback,
 
     @SubscribeEvent
     public void entityEnteredChunk(EnteringChunk event) {
-        if (event.entity instanceof IChunkLoader) {
+        if (event.entity instanceof IChunkLoader && !(event.entity instanceof EntityTrainBase)) {
             IChunkLoader loader = (IChunkLoader) event.entity;
             if (loader.isChunkLoaderEnable()) {
                 loader.forceChunkLoading(event.newChunkX, event.newChunkZ);
@@ -53,8 +54,15 @@ public class RTMChunkManager implements LoadingCallback, OrderedLoadingCallback,
 
     @Override
     public List<Ticket> ticketsLoaded(List<Ticket> tickets, World world, int maxTicketCount) {
-        Set<Ticket> set = new HashSet<>();
+        Set<Ticket> set = new LinkedHashSet<>();
         tickets.forEach(ticket -> {
+            if (FormationChunkRetention.isFormationTicket(ticket)) {
+                set.add(ticket);
+                return;
+            }
+            if (ticket.getEntity() instanceof EntityTrainBase) {
+                return;
+            }
             if (ticket.getEntity() instanceof IChunkLoader) {
                 set.add(ticket);
                 return;
@@ -64,14 +72,23 @@ public class RTMChunkManager implements LoadingCallback, OrderedLoadingCallback,
                 set.add(ticket);
             }
         });
-        return new LinkedList<>(set);
+        List<Ticket> retained = new LinkedList<>(set);
+        if (retained.size() > maxTicketCount) {
+            return new LinkedList<>(retained.subList(0, maxTicketCount));
+        }
+        return retained;
     }
 
     @Override
     public void ticketsLoaded(List<Ticket> tickets, World world) {
         for (Ticket ticket : tickets) {
+            if (FormationChunkRetention.isFormationTicket(ticket)) {
+                FormationChunkRetention.adoptTicket(ticket, world);
+                continue;
+            }
+
             IChunkLoader loader = null;
-            if (ticket.getEntity() instanceof IChunkLoader) {
+            if (ticket.getEntity() instanceof IChunkLoader && !(ticket.getEntity() instanceof EntityTrainBase)) {
                 Entity entity = ticket.getEntity();
                 loader = (IChunkLoader) entity;
                 NGTLog.debug("[RTM] Chunk loader found at " + entity.posX + ", " + entity.posY + ", " + entity.posZ);

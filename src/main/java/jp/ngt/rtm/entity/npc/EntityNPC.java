@@ -9,6 +9,7 @@ import jp.ngt.rtm.item.ItemGun;
 import jp.ngt.rtm.item.ItemGun.GunType;
 import jp.ngt.rtm.modelpack.IModelSelector;
 import jp.ngt.rtm.modelpack.ModelPackManager;
+import jp.ngt.rtm.modelpack.ScriptExecuter;
 import jp.ngt.rtm.modelpack.cfg.NPCConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetNPC;
 import jp.ngt.rtm.modelpack.state.ResourceState;
@@ -36,6 +37,7 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
     private ModelSetNPC myModelSet;
     private Role myRole = Role.MANNEQUIN;
     private final EntityDummyPlayer playerDummy;
+    private final ScriptExecuter executer = new ScriptExecuter();
 
     protected int useItemCount;
 
@@ -143,6 +145,10 @@ public class EntityNPC extends EntityTameable implements IModelSelector, IRanged
         }
 
         super.onUpdate();
+
+        if (!this.worldObj.isRemote) {
+            this.executer.execScript(this);
+        }
 
         this.playerDummy.setPosition(this.posX, this.posY, this.posZ);
         this.playerDummy.rotationYaw = this.rotationYaw;

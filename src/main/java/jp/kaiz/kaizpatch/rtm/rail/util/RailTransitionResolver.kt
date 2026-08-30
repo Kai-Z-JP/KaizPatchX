@@ -13,6 +13,10 @@ import kotlin.math.*
 object RailTransitionResolver {
     private const val SPLITS_PER_METER = 360.0
     private const val ENDPOINT_MARGIN_METERS = 0.5
+    private const val NEAREST_SEARCH_MARGIN_METERS = 0.25
+    private const val FORWARD_SEARCH_DISTANCE_BLOCKS = 2.0
+    private const val FORWARD_SEARCH_STEP_BLOCKS = 0.25
+    private const val ENDPOINT_MATCH_DISTANCE_SQ = 1.0E-6
     private val verticalOffsets = intArrayOf(0, 1, -1, 2, -2, 3, -3)
 
     @JvmStatic
@@ -39,13 +43,14 @@ object RailTransitionResolver {
         val exits = selectExitDirections(currentMap, split, previousIndex, movement, travelYaw)
         for (towardEnd in exits) {
             val endpoint = if (towardEnd) currentMap.endRP else currentMap.startRP
-            findCoreAcrossEndpoint(world, currentCore, currentMap, endpoint)?.let { return it }
+            val exitYaw = outwardYaw(currentMap, split, towardEnd)
+            findCoreAcrossEndpoint(world, currentCore, currentMap, endpoint, exitYaw)?.let { return it }
         }
         return null
     }
 
     @JvmStatic
-    fun findCrossedSectionCore(
+    fun findCrossedConnectedCore(
         world: World,
         currentCore: TileEntityLargeRailCore?,
         currentMap: RailMap?,
@@ -57,8 +62,7 @@ object RailTransitionResolver {
         targetZ: Double,
         movingYaw: Float,
     ): TileEntityLargeRailCore? {
-        val sectionCore = currentCore as? TileEntityLargeRailSectionCore ?: return null
-        if (currentMap == null || split <= 0 || previousIndex < 0) return null
+        if (currentCore == null || currentMap == null || split <= 0 || previousIndex < 0) return null
 
         val exits = selectCrossedExitDirections(
             currentMap,
@@ -71,7 +75,12 @@ object RailTransitionResolver {
             movingYaw,
         )
         for (towardEnd in exits) {
-            findAdjacentSectionCore(world, sectionCore, towardEnd)?.let { return it }
+            if (currentCore is TileEntityLargeRailSectionCore) {
+                findAdjacentSectionCore(world, currentCore, towardEnd)?.let { return it }
+            }
+            val endpoint = if (towardEnd) currentMap.endRP else currentMap.startRP
+            val exitYaw = outwardYaw(currentMap, split, towardEnd)
+            findCoreAcrossEndpoint(world, currentCore, currentMap, endpoint, exitYaw)?.let { return it }
         }
         return null
     }
@@ -90,6 +99,60 @@ object RailTransitionResolver {
             return currentCore
         }
         return locatedCore
+    }
+
+    @JvmStatic
+    fun findConnectedEntryIndex(previousMap: RailMap?, nextMap: RailMap, nextSplit: Int): Int {
+        if (previousMap == null || nextSplit <= 0) return -1
+        val previousEndpoints = arrayOf(previousMap.startRP, previousMap.endRP)
+        val nextEndpoints = arrayOf(nextMap.startRP, nextMap.endRP)
+        var nearestNextEndpoint = -1
+        var nearestDistance = Double.MAX_VALUE
+        previousEndpoints.forEach { previous ->
+            nextEndpoints.forEachIndexed { index, next ->
+                val dx = previous.posX - next.posX
+                val dz = previous.posZ - next.posZ
+                val distance = dx * dx + dz * dz
+                if (distance < nearestDistance) {
+                    nearestDistance = distance
+                    nearestNextEndpoint = index
+                }
+            }
+        }
+        if (nearestDistance > ENDPOINT_MATCH_DISTANCE_SQ) return -1
+        return if (nearestNextEndpoint == 0) 0 else nextSplit
+    }
+
+    @JvmStatic
+    fun findNearestPointAround(
+        map: RailMap,
+        split: Int,
+        previousIndex: Int,
+        x: Double,
+        z: Double,
+        movement: Float,
+    ): Int {
+        if (split <= 0) return 0
+        if (previousIndex !in 0..split) return map.getNearlestPoint(split, x, z)
+
+        val indexMargin = ceil((abs(movement) + NEAREST_SEARCH_MARGIN_METERS) * SPLITS_PER_METER)
+            .toInt()
+            .coerceAtLeast(1)
+        val indexMin = max(0, previousIndex - indexMargin)
+        val indexMax = min(split, previousIndex + indexMargin)
+        var nearest = previousIndex
+        var nearestDistance = Double.MAX_VALUE
+        for (index in indexMin..indexMax) {
+            val point = map.getRailPos(split, index)
+            val dx = x - point[1]
+            val dz = z - point[0]
+            val distance = dx * dx + dz * dz
+            if (distance < nearestDistance) {
+                nearestDistance = distance
+                nearest = index
+            }
+        }
+        return nearest
     }
 
     internal fun shouldKeepCurrentSectionCore(
@@ -182,6 +245,7 @@ object RailTransitionResolver {
         currentCore: TileEntityLargeRailCore,
         currentMap: RailMap,
         endpoint: RailPosition,
+        exitYaw: Float,
     ): TileEntityLargeRailCore? {
         val neighbor = endpoint.neighborPos
         val expectedY = floor(endpoint.posY).toInt()
@@ -189,14 +253,33 @@ object RailTransitionResolver {
             add(neighbor[1])
             verticalOffsets.forEach { add(expectedY + it) }
         }
-        world.chunkProvider.loadChunk(neighbor[0] shr 4, neighbor[2] shr 4)
-        for (y in yCandidates) {
-            val rail = world.getTileEntity(neighbor[0], y, neighbor[2]) as? TileEntityLargeRailBase ?: continue
-            val candidate = rail.railCore ?: continue
-            if (candidate === currentCore) continue
-            if (currentCore.isSameLogicalRail(candidate) || connects(currentMap, candidate)) return candidate
+        for ((x, z) in forwardSearchPositions(endpoint, exitYaw)) {
+            world.chunkProvider.loadChunk(x shr 4, z shr 4)
+            for (y in yCandidates) {
+                val rail = world.getTileEntity(x, y, z) as? TileEntityLargeRailBase ?: continue
+                val candidate = rail.railCore ?: continue
+                if (candidate === currentCore) continue
+                if (currentCore.isSameLogicalRail(candidate) || connects(currentMap, candidate)) return candidate
+            }
         }
         return null
+    }
+
+    internal fun forwardSearchPositions(endpoint: RailPosition, exitYaw: Float): List<Pair<Int, Int>> {
+        val neighbor = endpoint.neighborPos
+        val positions = linkedSetOf(neighbor[0] to neighbor[2])
+        val yaw = Math.toRadians(exitYaw.toDouble())
+        val stepCount = ceil(FORWARD_SEARCH_DISTANCE_BLOCKS / FORWARD_SEARCH_STEP_BLOCKS).toInt()
+        repeat(stepCount) { index ->
+            val distance = min(
+                (index + 1) * FORWARD_SEARCH_STEP_BLOCKS,
+                FORWARD_SEARCH_DISTANCE_BLOCKS - CROSSING_EPSILON,
+            )
+            val x = floor(endpoint.posX + sin(yaw) * distance).toInt()
+            val z = floor(endpoint.posZ + cos(yaw) * distance).toInt()
+            positions += x to z
+        }
+        return positions.toList()
     }
 
     private fun connects(currentMap: RailMap, candidate: TileEntityLargeRailCore): Boolean =

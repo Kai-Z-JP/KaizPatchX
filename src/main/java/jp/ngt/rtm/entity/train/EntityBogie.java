@@ -200,7 +200,11 @@ public class EntityBogie extends Entity implements Lockable {
 
         RailMap rm = this.currentRailMap;
         int pIndex = 0;
-        if (frontBogie == null || this.prevPosIndex == -1) {
+        if (frontBogie == null) {
+            pIndex = RailTransitionResolver.findNearestPointAround(
+                    rm, this.split, this.prevPosIndex, px, pz, speed
+            );
+        } else if (this.prevPosIndex == -1) {
             pIndex = rm.getNearlestPoint(this.split, px, pz);
         } else {
             //移動範囲を制限して、「台車からの距離は同じでも位置は真逆」な点の検出を防ぐ
@@ -212,7 +216,7 @@ public class EntityBogie extends Entity implements Lockable {
             double[] fp = frontBogie.getPosBuf();
             double dif = Double.MAX_VALUE;
             double tlSq = trainLength * trainLength;
-            for (int i = indexMin; i < indexMax; ++i) {
+            for (int i = indexMin; i <= indexMax; ++i) {
                 double[] pxz = rm.getRailPos(this.split, i);
                 //先頭台車はまだ位置更新されてないので、bogie.getDistanceSq()は使わない
                 double lenTemp = this.getDistanceSq(pxz[1], py, pxz[0], fp[0], fp[1], fp[2]);
@@ -281,6 +285,7 @@ public class EntityBogie extends Entity implements Lockable {
             } else//新しいレール上に移動
             {
                 boolean sameLogicalRail = this.currentRailObj != null && this.currentRailObj.isSameLogicalRail(coreObj);
+                RailMap previousRailMap = this.currentRailMap;
                 RailMap railMap;
                 if (coreObj instanceof TileEntityLargeRailSwitchCore) {
                     TileEntityLargeRailSwitchCore switchObj = (TileEntityLargeRailSwitchCore) coreObj;
@@ -296,7 +301,9 @@ public class EntityBogie extends Entity implements Lockable {
                 this.currentRailObj = coreObj;
                 this.currentRailMap = railMap;
                 this.split = (int) (this.currentRailMap.getLength() * (double) SPLITS_PER_METER);
-                this.prevPosIndex = -1;
+                this.prevPosIndex = RailTransitionResolver.findConnectedEntryIndex(
+                        previousRailMap, this.currentRailMap, this.split
+                );
                 if (!sameLogicalRail) {
                     this.onChangeRail(coreObj);
                 }
@@ -356,6 +363,22 @@ public class EntityBogie extends Entity implements Lockable {
     }
 
     private TileEntityLargeRailCore getRail(double px, double py, double pz) {
+        TileEntityLargeRailCore crossedRail = RailTransitionResolver.findCrossedConnectedCore(
+                this.worldObj,
+                this.currentRailObj,
+                this.currentRailMap,
+                this.split,
+                this.prevPosIndex,
+                this.posX,
+                this.posZ,
+                px,
+                pz,
+                this.movingYaw
+        );
+        if (crossedRail != null) {
+            return crossedRail;
+        }
+
         int x = MathHelper.floor_double(px);
         int z = MathHelper.floor_double(pz);
         this.worldObj.getChunkProvider().loadChunk(x >> 4, z >> 4);
@@ -386,7 +409,7 @@ public class EntityBogie extends Entity implements Lockable {
             return null;
         }
 
-        return coreObj;
+        return RailTransitionResolver.keepCurrentSectionCore(this.currentRailObj, coreObj);
     }
 
     private void errorLog(double px, double pz, String msg) {

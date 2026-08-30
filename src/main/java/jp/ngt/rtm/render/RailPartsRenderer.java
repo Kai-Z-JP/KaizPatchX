@@ -252,10 +252,27 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 
     public double[] getRailRenderOrigin(TileEntityLargeRailCore tileEntity) {
         RailPosition rp = tileEntity.getRailPositions()[0];
+        return getRailRenderOrigin(rp);
+    }
+
+    static double[] getRailRenderOrigin(RailPosition rp) {
         return new double[]{
                 rp.posX - (double) rp.blockX,
                 rp.posY - (double) rp.blockY - 0.0625D,
                 rp.posZ - (double) rp.blockZ
+        };
+    }
+
+    protected double[] getRailWorldRenderOrigin(TileEntityLargeRailCore tileEntity) {
+        RailPosition rp = tileEntity.getRailPositions()[0];
+        return getRailWorldRenderOrigin(rp, tileEntity.xCoord, tileEntity.zCoord);
+    }
+
+    // A switch core may be placed at a different marker from railPositions[0].
+    static double[] getRailWorldRenderOrigin(RailPosition rp, int coreX, int coreZ) {
+        return new double[]{
+                (double) coreX + rp.posX - (double) rp.blockX,
+                (double) coreZ + rp.posZ - (double) rp.blockZ
         };
     }
 
@@ -265,7 +282,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * @return {x, y, z, yaw, pitch, roll}
      */
     protected float[][] createRailPos(TileEntityLargeRailCore par1) {
-        RailPosition originRP = par1.getRailPositions()[0];
+        double[] origin = this.getRailWorldRenderOrigin(par1);
         RailMap[] rms = par1.getAllRailMaps();
         if (rms != null) {
             List<float[]> list = new ArrayList<>();
@@ -275,8 +292,8 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
                 double[] stPoint = rm.getRailPos(max, 0);
                 //double startH = rm.getRailHeight(max, 0);//カント付けた時端が沈む
                 double startH = rm.getStartRP().posY;
-                float moveX = (float) (stPoint[1] - originRP.posX);
-                float moveZ = (float) (stPoint[0] - originRP.posZ);
+                float moveX = (float) (stPoint[1] - origin[0]);
+                float moveZ = (float) (stPoint[0] - origin[1]);
                 //RM未初期化状態でのリスト生成を防止
                 //if(moveX == 0.0F && moveZ == 0.0F){return null;}
 
@@ -436,10 +453,10 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     public void renderRailMapStatic(TileEntityLargeRailSwitchCore tileEntity, RailMap rm, int max, int startIndex, int endIndex, Parts... pArray) {
         double[] origPos = rm.getRailPos(max, 0);
         double origHeight = rm.getRailHeight(max, 0);
-        RailPosition originRP = tileEntity.getRailPositions()[0];
+        double[] origin = this.getRailWorldRenderOrigin(tileEntity);
         //レール全体の始点からの移動差分
-        float moveX = (float) (origPos[1] - originRP.posX);
-        float moveZ = (float) (origPos[0] - originRP.posZ);
+        float moveX = (float) (origPos[1] - origin[0]);
+        float moveZ = (float) (origPos[0] - origin[1]);
 
         //頂点-中間点
         for (int i = startIndex; i <= endIndex; i++) {

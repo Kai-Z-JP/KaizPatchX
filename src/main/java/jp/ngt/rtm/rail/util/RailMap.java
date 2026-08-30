@@ -144,10 +144,7 @@ public abstract class RailMap {
      */
     public void setRail(World world, Block block, int x0, int y0, int z0, RailProperty prop) {
         this.createRailList(prop);
-        TileEntity tile = world.getTileEntity(x0, y0, z0);
-        if (tile instanceof TileEntityMarker && ((TileEntityMarker) tile).getState(MarkerState.LINE2)) {
-            this.setBaseBlock(world, x0, y0, z0);
-        }
+        this.prepareBaseBlocks(world, x0, y0, z0);
         this.rails.forEach(rail -> {
             int x = rail[0];
             int y = rail[1];
@@ -163,6 +160,16 @@ public abstract class RailMap {
             }
         });
         this.rails.clear();
+    }
+
+    /**
+     * LINE2マーカーの地形転写だけを先行実行する。
+     */
+    public void prepareBaseBlocks(World world, int x0, int y0, int z0) {
+        TileEntity tile = world.getTileEntity(x0, y0, z0);
+        if (tile instanceof TileEntityMarker && ((TileEntityMarker) tile).getState(MarkerState.LINE2)) {
+            this.setBaseBlock(world, x0, y0, z0);
+        }
     }
 
     private void setBaseBlock(World world, int x0, int y0, int z0) {

@@ -38,7 +38,13 @@ public final class BezierCurve implements ILine {
 
     @Override
     public double[] getPoint(int par1, int par2) {
-        return this.getPointFromParameter(this.getHomogenizedParameter(par1, par2));
+        double ratio = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getPoint(ratio);
+    }
+
+    @Override
+    public double[] getPoint(double ratio) {
+        return this.getPointFromParameter(this.getHomogenizedParameter(ratio));
     }
 
     /**
@@ -79,7 +85,13 @@ public final class BezierCurve implements ILine {
 
     @Override
     public double getSlope(int par1, int par2) {
-        return this.getSlopeFromParameter(this.getHomogenizedParameter(par1, par2));
+        double ratio = par1 == 0 ? 0.0D : (double) par2 / (double) par1;
+        return this.getSlope(ratio);
+    }
+
+    @Override
+    public double getSlope(double ratio) {
+        return this.getSlopeFromParameter(this.getHomogenizedParameter(ratio));
     }
 
     /**
@@ -101,14 +113,10 @@ public final class BezierCurve implements ILine {
     /**
      * @param n 分割数
      */
-    private float getHomogenizedParameter(int n, int par2) {
-        if (n < 4) {
+    private float getHomogenizedParameter(double ratio) {
+        if (ratio <= 0.0D) {
             return 0.0F;
-        }
-
-        if (par2 <= 0) {
-            return 0.0F;
-        } else if (par2 >= n) {
+        } else if (ratio >= 1.0D) {
             return 1.0F;
         }
 
@@ -116,13 +124,15 @@ public final class BezierCurve implements ILine {
             this.initNP();
         }
 
-        int i0 = MathHelper.floor_float((float) par2 * (float) this.split / (float) n);
-
         if (this.normalizedParameters.length == 0) {
             return 0.0f;
         }
 
-        return this.normalizedParameters[i0];
+        double scaled = ratio * (double) this.split;
+        int i0 = MathHelper.floor_double(scaled);
+        float p0 = this.normalizedParameters[Math.min(i0, this.normalizedParameters.length - 1)];
+        float p1 = i0 + 1 < this.normalizedParameters.length ? this.normalizedParameters[i0 + 1] : 1.0F;
+        return p0 + (p1 - p0) * (float) (scaled - (double) i0);
     }
 
     private void initNP() {

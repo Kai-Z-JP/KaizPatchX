@@ -2,6 +2,7 @@ package jp.ngt.rtm.entity.train;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.rtm.rail.util.RailTransitionResolver;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.math.NGTMath;
 import jp.ngt.ngtlib.math.Vec3;
@@ -279,6 +280,7 @@ public class EntityBogie extends Entity implements Lockable {
             {
             } else//新しいレール上に移動
             {
+                boolean sameLogicalRail = this.currentRailObj != null && this.currentRailObj.isSameLogicalRail(coreObj);
                 RailMap railMap;
                 if (coreObj instanceof TileEntityLargeRailSwitchCore) {
                     TileEntityLargeRailSwitchCore switchObj = (TileEntityLargeRailSwitchCore) coreObj;
@@ -287,7 +289,7 @@ public class EntityBogie extends Entity implements Lockable {
                     railMap = coreObj.getRailMap(this);
                 }
 
-                if (this.currentRailMap != null && !this.currentRailMap.canConnect(railMap)) {
+                if (this.currentRailMap != null && !sameLogicalRail && !this.currentRailMap.canConnect(railMap)) {
                     return true;
                 }
 
@@ -295,7 +297,9 @@ public class EntityBogie extends Entity implements Lockable {
                 this.currentRailMap = railMap;
                 this.split = (int) (this.currentRailMap.getLength() * (double) SPLITS_PER_METER);
                 this.prevPosIndex = -1;
-                this.onChangeRail(coreObj);
+                if (!sameLogicalRail) {
+                    this.onChangeRail(coreObj);
+                }
             }
 
             return true;
@@ -357,6 +361,21 @@ public class EntityBogie extends Entity implements Lockable {
         this.worldObj.getChunkProvider().loadChunk(x >> 4, z >> 4);
         TileEntityLargeRailBase railObj = TileEntityLargeRailBase.getRailFromCoordinates(this.worldObj, px, py, pz);
         if (railObj == null) {
+            TileEntityLargeRailCore connectedCore = RailTransitionResolver.findConnectedCore(
+                    this.worldObj,
+                    this.currentRailObj,
+                    this.currentRailMap,
+                    this.split,
+                    this.prevPosIndex,
+                    this.posX,
+                    this.posZ,
+                    px,
+                    pz,
+                    this.movingYaw
+            );
+            if (connectedCore != null) {
+                return connectedCore;
+            }
             this.errorLog(px, pz, "Rail not found > x:%s z:%s");
             return null;
         }

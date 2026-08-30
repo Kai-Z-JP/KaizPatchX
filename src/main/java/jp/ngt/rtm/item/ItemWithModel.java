@@ -26,6 +26,11 @@ public abstract class ItemWithModel extends Item implements IModelSelectorWithTy
     @SideOnly(Side.CLIENT)
     private EntityPlayer selectedPlayer;
 
+    @SideOnly(Side.CLIENT)
+    protected ItemStack getSelectedItem() {
+        return this.selectedItem;
+    }
+
     public ItemWithModel() {
         super();
         this.setHasSubtypes(true);

@@ -1,5 +1,6 @@
 package jp.ngt.rtm.rail;
 
+import jp.kaiz.kaizpatch.rtm.rail.TileEntityLargeRailSectionCore;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -10,7 +11,7 @@ public class BlockLargeRailCore extends BlockLargeRailBase {
 
     @Override
     public TileEntity createNewTileEntity(World world, int par2) {
-        return new TileEntityLargeRailNormalCore();
+        return par2 == 1 ? new TileEntityLargeRailSectionCore() : new TileEntityLargeRailNormalCore();
     }
 
     @Override

@@ -37,6 +37,8 @@ minecraft {
     runDir = "eclipse"
 }
 
+def kotestVersion = '5.9.1'
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -53,6 +55,12 @@ dependencies {
     embed "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compileOnly 'org.jetbrains:annotations:26.1.0'
     embed 'org.sejda.imageio:webp-imageio:0.1.6'
+    testImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
+    testImplementation "io.kotest:kotest-assertions-core:$kotestVersion"
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
 
 processResources {

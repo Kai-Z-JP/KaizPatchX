@@ -78,7 +78,7 @@ public class RTMConfig {
                 "audible range crossing gate", CATEGORY_SOUND, 32.0F, 0.0F, 256.0F, "Audible range of crossing gate sound.");
 
         RTMConfig.railGeneratingDistance = (short) cfg.getInt(
-                "GeneratingDistance", CATEGORY_RAIL, 64, 0, 256, "Distance for generating a rail. (default:64, recomended max value:256, It depends on server side)");
+                "GeneratingDistance", CATEGORY_RAIL, 64, 0, 1024, "Distance for generating a rail. (default:64, recomended max value:1024, It depends on server side)");
         RTMConfig.railGeneratingHeight = (short) cfg.getInt(
                 "GeneratingHeight", CATEGORY_RAIL, 8, 0, 256, "Height for generating a rail. (recomended max value:256)");
         RTMConfig.markerDisplayDistance = (short) cfg.getInt(

@@ -1,5 +1,6 @@
 package jp.kaiz.kaizpatch.rtm.rail.util
 
+import jp.kaiz.kaizpatch.rtm.rail.TileEntityLargeRailSectionCore
 import jp.ngt.rtm.rail.TileEntityLargeRailBase
 import jp.ngt.rtm.rail.TileEntityLargeRailCore
 import jp.ngt.rtm.rail.util.RailMap
@@ -43,6 +44,80 @@ object RailTransitionResolver {
         return null
     }
 
+    @JvmStatic
+    fun findCrossedSectionCore(
+        world: World,
+        currentCore: TileEntityLargeRailCore?,
+        currentMap: RailMap?,
+        split: Int,
+        previousIndex: Int,
+        currentX: Double,
+        currentZ: Double,
+        targetX: Double,
+        targetZ: Double,
+        movingYaw: Float,
+    ): TileEntityLargeRailCore? {
+        val sectionCore = currentCore as? TileEntityLargeRailSectionCore ?: return null
+        if (currentMap == null || split <= 0 || previousIndex < 0) return null
+
+        val exits = selectCrossedExitDirections(
+            currentMap,
+            split,
+            previousIndex,
+            currentX,
+            currentZ,
+            targetX,
+            targetZ,
+            movingYaw,
+        )
+        for (towardEnd in exits) {
+            findAdjacentSectionCore(world, sectionCore, towardEnd)?.let { return it }
+        }
+        return null
+    }
+
+    @JvmStatic
+    fun keepCurrentSectionCore(
+        currentCore: TileEntityLargeRailCore?,
+        locatedCore: TileEntityLargeRailCore,
+    ): TileEntityLargeRailCore {
+        val keepCurrent = shouldKeepCurrentSectionCore(
+            hasCurrentCore = currentCore != null,
+            isSameCore = currentCore === locatedCore,
+            isSameLogicalRail = currentCore?.isSameLogicalRail(locatedCore) == true,
+        )
+        if (keepCurrent && currentCore != null) {
+            return currentCore
+        }
+        return locatedCore
+    }
+
+    internal fun shouldKeepCurrentSectionCore(
+        hasCurrentCore: Boolean,
+        isSameCore: Boolean,
+        isSameLogicalRail: Boolean,
+    ): Boolean = hasCurrentCore && !isSameCore && isSameLogicalRail
+
+    internal fun selectCrossedExitDirections(
+        currentMap: RailMap,
+        split: Int,
+        previousIndex: Int,
+        currentX: Double,
+        currentZ: Double,
+        targetX: Double,
+        targetZ: Double,
+        movingYaw: Float,
+    ): List<Boolean> {
+        val movement = hypot(targetX - currentX, targetZ - currentZ)
+        val travelYaw = if (movement > 1.0E-7) {
+            Math.toDegrees(atan2(targetX - currentX, targetZ - currentZ)).toFloat()
+        } else {
+            movingYaw
+        }
+        return selectExitDirections(currentMap, split, previousIndex, movement, travelYaw)
+            .filter { towardEnd -> isBeyondEndpoint(currentMap, split, targetX, targetZ, towardEnd) }
+    }
+
     internal fun selectExitDirections(
         currentMap: RailMap,
         split: Int,
@@ -67,6 +142,39 @@ object RailTransitionResolver {
         val index = if (towardEnd) max(0, split - 1) else min(1, split)
         val yaw = map.getRailYaw(split, index) + if (towardEnd) 0.0F else 180.0F
         return MathHelper.wrapAngleTo180_float(yaw)
+    }
+
+    private fun isBeyondEndpoint(
+        map: RailMap,
+        split: Int,
+        targetX: Double,
+        targetZ: Double,
+        towardEnd: Boolean,
+    ): Boolean {
+        val endpoint = if (towardEnd) map.endRP else map.startRP
+        val yaw = Math.toRadians(outwardYaw(map, split, towardEnd).toDouble())
+        val outwardDistance =
+            (targetX - endpoint.posX) * sin(yaw) + (targetZ - endpoint.posZ) * cos(yaw)
+        return outwardDistance > CROSSING_EPSILON
+    }
+
+    private fun findAdjacentSectionCore(
+        world: World,
+        currentCore: TileEntityLargeRailSectionCore,
+        towardEnd: Boolean,
+    ): TileEntityLargeRailSectionCore? {
+        val positions = currentCore.getRailGroupCorePositions()
+        val currentIndex = positions.indexOfFirst { pos ->
+            pos[0] == currentCore.xCoord && pos[1] == currentCore.yCoord && pos[2] == currentCore.zCoord
+        }
+        if (currentIndex < 0) return null
+
+        val adjacentIndex = currentIndex + if (towardEnd) 1 else -1
+        val adjacentPos = positions.getOrNull(adjacentIndex) ?: return null
+        world.chunkProvider.loadChunk(adjacentPos[0] shr 4, adjacentPos[2] shr 4)
+        val adjacent = world.getTileEntity(adjacentPos[0], adjacentPos[1], adjacentPos[2])
+                as? TileEntityLargeRailSectionCore ?: return null
+        return adjacent.takeIf { currentCore.isSameLogicalRail(it) }
     }
 
     private fun findCoreAcrossEndpoint(
@@ -94,4 +202,5 @@ object RailTransitionResolver {
     private fun connects(currentMap: RailMap, candidate: TileEntityLargeRailCore): Boolean =
         candidate.allRailMaps?.any { currentMap.canConnect(it) } == true
 
+    private const val CROSSING_EPSILON = 1.0E-7
 }

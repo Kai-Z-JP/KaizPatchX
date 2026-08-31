@@ -184,26 +184,30 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 
     private boolean renderStaticPartsGeometry(TileEntityLargeRailCore tileEntity) {
         this.renderedStaticGeometry = true;
-        float[][] fa = this.createRailPos(tileEntity);
-        if (fa == null || fa.length == 0 || (fa.length == 1 && tileEntity.getRailRenderMinimumSplit() == 0)) {
+        RailRenderGeometry geometry = this.createRailGeometry(tileEntity);
+        if (!RailRenderGeometryFactory.isRailRenderGeometryValid(
+                geometry, tileEntity.getRailRenderMinimumSplit())) {
             tileEntity.shouldRerenderRail = true;
             return false;
         }
 
+        float[][] fa = geometry.getPositions();
         boolean brightnessReady = this.areRailBrightnessPositionsLoaded(
                 tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
         int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
-        FloatBuffer fb = this.createMatrix(fa);
         List<GroupObject> groups = this.modelSet.model.model.getGroupObjects();
         if (groups.isEmpty()) {
             tileEntity.shouldRerenderRail = true;
             return false;
         }
         int renderKey = brightnessReady
-                ? this.createStaticRenderKey(fa, brightness)
+                ? this.createStaticRenderKey(tileEntity, geometry, brightness)
                 : BRIGHTNESS_PENDING_RENDER_KEY;
         tileEntity.setStaticRenderKey(this.currentRailIndex, renderKey);
-        this.tessellateParts(tileEntity, fb, brightness, groups);
+        if (fa.length > 0) {
+            FloatBuffer fb = this.createMatrix(fa);
+            this.tessellateParts(tileEntity, fb, brightness, groups, geometry);
+        }
         tileEntity.shouldRerenderRail = !brightnessReady;
         return true;
     }
@@ -213,18 +217,24 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
             return true;
         }
 
-        float[][] fa = this.createRailPos(tileEntity);
-        if (fa == null || fa.length == 0 || (fa.length == 1 && tileEntity.getRailRenderMinimumSplit() == 0)) {
+        RailRenderGeometry geometry = this.createRailGeometry(tileEntity);
+        if (!RailRenderGeometryFactory.isRailRenderGeometryValid(
+                geometry, tileEntity.getRailRenderMinimumSplit())) {
             return true;
         }
 
+        float[][] fa = geometry.getPositions();
         int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
-        int currentKey = this.createStaticRenderKey(fa, brightness);
+        int currentKey = this.createStaticRenderKey(tileEntity, geometry, brightness);
         return currentKey != tileEntity.getStaticRenderKey(this.currentRailIndex);
     }
 
-    private int createStaticRenderKey(float[][] fa, int[] brightness) {
-        int key = 31 * Arrays.deepHashCode(fa) + Arrays.hashCode(brightness);
+    private int createStaticRenderKey(TileEntityLargeRailCore tileEntity, RailRenderGeometry geometry, int[] brightness) {
+        int key = 31 * Arrays.deepHashCode(geometry.getPositions()) + Arrays.hashCode(brightness);
+        key = 31 * key + geometry.getLogicalSampleCount();
+        key = 31 * key + Arrays.hashCode(geometry.getLogicalIndices());
+        key = 31 * key + (tileEntity.shouldRenderRailStartCap() ? 1 : 0);
+        key = 31 * key + (tileEntity.shouldRenderRailEndCap() ? 1 : 0);
         return 31 * key + this.createModelRenderKey();
     }
 
@@ -287,34 +297,40 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         if (rms != null) {
             List<float[]> list = new ArrayList<>();
             for (RailMap rm : rms) {
-                int max = (int) ((float) rm.getLength() * 2.0F);
-                max = Math.max(max, par1.getRailRenderMinimumSplit());
-                double[] stPoint = rm.getRailPos(max, 0);
-                //double startH = rm.getRailHeight(max, 0);//カント付けた時端が沈む
-                double startH = rm.getStartRP().posY;
-                float moveX = (float) (stPoint[1] - origin[0]);
-                float moveZ = (float) (stPoint[0] - origin[1]);
-                //RM未初期化状態でのリスト生成を防止
-                //if(moveX == 0.0F && moveZ == 0.0F){return null;}
-
-                int endIndex = Math.max(0, max - par1.getRailRenderEndOffset());
-                for (int i = 0; i <= endIndex; ++i) {
-                    double[] curPoint = rm.getRailPos(max, i);
-                    float[] array = {
-                            moveX + (float) (curPoint[1] - stPoint[1]),
-                            (float) (rm.getRailHeight(max, i) - startH),//0.0F,
-                            moveZ + (float) (curPoint[0] - stPoint[0]),
-                            rm.getRailRotation(max, i),
-                            -rm.getRailPitch(max, i),
-                            rm.getCant(max, i)
-                    };
-
-                    list.add(array);
-                }
+                RailRenderGeometry geometry = RailRenderGeometryFactory.createRailRenderGeometry(
+                        rm, origin[0], origin[1], par1.getRailRenderMinimumSplit(), par1.getRailRenderEndOffset());
+                list.addAll(Arrays.asList(geometry.getPositions()));
             }
             return list.toArray(new float[list.size()][5]);
         }
         return null;
+    }
+
+    private RailRenderGeometry createRailGeometry(TileEntityLargeRailCore tileEntity) {
+        float[][] positions = this.createRailPos(tileEntity);
+        if (positions == null) {
+            return null;
+        }
+
+        RailMap[] maps = tileEntity.getAllRailMaps();
+        if (maps != null && maps.length == 1) {
+            RailRenderSamplePlan plan = RailRenderSampling.createRailRenderSamplePlan(
+                    maps[0], tileEntity.getRailRenderMinimumSplit());
+            if (plan.isSectioned() && plan.getSampleCount() == positions.length) {
+                int[] logicalIndices = new int[positions.length];
+                for (int i = 0; i < logicalIndices.length; ++i) {
+                    logicalIndices[i] = plan.getStartIndex() + i;
+                }
+                return new RailRenderGeometry(
+                        positions, plan.getLogicalSampleCount(), logicalIndices, positions.length == 0);
+            }
+        }
+
+        int[] logicalIndices = new int[positions.length];
+        for (int i = 0; i < logicalIndices.length; ++i) {
+            logicalIndices[i] = i;
+        }
+        return new RailRenderGeometry(positions, positions.length, logicalIndices, false);
     }
 
     /**
@@ -370,9 +386,10 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
     }
 
     private boolean areRailBrightnessPositionsLoaded(TileEntityLargeRailCore tileEntity) {
-        float[][] positions = this.createRailPos(tileEntity);
-        return positions != null && this.areRailBrightnessPositionsLoaded(
-                tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, positions);
+        RailRenderGeometry geometry = this.createRailGeometry(tileEntity);
+        return geometry != null && this.areRailBrightnessPositionsLoaded(
+                tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord,
+                geometry.getPositions());
     }
 
     private boolean areRailBrightnessPositionsLoaded(World world, int x, int y, int z, float[][] positions) {
@@ -413,7 +430,8 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * @param brightness セグメントごとの明るさ
      * @param gObjList   セグメントの構成ObjectのList x セグメント数
      */
-    private void tessellateParts(TileEntityLargeRailCore tileEntity, FloatBuffer matrix, int[] brightness, List<GroupObject> gObjList) {
+    private void tessellateParts(TileEntityLargeRailCore tileEntity, FloatBuffer matrix, int[] brightness,
+                                 List<GroupObject> gObjList, RailRenderGeometry geometry) {
         IRenderer tessellator = PolygonRenderer.INSTANCE;
         tessellator.startDrawing(GL11.GL_TRIANGLES);
         int capacity = matrix.capacity() >> 4;
@@ -428,7 +446,8 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
                     }
                 }//レール全体の端以外は断面を描画しない, +1~2fps
 
-                if (!this.shouldRenderObject(tileEntity, group.name, capacity, i)) {
+                if (!this.shouldRenderObject(tileEntity, group.name, geometry.getLogicalSampleCount(),
+                        geometry.getLogicalIndices()[i])) {
                     continue;
                 }//描画するかスクリプト側で判断
 

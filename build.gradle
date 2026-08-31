@@ -37,7 +37,7 @@ minecraft {
     runDir = "eclipse"
 }
 
-def kotestVersion = '5.9.1'
+def kotestVersion = '6.2.4'
 
 dependencies {
     // you may put jars on which you depend on in ./libs

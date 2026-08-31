@@ -17,6 +17,7 @@ import jp.ngt.rtm.rail.util.RailMap;
 import jp.ngt.rtm.rail.util.RailPosition;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
@@ -192,9 +193,8 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         float[][] fa = geometry.getPositions();
-        boolean brightnessReady = this.areRailBrightnessPositionsLoaded(
-                tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
-        int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
+        boolean brightnessReady = this.areRailBrightnessPositionsLoaded(tileEntity, fa);
+        int[] brightness = this.getRailBrightness(tileEntity, fa);
         List<GroupObject> groups = this.modelSet.model.model.getGroupObjects();
         if (groups.isEmpty()) {
             tileEntity.shouldRerenderRail = true;
@@ -224,7 +224,7 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
         }
 
         float[][] fa = geometry.getPositions();
-        int[] brightness = this.getRailBrightness(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, fa);
+        int[] brightness = this.getRailBrightness(tileEntity, fa);
         int currentKey = this.createStaticRenderKey(tileEntity, geometry, brightness);
         return currentKey != tileEntity.getStaticRenderKey(this.currentRailIndex);
     }
@@ -355,15 +355,30 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * レール上の明るさを一括取得
      */
     protected final int[] getRailBrightness(World world, int x, int y, int z, float[][] rp) {
+        return this.getRailBrightness(world, (double) x, (double) y, (double) z, rp);
+    }
+
+    private int[] getRailBrightness(TileEntityLargeRailCore tileEntity, float[][] positions) {
+        double[] origin = this.getRailWorldBrightnessOrigin(tileEntity);
+        return this.getRailBrightness(
+                tileEntity.getWorldObj(), origin[0], origin[1], origin[2], positions);
+    }
+
+    private int[] getRailBrightness(
+            World world, double originX, double originY, double originZ, float[][] positions) {
         final int unavailable = Integer.MIN_VALUE;
-        int[] brightness = new int[rp.length];
-        int fallback = this.getBrightness(world, x, y, z);
+        int[] brightness = new int[positions.length];
+        int fallback = this.getBrightness(
+                world,
+                getRailBrightnessCoordinate(originX, 0.0F),
+                getRailBrightnessCoordinate(originY, 0.0F),
+                getRailBrightnessCoordinate(originZ, 0.0F));
         int previous = unavailable;
-        for (int i = 0; i < rp.length; ++i) {
-            int x0 = x + MathHelper.floor_double(rp[i][0]);
-            int y0 = y + MathHelper.floor_double(rp[i][1]);
-            int z0 = z + MathHelper.floor_double(rp[i][2]);
-            if (world.blockExists(x0, y0, z0)) {
+        for (int i = 0; i < positions.length; ++i) {
+            int x0 = getRailBrightnessCoordinate(originX, positions[i][0]);
+            int y0 = getRailBrightnessCoordinate(originY, positions[i][1]);
+            int z0 = getRailBrightnessCoordinate(originZ, positions[i][2]);
+            if (isRailBrightnessPositionLoaded(world, x0, y0, z0)) {
                 brightness[i] = this.getBrightness(world, x0, y0, z0);
                 previous = brightness[i];
                 fallback = brightness[i];
@@ -387,21 +402,47 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
 
     private boolean areRailBrightnessPositionsLoaded(TileEntityLargeRailCore tileEntity) {
         RailRenderGeometry geometry = this.createRailGeometry(tileEntity);
-        return geometry != null && this.areRailBrightnessPositionsLoaded(
-                tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord,
-                geometry.getPositions());
+        return geometry != null && this.areRailBrightnessPositionsLoaded(tileEntity, geometry.getPositions());
     }
 
-    private boolean areRailBrightnessPositionsLoaded(World world, int x, int y, int z, float[][] positions) {
+    private boolean areRailBrightnessPositionsLoaded(
+            TileEntityLargeRailCore tileEntity, float[][] positions) {
+        World world = tileEntity.getWorldObj();
+        double[] origin = this.getRailWorldBrightnessOrigin(tileEntity);
         for (float[] position : positions) {
-            int x0 = x + MathHelper.floor_double(position[0]);
-            int y0 = y + MathHelper.floor_double(position[1]);
-            int z0 = z + MathHelper.floor_double(position[2]);
-            if (!world.blockExists(x0, y0, z0)) {
+            int x0 = getRailBrightnessCoordinate(origin[0], position[0]);
+            int y0 = getRailBrightnessCoordinate(origin[1], position[1]);
+            int z0 = getRailBrightnessCoordinate(origin[2], position[2]);
+            if (!isRailBrightnessPositionLoaded(world, x0, y0, z0)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private double[] getRailWorldBrightnessOrigin(TileEntityLargeRailCore tileEntity) {
+        double[] origin = this.getRailRenderOrigin(tileEntity);
+        return new double[]{
+                (double) tileEntity.xCoord + origin[0],
+                (double) tileEntity.yCoord + origin[1],
+                (double) tileEntity.zCoord + origin[2]
+        };
+    }
+
+    static int getRailBrightnessCoordinate(double worldOrigin, float relativePosition) {
+        return MathHelper.floor_double(worldOrigin + (double) relativePosition);
+    }
+
+    private static boolean isRailBrightnessPositionLoaded(World world, int x, int y, int z) {
+        if (y < 0 || y >= 256) {
+            return false;
+        }
+        Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
+        return isRailBrightnessChunkReady(chunk);
+    }
+
+    static boolean isRailBrightnessChunkReady(Chunk chunk) {
+        return chunk != null && !chunk.isEmpty() && chunk.isChunkLoaded && chunk.isLightPopulated;
     }
 
     /**
@@ -419,7 +460,9 @@ public class RailPartsRenderer extends TileEntityPartsRenderer<ModelSetRailClien
      * 指定座標の明るさ取得
      */
     private int getWorldBrightness(World world, int x, int y, int z) {
-        return world.blockExists(x, y, z) ? world.getLightBrightnessForSkyBlocks(x, y, z, 0) : 0;
+        return isRailBrightnessPositionLoaded(world, x, y, z)
+                ? world.getLightBrightnessForSkyBlocks(x, y, z, 0)
+                : 0;
     }
 
     /**

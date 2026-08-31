@@ -44,8 +44,8 @@ public class GuiIngameCustom extends GuiScreen {
 
             this.setScale(event.resolution);
 
-            if (this.mc.thePlayer.ridingEntity instanceof EntityTrainBase) {
-                this.renderVehicleGui((EntityTrainBase) this.mc.thePlayer.ridingEntity);
+            if (this.mc.thePlayer.ridingEntity instanceof EntityVehicleBase) {
+                this.renderVehicleGui((EntityVehicleBase) this.mc.thePlayer.ridingEntity);
             } else if (this.mc.thePlayer.ridingEntity instanceof EntityArtillery) {
                 this.renderArtilleryGui((EntityArtillery) this.mc.thePlayer.ridingEntity);
             }

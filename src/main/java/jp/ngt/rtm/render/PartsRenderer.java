@@ -439,7 +439,7 @@ public abstract class PartsRenderer<T, MS extends ModelSetBase> {
 
     public static <R extends PartsRenderer> R getRendererWithScript(ResourceLocation par1, String... args) throws ReflectiveOperationException {
         String text = ModelPackManager.INSTANCE.getScript(par1.getResourcePath());
-        ScriptEngine se = ScriptUtil.doScript(text);
+        ScriptEngine se = ScriptUtil.doScript(text, par1.getResourcePath());
         String s = (String) ScriptUtil.getScriptField(se, "renderClass");
         Class clazz = Launch.classLoader.loadClass(s);
         Constructor<R> constructor = clazz.getConstructor(String[].class);

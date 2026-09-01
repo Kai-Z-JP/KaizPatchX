@@ -27,18 +27,23 @@ public final class ScriptUtil {
     public static ScriptEngine doScript(ResourceLocation resource) {
         try {
             String script = NGTText.getText(resource, true);
-            return doScript(script);
+            return doScript(script, resource.getResourcePath());
         } catch (IOException e) {
             throw new RuntimeException("Script load error : " + resource.getResourcePath(), e);
         }
     }
 
     public static ScriptEngine doScript(String s) {
+        return doScript(s, "<unnamed script>");
+    }
+
+    public static ScriptEngine doScript(String s, String fileName) {
         if (SEM == null) {
             init();
         }
         ScriptEngine se = SEM.getScriptEngine("-doe", "--language=es6");
         try {
+            se.put(ScriptEngine.FILENAME, fileName);
             if (se.toString().contains("Nashorn")) {
                 //Java8ではimportPackage()が使えないので、その対策
                 se.eval("load(\"nashorn:mozilla_compat.js\");");

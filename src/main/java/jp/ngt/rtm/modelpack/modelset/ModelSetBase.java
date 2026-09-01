@@ -38,11 +38,11 @@ public abstract class ModelSetBase<T extends ModelConfig> {
         this.isDummyModel = false;
 
         if (this.cfg.serverScriptPath != null) {
-            this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath));
+            this.serverSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.serverScriptPath), this.cfg.serverScriptPath);
         }
 
         if (FMLCommonHandler.instance().getSide().isClient() && this.cfg.guiScriptPath != null) {
-            this.guiSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath));
+            this.guiSE = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(this.cfg.guiScriptPath), this.cfg.guiScriptPath);
             this.guiTexture = ModelPackManager.INSTANCE.getResource(this.cfg.guiTexture);
         }
     }

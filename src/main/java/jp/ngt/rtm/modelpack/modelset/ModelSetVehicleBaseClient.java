@@ -73,7 +73,7 @@ public abstract class ModelSetVehicleBaseClient<T extends VehicleBaseConfig> ext
         this.sound_ATSBell = this.getSoundResource(cfg.sound_ATSBell == null ? "rtm:train.ats_bell" : cfg.sound_ATSBell);
 
         if (cfg.soundScriptPath != null) {
-            this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath));
+            this.se = ScriptUtil.doScript(ModelPackManager.INSTANCE.getScript(cfg.soundScriptPath), cfg.soundScriptPath);
         }
     }
 

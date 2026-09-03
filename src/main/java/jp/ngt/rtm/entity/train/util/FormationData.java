@@ -14,8 +14,14 @@ public class FormationData extends WorldSavedData {
         NBTTagList tagList = nbt.getTagList("Formations", 10);
         for (int i = 0; i < tagList.tagCount(); ++i) {
             NBTTagCompound tag = tagList.getCompoundTagAt(i);
-            Formation formation = Formation.readFromNBT(tag, false);
-            //登録はFormationコンストラクタで行ってる
+            long formationId = tag.getLong("FormationId");
+            Formation formation = FormationManager.getInstance().getFormation(formationId);
+            if (formation == null) {
+                Formation.readFromNBT(tag, false);
+                //登録はFormationコンストラクタで行ってる
+            } else {
+                formation.applySavedMetadata(tag);
+            }
         }
     }
 

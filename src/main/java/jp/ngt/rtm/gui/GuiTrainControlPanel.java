@@ -71,7 +71,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
     protected final EntityPlayer player;
     protected final ModelSetVehicleBase<TrainConfig> modelset;
 
-    private GuiButton buttonChunkLoader;
     private GuiButtonWithScrollingListBox buttonDestination;
     private GuiButtonWithScrollingListBox buttonAnnouncement;
     private final GuiButton[] buttonDirection = new GuiButton[3];
@@ -156,11 +155,6 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             /*this.buttonList.add(new GuiButton(140, this.guiLeft + 91, this.guiTop + 28, 27, 20, this.getFormattedText(EnumTrainStateType.State_Direction.id, (byte)0)));
             this.buttonList.add(new GuiButton(141, this.guiLeft + 118, this.guiTop + 28, 27, 20, this.getFormattedText(EnumTrainStateType.State_Direction.id, (byte)1)));
             this.buttonList.add(new GuiButton(142, this.guiLeft + 145, this.guiTop + 28, 27, 20, this.getFormattedText(EnumTrainStateType.State_Direction.id, (byte)2)));*/
-
-            this.buttonChunkLoader = new GuiButton(127, this.guiLeft + 28, this.guiTop + 52, 120, 20, this.getFormattedText(7, this.train.getTrainStateData(7)));
-            this.buttonList.add(this.buttonChunkLoader);
-            this.buttonList.add(new GuiButton(110, this.guiLeft + 4, this.guiTop + 52, 20, 20, "<"));
-            this.buttonList.add(new GuiButton(111, this.guiLeft + 152, this.guiTop + 52, 20, 20, ">"));
 
             if (((ModelSetVehicleBaseClient<TrainConfig>) this.modelset).rollsignTexture != null) {
                 this.buttonDestination = new GuiButtonWithScrollingListBox(128, this.guiLeft + 28, this.guiTop + 76, 120, 20,
@@ -686,19 +680,11 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             tabPage = Math.min(tabPage + 1, maxPages);
         }
 
-        if ((button.id >= 110 && button.id <= 115) || (button.id >= 124 && button.id <= 129) || (button.id >= 140 && button.id <= 142)) {
+        if ((button.id >= 112 && button.id <= 115) || (button.id >= 124 && button.id <= 129) || (button.id >= 140 && button.id <= 142)) {
             int i0;
             int i1;
 
-            if (button.id == 110)//ChunkLoader
-            {
-                i0 = 7;
-                i1 = this.train.getTrainStateData(i0) - 1;
-            } else if (button.id == 111)//ChunkLoader
-            {
-                i0 = 7;
-                i1 = this.train.getTrainStateData(i0) + 1;
-            } else if (button.id == 112)//行先
+            if (button.id == 112)//行先
             {
                 i0 = 8;
                 i1 = this.train.getTrainStateData(i0) - 1;
@@ -750,9 +736,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             int i2 = i1 < stateType.min ? stateType.max : (i1 > stateType.max ? stateType.min : i1);
             this.sendTrainState(i0, (byte) i2);
 
-            if (button.id == 110 || button.id == 111) {
-                this.buttonChunkLoader.displayString = this.getFormattedText(i0, (byte) i2);
-            } else if (button.id == 112 || button.id == 113) {
+            if (button.id == 112 || button.id == 113) {
             } else if (button.id == 114 || button.id == 115) {
             } else {
                 button.displayString = this.getFormattedText(i0, (byte) i2);

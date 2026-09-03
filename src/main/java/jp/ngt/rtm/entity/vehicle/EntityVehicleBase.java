@@ -154,6 +154,10 @@ public abstract class EntityVehicleBase<T extends VehicleBaseConfig> extends Ent
         this.vehicleFloors.add(par1);
     }
 
+    public List<EntityFloor> getVehicleFloors() {
+        return this.vehicleFloors;
+    }
+
     @Override
     public void setDead() {
         super.setDead();

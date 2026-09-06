@@ -24,6 +24,10 @@ public final class NGTMath {
         Arrays.setAll(RAND_TABLE, i -> RANDOM.nextDouble());
     }
 
+    public static int generateHash(int[] data, int bound) {
+        return new Random(Arrays.hashCode(data)).nextInt(bound);
+    }
+
     /**
      * ラジアンから度
      */

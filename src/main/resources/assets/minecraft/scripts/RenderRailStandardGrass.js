@@ -41,7 +41,16 @@ function renderRailDynamic(tileEntity, posX, posY, posZ, par8, pass) {
 
 function shouldRenderObject(tileEntity, objName, len, pos) {
     if (patternGrass.test(objName)) {
-        return (NGTMath.RANDOM.nextInt(4) == 0)
+        var rp = tileEntity.getRailPositions()[0];
+        var x = rp.blockX;
+        var y = rp.blockY;
+        var z = rp.blockZ;
+        var name = String(objName);
+        var data = [x, y, z, pos];
+        for (var i = 0; i < name.length; i++) {
+            data.push(name.charCodeAt(i));
+        }
+        return NGTMath.generateHash(data, 4) == 0;
     } else if (renderer.isSwitchRail(tileEntity))//分岐レール
     {
         //可動部パーツは除外

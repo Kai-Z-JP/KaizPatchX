@@ -98,7 +98,8 @@ public abstract class VehicleBaseConfig extends ModelConfig {
      * 0:なし<br>
      * 1:クロスシート（モデル表示あり）<br>
      * 2:クロスシート・ロングシート（モデル表示なし、車両モデルに座席を用意しているのであればこちらを指定する）)<br>
-     * 3:寝台(未実装)
+     * 3:寝台(未実装)<br>
+     * 4:立席（モデル表示なし 立ち姿）
      */
     private float[][] slotPos;
     @Deprecated

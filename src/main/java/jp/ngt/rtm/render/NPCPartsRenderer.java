@@ -176,7 +176,7 @@ public class NPCPartsRenderer extends EntityPartsRenderer<ModelSetNPCClient> {
     }
 
     public boolean isRiding(EntityLivingBase entity) {
-        return entity.isRiding();
+        return entity.isRiding() && entity.ridingEntity.shouldRiderSit();
     }
 
     public int heldItemLeft(EntityLivingBase entity) {

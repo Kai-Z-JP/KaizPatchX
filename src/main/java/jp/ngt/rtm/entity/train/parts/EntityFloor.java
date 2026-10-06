@@ -68,6 +68,11 @@ public class EntityFloor extends EntityVehiclePart {
     }
 
     @Override
+    public boolean shouldRiderSit() {
+        return this.getSeatType() != 4;
+    }
+
+    @Override
     public boolean attackEntityFrom(DamageSource par1, float par2) {
         if (this.getVehicle() == null || this.getVehicle().isDead) {
             if (!this.worldObj.isRemote) {

@@ -2,6 +2,7 @@ package jp.ngt.rtm.modelpack;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jp.kaiz.kaizpatch.rtm.modelpack.ModelPackJsonCollisionDetector;
 import jp.ngt.ngtlib.io.NGTFileLoader;
 import jp.ngt.ngtlib.io.NGTLog;
 import jp.ngt.ngtlib.util.NGTUtil;
@@ -16,6 +17,9 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class RTMResourceHandler {
+    private static final ModelPackJsonCollisionDetector JSON_COLLISION_DETECTOR =
+            new ModelPackJsonCollisionDetector("sound");
+
     /**
      * モデルパックで追加したsound.jsonの登録
      */
@@ -44,7 +48,8 @@ public class RTMResourceHandler {
                     list.add(domain);
                     rm.getResourceDomains().add(domain);
                     RTMResourceManager rrm = new RTMResourceManager(ms, file.getParentFile());
-                    resourceManagers.put(domain, rrm);
+                    Object replacedManager = resourceManagers.put(domain, rrm);
+                    JSON_COLLISION_DETECTOR.record(domain, file, replacedManager != null);
                     NGTLog.debug("[RTM](Client) Register sounds.json, domain:" + domain);
                 }
             }

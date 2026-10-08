@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import jp.kaiz.kaizpatch.compat.AngelicaCompat;
 import jp.kaiz.kaizpatch.fixrtm.model.CachedModelUtil;
+import jp.kaiz.kaizpatch.rtm.modelpack.ModelPackJsonCollisionDetector;
 import jp.ngt.ngtlib.io.FileType;
 import jp.ngt.ngtlib.io.NGTClassUtil;
 import jp.ngt.ngtlib.io.NGTJson;
@@ -58,6 +59,8 @@ public final class ModelPackManager {
      * Scriptキャッシュ
      */
     private final Map<String, String> scriptCache = new ConcurrentHashMap<>(64);
+    private final ModelPackJsonCollisionDetector jsonCollisionDetector =
+            new ModelPackJsonCollisionDetector("model");
 
     private ModelPackManager() {
     }
@@ -80,12 +83,21 @@ public final class ModelPackManager {
      * @return モデル名
      */
     public String registerModelset(String type, String json) {
+        return this.registerModelset(type, json, null);
+    }
+
+    public String registerModelset(String type, String json, File sourceFile) {
         TypeEntry entry = this.typeMap.get(type);
         ModelConfig cfg = NGTJson.getObjectFromJson(json, entry.cfgClass);
         cfg.init();
         ModelSetBase set = this.getNewModelSet(entry, new Class[]{entry.cfgClass}, cfg);
 //		NGTLog.debug("Register model : " + cfg.getName() + "(" + type + ")");
-        this.allModelSetMap.get(type).put(cfg.getName(), set);
+        this.allModelSetMap.get(type).compute(cfg.getName(), (name, previousSet) -> {
+            if (sourceFile != null) {
+                this.jsonCollisionDetector.record(type + ":" + name, sourceFile, previousSet != null);
+            }
+            return set;
+        });
         return cfg.getName();
     }
 

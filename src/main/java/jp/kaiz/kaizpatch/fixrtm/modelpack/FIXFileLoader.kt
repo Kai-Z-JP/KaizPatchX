@@ -8,6 +8,7 @@ import jp.kaiz.kaizpatch.fixrtm.MS932
 import jp.kaiz.kaizpatch.fixrtm.directoryDigestBaseStream
 import jp.kaiz.kaizpatch.fixrtm.minecraftDir
 import jp.kaiz.kaizpatch.fixrtm.util.DigestUtils
+import jp.kaiz.kaizpatch.rtm.modelpack.ModelPackResourceCollisionDetector
 import jp.ngt.rtm.RTMCore
 import net.minecraft.crash.CrashReport
 import net.minecraft.launchwrapper.Launch
@@ -23,6 +24,7 @@ import java.util.zip.ZipFile
 object FIXFileLoader {
     val allModelPacks: Set<FIXModelPack>
     private val packs: Map<String, Set<FIXModelPack>>
+    private val resourceCollisionDetector: ModelPackResourceCollisionDetector
 
     private val logger = LogManager.getLogger("FIXFileLoader")
 
@@ -38,6 +40,7 @@ object FIXFileLoader {
         }
 
         this.packs = packs
+        this.resourceCollisionDetector = ModelPackResourceCollisionDetector(packs)
 
         allModelPacks = packs.flatMapTo(mutableSetOf()) { it.value }
         logger.trace("FIXFileLoader loads model packs:")
@@ -75,14 +78,20 @@ object FIXFileLoader {
 
     fun getResource(location: ResourceLocation): FIXResource {
         packs[location.resourceDomain].orEmpty().forEach { fixModelPack ->
-            fixModelPack.getFile(location)?.let { return it }
+            fixModelPack.getFile(location)?.let { resource ->
+                resourceCollisionDetector.inspect(location, fixModelPack)
+                return resource
+            }
         }
         throw FileNotFoundException("$location")
     }
 
     fun getPack(location: ResourceLocation): FIXModelPack {
         packs[location.resourceDomain].orEmpty().forEach { fixModelPack ->
-            if (fixModelPack.hasFile(location)) return fixModelPack
+            if (fixModelPack.hasFile(location)) {
+                resourceCollisionDetector.inspect(location, fixModelPack)
+                return fixModelPack
+            }
         }
         throw FileNotFoundException("$location")
     }

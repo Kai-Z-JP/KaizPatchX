@@ -163,7 +163,7 @@ public final class ModelPackLoadThread extends Thread implements IProgressWatche
                         String json = NGTJson.readFromJson(file);
                         String type = file.getName().split("_")[0];
                         try {
-                            String s = ModelPackManager.INSTANCE.registerModelset(type, json);
+                            String s = ModelPackManager.INSTANCE.registerModelset(type, json, file);
                             this.addValue(1, s);
                         } catch (Throwable e) {
                             throw new ModelPackException("Can't load model", file.getAbsolutePath(), e);

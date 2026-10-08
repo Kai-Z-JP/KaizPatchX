@@ -1,5 +1,6 @@
 package jp.ngt.rtm.modelpack.texture;
 
+import jp.kaiz.kaizpatch.rtm.modelpack.ModelPackJsonCollisionDetector;
 import jp.ngt.ngtlib.io.IProgressWatcher;
 import jp.ngt.ngtlib.io.NGTFileLoadException;
 import jp.ngt.ngtlib.io.NGTFileLoader;
@@ -16,6 +17,8 @@ public final class TextureManager {
     public static final TextureManager INSTANCE = new TextureManager();
 
     private final Map<TexturePropertyType, Map<String, TextureProperty>> allTextureMap = new ConcurrentHashMap<>();
+    private final ModelPackJsonCollisionDetector jsonCollisionDetector =
+            new ModelPackJsonCollisionDetector("texture");
     //private final Map<TexturePropertyType, Map<String, TextureProperty>> smpTextureMap = new HashMap<TexturePropertyType, Map<String, TextureProperty>>();
 
     private TextureManager() {
@@ -39,7 +42,11 @@ public final class TextureManager {
                         TextureProperty property = NGTJson.getObjectFromJson(json, type.type);
                         if (property != null) {
                             property.init();
-                            map.put(property.texture, property);
+                            map.compute(property.texture, (texture, previousProperty) -> {
+                                this.jsonCollisionDetector.record(
+                                        type + ":" + texture, file, previousProperty != null);
+                                return property;
+                            });
                             par1.addValue(1, property.texture);
 //						NGTLog.debug("Register Texture : %s (%s)", property.texture, tpt.toString());
                         }

@@ -2,23 +2,19 @@ package jp.ngt.rtm.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import jp.kaiz.kaizpatch.gui.GuiButtonWithScrollingListBox;
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.npc.macro.MacroRecorder;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
-import jp.ngt.rtm.entity.train.util.Formation;
-import jp.ngt.rtm.entity.train.util.FormationEntry;
 import jp.ngt.rtm.entity.train.util.TrainState;
 import jp.ngt.rtm.entity.train.util.TrainState.TrainStateType;
 import jp.ngt.rtm.modelpack.cfg.TrainConfig;
 import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBase;
-import jp.ngt.rtm.modelpack.modelset.ModelSetVehicleBaseClient;
 import jp.ngt.rtm.modelpack.state.DataMap;
 import jp.ngt.rtm.network.PacketNotice;
-import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.achievement.GuiAchievements;
 import net.minecraft.client.gui.achievement.GuiStats;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -32,22 +28,16 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @SideOnly(Side.CLIENT)
 public class GuiTrainControlPanel extends InventoryEffectRenderer {
     private static final ResourceLocation tabTexture = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
-    private static final int CUSTOM_BUTTOM_ID = 2000;
 
     private int selectedTabIndex = TabTrainControlPanel.TAB_Inventory.getTabIndex();
     /**
@@ -66,15 +56,12 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
      */
     private static int tabPage = 0;
     private int maxPages = 0;
+    private final Map<Integer, TrainControlPanelPage> pages = new HashMap<>();
 
     protected final EntityTrainBase train;
     protected final EntityPlayer player;
     protected final ModelSetVehicleBase<TrainConfig> modelset;
 
-    private GuiButton buttonChunkLoader;
-    private GuiButtonWithScrollingListBox buttonDestination;
-    private GuiButtonWithScrollingListBox buttonAnnouncement;
-    private final GuiButton[] buttonDirection = new GuiButton[3];
     /**
      * 0:R, L:1
      */
@@ -87,6 +74,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         this.modelset = par1.train.getModelSet();
         this.player.openContainer = this.inventorySlots;
         this.allowUserInput = true;
+        this.pages.put(TabTrainControlPanel.TAB_Setting.getTabIndex(), new TrainControlPanelSettingPage(this));
+        this.pages.put(TabTrainControlPanel.TAB_Function.getTabIndex(), new TrainControlPanelFunctionPage(this));
+        this.pages.put(TabTrainControlPanel.TAB_Protection.getTabIndex(), new TrainControlPanelProtectionPage(this));
+        this.pages.put(TabTrainControlPanel.TAB_Formation.getTabIndex(), new TrainControlPanelFormationPage(this));
     }
 
     @Override
@@ -133,102 +124,14 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
 
         if (tab == TabTrainControlPanel.TAB_Inventory) {
             containerTrain.inventorySlots = this.slotsList;
-
             this.buttonList.clear();
-        } else if (tab == TabTrainControlPanel.TAB_Setting) {
+        } else {
             this.initInventorySlot(containerTrain);
-
             this.buttonList.clear();
-            //wMax:168
-            TrainStateType t0 = TrainStateType.State_InteriorLight;
-            this.buttonList.add(new GuiButton(124, this.guiLeft + 4, this.guiTop + 4, 82, 20, this.getFormattedText(t0.id, this.train.getTrainStateData(t0.id))));
-            this.buttonList.add(new GuiButton(125, this.guiLeft + 90, this.guiTop + 4, 82, 20, this.getFormattedText(5, this.train.getTrainStateData(5))));
-            this.buttonList.add(new GuiButton(126, this.guiLeft + 4, this.guiTop + 28, 82, 20, this.getFormattedText(6, this.train.getTrainStateData(6))));
-
-            int i0 = this.train.getTrainStateData(TrainStateType.State_Direction.id);
-            IntStream.range(0, 3).forEach(j -> {
-                this.buttonDirection[j] = new GuiButton(140 + j, this.guiLeft + 91 + 27 * j, this.guiTop + 28, 27, 20, this.getFormattedText(TrainStateType.State_Direction.id, (byte) j));
-                this.buttonList.add(this.buttonDirection[j]);
-                if (j == i0) {
-                    this.buttonDirection[j].enabled = false;
-                }
-            });
-            /*this.buttonList.add(new GuiButton(140, this.guiLeft + 91, this.guiTop + 28, 27, 20, this.getFormattedText(EnumTrainStateType.State_Direction.id, (byte)0)));
-            this.buttonList.add(new GuiButton(141, this.guiLeft + 118, this.guiTop + 28, 27, 20, this.getFormattedText(EnumTrainStateType.State_Direction.id, (byte)1)));
-            this.buttonList.add(new GuiButton(142, this.guiLeft + 145, this.guiTop + 28, 27, 20, this.getFormattedText(EnumTrainStateType.State_Direction.id, (byte)2)));*/
-
-            this.buttonChunkLoader = new GuiButton(127, this.guiLeft + 28, this.guiTop + 52, 120, 20, this.getFormattedText(7, this.train.getTrainStateData(7)));
-            this.buttonList.add(this.buttonChunkLoader);
-            this.buttonList.add(new GuiButton(110, this.guiLeft + 4, this.guiTop + 52, 20, 20, "<"));
-            this.buttonList.add(new GuiButton(111, this.guiLeft + 152, this.guiTop + 52, 20, 20, ">"));
-
-            if (((ModelSetVehicleBaseClient<TrainConfig>) this.modelset).rollsignTexture != null) {
-                this.buttonDestination = new GuiButtonWithScrollingListBox(128, this.guiLeft + 28, this.guiTop + 76, 120, 20,
-                        () -> (int) this.train.getTrainStateData(8),
-                        Arrays.asList(this.modelset.getConfig().rollsignNames),
-                        I18n.format("state.destination") + " %s",
-                        data -> {
-                            this.sendTrainState(8, data.byteValue());
-                            return Unit.INSTANCE;
-                        });
-                this.buttonList.add(this.buttonDestination);
-                this.buttonList.add(new GuiButton(112, this.guiLeft + 4, this.guiTop + 76, 20, 20, "<"));
-                this.buttonList.add(new GuiButton(113, this.guiLeft + 152, this.guiTop + 76, 20, 20, ">"));
+            TrainControlPanelPage page = this.getActivePage();
+            if (page != null) {
+                page.init();
             }
-
-            if (this.modelset.getConfig().sound_Announcement != null) {
-                this.buttonAnnouncement = new GuiButtonWithScrollingListBox(129, this.guiLeft + 28, this.guiTop + 100, 120, 20,
-                        () -> (int) this.train.getTrainStateData(9),
-                        Arrays.stream(this.modelset.getConfig().sound_Announcement).map(s -> s[0]).collect(Collectors.toList()),
-                        I18n.format("state.announcement") + " %s",
-                        data -> {
-                            this.sendTrainState(9, data.byteValue());
-                            return Unit.INSTANCE;
-                        });
-                this.buttonList.add(this.buttonAnnouncement);
-                this.buttonList.add(new GuiButton(114, this.guiLeft + 4, this.guiTop + 100, 20, 20, "<"));
-                this.buttonList.add(new GuiButton(115, this.guiLeft + 152, this.guiTop + 100, 20, 20, ">"));
-            }
-        } else if (tab == TabTrainControlPanel.TAB_Function) {
-            this.initInventorySlot(containerTrain);
-
-            this.buttonList.clear();
-
-            String[][] buttons = this.getCustomButtons();
-            String[] tips = this.getCustomButtonTips();
-            IntStream.range(0, buttons.length).forEach(i -> {
-                int x = this.guiLeft + 4 + (i % 3) * (54 + 3);
-                int y = this.guiTop + 4 + (i / 3) * (20 + 4);
-                GuiButtonWithScrollingListBox button = new GuiButtonWithScrollingListBox(CUSTOM_BUTTOM_ID + i, x, y, 54, 20,
-                        () -> this.getDataMap().getInt("Button" + i),
-                        Arrays.stream(buttons[i]).collect(Collectors.toList()),
-                        "%s",
-                        data -> {
-                            this.getDataMap().setInt("Button" + i, data, 3);
-                            return Unit.INSTANCE;
-                        });
-                button.addTips(tips[i]);
-                this.buttonList.add(button);
-            });
-        } else if (tab == TabTrainControlPanel.TAB_Formation) {
-            this.initInventorySlot(containerTrain);
-
-            this.buttonList.clear();
-
-            Formation formation = this.train.getFormation();
-            if (formation != null) {
-                IntStream.range(0, formation.size()).forEach(i -> {
-                    FormationEntry entry = formation.get(i);
-                    if (entry == null) {
-                        return;
-                    }
-                    int v = i == 0 ? 0 : (i == formation.size() - 1 ? 2 : 1);
-                    int x = this.guiLeft + 8 + (i % 5) * 32;
-                    int y = this.guiTop + 25 + (i / 5) * 32;
-                    this.buttonList.add(new GuiButtonFormation(200 + i, entry, x, y, v));
-                });
-            }
-            //Screen:162*128
         }
 
         this.buttonDoor[0] = new GuiButtonDoor(300, this.guiLeft + this.xSize + 20, this.guiTop + 20, 64, 80);
@@ -291,6 +194,11 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
                     return;
                 }
             }
+
+            TrainControlPanelPage page = this.getActivePage();
+            if (page != null && page.mouseClicked(par1, par2, par3)) {
+                return;
+            }
         } else if (par3 == 1) {
             for (Object o : this.buttonList) {
                 GuiButton guibutton = (GuiButton) o;
@@ -351,57 +259,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             //((ContainerTrainControlPanel)this.inventorySlots).scrollTo(this.currentScroll);
         }
         if (i != 0) {
-            int i0 = (i > 0) ? -1 : 1;
-            ((List<GuiButton>) this.buttonList).stream()
-                    .filter(GuiButton::func_146115_a)
-                    .findFirst()
-                    .ifPresent(button -> {
-                        int id, data, prevData;
-                        if (button.id >= 124 && button.id <= 129) {
-                            id = button.id - 120;
-                            if (button.id == 124) {
-                                id = TrainStateType.State_InteriorLight.id;
-                            }
-                            prevData = this.train.getTrainStateData(id);
-                            data = prevData + i0;
-                        } else if (button.id >= CUSTOM_BUTTOM_ID) {
-                            int index = button.id - CUSTOM_BUTTOM_ID;
-                            String[] sa = this.getCustomButtons()[index];
-                            int nowValue = this.getDataMap().getInt("Button" + index);
-                            int val = nowValue + i0;
-                            if (val >= sa.length) {
-                                val = 0;
-                            } else if (val < 0) {
-                                val = sa.length - 1;
-                            }
-                            button.func_146113_a(this.mc.getSoundHandler());
-                            this.getDataMap().setInt("Button" + index, val, 3);
-                            return;
-                        } else {
-                            return;
-                        }
-
-                        TrainStateType stateType = TrainState.getStateType(id);
-                        int min, max;
-                        if (stateType == TrainStateType.State_Destination) {
-                            String[] rollSignNames = this.modelset.getConfig().rollsignNames;
-                            min = 0;
-                            max = rollSignNames != null ? rollSignNames.length - 1 : 0;
-                        } else if (stateType == TrainStateType.State_Announcement) {
-                            String[][] announce = this.modelset.getConfig().sound_Announcement;
-                            min = 0;
-                            max = announce != null ? announce.length - 1 : 0;
-                        } else {
-                            min = stateType.min;
-                            max = stateType.max;
-                        }
-                        data = data < min ? max : data > max ? min : data;
-                        if (prevData != data) {
-                            this.sendTrainState(id, (byte) data);
-                            button.func_146113_a(this.mc.getSoundHandler());
-                            button.displayString = this.getFormattedText(id, (byte) data);
-                        }
-                    });
+            TrainControlPanelPage page = this.getActivePage();
+            if (page != null && page.handleMouseWheel(i)) {
+                return;
+            }
         }
     }
 
@@ -436,6 +297,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         }
 
         super.drawScreen(par1, par2, par3);
+        TrainControlPanelPage activePage = this.getActivePage();
+        if (activePage != null) {
+            activePage.drawScreen(par1, par2, par3);
+        }
 
         TabTrainControlPanel[] tabs = TabTrainControlPanel.tabArray;
         int start = tabPage * 10;
@@ -474,23 +339,9 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
     @Override
     protected void keyTyped(char par1, int par2) {
         super.keyTyped(par1, par2);
-        if (par2 == Keyboard.KEY_F) {
-            ((List<GuiButton>) this.buttonList).stream()
-                    .filter(button -> button.id >= CUSTOM_BUTTOM_ID)
-                    .filter(GuiButton::func_146115_a)
-                    .findFirst()
-                    .ifPresent(button -> {
-                        int index = button.id - CUSTOM_BUTTOM_ID;
-                        int val = this.getDataMap().getInt("Button" + index);
-
-                        Formation formation = this.train.getFormation();
-                        if (formation != null) {
-                            formation.getTrainStream()
-                                    .filter(Objects::nonNull)
-                                    .forEach(train -> train.getResourceState().getDataMap().setInt("Button" + index, val, 3));
-                            button.func_146113_a(this.mc.getSoundHandler());
-                        }
-                    });
+        TrainControlPanelPage page = this.getActivePage();
+        if (page != null) {
+            page.keyTyped(par1, par2);
         }
     }
 
@@ -686,76 +537,10 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
             tabPage = Math.min(tabPage + 1, maxPages);
         }
 
-        if ((button.id >= 110 && button.id <= 115) || (button.id >= 124 && button.id <= 129) || (button.id >= 140 && button.id <= 142)) {
-            int i0;
-            int i1;
-
-            if (button.id == 110)//ChunkLoader
-            {
-                i0 = 7;
-                i1 = this.train.getTrainStateData(i0) - 1;
-            } else if (button.id == 111)//ChunkLoader
-            {
-                i0 = 7;
-                i1 = this.train.getTrainStateData(i0) + 1;
-            } else if (button.id == 112)//行先
-            {
-                i0 = 8;
-                i1 = this.train.getTrainStateData(i0) - 1;
-                if (i1 < 0) {
-                    i1 = this.modelset.getConfig().rollsignNames.length - 1;
-                }
-            } else if (button.id == 113)//行先
-            {
-                i0 = 8;
-                i1 = this.train.getTrainStateData(i0) + 1;
-                if (i1 >= this.modelset.getConfig().rollsignNames.length) {
-                    i1 = 0;
-                }
-            } else if (button.id == 114)//車内放送
-            {
-                String[][] announce = (this.modelset.getConfig()).sound_Announcement;
-                i0 = 9;
-                i1 = this.train.getTrainStateData(i0) - 1;
-                if (announce != null && i1 < 0) {
-                    i1 = announce.length - 1;
-                }
-            } else if (button.id == 115)//車内放送
-            {
-                String[][] announce = (this.modelset.getConfig()).sound_Announcement;
-                i0 = 9;
-                i1 = this.train.getTrainStateData(i0) + 1;
-                if (announce != null && i1 >= announce.length) {
-                    i1 = 0;
-                }
-            } else if (button.id == 128) {
+        TrainControlPanelPage page = this.getActivePage();
+        if (page != null) {
+            if (page.actionPerformed(button)) {
                 return;
-            } else if (button.id == 129) {
-                return;
-            } else if (button.id <= 129) {
-                i0 = button.id - 120;
-                if (button.id == 124) {
-                    i0 = TrainStateType.State_InteriorLight.id;
-                }
-                i1 = this.train.getTrainStateData(i0) + 1;
-            } else {
-                i0 = TrainStateType.State_Direction.id;
-                i1 = button.id - 140;
-                for (int i = 0; i < 3; ++i) {
-                    this.buttonDirection[i].enabled = i != i1;
-                }
-            }
-
-            TrainStateType stateType = TrainState.getStateType(i0);
-            int i2 = i1 < stateType.min ? stateType.max : (i1 > stateType.max ? stateType.min : i1);
-            this.sendTrainState(i0, (byte) i2);
-
-            if (button.id == 110 || button.id == 111) {
-                this.buttonChunkLoader.displayString = this.getFormattedText(i0, (byte) i2);
-            } else if (button.id == 112 || button.id == 113) {
-            } else if (button.id == 114 || button.id == 115) {
-            } else {
-                button.displayString = this.getFormattedText(i0, (byte) i2);
             }
         }
 
@@ -789,7 +574,7 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         }
     }
 
-    private void sendTrainState(int id, byte data) {
+    public void sendTrainState(int id, byte data) {
         this.train.syncTrainStateData(id, data);
     }
 
@@ -817,63 +602,97 @@ public class GuiTrainControlPanel extends InventoryEffectRenderer {
         }
     }
 
-    private DataMap getDataMap() {
+    public EntityTrainBase getPanelTrain() {
+        return this.train;
+    }
+
+    public EntityPlayer getPanelPlayer() {
+        return this.player;
+    }
+
+    public ModelSetVehicleBase<TrainConfig> getPanelModelSet() {
+        return this.modelset;
+    }
+
+    public Minecraft getPanelMinecraft() {
+        return this.mc;
+    }
+
+    public FontRenderer getPanelFontRenderer() {
+        return this.fontRendererObj;
+    }
+
+    public int getPanelLeft() {
+        return this.guiLeft;
+    }
+
+    public int getPanelTop() {
+        return this.guiTop;
+    }
+
+    public int getPanelWidth() {
+        return this.xSize;
+    }
+
+    public int getPanelHeight() {
+        return this.ySize;
+    }
+
+    public int getScreenWidth() {
+        return this.width;
+    }
+
+    public int getScreenHeight() {
+        return this.height;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<GuiButton> getPanelButtons() {
+        return (List<GuiButton>) this.buttonList;
+    }
+
+    public void addPanelButton(GuiButton button) {
+        this.buttonList.add(button);
+    }
+
+    public DataMap getPanelDataMap() {
         return this.train.getResourceState().getDataMap();
     }
 
-    private String[][] getCustomButtons() {
+    public String[][] getCustomButtons() {
         return this.modelset.getConfig().customButtons;
     }
 
-    private String[] getCustomButtonTips() {
+    public String[] getCustomButtonTips() {
         return this.modelset.getConfig().customButtonTips;
     }
 
-    private class GuiButtonFormation extends GuiButton {
-        private final FormationEntry car;
-        private final int v;
+    public void sendProtectionPluginState(String id, boolean enabled) {
+        String message = "setTrainProtectionPlugin," + id + "," + enabled;
+        RTMCore.NETWORK_WRAPPER.sendToServer(new PacketNotice(PacketNotice.Side_SERVER, message, this.train));
+    }
 
-        public GuiButtonFormation(int id, FormationEntry entry, int posX, int posY, int posV) {
-            super(id, posX, posY, 32, 16, String.valueOf(entry.entryId + 1));
-            this.car = entry;
-            this.v = posV;
+    public void playPanelClickSound() {
+        if (this.mc.thePlayer != null) {
+            this.mc.thePlayer.playSound("random.click", 1.0F, 1.0F);
         }
+    }
 
-        @Override
-        public void drawButton(Minecraft mc, int x, int y) {
-            if (!this.visible) {
-                return;
-            }
+    public void drawPanelRect(int left, int top, int right, int bottom, int color) {
+        drawRect(left, top, right, bottom, color);
+    }
 
-            mc.getTextureManager().bindTexture(TabTrainControlPanel.TAB_Formation.getTexture());
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            int u = this.car.train.isControlCar() ? 1 : 0;
-            this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 192 + u * 32, this.v * 16, this.width, this.height);
-            this.mouseDragged(mc, x, y);
+    public void drawPanelCenteredString(String text, int x, int y, int color) {
+        this.drawCenteredString(this.fontRendererObj, text, x, y, color);
+    }
 
-            //プレーヤー位置の矢印
-            if (this.car.train.riddenByEntity == mc.thePlayer) {
-                this.drawTexturedModalRect(this.xPosition + 12, this.yPosition - 16, 180, 0, 10, 16);
-            }
+    public void enableGuiScissor(int x, int y, int width, int height) {
+        ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        int scale = resolution.getScaleFactor();
+        GL11.glScissor(x * scale, (this.height - y - height) * scale, width * scale, height * scale);
+    }
 
-            this.drawCenteredString(mc.fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + 2, 0x000000);
-        }
-
-        @Override
-        public boolean mousePressed(Minecraft mx, int x, int y) {
-            if (super.mousePressed(mc, x, y)) {
-                if (y - this.yPosition < 12) {
-                } else {
-                    if (x - this.xPosition < 12) {
-                        //台車クリックで連結解除
-                    } else {
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
+    private TrainControlPanelPage getActivePage() {
+        return this.pages.get(this.selectedTabIndex);
     }
 }

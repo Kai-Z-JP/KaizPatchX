@@ -293,12 +293,6 @@ public class BlockMarker extends BlockContainer {
 
         RailPosition logicalStart = logicalPositions[0];
         source.prepareBaseBlocks(world, logicalStart.blockX, logicalStart.blockY, logicalStart.blockZ);
-        for (RailSection section : sections) {
-            RailMapSection sectionMap = new RailMapSection(source, section.getStartRP(), section.getEndRP(),
-                    section.getStartRatio(), section.getEndRatio());
-            int[] corePos = new int[]{section.getStartRP().blockX, section.getStartRP().blockY, section.getStartRP().blockZ};
-            sectionMap.setRail(world, RTMRail.largeRailBase0, corePos[0], corePos[1], corePos[2], prop);
-        }
 
         for (RailSection section : sections) {
             RailPosition sectionStart = copyRailPosition(section.getStartRP());
@@ -321,6 +315,13 @@ public class BlockMarker extends BlockContainer {
             tile.createRailMap();
             tile.markDirty();
             world.markBlockForUpdate(coreX, coreY, coreZ);
+        }
+
+        for (RailSection section : sections) {
+            RailMapSection sectionMap = new RailMapSection(source, section.getStartRP(), section.getEndRP(),
+                    section.getStartRatio(), section.getEndRatio());
+            RailPosition core = section.getStartRP();
+            sectionMap.setRail(world, RTMRail.largeRailBase0, core.blockX, core.blockY, core.blockZ, prop);
         }
 
         RailPosition logicalEnd = logicalPositions[1];

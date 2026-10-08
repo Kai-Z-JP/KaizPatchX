@@ -1,8 +1,11 @@
 package jp.ngt.rtm.modelpack.cfg
 
 import jp.ngt.ngtlib.io.NGTLog
+import jp.ngt.rtm.modelpack.state.DataCompoundDefinitions
+import jp.ngt.rtm.modelpack.state.DataEntryList
 import jp.ngt.rtm.modelpack.state.DataType
 import jp.ngt.rtm.modelpack.state.DataTypeHandlers
+import java.util.*
 
 class DataFormConfig {
     @JvmField
@@ -20,109 +23,210 @@ class DataFormConfig {
     @Transient
     private var defaultValuesByKey: Map<String, ResourceConfig.DMInitValue> = emptyMap()
 
+    @Transient
+    private var resolvedDefinitions = IdentityHashMap<DataFormField, ResourceConfig.DMInitValue>()
+
+    @Transient
+    private var descriptors: List<DataFormFieldDescriptor> = emptyList()
+
     fun initialize(defaultValues: Array<ResourceConfig.DMInitValue>?, modelName: String) {
-        validationError = null
-        defaultValuesByKey = (defaultValues ?: emptyArray())
+        defaultValuesByKey = defaultValues.orEmpty()
             .filter { !it.key.isNullOrEmpty() }
             .associateBy { it.key }
+        initializeContext(modelName, relativeEntries = null)
+        if (isValid) {
+            descriptors = buildRootDescriptors()
+        }
+    }
 
+    internal fun initializeElement(entries: Array<ResourceConfig.DMInitValue>?, modelName: String) {
+        defaultValuesByKey = emptyMap()
+        initializeContext(modelName, entries)
+    }
+
+    private fun initializeContext(modelName: String, relativeEntries: Array<ResourceConfig.DMInitValue>?) {
+        validationError = null
+        resolvedDefinitions = IdentityHashMap()
+        descriptors = emptyList()
         val configuredFields = getFieldList()
-        when {
-            columns !in 1..MAX_COLUMNS -> invalidate(modelName, "columns must be between 1 and $MAX_COLUMNS")
-            configuredFields.size > MAX_FIELDS -> invalidate(modelName, "too many fields")
-            title.orEmpty().length > MAX_LABEL_LENGTH -> invalidate(modelName, "title is too long")
-        }
-        if (!isValid) {
-            return
-        }
+        if (columns < 1) invalidate(modelName, "columns must be positive")
+        if (!isValid) return
 
-        val keys = HashSet<String>()
+        val identities = HashSet<String>()
         val cells = HashSet<Long>()
-        for (field in configuredFields) {
-            val key = field.key.orEmpty()
-            val label = field.label.orEmpty()
-            val text = field.text.orEmpty()
-            val isText = field.isTextElement()
-            val fieldName = key.ifEmpty { "text at row ${field.row}, column ${field.column}" }
-            val defaultValue = defaultValuesByKey[key]
-            val dataType = defaultValue?.type?.let(DataType::getType)
+        val validatedRoots = HashSet<String>()
+        configuredFields.forEach { field ->
+            val fieldName = field.displayPath(relativeEntries != null)
+            validateLayout(field, fieldName, modelName, cells)
+            if (!isValid) return
 
-            when {
-                field.row !in 0 until MAX_ROWS -> invalidate(modelName, "row is out of range: $fieldName")
-                field.rowSpan !in 1..MAX_ROWS -> invalidate(
-                    modelName,
-                    "rowSpan is out of range: $fieldName"
-                )
-
-                field.row + field.rowSpan > MAX_ROWS -> invalidate(
-                    modelName,
-                    "rowSpan exceeds the grid: $fieldName"
-                )
-
-                field.column !in 0 until columns -> invalidate(modelName, "column is out of range: $fieldName")
-                field.columnSpan !in 1..columns -> invalidate(
-                    modelName,
-                    "columnSpan is out of range: $fieldName"
-                )
-
-                field.column + field.columnSpan > columns -> invalidate(
-                    modelName,
-                    "columnSpan exceeds the grid: $fieldName"
-                )
-
-                isText && key.isNotEmpty() -> invalidate(modelName, "text field cannot have a key: $key")
-                isText && text.length > MAX_TEXT_LENGTH -> invalidate(
-                    modelName,
-                    "field text is too long: $fieldName"
-                )
-
-                !isText && key.isEmpty() -> invalidate(modelName, "field key is empty")
-                !isText && key.length > MAX_KEY_LENGTH -> invalidate(modelName, "field key is too long: $key")
-                !isText && label.length > MAX_LABEL_LENGTH -> invalidate(modelName, "field label is too long: $key")
-                !isText && !keys.add(key) -> invalidate(modelName, "duplicate field key: $key")
-                !isText && defaultValue == null -> invalidate(
-                    modelName,
-                    "field does not exist in defaultValues: $key"
-                )
-
-                !isText && dataType == null -> invalidate(modelName, "unknown field type: $key")
+            if (field.isTextElement()) {
+                if (field.resolvedKey().isNotEmpty() || field.resolvedPath().isNotEmpty()) {
+                    invalidate(modelName, "text field cannot have a key or path: $fieldName")
+                }
+                if (!isValid) return
+                return@forEach
             }
-            if (!isValid) {
+
+            validateIdentity(field, relativeEntries != null, fieldName, modelName)
+            if (!isValid) return
+            val identity = "${field.resolvedKey()}\u0000${field.resolvedPath().joinToString("\u0000")}"
+            if (!identities.add(identity)) {
+                invalidate(modelName, "duplicate field path: $fieldName")
                 return
             }
-            for (row in field.row until field.row + field.rowSpan) {
-                for (column in field.column until field.column + field.columnSpan) {
-                    val cell = (row.toLong() shl 32) or (column.toLong() and 0xFFFFFFFFL)
-                    if (!cells.add(cell)) {
-                        invalidate(modelName, "multiple fields use row $row, column $column")
+
+            if (relativeEntries == null && validatedRoots.add(field.resolvedKey())) {
+                val root = defaultValuesByKey[field.resolvedKey()]
+                val rootType = root?.type?.let(DataType::getType)
+                if (root == null || rootType == null) {
+                    invalidate(modelName, "field does not exist in defaultValues: $fieldName")
+                    return
+                }
+                DataTypeHandlers.validateDefinition(rootType, root)?.let { error ->
+                    invalidate(modelName, "$error: ${field.resolvedKey()}")
+                    return
+                }
+            }
+
+            val definition = resolveDefinition(field, relativeEntries)
+            if (definition == null) {
+                invalidate(modelName, "field does not exist in defaultValues: $fieldName")
+                return
+            }
+            resolvedDefinitions[field] = definition
+            val type = DataType.getType(definition.type)
+            if (type == null) {
+                invalidate(modelName, "unknown field type: $fieldName")
+                return
+            }
+            if (type == DataType.COMPOUND) {
+                invalidate(modelName, "Compound field must reference a member: $fieldName")
+                return
+            }
+
+            val compoundList = type == DataType.LIST &&
+                    DataEntryList.supportedElementType(definition.elementType) == DataType.COMPOUND
+            when {
+                compoundList && field.elementForm == null ->
+                    invalidate(modelName, "List<Compound> field requires elementForm: $fieldName")
+
+                !compoundList && field.elementForm != null ->
+                    invalidate(modelName, "elementForm is only valid for List<Compound>: $fieldName")
+
+                compoundList -> {
+                    field.elementForm!!.initializeElement(definition.entries, "$modelName:$fieldName")
+                    if (!field.elementForm!!.isValid) {
+                        invalidate(modelName, "invalid elementForm: $fieldName")
                         return
                     }
                 }
             }
-            if (isText) {
-                continue
-            }
-            val resolvedType = dataType ?: return
-            DataTypeHandlers.validateDefinition(resolvedType, defaultValue)?.let { error ->
-                invalidate(modelName, "$error: $key")
+
+            DataTypeHandlers.validateDefinition(type, definition)?.let { error ->
+                invalidate(modelName, "$error: $fieldName")
                 return
             }
         }
     }
 
+    private fun validateLayout(
+        field: DataFormField,
+        fieldName: String,
+        modelName: String,
+        cells: MutableSet<Long>
+    ) {
+        when {
+            field.row < 0 -> invalidate(modelName, "row is out of range: $fieldName")
+            field.rowSpan < 1 -> invalidate(modelName, "rowSpan is out of range: $fieldName")
+
+            field.column !in 0 until columns -> invalidate(modelName, "column is out of range: $fieldName")
+            field.columnSpan !in 1..columns || field.column + field.columnSpan > columns ->
+                invalidate(modelName, "columnSpan is out of range: $fieldName")
+        }
+        if (!isValid) return
+        for (row in field.row until field.row + field.rowSpan) {
+            for (column in field.column until field.column + field.columnSpan) {
+                val cell = (row.toLong() shl 32) or (column.toLong() and 0xFFFFFFFFL)
+                if (!cells.add(cell)) {
+                    invalidate(modelName, "multiple fields use row $row, column $column")
+                    return
+                }
+            }
+        }
+    }
+
+    private fun validateIdentity(field: DataFormField, relative: Boolean, fieldName: String, modelName: String) {
+        val key = field.resolvedKey()
+        val path = field.resolvedPath()
+        when {
+            relative && key.isNotEmpty() -> invalidate(modelName, "elementForm field key must be empty: $fieldName")
+            relative && path.isEmpty() -> invalidate(modelName, "elementForm field path is empty")
+            !relative && key.isEmpty() -> invalidate(modelName, "field key is empty")
+            path.any { it.isEmpty() } ->
+                invalidate(modelName, "field path contains an invalid segment: $fieldName")
+        }
+    }
+
+    private fun resolveDefinition(
+        field: DataFormField,
+        relativeEntries: Array<ResourceConfig.DMInitValue>?
+    ): ResourceConfig.DMInitValue? {
+        val path = field.resolvedPath()
+        if (relativeEntries != null) {
+            return DataCompoundDefinitions.findDefinition(relativeEntries, path)
+        }
+        val root = defaultValuesByKey[field.resolvedKey()] ?: return null
+        if (path.isEmpty()) return root
+        return DataCompoundDefinitions.findDefinition(root, path)
+    }
+
+    private fun buildRootDescriptors(): List<DataFormFieldDescriptor> {
+        val result = ArrayList<DataFormFieldDescriptor>()
+        getValueFieldList().forEach { field ->
+            val definition = getResolvedDefinition(field) ?: return@forEach
+            collectDescriptors(
+                field.resolvedKey(), field.resolvedPath().map(DataFormPathSegment::Key),
+                field, definition, result
+            )
+        }
+        return result
+    }
+
+    private fun collectDescriptors(
+        rootKey: String,
+        prefix: List<DataFormPathSegment>,
+        field: DataFormField,
+        definition: ResourceConfig.DMInitValue,
+        target: MutableList<DataFormFieldDescriptor>
+    ) {
+        val compoundList = DataType.getType(definition.type) == DataType.LIST &&
+                DataEntryList.supportedElementType(definition.elementType) == DataType.COMPOUND
+        if (!compoundList) {
+            target += DataFormFieldDescriptor(rootKey, prefix, definition, DataFormTargetKind.LEAF)
+            return
+        }
+        target += DataFormFieldDescriptor(rootKey, prefix, definition, DataFormTargetKind.COMPOUND_LIST)
+        val elementForm = field.elementForm ?: return
+        elementForm.getValueFieldList().forEach { child ->
+            val childDefinition = elementForm.getResolvedDefinition(child) ?: return@forEach
+            elementForm.collectDescriptors(
+                rootKey,
+                prefix + DataFormPathSegment.Index + child.resolvedPath().map(DataFormPathSegment::Key),
+                child, childDefinition, target
+            )
+        }
+    }
+
     fun getFieldList(): List<DataFormField> = fields?.toList() ?: emptyList()
-
     fun getValueFieldList(): List<DataFormField> = getFieldList().filterNot(DataFormField::isTextElement)
-
     fun getDefaultValue(key: String): ResourceConfig.DMInitValue? = defaultValuesByKey[key]
-
+    fun getResolvedDefinition(field: DataFormField): ResourceConfig.DMInitValue? = resolvedDefinitions[field]
+    internal fun getDescriptors(): List<DataFormFieldDescriptor> = descriptors
     fun getValidationError(): String? = validationError
 
-    val isValid: Boolean
-        get() = validationError == null
-
-    val rowCount: Int
-        get() = getFieldList().maxOfOrNull { it.row + it.rowSpan } ?: 0
+    val isValid: Boolean get() = validationError == null
+    val rowCount: Int get() = getFieldList().maxOfOrNull { it.row + it.rowSpan } ?: 0
 
     private fun invalidate(modelName: String, reason: String) {
         if (validationError == null) {
@@ -132,27 +236,20 @@ class DataFormConfig {
     }
 
     companion object {
-        const val MAX_COLUMNS = 8
-        const val MAX_ROWS = 64
-        const val MAX_FIELDS = 64
-        const val MAX_KEY_LENGTH = 128
-        const val MAX_LABEL_LENGTH = 128
-        const val MAX_TEXT_LENGTH = 512
-        const val MAX_SCALAR_VALUE_LENGTH = DataTypeHandlers.MAX_LIST_ELEMENT_LENGTH
-        const val MAX_LIST_ITEMS = DataTypeHandlers.MAX_LIST_ITEMS
-        const val DEFAULT_MAX_LIST_ITEMS = DataTypeHandlers.DEFAULT_MAX_LIST_ITEMS
-
         @JvmStatic
         fun getMinItems(value: ResourceConfig.DMInitValue): Int = value.minItems ?: 0
 
         @JvmStatic
-        fun getMaxItems(value: ResourceConfig.DMInitValue): Int = value.maxItems ?: DEFAULT_MAX_LIST_ITEMS
+        fun getMaxItems(value: ResourceConfig.DMInitValue): Int = value.maxItems ?: Int.MAX_VALUE
     }
 }
 
 class DataFormField {
     @JvmField
     var key: String? = ""
+
+    @JvmField
+    var path: Array<String>? = emptyArray()
 
     @JvmField
     var label: String? = ""
@@ -172,12 +269,16 @@ class DataFormField {
     @JvmField
     var rowSpan: Int = 1
 
+    @JvmField
+    var elementForm: DataFormConfig? = null
+
     fun resolvedKey(): String = key.orEmpty()
-
-    fun resolvedLabel(): String = label.orEmpty().ifEmpty { resolvedKey() }
-
+    fun resolvedPath(): List<String> = path?.toList() ?: emptyList()
+    fun resolvedLabel(): String = label.orEmpty().ifEmpty { resolvedPath().lastOrNull() ?: resolvedKey() }
     fun resolvedText(): String = text.orEmpty()
-
     fun isTextElement(): Boolean = !text.isNullOrEmpty()
+    internal fun displayPath(relative: Boolean): String =
+        (if (relative) emptyList() else listOf(resolvedKey()))
+            .plus(resolvedPath()).filter(String::isNotEmpty).joinToString(".")
+            .ifEmpty { "text at row $row, column $column" }
 }
-

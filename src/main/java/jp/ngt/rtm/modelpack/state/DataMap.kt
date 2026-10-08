@@ -15,7 +15,7 @@ import net.minecraft.world.WorldServer
 import java.util.regex.Pattern
 
 class DataMap {
-    private val map = HashMap<DataKey, DataEntry<*>>()
+    private val node = DataMapNode<DataKey>(HashMap(), copyOnWrite = false)
     private var entity: Any? = null
     private var dataFormatter = DataFormatter(null)
 
@@ -42,9 +42,13 @@ class DataMap {
                 continue
             }
 
-            val dataEntry = DataEntry.getEntry(type, "", flag) ?: continue
-            dataEntry.readFromNBT(entry)
-            set(key, dataEntry, flag)
+            try {
+                val dataEntry = DataEntry.getEntry(type, "", flag) ?: continue
+                dataEntry.readFromNBT(entry)
+                set(key, dataEntry, flag)
+            } catch (e: RuntimeException) {
+                NGTLog.debug("[DataMap] Failed to read %s: %s", key.toCompatKey(), e.message ?: "invalid data")
+            }
         }
     }
 
@@ -52,7 +56,7 @@ class DataMap {
         val nbt = NBTTagCompound()
 
         val list = NBTTagList()
-        map.forEach { (key, value) ->
+        node.entries().forEach { (key, value) ->
             val entryTag = NBTTagCompound()
             if (key.namespace.isNotEmpty()) {
                 entryTag.setString("Namespace", key.namespace)
@@ -131,7 +135,7 @@ class DataMap {
     fun contains(key: String) = rootNamespace().contains(key)
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : DataEntry<*>> get(key: DataKey) = map[key] as? T
+    private fun <T : DataEntry<*>> get(key: DataKey) = node[key] as? T
 
     fun setEntry(namespace: String, key: String, value: DataEntry<*>, flag: Int) =
         set(DataKey.of(namespace, key), value, flag)
@@ -148,7 +152,7 @@ class DataMap {
         val sync = flag and SYNC_FLAG != 0
         val onServerSide = sync && NGTUtil.isServer()
         if (!sync || onServerSide || entity == null || entity is Item) {
-            map[key] = value
+            node.put(key, value)
         }
 
         if (sync) {
@@ -163,7 +167,7 @@ class DataMap {
         val onServerSide = sync && NGTUtil.isServer()
         var removed = false
         if (!sync || onServerSide || entity == null || entity is Item) {
-            removed = map.remove(key) != null
+            removed = node.remove(key) != null
         }
 
         if (sync) {
@@ -211,12 +215,16 @@ class DataMap {
 
     fun getEntries(): MutableMap<String, DataEntry<*>> {
         val entries = HashMap<String, DataEntry<*>>()
-        map.forEach { (key, value) -> entries[key.toCompatKey()] = value }
+        node.entries().forEach { (key, value) ->
+            entries[key.toCompatKey()] = DataValueCodec.copyEntry(value)
+        }
         return entries
     }
 
     fun getArg() =
-        map.entries.joinToString(",") { (key, value) -> "${key.toCompatKey()}=(${value.typeName})$value" }
+        node.entries().entries.joinToString(",") { (key, value) ->
+            "${key.toCompatKey()}=(${value.typeName})$value"
+        }
 
     fun setArg(par1: String?, overwrite: Boolean) {
         setArg(par1, overwrite, SYNC_FLAG or SAVE_FLAG)
@@ -244,6 +252,10 @@ class DataMap {
     fun getList(key: String) = rootNamespace().getList(key)
     fun getArray(key: String) = rootNamespace().getArray(key)
     fun getListElementType(key: String) = rootNamespace().getListElementType(key)
+    fun getCompound(key: String) = rootNamespace().getCompound(key)
+
+    fun setCompound(key: String, value: DataCompound, flag: Int) =
+        rootNamespace().setCompound(key, value, flag)
 
     fun setList(key: String, value: Collection<*>, dataType: DataType, flag: Int) =
         rootNamespace().setList(key, value, dataType, flag)
@@ -269,14 +281,14 @@ class DataMap {
 
         fun getKey(key: String) = keyOf(key).toCompatKey()
 
-        fun contains(key: String) = dataMap.map.containsKey(keyOf(key))
+        fun contains(key: String) = dataMap.node.contains(keyOf(key))
 
         fun clear(flag: Int): Int {
             if (namespace.isEmpty()) {
                 return 0
             }
 
-            val keys = dataMap.map.keys.filter { key -> key.namespace == namespace }
+            val keys = dataMap.node.keys.filter { key -> key.namespace == namespace }
             keys.forEach { key -> dataMap.remove(key, flag) }
             return keys.size
         }
@@ -311,6 +323,18 @@ class DataMap {
 
         fun getArray(key: String): Array<Any> = getList(key).toTypedArray()
         fun getListElementType(key: String): DataType? = dataMap.get<DataEntryList>(keyOf(key))?.elementType
+        fun getCompound(key: String): DataCompound = dataMap.get<DataEntryCompound>(keyOf(key))?.get() ?: DataCompound()
+
+        fun setCompound(key: String, value: DataCompound, flag: Int): Boolean {
+            val dataKey = keyOf(key)
+            val entry = DataEntryCompound.fromCompound(value, flag)
+            return if (!dataMap.dataFormatter.check(dataKey.toCompatKey(), entry)) {
+                false
+            } else {
+                dataMap.set(dataKey, entry, flag)
+                true
+            }
+        }
 
         fun setList(key: String, value: Collection<*>, dataType: DataType, flag: Int) =
             dataMap.set(keyOf(key), DataEntryList.fromValues(dataType, value, flag))

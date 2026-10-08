@@ -6,6 +6,8 @@ import jp.ngt.rtm.RTMCore
 import jp.ngt.rtm.gui.dataform.*
 import jp.ngt.rtm.modelpack.DataFormProvider
 import jp.ngt.rtm.modelpack.cfg.DataFormConfig
+import jp.ngt.rtm.modelpack.cfg.DataFormPathSegment
+import jp.ngt.rtm.modelpack.cfg.DataFormTree
 import jp.ngt.rtm.network.PacketDataForm
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
@@ -67,11 +69,15 @@ class GuiDataForm(
         val definition = formDefinition ?: return
         definition.getFieldList().forEach { field ->
             val key = field.resolvedKey()
-            val defaultValue = definition.getDefaultValue(key)
+            val defaultValue = definition.getResolvedDefinition(field)
+            val currentEntry = DataFormTree.entryAt(
+                initialEntries[key],
+                field.resolvedPath().map(DataFormPathSegment::Key)
+            )
             val component = DataFormComponentFactory.create(
                 field,
                 defaultValue,
-                initialEntries[key]
+                currentEntry
             ) ?: return@forEach
             components += component
         }
@@ -155,12 +161,12 @@ class GuiDataForm(
 
     private fun applyChanges() {
         syncComponents()
-        val submission = DataFormControls.validate(formDefinition, components)
+        val submission = DataFormControls.validate(formDefinition, components, initialEntries)
         validationError = submission.error
         if (!submission.isValid) {
             return
         }
-        RTMCore.NETWORK_WRAPPER.sendToServer(PacketDataForm(provider, submission.entries))
+        RTMCore.NETWORK_WRAPPER.sendToServer(PacketDataForm(provider, submission.operations))
         closeScreen()
     }
 

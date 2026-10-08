@@ -1,5 +1,6 @@
 package jp.ngt.rtm.modelpack.cfg;
 
+import com.google.gson.JsonObject;
 import jp.ngt.rtm.modelpack.state.DataMap;
 
 import java.util.Arrays;
@@ -74,6 +75,14 @@ public abstract class ResourceConfig {
          */
         public Integer minItems;
         public Integer maxItems;
+        /**
+         * Compoundのメンバー定義、またはList<Compound>要素のテンプレート
+         */
+        public DMInitValue[] entries;
+        /**
+         * List<Compound>の初期要素。entriesの既定値を上書きする
+         */
+        public JsonObject[] elements;
         /**
          * 入力候補
          */

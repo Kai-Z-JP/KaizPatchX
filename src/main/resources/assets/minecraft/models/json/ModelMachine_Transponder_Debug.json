@@ -165,6 +165,281 @@
                 -10.0,
                 10.0
             ]
+        },
+        {
+            "type": "Compound",
+            "key": "route",
+            "entries": [
+                {
+                    "type": "String",
+                    "key": "line",
+                    "value": "Yamanote",
+                    "suggestions": [
+                        "Yamanote",
+                        "Chuo",
+                        "Keihin-Tohoku"
+                    ]
+                },
+                {
+                    "type": "Boolean",
+                    "key": "enabled",
+                    "value": "true"
+                },
+                {
+                    "type": "Int",
+                    "key": "priority",
+                    "value": "3",
+                    "minmax": [
+                        0,
+                        10
+                    ]
+                },
+                {
+                    "type": "Double",
+                    "key": "speed",
+                    "value": "90.0",
+                    "minmax": [
+                        0.0,
+                        320.0
+                    ]
+                },
+                {
+                    "type": "Hex",
+                    "key": "color",
+                    "value": "0x33cc66",
+                    "minmax": [
+                        0,
+                        16777215
+                    ]
+                },
+                {
+                    "type": "Vec",
+                    "key": "offset",
+                    "value": "1.0 2.0 3.0",
+                    "minmax": [
+                        -100.0,
+                        100.0
+                    ]
+                },
+                {
+                    "type": "List",
+                    "elementType": "String",
+                    "key": "tags",
+                    "values": [
+                        "urban",
+                        "loop"
+                    ],
+                    "minItems": 0,
+                    "maxItems": 6,
+                    "suggestions": [
+                        "urban",
+                        "suburban",
+                        "express",
+                        "loop"
+                    ]
+                },
+                {
+                    "type": "Compound",
+                    "key": "meta",
+                    "entries": [
+                        {
+                            "type": "String",
+                            "key": "note",
+                            "value": "nested compound"
+                        },
+                        {
+                            "type": "Compound",
+                            "key": "audit",
+                            "entries": [
+                                {
+                                    "type": "Int",
+                                    "key": "revision",
+                                    "value": "1",
+                                    "minmax": [
+                                        0,
+                                        999
+                                    ]
+                                },
+                                {
+                                    "type": "Boolean",
+                                    "key": "approved",
+                                    "value": "false"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "List",
+            "elementType": "Compound",
+            "key": "pages",
+            "minItems": 1,
+            "maxItems": 4,
+            "entries": [
+                {
+                    "type": "String",
+                    "key": "name",
+                    "value": "New page"
+                },
+                {
+                    "type": "Boolean",
+                    "key": "enabled",
+                    "value": "true"
+                },
+                {
+                    "type": "Hex",
+                    "key": "color",
+                    "value": "0xffffff",
+                    "minmax": [
+                        0,
+                        16777215
+                    ]
+                },
+                {
+                    "type": "Vec",
+                    "key": "offset",
+                    "value": "0.0 0.0 0.0",
+                    "minmax": [
+                        -20.0,
+                        20.0
+                    ]
+                },
+                {
+                    "type": "List",
+                    "elementType": "String",
+                    "key": "stops",
+                    "values": [
+                        "Tokyo"
+                    ],
+                    "minItems": 0,
+                    "maxItems": 5
+                },
+                {
+                    "type": "Compound",
+                    "key": "detail",
+                    "entries": [
+                        {
+                            "type": "Int",
+                            "key": "code",
+                            "value": "100",
+                            "minmax": [
+                                0,
+                                9999
+                            ]
+                        },
+                        {
+                            "type": "String",
+                            "key": "note",
+                            "value": "template note"
+                        }
+                    ]
+                },
+                {
+                    "type": "Compound",
+                    "key": "position",
+                    "entries": [
+                        {
+                            "type": "Double",
+                            "key": "x",
+                            "value": "0.0",
+                            "minmax": [
+                                -1000.0,
+                                1000.0
+                            ]
+                        },
+                        {
+                            "type": "Double",
+                            "key": "y",
+                            "value": "0.0",
+                            "minmax": [
+                                -1000.0,
+                                1000.0
+                            ]
+                        },
+                        {
+                            "type": "Double",
+                            "key": "z",
+                            "value": "0.0",
+                            "minmax": [
+                                -1000.0,
+                                1000.0
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "List",
+                    "elementType": "Compound",
+                    "key": "markers",
+                    "minItems": 0,
+                    "maxItems": 3,
+                    "entries": [
+                        {
+                            "type": "String",
+                            "key": "label",
+                            "value": "Marker"
+                        },
+                        {
+                            "type": "Boolean",
+                            "key": "visible",
+                            "value": "true"
+                        },
+                        {
+                            "type": "Double",
+                            "key": "weight",
+                            "value": "1.0",
+                            "minmax": [
+                                0.0,
+                                10.0
+                            ]
+                        }
+                    ],
+                    "elements": [
+                        {
+                            "label": "Origin"
+                        }
+                    ]
+                }
+            ],
+            "elements": [
+                {
+                    "name": "Local",
+                    "enabled": true,
+                    "color": 3381555,
+                    "offset": "1.0 0.0 0.0",
+                    "stops": [
+                        "Tokyo",
+                        "Kanda"
+                    ],
+                    "detail": {
+                        "code": 101,
+                        "note": "all fields overridden"
+                    },
+                    "position": {
+                        "x": 1.25,
+                        "y": 2.5,
+                        "z": -3.75
+                    },
+                    "markers": [
+                        {
+                            "label": "A",
+                            "visible": true,
+                            "weight": 2.5
+                        },
+                        {
+                            "label": "B",
+                            "visible": false,
+                            "weight": 0.5
+                        }
+                    ]
+                },
+                {
+                    "name": "Express",
+                    "enabled": false
+                }
+            ]
         }
     ],
     "customForm": {
@@ -262,6 +537,250 @@
                 "row": 9,
                 "column": 0,
                 "columnSpan": 2
+            },
+            {
+                "text": "Compound fields (same root key, independent paths)",
+                "row": 10,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "key": "route",
+                "path": [
+                    "line"
+                ],
+                "label": "route.line / Suggestions",
+                "row": 11,
+                "column": 0
+            },
+            {
+                "key": "route",
+                "path": [
+                    "enabled"
+                ],
+                "row": 11,
+                "column": 1
+            },
+            {
+                "key": "route",
+                "path": [
+                    "priority"
+                ],
+                "row": 12,
+                "column": 0
+            },
+            {
+                "key": "route",
+                "path": [
+                    "speed"
+                ],
+                "row": 12,
+                "column": 1
+            },
+            {
+                "key": "route",
+                "path": [
+                    "color"
+                ],
+                "row": 13,
+                "column": 0
+            },
+            {
+                "key": "route",
+                "path": [
+                    "meta",
+                    "note"
+                ],
+                "label": "route.meta.note",
+                "row": 13,
+                "column": 1
+            },
+            {
+                "key": "route",
+                "path": [
+                    "offset"
+                ],
+                "row": 14,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "key": "route",
+                "path": [
+                    "tags"
+                ],
+                "label": "route.tags / List<String>",
+                "row": 15,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "key": "route",
+                "path": [
+                    "meta",
+                    "audit",
+                    "revision"
+                ],
+                "label": "meta.audit.revision",
+                "row": 16,
+                "column": 0
+            },
+            {
+                "key": "route",
+                "path": [
+                    "meta",
+                    "audit",
+                    "approved"
+                ],
+                "label": "meta.audit.approved",
+                "row": 16,
+                "column": 1
+            },
+            {
+                "text": "List<Compound> repeated sub-grid and nested List<Compound>",
+                "row": 17,
+                "column": 0,
+                "columnSpan": 2
+            },
+            {
+                "key": "pages",
+                "label": "Pages",
+                "row": 18,
+                "column": 0,
+                "rowSpan": 4,
+                "columnSpan": 2,
+                "elementForm": {
+                    "columns": 6,
+                    "fields": [
+                        {
+                            "path": [
+                                "name"
+                            ],
+                            "row": 0,
+                            "column": 0,
+                            "columnSpan": 3
+                        },
+                        {
+                            "path": [
+                                "enabled"
+                            ],
+                            "row": 0,
+                            "column": 3,
+                            "columnSpan": 3
+                        },
+                        {
+                            "path": [
+                                "color"
+                            ],
+                            "row": 1,
+                            "column": 0,
+                            "columnSpan": 3
+                        },
+                        {
+                            "path": [
+                                "detail",
+                                "code"
+                            ],
+                            "label": "detail.code",
+                            "row": 1,
+                            "column": 3,
+                            "columnSpan": 3
+                        },
+                        {
+                            "path": [
+                                "offset"
+                            ],
+                            "row": 2,
+                            "column": 0,
+                            "columnSpan": 6
+                        },
+                        {
+                            "path": [
+                                "stops"
+                            ],
+                            "row": 3,
+                            "column": 0,
+                            "columnSpan": 6
+                        },
+                        {
+                            "path": [
+                                "detail",
+                                "note"
+                            ],
+                            "label": "detail.note",
+                            "row": 4,
+                            "column": 0,
+                            "columnSpan": 6
+                        },
+                        {
+                            "path": [
+                                "position",
+                                "x"
+                            ],
+                            "label": "X",
+                            "row": 5,
+                            "column": 0,
+                            "columnSpan": 2
+                        },
+                        {
+                            "path": [
+                                "position",
+                                "y"
+                            ],
+                            "label": "Y",
+                            "row": 5,
+                            "column": 2,
+                            "columnSpan": 2
+                        },
+                        {
+                            "path": [
+                                "position",
+                                "z"
+                            ],
+                            "label": "Z",
+                            "row": 5,
+                            "column": 4,
+                            "columnSpan": 2
+                        },
+                        {
+                            "path": [
+                                "markers"
+                            ],
+                            "label": "Nested markers",
+                            "row": 6,
+                            "column": 0,
+                            "rowSpan": 2,
+                            "columnSpan": 6,
+                            "elementForm": {
+                                "columns": 2,
+                                "fields": [
+                                    {
+                                        "path": [
+                                            "label"
+                                        ],
+                                        "row": 0,
+                                        "column": 0
+                                    },
+                                    {
+                                        "path": [
+                                            "visible"
+                                        ],
+                                        "row": 0,
+                                        "column": 1
+                                    },
+                                    {
+                                        "path": [
+                                            "weight"
+                                        ],
+                                        "row": 1,
+                                        "column": 0,
+                                        "columnSpan": 2
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
             }
         ]
     },

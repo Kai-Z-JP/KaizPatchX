@@ -2,7 +2,6 @@ package jp.ngt.rtm.modelpack.state
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import com.google.gson.JsonPrimitive
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 
@@ -43,11 +42,15 @@ class DataEntryList private constructor(
 
     override fun getTypeName(): String = "List<${elementType.key}>"
 
+    override fun get(): List<Any> = data.map(DataValueCodec::copyValue)
+
     override fun toString(): String {
         val array = JsonArray()
-        data.forEach { value -> array.add(toJsonPrimitive(elementType, value)) }
+        data.forEach { value -> array.add(DataEntryJsonCodec.typedListElement(value, elementType)) }
         return array.toString()
     }
+
+    internal fun rawValues(): List<Any> = data
 
     companion object {
         private const val DATA_KEY = "Data"
@@ -62,8 +65,12 @@ class DataEntryList private constructor(
             val root = JsonParser().parse(value)
             require(root.isJsonArray) { "List value must be a JSON array" }
             val values = root.asJsonArray.map { element ->
-                require(element.isJsonPrimitive) { "List elements must be primitive values" }
-                parseElement(type, element.asString)
+                if (type == DataType.COMPOUND) {
+                    require(element.isJsonObject) { "List<Compound> elements must be JSON objects" }
+                } else {
+                    require(element.isJsonPrimitive) { "List elements must be primitive values" }
+                }
+                DataEntryJsonCodec.parseTypedListElement(element, type)
             }
             return DataEntryList(type, values, flag)
         }
@@ -91,16 +98,6 @@ class DataEntryList private constructor(
         @JvmStatic
         fun elementToString(value: Any, type: DataType): String =
             DataTypeHandlers.formatValue(requireElementType(type), value)
-
-        private fun toJsonPrimitive(type: DataType, value: Any): JsonPrimitive = when (type) {
-            DataType.INT -> JsonPrimitive(value as Int)
-            DataType.DOUBLE -> JsonPrimitive(value as Double)
-            DataType.BOOLEAN -> JsonPrimitive(value as Boolean)
-            else -> JsonPrimitive(elementToString(value, type))
-        }
-
-        private fun parseElement(type: DataType, rawValue: String): Any =
-            DataTypeHandlers.parseElementValue(requireElementType(type), rawValue)
 
         private fun coerceElement(type: DataType, value: Any?): Any =
             DataTypeHandlers.coerceElementValue(requireElementType(type), value)

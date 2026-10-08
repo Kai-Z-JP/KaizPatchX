@@ -44,10 +44,6 @@ interface DataTypeHandler {
 }
 
 object DataTypeHandlers {
-    const val MAX_LIST_ITEMS = 64
-    const val DEFAULT_MAX_LIST_ITEMS = 16
-    const val MAX_LIST_ELEMENT_LENGTH = 1024
-
     private val handlers: Map<DataType, DataTypeHandler> = listOf(
         BooleanDataTypeHandler,
         DoubleDataTypeHandler,
@@ -55,6 +51,7 @@ object DataTypeHandlers {
         StringDataTypeHandler,
         VecDataTypeHandler,
         HexDataTypeHandler,
+        CompoundDataTypeHandler,
         ListDataTypeHandler
     ).associateBy { it.type }
 
@@ -322,6 +319,11 @@ private object ListDataTypeHandler : DataTypeHandler {
 
     override fun createDefault(definition: ResourceConfig.DMInitValue, flag: Int): DataEntry<*> {
         val elementType = requireElementType(definition)
+        if (elementType == DataType.COMPOUND) {
+            val values = definition.elements?.map { DataCompoundDefinitions.fromPlainJson(it, definition) }
+                ?: emptyList()
+            return DataEntryList.fromValues(elementType, values, flag)
+        }
         return definition.values?.let { DataEntryList.fromValues(elementType, it.asList(), flag) }
             ?: DataEntryList.fromString(definition.value, elementType, flag)
     }
@@ -331,8 +333,8 @@ private object ListDataTypeHandler : DataTypeHandler {
         val minItems = minItems(definition)
         val maxItems = maxItems(definition)
         return when {
-            minItems !in 0..DataTypeHandlers.MAX_LIST_ITEMS -> "List minItems is out of range"
-            maxItems !in 0..DataTypeHandlers.MAX_LIST_ITEMS -> "List maxItems is out of range"
+            minItems < 0 -> "List minItems is out of range"
+            maxItems < 0 -> "List maxItems is out of range"
             minItems > maxItems -> "List minItems is greater than maxItems"
             else -> DataTypeHandlers.get(elementType).validateConstraints(definition)
         }
@@ -378,13 +380,10 @@ private object ListDataTypeHandler : DataTypeHandler {
             elementHandler.validateValue(value, definition, includeSuggestions)?.let {
                 return "List element $index: $it"
             }
-            val text = try {
+            try {
                 elementHandler.format(value)
             } catch (_: RuntimeException) {
                 return "List element $index has an invalid type"
-            }
-            if (text.length > DataTypeHandlers.MAX_LIST_ELEMENT_LENGTH) {
-                return "List element $index is too long"
             }
         }
         return null
@@ -402,7 +401,7 @@ private object ListDataTypeHandler : DataTypeHandler {
     private fun minItems(definition: ResourceConfig.DMInitValue): Int = definition.minItems ?: 0
 
     private fun maxItems(definition: ResourceConfig.DMInitValue): Int =
-        definition.maxItems ?: DataTypeHandlers.DEFAULT_MAX_LIST_ITEMS
+        definition.maxItems ?: Int.MAX_VALUE
 
 }
 

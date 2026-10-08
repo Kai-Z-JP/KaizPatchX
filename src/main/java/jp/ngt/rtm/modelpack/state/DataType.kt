@@ -14,7 +14,8 @@ enum class DataType(
     STRING("String", String::class),
     VEC("Vec", Vec3::class),
     HEX("Hex", null),
-    LIST("List", List::class, isValidListElement = false);
+    LIST("List", List::class, isValidListElement = false),
+    COMPOUND("Compound", DataCompound::class);
 
     companion object {
         @JvmStatic

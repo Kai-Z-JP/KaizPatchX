@@ -50,6 +50,8 @@ public abstract class DataEntry<T> {
         } else if (dType == DataType.HEX) {
             int i = data.isEmpty() ? 0 : Integer.decode(data);
             return new DataEntryHex(i, flag);
+        } else if (dType == DataType.COMPOUND) {
+            return DataEntryCompound.fromString(data, flag);
         } else if (dType == DataType.LIST) {
             return DataEntryList.fromString(data, DataType.STRING, flag);
         }

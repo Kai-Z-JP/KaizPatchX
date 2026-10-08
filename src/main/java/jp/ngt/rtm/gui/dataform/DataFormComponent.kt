@@ -3,6 +3,8 @@ package jp.ngt.rtm.gui.dataform
 import cpw.mods.fml.relauncher.Side
 import cpw.mods.fml.relauncher.SideOnly
 import jp.ngt.rtm.modelpack.cfg.DataFormField
+import jp.ngt.rtm.modelpack.cfg.DataFormOperation
+import jp.ngt.rtm.modelpack.cfg.DataFormPathSegment
 import jp.ngt.rtm.modelpack.cfg.ResourceConfig
 import jp.ngt.rtm.modelpack.state.DataEntry
 import jp.ngt.rtm.modelpack.state.DataEntryList
@@ -19,9 +21,6 @@ internal interface DataFormComponent {
     val labels: List<DataFormLabel> get() = emptyList()
     val textFields: List<GuiTextField> get() = emptyList()
 
-    val key: String
-        get() = this.field.resolvedKey()
-
     fun measuredRowHeight(fontRenderer: FontRenderer, controlWidth: Int): Int = rowHeight
 
     fun build(context: DataFormBuildContext)
@@ -36,6 +35,13 @@ internal interface DataFormValueComponent<T : Any> : DataFormComponent {
     val entry: DataEntry<*> get() = createEntry(fieldValue)
 
     fun createEntry(value: T): DataEntry<*>
+}
+
+internal interface DataFormOperationSource : DataFormComponent {
+    fun collectOperations(
+        rootKey: String,
+        prefix: List<DataFormPathSegment>
+    ): List<DataFormOperation>
 }
 
 internal data class DataFormLabel(
@@ -71,6 +77,19 @@ internal class DataFormBuildContext(
     fun isControlVisible(controlY: Int, height: Int): Boolean = isVisible(controlY, height)
 
     fun addButton(button: GuiButton) = addButton.invoke(button)
+
+    fun nested(localX: Int, localY: Int, controlWidth: Int) = DataFormBuildContext(
+        fontRenderer,
+        guiLeft,
+        guiTop,
+        localX,
+        localY,
+        controlWidth,
+        clip,
+        nextControlId,
+        isVisible,
+        addButton
+    )
 
     fun createButton(id: Int, x: Int, y: Int, width: Int, height: Int, text: String): GuiButton =
         ClippedButton(id, x, y, width, height, text, clip)
@@ -115,7 +134,7 @@ internal class DataFormBuildContext(
             max(1, width),
             DataFormMetrics.CONTROL_HEIGHT
         )
-        field.maxStringLength = DataFormMetrics.MAX_TEXT_FIELD_LENGTH
+        field.maxStringLength = Int.MAX_VALUE
         field.text = value
         return field
     }
@@ -155,10 +174,10 @@ internal object DataFormComponentFactory {
         }
         val resolvedDefinition = definition ?: return null
         return when (DataType.getType(resolvedDefinition.type)) {
-            DataType.LIST -> if (DataEntryList.supportedElementType(resolvedDefinition.elementType) == null) {
-                null
-            } else {
-                ListFormComponent(field, resolvedDefinition, currentEntry)
+            DataType.LIST -> when (DataEntryList.supportedElementType(resolvedDefinition.elementType)) {
+                null -> null
+                DataType.COMPOUND -> ListCompoundFormComponent(field, resolvedDefinition, currentEntry)
+                else -> ListFormComponent(field, resolvedDefinition, currentEntry)
             }
 
             DataType.VEC -> VectorFormComponent(field, resolvedDefinition, currentEntry)
@@ -195,7 +214,6 @@ internal object DataFormMetrics {
     const val FOOTER_HEIGHT = 34
     const val FOOTER_BUTTON_OFFSET = 25
     const val BUTTON_HEIGHT = 20
-    const val MAX_TEXT_FIELD_LENGTH = 1024
     const val VECTOR_COMPONENT_COUNT = 3
     const val VECTOR_FIELD_GAP = 3
     const val VECTOR_PASTE_BUTTON_WIDTH = 18

@@ -93,6 +93,11 @@ public final class DataFormatter {
                     return;
                 }
                 try {
+                    String validationError = DataTypeHandlers.validateDefinition(type, val);
+                    if (validationError != null) {
+                        NGTLog.debug("Failed to set value : %s (%s)", key, validationError);
+                        return;
+                    }
                     DataEntry<?> entry = DataTypeHandlers.createDefault(type, val, flag);
                     dm.setEntry(key, entry, flag);
                 } catch (RuntimeException e) {

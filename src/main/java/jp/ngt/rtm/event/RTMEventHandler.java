@@ -68,6 +68,7 @@ public final class RTMEventHandler {
     @SubscribeEvent
     public void onUnloadWorld(WorldEvent.Unload event) {
         ElectricalWiringManager.onWorldUnload(event.world);
+        RTMCore.proxy.getFormationManager().onWorldUnload(event.world);
     }
 
     @SubscribeEvent

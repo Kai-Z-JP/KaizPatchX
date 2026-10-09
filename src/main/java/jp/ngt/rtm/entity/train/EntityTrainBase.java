@@ -212,7 +212,6 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
             this.spawnSmoke();
         } else//!isRemote
         {
-            this.updateChunks();
             this.updateATS();
         }
     }
@@ -1177,7 +1176,9 @@ public abstract class EntityTrainBase extends EntityVehicleBase<TrainConfig> imp
 
     @Override
     public boolean isChunkLoaderEnable() {
-        return this.getTrainStateData(TrainStateType.State_ChunkLoader.id) > 0;
+        // State id 7 is retained for save/network compatibility only.
+        // FormationChunkRetention now owns all train chunk tickets.
+        return false;
     }
 
     private void releaseTicket() {

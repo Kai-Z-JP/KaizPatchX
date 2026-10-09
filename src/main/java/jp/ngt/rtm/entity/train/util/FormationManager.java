@@ -2,6 +2,7 @@ package jp.ngt.rtm.entity.train.util;
 
 import jp.ngt.rtm.RTMCore;
 import jp.ngt.rtm.entity.train.EntityTrainBase;
+import jp.ngt.rtm.world.FormationChunkRetention;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -52,6 +53,9 @@ public final class FormationManager {
 
     public void removeFormation(long id) {
         this.formationMap.remove(id);
+        if (!this.isRemote) {
+            FormationChunkRetention.releaseFormation(id);
+        }
         if (!this.isRemote && this.saveData != null) {
             this.saveData.markDirty();
         }
@@ -61,6 +65,9 @@ public final class FormationManager {
     public int clearFormations() {
         int count = this.formationMap.size();
         this.formationMap.clear();
+        if (!this.isRemote) {
+            FormationChunkRetention.releaseAllFormations();
+        }
         if (!this.isRemote && this.saveData != null) {
             this.saveData.markDirty();
         }
@@ -69,6 +76,10 @@ public final class FormationManager {
     }
 
     public void updateFormations(World world) {
+        if (!this.isRemote && !world.isRemote) {
+            FormationChunkRetention.update(world, this.formationMap.values());
+        }
+
 		/*for(Entry<Long, Formation> entry : this.formationMap.entrySet())
 		{
 			if(!entry.getValue().onUpdate(world))
@@ -85,6 +96,16 @@ public final class FormationManager {
 			}
 			this.removingFormations.clear();
 		}*/
+    }
+
+    public void onWorldUnload(World world) {
+        if (!this.isRemote && !world.isRemote) {
+            FormationChunkRetention.onWorldUnload(world);
+            if (world.provider.dimensionId == 0) {
+                this.formationMap.clear();
+                this.saveData = null;
+            }
+        }
     }
 
     public long getNewFormationId() {
